@@ -358,7 +358,7 @@ def show():
             2: "top: 20%; left: 10%;",
             3: "top: 35px; left: 50%; transform: translateX(-50%);", 
             4: "top: 20%; right: 10%;", 
-            5: "bottom: 20%; right: 10%;"
+            5: "bottom: 20%; right: 13%;"
         }.get(idx, "")
 
     def get_btn_style(idx):
