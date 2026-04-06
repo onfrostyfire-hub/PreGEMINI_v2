@@ -20,8 +20,6 @@ def show():
 
         /* ═══════════════════════════════════════════
            CARBON NOIR v3 — Production CSS
-           Correct 6-max layout: pentagon of 5 seats
-           Hero cards peek from bottom edge only
            ═══════════════════════════════════════════ */
 
         .mobile-game-area {
@@ -65,11 +63,8 @@ def show():
           z-index: 0 !important;
         }
 
-        /* Скрываем старые элементы, не вписывающиеся в дизайн */
-        .glass-shatter,
-        .mastery-glow,
-        .crest-left-mob,
-        .crest-right-mob { display: none !important; }
+        /* Скрываем старые элементы */
+        .glass-shatter, .mastery-glow, .crest-left-mob, .crest-right-mob { display: none !important; }
 
         /* ЦЕНТРАЛЬНАЯ ПАНЕЛЬ НА СУКНЕ */
         .mob-info {
@@ -108,25 +103,9 @@ def show():
           color: rgba(255,205,50,0.85) !important;
           text-shadow: 0 0 7px rgba(255,205,50,0.4) !important;
         }
-        .mastery-bar-bg {
-          width: 60px !important;
-          height: 2px !important;
-          background: rgba(255,255,255,0.07) !important;
-          border-radius: 2px !important;
-          overflow: hidden !important;
-        }
-        .mastery-bar-fill {
-          height: 100% !important;
-          background: linear-gradient(90deg, #17f07e, #00b85e) !important;
-          border-radius: 2px !important;
-          box-shadow: 0 0 5px rgba(23,240,126,0.65) !important;
-        }
-        .hands-left-mob {
-          font-size: 9px !important;
-          color: rgba(130,185,155,0.35) !important;
-          letter-spacing: 0.06em !important;
-          text-shadow: 0 1px 3px rgba(0,0,0,0.95) !important;
-        }
+        .mastery-bar-bg { width: 60px !important; height: 2px !important; background: rgba(255,255,255,0.07) !important; border-radius: 2px !important; overflow: hidden !important; }
+        .mastery-bar-fill { height: 100% !important; background: linear-gradient(90deg, #17f07e, #00b85e) !important; border-radius: 2px !important; box-shadow: 0 0 5px rgba(23,240,126,0.65) !important; }
+        .hands-left-mob { font-size: 9px !important; color: rgba(130,185,155,0.35) !important; letter-spacing: 0.06em !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95) !important; }
 
         /* ПОСАДОЧНЫЕ МЕСТА (АВАТАРЫ) */
         .seat {
@@ -140,8 +119,8 @@ def show():
         .seat::before {
           content: '' !important;
           display: block !important;
-          width: 49px !important;
-          height: 49px !important;
+          width: 44px !important;
+          height: 44px !important;
           border-radius: 50% !important;
           background: radial-gradient(circle at 38% 30%, #203d2e 0%, #0e2018 60%, #080f0e 100%) !important;
           border: 1.5px solid rgba(0,240,110,0.2) !important;
@@ -166,11 +145,7 @@ def show():
 
         .seat-active::before {
           border-color: rgba(0,240,110,0.8) !important;
-          box-shadow:
-            0 0 0 3px rgba(0,0,0,0.65),
-            0 0 16px rgba(0,240,110,0.45),
-            0 0 30px rgba(0,240,110,0.2),
-            inset 0 1px 3px rgba(255,255,255,0.09) !important;
+          box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 16px rgba(0,240,110,0.45), 0 0 30px rgba(0,240,110,0.2), inset 0 1px 3px rgba(255,255,255,0.09) !important;
           animation: pulse-seat 2.6s ease-in-out infinite !important;
         }
         @keyframes pulse-seat {
@@ -178,91 +153,34 @@ def show():
           50%      { box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 26px rgba(0,240,110,0.7), 0 0 44px rgba(0,240,110,0.25), inset 0 1px 3px rgba(255,255,255,0.09); }
         }
 
-        .seat-folded::before {
-          border-color: rgba(80,80,80,0.15) !important;
-          opacity: 0.7 !important;
-          box-shadow: none !important;
-          animation: none !important;
-        }
+        .seat-folded::before { border-color: rgba(80,80,80,0.15) !important; opacity: 0.6 !important; box-shadow: none !important; animation: none !important; }
         .seat-folded::after { opacity: 0.5 !important; }
         .seat-folded .opp-cards-mob { opacity: 0.5 !important; }
-
-        .seat-label {
-          font-size: 8px !important;
-          font-weight: 700 !important;
-          letter-spacing: 0.14em !important;
-          text-transform: uppercase !important;
-          color: rgba(160,210,180,0.5) !important;
-          text-shadow: 0 0 4px rgba(0,220,100,0.25), 0 1px 3px rgba(0,0,0,0.98) !important;
-        }
+        .seat-label { font-size: 8px !important; font-weight: 700 !important; letter-spacing: 0.14em !important; text-transform: uppercase !important; color: rgba(160,210,180,0.5) !important; text-shadow: 0 0 4px rgba(0,220,100,0.25), 0 1px 3px rgba(0,0,0,0.98) !important; }
 
         /* КАРТЫ ОППОНЕНТОВ */
-        .opp-cards-mob {
-          position: absolute !important;
-          top: -18px !important;
-          left: 50% !important;
-          transform: translateX(-50%) !important;
-          display: flex !important;
-          align-items: flex-end !important;
-        }
+        .opp-cards-mob { position: absolute !important; top: -18px !important; left: 50% !important; transform: translateX(-50%) !important; display: flex !important; align-items: flex-end !important; }
         .opp-card-mob {
-          width: 14px !important;
-          height: 20px !important;
-          border-radius: 3px !important;
-          position: relative !important;
-          background:
-            repeating-linear-gradient(
-              45deg,
-              rgba(15,70,185,0.95) 0px, rgba(15,70,185,0.95) 2px,
-              rgba(8,44,130,0.95)  2px, rgba(8,44,130,0.95)  6px
-            ) !important;
-          border: 1px solid rgba(80,140,255,0.3) !important;
-          box-shadow: 0 2px 5px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.06) !important;
+          width: 14px !important; height: 20px !important; border-radius: 3px !important; position: relative !important;
+          background: repeating-linear-gradient(45deg, rgba(15,70,185,0.95) 0px, rgba(15,70,185,0.95) 2px, rgba(8,44,130,0.95) 2px, rgba(8,44,130,0.95) 6px) !important;
+          border: 1px solid rgba(80,140,255,0.3) !important; box-shadow: 0 2px 5px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.06) !important;
         }
-        .opp-card-mob::before {
-          content: '' !important;
-          position: absolute !important;
-          inset: 2px !important;
-          border-radius: 2px !important;
-          border: 1px solid rgba(80,140,255,0.15) !important;
-        }
-        .opp-card-mob.right {
-          margin-left: -5px !important;
-          transform: rotate(10deg) !important;
-          z-index: -1 !important;
-        }
+        .opp-card-mob::before { content: '' !important; position: absolute !important; inset: 2px !important; border-radius: 2px !important; border: 1px solid rgba(80,140,255,0.15) !important; }
+        .opp-card-mob.right { margin-left: -5px !important; transform: rotate(10deg) !important; z-index: -1 !important; }
 
         /* ДИЛЕРСКИЙ БАТТОН */
         .dealer-mob {
-          position: absolute !important;
-          z-index: 30 !important;
-          width: 20px !important;
-          height: 20px !important;
-          border-radius: 50% !important;
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          font-size: 8px !important;
-          font-weight: 900 !important;
-          color: #120700 !important;
+          position: absolute !important; z-index: 30 !important; width: 20px !important; height: 20px !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important;
+          font-size: 8px !important; font-weight: 900 !important; color: #120700 !important;
           background: radial-gradient(circle at 38% 30%, #ffd84a, #c88408) !important;
           border: 1.5px solid rgba(255,255,255,0.35) !important;
-          box-shadow:
-            0 0 0 2px rgba(0,0,0,0.7),
-            0 2px 10px rgba(200,132,8,0.7),
-            inset 0 1px 3px rgba(255,255,255,0.55) !important;
+          box-shadow: 0 0 0 2px rgba(0,0,0,0.7), 0 2px 10px rgba(200,132,8,0.7), inset 0 1px 3px rgba(255,255,255,0.55) !important;
         }
 
         /* ФИШКИ И СТАВКИ */
-        .chip-container {
-          position: absolute !important;
-          z-index: 22 !important;
-          display: flex !important;
-          flex-direction: column !important;
-          align-items: center !important;
-          gap: 3px !important;
-        }
-        .chip-mob, .chip-3bet {
+        .chip-container { position: absolute !important; z-index: 22 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 3px !important; }
+        
+        .chip-mob, .chip-3bet, .chip-4bet {
           width: 15px !important;
           height: 15px !important;
           border-radius: 50% !important;
@@ -270,117 +188,57 @@ def show():
           background:
             repeating-conic-gradient(rgba(255,255,255,0.13) 0deg 18deg, transparent 18deg 36deg),
             radial-gradient(circle at 36% 30%, #1e3a8a, #0c1844) !important;
-          border: 2.5px solid rgba(255,255,255,0.22) !important;
+          border: 2px solid rgba(255,255,255,0.22) !important;
           box-shadow:
-            0 0 0 1.5px rgba(0,0,0,0.7),
-            0 3px 10px rgba(0,0,0,0.8),
-            0 0 8px rgba(212,48,48,0.3),
-            inset 0 1px 3px rgba(255,255,255,0.22) !important;
+            0 0 0 1px rgba(0,0,0,0.7),
+            0 2px 5px rgba(0,0,0,0.8),
+            inset 0 1px 2px rgba(255,255,255,0.2) !important;
         }
+        
         .chip-3bet { background: radial-gradient(circle at 36% 30%, #ff5722, #9e3211) !important; }
         
-        .chip-mob::before, .chip-3bet::before {
-          content: '' !important;
-          position: absolute !important;
-          inset: 5px !important;
-          border-radius: 50% !important;
-          border: 1px solid rgba(255,255,255,0.12) !important;
-        }
-        .chip-mob::after, .chip-3bet::after {
-          content: '' !important;
-          position: absolute !important;
-          top: 3px !important; left: 3px !important;
-          width: 8px !important; height: 5px !important;
-          border-radius: 50% !important;
-          background: rgba(255,255,255,0.22) !important;
-          filter: blur(1px) !important;
-        }
-        .bet-txt {
-          font-size: 10px !important;
-          font-weight: 700 !important;
-          color: rgba(255,235,190,0.9) !important;
-          text-shadow: 0 0 5px rgba(255,195,40,0.5), 0 1px 3px rgba(0,0,0,0.98) !important;
-          letter-spacing: 0.03em !important;
-          white-space: nowrap !important;
+        .chip-4bet {
+          background:
+            repeating-conic-gradient(rgba(255,255,255,0.15) 0deg 18deg, transparent 18deg 36deg),
+            radial-gradient(circle at 36% 30%, #68158e, #3F055B) !important;
         }
 
-        /* КАРТЫ ГЕРОЯ (Выглядывают снизу) */
-        .hero-mob {
-          position: absolute !important;
-          bottom: -55px !important;
-          left: 50% !important;
-          transform: translateX(-50%) !important;
-          z-index: 30 !important;
-          display: flex !important;
-          align-items: flex-start !important;
-          gap: 7px !important;
+        .chip-mob::before, .chip-3bet::before, .chip-4bet::before {
+          content: '' !important; position: absolute !important; inset: 4px !important; border-radius: 50% !important; border: 1px solid rgba(255,255,255,0.12) !important;
         }
+        
+        .chip-mob::after, .chip-3bet::after, .chip-4bet::after {
+          content: '' !important; position: absolute !important; top: 2px !important; left: 2px !important; width: 6px !important; height: 4px !important; border-radius: 50% !important; background: rgba(255,255,255,0.22) !important; filter: blur(1px) !important;
+        }
+        
+        .bet-txt { font-size: 10px !important; font-weight: 700 !important; color: rgba(255,235,190,0.9) !important; text-shadow: 0 0 5px rgba(255,195,40,0.5), 0 1px 3px rgba(0,0,0,0.98) !important; letter-spacing: 0.03em !important; white-space: nowrap !important; }
 
-        .floating-reward {
-          position: absolute !important;
-          top: -38px !important;
-          left: 50% !important;
-          transform: translateX(-50%) !important;
-          font-size: 14px !important;
-          font-weight: 800 !important;
-          color: #17f07e !important;
-          text-shadow: 0 0 12px rgba(23,240,126,0.8), 0 0 28px rgba(23,240,126,0.3) !important;
-          white-space: nowrap !important;
-          animation: float-reward 2.2s ease-out forwards !important;
-          pointer-events: none !important;
-        }
-        @keyframes float-reward {
-          0%   { opacity: 1; transform: translateX(-50%) translateY(0); }
-          100% { opacity: 0; transform: translateX(-50%) translateY(-24px); }
-        }
+        /* КАРТЫ ГЕРОЯ */
+        .hero-mob { position: absolute !important; bottom: -55px !important; left: 50% !important; transform: translateX(-50%) !important; z-index: 30 !important; display: flex !important; align-items: flex-start !important; gap: 7px !important; }
+
+        .floating-reward { position: absolute !important; top: -38px !important; left: 50% !important; transform: translateX(-50%) !important; font-size: 14px !important; font-weight: 800 !important; color: #17f07e !important; text-shadow: 0 0 12px rgba(23,240,126,0.8), 0 0 28px rgba(23,240,126,0.3) !important; white-space: nowrap !important; animation: float-reward 2.2s ease-out forwards !important; pointer-events: none !important; }
+        @keyframes float-reward { 0%   { opacity: 1; transform: translateX(-50%) translateY(0); } 100% { opacity: 0; transform: translateX(-50%) translateY(-24px); } }
 
         .card-mob {
-          width: 54px !important;
-          height: 78px !important;
-          border-radius: 8px !important;
-          position: relative !important;
-          background: #f8faff !important;
-          border: 1px solid rgba(255,255,255,0.85) !important;
-          box-shadow:
-            0 0 0 1px rgba(0,0,0,0.2),
-            0 -6px 16px rgba(0,0,0,0.7),
-            0 -12px 30px rgba(0,0,0,0.4),
-            inset 0 1px 0 rgba(255,255,255,1) !important;
-          display: flex !important;
-          flex-direction: column !important;
-          align-items: flex-start !important;
-          overflow: hidden !important;
+          width: 54px !important; height: 78px !important; border-radius: 8px !important; position: relative !important; background: #f8faff !important; border: 1px solid rgba(255,255,255,0.85) !important;
+          box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -6px 16px rgba(0,0,0,0.7), 0 -12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1) !important;
+          display: flex !important; flex-direction: column !important; align-items: flex-start !important; overflow: hidden !important;
         }
-        .card-mob::after {
-          content: '' !important;
-          position: absolute !important;
-          top: 0 !important; left: 0 !important;
-          width: 60% !important; height: 45% !important;
-          background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important;
-          pointer-events: none !important;
-          border-radius: 8px 0 0 0 !important;
-        }
-        .tl-mob {
-          padding: 4px 0 0 5px !important;
-          font-size: 15px !important;
-          font-weight: 900 !important;
-          line-height: 0.9 !important;
-          letter-spacing: -0.04em !important;
-          z-index: 2 !important;
-          position: relative !important;
-        }
-      .c-mob { position: absolute !important; top: 55% !important; left: 50% !important; transform: translate(-50%,-50%) !important; font-size: 24px !important; opacity: 1 !important; line-height: 1 !important; }
+        .card-mob::after { content: '' !important; position: absolute !important; top: 0 !important; left: 0 !important; width: 60% !important; height: 45% !important; background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; pointer-events: none !important; border-radius: 8px 0 0 0 !important; }
+        .tl-mob { padding: 4px 0 0 5px !important; font-size: 15px !important; font-weight: 900 !important; line-height: 0.9 !important; letter-spacing: -0.04em !important; z-index: 2 !important; position: relative !important; }
+        .c-mob { position: absolute !important; top: 55% !important; left: 50% !important; transform: translate(-50%,-50%) !important; font-size: 26px !important; opacity: 1 !important; line-height: 1 !important; z-index: 2 !important;}
         .suit-red   { color: #c00a0a !important; }
         .suit-black { color: #0a0a0a !important; }
         .suit-blue  { color: #0056b3 !important; }
         .suit-green { color: #198754 !important; }
 
-  .rng-badge {
+        /* СТАРЫЙ RNG BADGE */
+        .rng-badge {
           position: absolute !important;
           bottom: 50px !important;
-          right: -31px !important;
-          width: 28px !important;
-          height: 28px !important;
+          right: -15px !important;
+          width: 30px !important;
+          height: 30px !important;
           background: #6f42c1 !important;
           border: 2px solid #fff !important;
           border-radius: 50% !important;
@@ -408,7 +266,7 @@ def show():
         .rage-flash { animation: whiteFlash 0.6s ease-out; }
         @keyframes whiteFlash { 0% { box-shadow: 0 0 50px #fff, inset 0 0 50px #fff; background: #fff; border-color: #fff; } 100% { box-shadow: 0 0 0 transparent; } }
 
-        /* ЭФФЕКТЫ GLOW (добавляем в конец, чтобы перебивали базовую тень) */
+        /* ЭФФЕКТЫ GLOW */
         .combo-glow-5 { border-color: #0dcaf0 !important; box-shadow: 0 0 10px rgba(13, 202, 240, 0.4), 0 4px 15px rgba(0,0,0,0.8) !important; }
         .combo-glow-10 { border-color: #ffc107 !important; box-shadow: 0 0 15px rgba(255, 193, 7, 0.5), 0 4px 15px rgba(0,0,0,0.8) !important; }
         .combo-glow-25 { border-color: #fd7e14 !important; box-shadow: 0 0 20px rgba(253, 126, 20, 0.6), 0 4px 15px rgba(0,0,0,0.8) !important; animation: pulse-slow 2s infinite; }
@@ -462,6 +320,8 @@ def show():
             saved["scenarios"] = sel_sc
             saved["spots"] = sel_spots_keys
             utils.save_user_settings(saved)
+            if hasattr(utils, "force_sync"):
+                utils.force_sync()
             st.session_state.hand = None; st.rerun()
 
     pool = sel_spots_keys
@@ -469,10 +329,10 @@ def show():
         st.warning("⚠️ No spots selected.")
         st.stop()
 
-    init_settings = utils.load_user_settings()
-    init_stats = init_settings.get("stats", {})
-    if 'combo' not in st.session_state: st.session_state.combo = init_stats.get("combo", 0)
-    if 'shields' not in st.session_state: st.session_state.shields = init_stats.get("shields", 0)
+    # ИНИЦИАЛИЗАЦИЯ И СИНХРОНИЗАЦИЯ КОМБО С БАЗОЙ
+    stats_data_init = utils.load_user_stats()
+    if 'combo' not in st.session_state: st.session_state.combo = stats_data_init.get("combo", 0)
+    if 'shields' not in st.session_state: st.session_state.shields = stats_data_init.get("shields", 0)
 
     if 'session_hands' not in st.session_state: st.session_state.session_hands = 0
     if 'session_correct' not in st.session_state: st.session_state.session_correct = 0
@@ -540,7 +400,7 @@ def show():
     c2 = "suit-red" if s2 == '♥' else "suit-blue" if s2 == '♦' else "suit-green" if s2 == '♣' else "suit-black"
 
     stats_data = utils.load_user_stats()
-    rank_name, next_xp = utils.get_rank_info(stats_data["xp"])
+    rank_name, next_xp = utils.get_rank_info(stats_data.get("xp", 0))
     c = st.session_state.combo
     
     sh = st.session_state.session_hands
@@ -610,7 +470,12 @@ def show():
     elif curr_mult == 5.0: grad = "linear-gradient(90deg, #dc3545, #6f42c1)"
     else: grad = "linear-gradient(90deg, #6f42c1, #ff00ff)"
 
-    header_html = f'<div style="background:#111; border-radius:10px; margin-bottom:10px; border:1px solid #333; overflow:hidden; font-family:sans-serif;"><div style="height: 3px; width: 100%; background: #222;"><div style="height: 100%; width: {wr if sh > 0 else 100}%; background: {wr_color if sh > 0 else "#444"}; transition: width 0.3s;"></div></div><div style="padding:6px 12px 0 12px; display:flex; justify-content:space-between; align-items:center;"><div style="flex:1;"><div style="font-size:13px; font-weight:bold; color:#ffc107;">{rank_name}</div><div style="font-size:10px; color:#aaa; margin-top:2px; font-weight:bold;">${stats_data["xp"]} / ${next_xp}</div></div><div style="flex:1; text-align:center;"><span style="font-size:18px; font-weight:900; color:#fff;">🔥 {c}</span><span style="font-size:14px; margin-left:8px; filter:drop-shadow(0 0 5px #0dcaf0); display:{"inline-flex" if st.session_state.shields > 0 else "none"};">🛡️x{st.session_state.shields}</span></div><div style="flex:1; text-align:right;"><div style="font-size:11px; font-weight:bold; color:#aaa;">Winrate | Hands</div><div style="font-size:13px; font-weight:bold; color:{wr_color};">{wr}% <span style="color:#aaa;">|</span> <span style="color:#fff;">{sh}</span></div></div></div></div>'
+    progress_pct = int((stats_data.get("xp", 0) / next_xp) * 100) if next_xp != "MAX" else 100
+
+    shield_display = f'<span style="font-size:14px; margin-left:8px; filter:drop-shadow(0 0 5px #0dcaf0); display:{"inline-flex" if st.session_state.shields > 0 else "none"};">🛡️x{st.session_state.shields}</span>'
+    combo_badge = f'<div style="flex:1; display:flex; justify-content:center; align-items:center;"><div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center;"><span style="font-size:18px; font-weight:900; color:#fff;">🔥 {c}</span>{shield_display}</div></div>'
+
+    header_html = f'<div style="background:#111; border-radius:10px; margin-bottom:10px; border:1px solid #333; overflow:hidden; font-family:sans-serif;"><div style="height: 3px; width: 100%; background: #222;"><div style="height: 100%; width: {wr if sh > 0 else 100}%; background: {wr_color if sh > 0 else "#444"}; transition: width 0.3s;"></div></div><div style="padding:6px 12px 0 12px; display:flex; justify-content:space-between; align-items:center;"><div style="flex:1;"><div style="font-size:13px; font-weight:bold; color:#ffc107;">{rank_name}</div><div style="background:#333; height:4px; border-radius:2px; margin-top:3px; width:100%;"><div style="background:#28a745; height:100%; width:{progress_pct}%; border-radius:2px;"></div></div></div><div style="font-size:10px; color:#aaa; margin-left:10px; font-weight:bold;">${stats_data.get("xp", 0)} / ${next_xp}</div></div><div style="display:flex; justify-content:space-between; align-items:center; padding:6px 12px;"><div style="flex:1;"><div style="font-size:11px; font-weight:bold; color:#aaa;">Winrate</div><div style="font-size:13px; font-weight:bold; color:{wr_color};">{wr}%</div></div>{combo_badge}<div style="flex:1; text-align:right;"><div style="font-size:11px; font-weight:bold; color:#aaa;">Hands</div><div style="font-size:13px; font-weight:bold; color:#fff;">{sh}</div></div></div></div>'
     
     rage_bar_html = f'''
     <div class="rage-bar-container {is_flashing}">
@@ -642,31 +507,32 @@ def show():
 
     def get_seat_style(idx):
         return {
-            1: "top: 75%; left: -2%; transform: translateY(-50%);", 
-            2: "top: 8%; left: 2%;", 
-            3: "top: -17%; left: 50%; transform: translateX(-50%);", 
-            4: "top: 8%; right: 2%;", 
-            5: "top: 75%; right: -2%; transform: translateY(-50%);"
+            0: "bottom: -20px; left: 50%; transform: translateX(-50%);", 
+            1: "bottom: 10%; left: -5%;", 
+            2: "top: 10%; left: -5%;", 
+            3: "top: -20px; left: 50%; transform: translateX(-50%);", 
+            4: "top: 10%; right: -5%;", 
+            5: "bottom: 10%; right: -5%;"
         }.get(idx, "")
 
     def get_chip_style(idx):
         return {
-            0: "bottom: 38px; left: 50%; transform: translateX(-50%);", 
-            1: "top: 63%; left: 16%; transform: translateY(-50%);", 
-            2: "top: 23%; left: 20%;",
-            3: "top: 13%; left: 50%; transform: translateX(-50%);", 
-            4: "top: 23%; right: 20%;", 
-            5: "top: 63%; right: 16%; transform: translateY(-50%);"
+            0: "bottom: 35px; left: 50%; transform: translateX(-50%);", 
+            1: "bottom: 20%; left: 10%;", 
+            2: "top: 20%; left: 10%;",
+            3: "top: 35px; left: 50%; transform: translateX(-50%);", 
+            4: "top: 20%; right: 10%;", 
+            5: "bottom: 20%; right: 10%;"
         }.get(idx, "")
 
     def get_btn_style(idx):
         return {
-            0: "bottom: 15px; left: 50%; margin-left: -85px; z-index: 35;", 
-            1: "top: 77%; left: 13%; transform: translateY(-50%);", 
-            2: "top: 25%; left: 13%;",
-            3: "top: 10%; left: 55%;", 
-            4: "top: 25%; right: 13%;", 
-            5: "top: 77%; right: 13%; transform: translateY(-50%);"
+            0: "bottom: -10px; left: 50%; margin-left: -80px; z-index: 35;", 
+            1: "bottom: 24%; left: 10%;", 
+            2: "top: 10%; left: 16%;",
+            3: "top: 10%; left: 60%;", 
+            4: "top: 10%; right: 16%;", 
+            5: "bottom: 24%; right: 10%;"
         }.get(idx, "")
 
     opp_html = ""; chips_html = ""
@@ -683,12 +549,16 @@ def show():
         bet_amount = bets_on_table.get(p)
         if bet_amount is not None:
             bet_txt = f'<div class="bet-txt">{bet_amount}bb</div>'
-            if bet_amount <= 1.0:
-                if is_3bet_pot: chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-3bet"></div>{bet_txt}</div>'
-                else: chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-mob"></div>{bet_txt}</div>'
+            
+            if bet_amount >= 15.0:
+                chip_cls = "chip-4bet"
+                chips_html += f'<div class="chip-container" style="{cs}"><div class="{chip_cls}"></div><div class="{chip_cls}" style="margin-top:-12px;"></div><div class="{chip_cls}" style="margin-top:-12px;"></div>{bet_txt}</div>'
+            elif bet_amount > 1.0:
+                chip_cls = "chip-3bet" if is_3bet_pot else "chip-mob"
+                chips_html += f'<div class="chip-container" style="{cs}"><div class="{chip_cls}"></div><div class="{chip_cls}" style="margin-top:-12px;"></div>{bet_txt}</div>'
             else:
-                if is_3bet_pot: chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-3bet"></div><div class="chip-3bet" style="margin-top:-13px;"></div>{bet_txt}</div>'
-                else: chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-mob"></div><div class="chip-mob" style="margin-top:-13px;"></div>{bet_txt}</div>'
+                chip_cls = "chip-3bet" if is_3bet_pot else "chip-mob"
+                chips_html += f'<div class="chip-container" style="{cs}"><div class="{chip_cls}"></div>{bet_txt}</div>'
         
         if p == btn_pos:
             bs = get_btn_style(i)
@@ -697,10 +567,16 @@ def show():
     hero_cs = get_chip_style(0)
     if display_hero_bet is not None: 
         bet_txt = f'<div class="bet-txt">{display_hero_bet}bb</div>'
-        if display_hero_bet <= 1.0:
-            chips_html += f'<div class="chip-container" style="{hero_cs}"><div class="chip-mob"></div>{bet_txt}</div>'
+        
+        if display_hero_bet >= 15.0:
+            chip_cls = "chip-4bet"
+            chips_html += f'<div class="chip-container" style="{hero_cs}"><div class="{chip_cls}"></div><div class="{chip_cls}" style="margin-top:-12px;"></div><div class="{chip_cls}" style="margin-top:-12px;"></div>{bet_txt}</div>'
+        elif display_hero_bet > 1.0:
+            chip_cls = "chip-3bet" if is_3bet_pot else "chip-mob"
+            chips_html += f'<div class="chip-container" style="{hero_cs}"><div class="{chip_cls}"></div><div class="{chip_cls}" style="margin-top:-12px;"></div>{bet_txt}</div>'
         else:
-            chips_html += f'<div class="chip-container" style="{hero_cs}"><div class="chip-mob"></div><div class="chip-mob" style="margin-top:-13px;"></div>{bet_txt}</div>'
+            chip_cls = "chip-3bet" if is_3bet_pot else "chip-mob"
+            chips_html += f'<div class="chip-container" style="{hero_cs}"><div class="{chip_cls}"></div>{bet_txt}</div>'
         
     if rot[0] == btn_pos:
         hero_bs = get_btn_style(0)
@@ -788,12 +664,14 @@ def show():
             if alerts: st.session_state.toast_msgs.extend(alerts)
         except Exception: pass
         
+        # СОХРАНЕНИЕ КОМБО И ЩИТОВ В ОБЛАКО (ХИТРЫЙ ОБХОД ЧЕРЕЗ STATS)
         try:
-            curr_settings = utils.load_user_settings()
-            if "stats" not in curr_settings: curr_settings["stats"] = {}
-            curr_settings["stats"]["combo"] = st.session_state.combo
-            curr_settings["stats"]["shields"] = st.session_state.shields
-            utils.save_user_settings(curr_settings)
+            curr_stats = utils.load_user_stats()
+            curr_stats["combo"] = st.session_state.combo
+            curr_stats["shields"] = st.session_state.shields
+            utils.save_user_stats(curr_stats)
+            if hasattr(utils, "force_sync"):
+                utils.force_sync()
         except Exception: pass
         
         st.rerun()
