@@ -445,10 +445,10 @@ def show():
         .mobile-game-area::after { border: 1px solid rgba(100,180,255,0.07) !important; }
         .seat::before { background: radial-gradient(circle at 38% 30%, #162840 0%, #0c1a28 60%, #060e18 100%) !important; border: 1.5px solid rgba(60,130,200,0.22) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 7px rgba(60,130,200,0.1), inset 0 1px 3px rgba(255,255,255,0.05) !important; }
         .seat-active::before { border-color: rgba(60,160,255,0.75) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 16px rgba(60,160,255,0.4), 0 0 28px rgba(60,160,255,0.15), inset 0 1px 3px rgba(255,255,255,0.08) !important; animation: pulse-seat 2.8s ease-in-out infinite !important; }
-        @keyframes pulse-seat { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 12px rgba(60,160,255,0.32), inset 0 1px 3px rgba(255,255,255,0.08); } 50% { box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 24px rgba(60,160,255,0.6), 0 0 40px rgba(60,160,255,0.22), inset 0 1px 3px rgba(255,255,255,0.08); } }
+        @keyframes pulse-seat { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 12px rgba(60,160,255,0.32), inset 0 1px 3px rgba(255,255,255,0.08); } 50%      { box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 24px rgba(60,160,255,0.6), 0 0 40px rgba(60,160,255,0.22), inset 0 1px 3px rgba(255,255,255,0.08); } }
         .card-mob { background: #f8faff !important; border: 1px solid rgba(255,255,255,0.85) !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -6px 16px rgba(0,0,0,0.7), 0 -12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1) !important; }
         .card-mob::after { background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; }
-        .suit-red { color: #c00a0a !important; }
+        .suit-red   { color: #c00a0a !important; }
         .suit-black { color: #0a0a0a !important; }
         </style>"""
     elif visual_rank == 3:
@@ -460,10 +460,10 @@ def show():
         .mobile-game-area::after { border: 1px solid rgba(200,120,60,0.08) !important; }
         .seat::before { background: radial-gradient(circle at 38% 30%, #3a1c10 0%, #221008 60%, #0f0804 100%) !important; border: 1.5px solid rgba(180,110,40,0.28) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 8px rgba(180,110,40,0.1), inset 0 1px 3px rgba(255,255,255,0.06) !important; }
         .seat-active::before { border-color: rgba(210,150,50,0.85) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 16px rgba(210,150,50,0.45), 0 0 28px rgba(210,150,50,0.18), inset 0 1px 3px rgba(255,255,255,0.09) !important; animation: pulse-seat 2.6s ease-in-out infinite !important; }
-        @keyframes pulse-seat { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 12px rgba(210,150,50,0.38), inset 0 1px 3px rgba(255,255,255,0.09); } 50% { box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 24px rgba(210,150,50,0.65), 0 0 38px rgba(210,150,50,0.22), inset 0 1px 3px rgba(255,255,255,0.09); } }
+        @keyframes pulse-seat { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 12px rgba(210,150,50,0.38), inset 0 1px 3px rgba(255,255,255,0.09); } 50%      { box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 24px rgba(210,150,50,0.65), 0 0 38px rgba(210,150,50,0.22), inset 0 1px 3px rgba(255,255,255,0.09); } }
         .card-mob { background: linear-gradient(145deg, #f5f0e8 0%, #ede5d4 100%) !important; border: 1px solid rgba(210,175,110,0.7) !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.15), 0 -6px 16px rgba(0,0,0,0.65), 0 -12px 28px rgba(0,0,0,0.38), 0 0 14px rgba(200,150,60,0.12), inset 0 1px 0 rgba(255,255,255,0.9) !important; }
         .card-mob::after { background: linear-gradient(135deg, rgba(255,240,200,0.5) 0%, rgba(220,190,130,0.1) 50%, transparent 100%) !important; }
-        .suit-red { color: #a80808 !important; }
+        .suit-red   { color: #a80808 !important; }
         .suit-black { color: #1a0a04 !important; }
         </style>"""
     elif visual_rank == 4:
@@ -475,10 +475,10 @@ def show():
         .mobile-game-area::after { border: 1px solid rgba(160,100,255,0.09) !important; }
         .seat::before { background: radial-gradient(circle at 38% 30%, #2a1840 0%, #180e28 60%, #0a0812 100%) !important; border: 1.5px solid rgba(160,130,220,0.28) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.68), 0 0 8px rgba(160,130,220,0.1), inset 0 1px 3px rgba(255,255,255,0.06) !important; }
         .seat-active::before { border-color: rgba(190,160,255,0.85) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.68), 0 0 18px rgba(170,130,255,0.5), 0 0 32px rgba(170,130,255,0.2), inset 0 1px 3px rgba(255,255,255,0.09) !important; animation: pulse-seat 2.4s ease-in-out infinite !important; }
-        @keyframes pulse-seat { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.68), 0 0 14px rgba(170,130,255,0.4), inset 0 1px 3px rgba(255,255,255,0.09); } 50% { box-shadow: 0 0 0 3px rgba(0,0,0,0.68), 0 0 26px rgba(190,150,255,0.68), 0 0 44px rgba(170,130,255,0.26), inset 0 1px 3px rgba(255,255,255,0.09); } }
+        @keyframes pulse-seat { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.68), 0 0 14px rgba(170,130,255,0.4), inset 0 1px 3px rgba(255,255,255,0.09); } 50%      { box-shadow: 0 0 0 3px rgba(0,0,0,0.68), 0 0 26px rgba(190,150,255,0.68), 0 0 44px rgba(170,130,255,0.26), inset 0 1px 3px rgba(255,255,255,0.09); } }
         .card-mob { background: linear-gradient(150deg, #2a2a32 0%, #1e1e26 100%) !important; border: 1px solid rgba(200,190,230,0.3) !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 -6px 16px rgba(0,0,0,0.75), 0 -12px 28px rgba(0,0,0,0.5), 0 0 16px rgba(160,130,255,0.14), inset 0 1px 0 rgba(255,255,255,0.12) !important; }
         .card-mob::after { background: linear-gradient(135deg, rgba(220,210,255,0.18) 0%, rgba(180,160,240,0.05) 40%, transparent 100%) !important; }
-        .suit-red { color: #ff4466 !important; }
+        .suit-red   { color: #ff4466 !important; }
         .suit-black { color: #d0c8f0 !important; }
         </style>"""
     else:
@@ -490,10 +490,10 @@ def show():
         .mobile-game-area::after { border: 1px solid rgba(200,168,60,0.12) !important; }
         .seat::before { background: radial-gradient(circle at 38% 30%, #1c1a10 0%, #111008 60%, #080806 100%) !important; border: 1.5px solid rgba(190,158,50,0.3) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.7), 0 0 8px rgba(190,158,50,0.1), inset 0 1px 3px rgba(255,255,255,0.06) !important; }
         .seat-active::before { border-color: rgba(220,188,70,0.95) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.7), 0 0 18px rgba(220,188,70,0.55), 0 0 36px rgba(200,165,40,0.22), inset 0 1px 3px rgba(255,255,255,0.1) !important; animation: pulse-seat 2.2s ease-in-out infinite !important; }
-        @keyframes pulse-seat { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.7), 0 0 14px rgba(220,188,70,0.45), inset 0 1px 3px rgba(255,255,255,0.1); } 50% { box-shadow: 0 0 0 3px rgba(0,0,0,0.7), 0 0 28px rgba(240,205,80,0.75), 0 0 50px rgba(220,185,50,0.28), inset 0 1px 3px rgba(255,255,255,0.1); } }
+        @keyframes pulse-seat { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.7), 0 0 14px rgba(220,188,70,0.45), inset 0 1px 3px rgba(255,255,255,0.1); } 50%      { box-shadow: 0 0 0 3px rgba(0,0,0,0.7), 0 0 28px rgba(240,205,80,0.75), 0 0 50px rgba(220,185,50,0.28), inset 0 1px 3px rgba(255,255,255,0.1); } }
         .card-mob { background: linear-gradient(150deg, #1a1a18 0%, #111110 100%) !important; border: 1px solid rgba(210,180,70,0.38) !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.6), 0 -6px 16px rgba(0,0,0,0.8), 0 -12px 30px rgba(0,0,0,0.55), 0 0 18px rgba(200,168,50,0.18), inset 0 1px 0 rgba(255,255,255,0.07) !important; }
         .card-mob::after { background: linear-gradient(135deg, rgba(240,210,90,0.16) 0%, rgba(200,168,50,0.04) 40%, transparent 100%) !important; }
-        .suit-red { color: #ff3355 !important; }
+        .suit-red   { color: #ff3355 !important; }
         .suit-black { color: #e8e0c8 !important; }
         </style>"""
         
@@ -529,8 +529,8 @@ def show():
         rage_pct = int((c - prev_req) / (next_req - prev_req) * 100)
         lbl_left = f"x{curr_mult}"; lbl_right = f"x{next_mult}"
 
-    is_pulsing = "rage-pulse" if rage_pct >= 95 and next_mult != "MAX" else ""
-    is_flashing = "rage-flash" if st.session_state.pop("just_leveled_up", False) else ""
+    is_pulsing = "pulsing" if rage_pct >= 95 and next_mult != "MAX" else ""
+    is_flashing = "flashing" if st.session_state.pop("just_leveled_up", False) else ""
     
     if curr_mult == 1.0: grad = "linear-gradient(90deg, #17a2b8, #0dcaf0)"
     elif curr_mult == 1.5: grad = "linear-gradient(90deg, #0dcaf0, #28a745)"
@@ -580,7 +580,7 @@ def show():
         f'<div style="'
         f'background:rgba(8,9,11,0.97);'
         f'border-radius:16px;'
-        f'margin-top:0px;margin-bottom:2px;'
+        f'margin-top:-5px;margin-bottom:5px;'
         f'border:1px solid rgba(255,255,255,0.06);'
         f'overflow:hidden;'
         f'font-family:-apple-system,BlinkMacSystemFont,\'SF Pro Display\',\'Helvetica Neue\',sans-serif;'
