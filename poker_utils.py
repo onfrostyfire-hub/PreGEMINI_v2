@@ -456,6 +456,24 @@ def load_ranges():
                 except Exception as e: st.error(f"Read error {file}: {e}")
     return db
 
+@st.cache_data(ttl=0)
+def load_postflop_ranges():
+    db = {}
+    pf_dir = 'postflop_data' if os.path.exists('postflop_data') else SPOTS_DIR
+    if not os.path.exists(pf_dir): return db
+    for file in os.listdir(pf_dir):
+        if file.endswith('.json'):
+            with open(os.path.join(pf_dir, file), 'r', encoding='utf-8') as f:
+                try:
+                    data = json.load(f)
+                    src = data.get("source", "Unknown")
+                    sc = data.get("scenario", "Unknown")
+                    if src not in db: db[src] = {}
+                    if sc not in db[src]: db[src][sc] = {}
+                    db[src][sc].update(data.get("spots", {}))
+                except Exception as e: st.error(f"Read error {file}: {e}")
+    return db
+
 ALL_HANDS = []
 for i, r1 in enumerate(RANKS):
     for j, r2 in enumerate(RANKS):
