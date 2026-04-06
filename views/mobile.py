@@ -206,8 +206,8 @@ def show():
           align-items: flex-end !important;
         }
         .opp-card-mob {
-          width: 20px !important;
-          height: 30px !important;
+          width: 14px !important;
+          height: 20px !important;
           border-radius: 3px !important;
           position: relative !important;
           background:
@@ -262,7 +262,7 @@ def show():
           align-items: center !important;
           gap: 3px !important;
         }
-        .chip-mob, .chip-3bet, .chip-4bet {
+        .chip-mob, .chip-3bet {
           width: 15px !important;
           height: 15px !important;
           border-radius: 50% !important;
@@ -277,17 +277,16 @@ def show():
             0 0 8px rgba(212,48,48,0.3),
             inset 0 1px 3px rgba(255,255,255,0.22) !important;
         }
-        .chip-3bet { background: radial-gradient(circle at 36% 30%, #f23426, #9e3211) !important; }
-        .chip-4bet { background: repeating-conic-gradient(rgba(255,255,255,0.15) 0deg 18deg, transparent 18deg 36deg), radial-gradient(circle at 36% 30%, #68158e, #3F055B) !important; }
+        .chip-3bet { background: radial-gradient(circle at 36% 30%, #ff5722, #9e3211) !important; }
         
-        .chip-mob::before, .chip-3bet::before, .chip-4bet::before {
+        .chip-mob::before, .chip-3bet::before {
           content: '' !important;
           position: absolute !important;
           inset: 5px !important;
           border-radius: 50% !important;
           border: 1px solid rgba(255,255,255,0.12) !important;
         }
-        .chip-mob::after, .chip-3bet::after, .chip-4bet::after {
+        .chip-mob::after, .chip-3bet::after {
           content: '' !important;
           position: absolute !important;
           top: 3px !important; left: 3px !important;
@@ -470,8 +469,11 @@ def show():
         st.warning("⚠️ No spots selected.")
         st.stop()
 
-    if 'combo' not in st.session_state: st.session_state.combo = 0
-    if 'shields' not in st.session_state: st.session_state.shields = 0
+    init_settings = utils.load_user_settings()
+    init_stats = init_settings.get("stats", {})
+    if 'combo' not in st.session_state: st.session_state.combo = init_stats.get("combo", 0)
+    if 'shields' not in st.session_state: st.session_state.shields = init_stats.get("shields", 0)
+
     if 'session_hands' not in st.session_state: st.session_state.session_hands = 0
     if 'session_correct' not in st.session_state: st.session_state.session_correct = 0
     
@@ -681,9 +683,7 @@ def show():
         bet_amount = bets_on_table.get(p)
         if bet_amount is not None:
             bet_txt = f'<div class="bet-txt">{bet_amount}bb</div>'
-            if bet_amount >= 15.0:
-                chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-4bet"></div><div class="chip-4bet" style="margin-top:-13px;"></div><div class="chip-4bet" style="margin-top:-13px;"></div>{bet_txt}</div>'
-            elif bet_amount <= 1.0:
+            if bet_amount <= 1.0:
                 if is_3bet_pot: chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-3bet"></div>{bet_txt}</div>'
                 else: chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-mob"></div>{bet_txt}</div>'
             else:
@@ -697,9 +697,7 @@ def show():
     hero_cs = get_chip_style(0)
     if display_hero_bet is not None: 
         bet_txt = f'<div class="bet-txt">{display_hero_bet}bb</div>'
-        if display_hero_bet >= 15.0:
-            chips_html += f'<div class="chip-container" style="{hero_cs}"><div class="chip-4bet"></div><div class="chip-4bet" style="margin-top:-13px;"></div><div class="chip-4bet" style="margin-top:-13px;"></div>{bet_txt}</div>'
-        elif display_hero_bet <= 1.0:
+        if display_hero_bet <= 1.0:
             chips_html += f'<div class="chip-container" style="{hero_cs}"><div class="chip-mob"></div>{bet_txt}</div>'
         else:
             chips_html += f'<div class="chip-container" style="{hero_cs}"><div class="chip-mob"></div><div class="chip-mob" style="margin-top:-13px;"></div>{bet_txt}</div>'
@@ -774,9 +772,28 @@ def show():
             st.session_state.just_leveled_up = True
 
         try:
-            alerts, reward_val = utils.process_gamification(corr, st.session_state.combo, st.session_state.session_hands, st.session_state.current_spot_key, shield_used=shield_used)
-            st.session_state.anim_reward = reward_val
+            import inspect
+            sig = inspect.signature(utils.process_gamification)
+            if 'shield_used' in sig.parameters:
+                res = utils.process_gamification(corr, st.session_state.combo, st.session_state.session_hands, st.session_state.current_spot_key, shield_used=shield_used)
+            else:
+                res = utils.process_gamification(corr, st.session_state.combo, st.session_state.session_hands, st.session_state.current_spot_key)
+            
+            if isinstance(res, tuple):
+                alerts = res[0]
+                st.session_state.anim_reward = res[1]
+            else:
+                alerts = res
+                
             if alerts: st.session_state.toast_msgs.extend(alerts)
+        except Exception: pass
+        
+        try:
+            curr_settings = utils.load_user_settings()
+            if "stats" not in curr_settings: curr_settings["stats"] = {}
+            curr_settings["stats"]["combo"] = st.session_state.combo
+            curr_settings["stats"]["shields"] = st.session_state.shields
+            utils.save_user_settings(curr_settings)
         except Exception: pass
         
         st.rerun()
