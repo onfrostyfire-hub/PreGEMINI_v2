@@ -23,8 +23,8 @@ def show():
         details[data-testid="stExpanderDetails"] { margin-bottom: 0 !important; }
 
         /* 4. КНОПКИ ДЕЙСТВИЙ */
-        div[data-testid="stHorizontalBlock"] { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(10px, 1fr)) !important; gap: 8px !important; width: 100% !important; }
-        div[data-testid="column"], div[data-testid="stColumn"] { width: 100% !important; min-width: 0 !important; max-width: 100% !important; margin-bottom: 0 !important; }
+        div[data-testid="stHorizontalBlock"] { display: flex !important; flex-direction: row !important; width: 100% !important; gap: 10px !important; padding: 0 5px !important; }
+        div[data-testid="column"], div[data-testid="stColumn"] { flex: 1 1 0px !important; width: 100% !important; min-width: 0 !important; margin-bottom: 0 !important; }
         div[data-testid="stButton"] { width: 100% !important; padding-bottom: 15px !important; }
         
         /* Базовый сброс и размеры — одинаковы для всех кнопок */
