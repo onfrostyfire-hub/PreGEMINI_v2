@@ -6,21 +6,23 @@ import poker_utils as utils
 def show():
     st.markdown("""
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Roboto:wght@500;700;900&display=swap');
 
-        /* ПРИЖИМАЕМ К ВЕРХУ ЭКРАНА */
+        /* 1. ПОДНИМАЕМ ВСЁ ВВЕРХ И УБИРАЕМ СКРЫТЫЕ ОТСТУПЫ */
         .block-container { padding-top: 0.2rem !important; padding-bottom: 0.5rem !important; max-width: 100% !important; overflow-x: hidden !important; }
-        
-        /* СЖИМАЕМ ПЛАШКУ ФИЛЬТРОВ */
-        [data-testid="stExpander"] { margin-top: 0 !important; margin-bottom: 0 !important; }
-        [data-testid="stExpander"] summary { padding-top: 2px !important; padding-bottom: 2px !important; min-height: 2rem !important; }
-        [data-testid="stExpander"] summary p { font-size: 13px !important; margin-bottom: 0 !important; }
-        div[data-testid="stExpanderDetails"] { padding-top: 0 !important; }
-
-        /* УБИВАЕМ СКРЫТЫЕ ДЫРЫ STREAMLIT */
-        div[data-testid="stVerticalBlock"] > div { padding-top: 0 !important; padding-bottom: 0 !important; margin-bottom: 0 !important; }
         div.element-container { margin-bottom: 0 !important; }
-        
+        div[data-testid="stVerticalBlock"] > div { padding-top: 0 !important; padding-bottom: 0 !important; margin-bottom: 0 !important; }
+
+        /* 2. СЖИМАЕМ МЕНЮ ИЗ app.py СТРОГО В ОДНУ СТРОКУ */
+        div[role="radiogroup"] { flex-wrap: nowrap !important; gap: 2px !important; justify-content: center !important; margin-bottom: -15px !important; }
+        div[role="radiogroup"] label { padding: 4px 8px !important; min-height: 20px !important; }
+        div[role="radiogroup"] label p { font-size: 12px !important; white-space: nowrap !important; }
+
+        /* 3. СЖИМАЕМ ЭКСПАНДЕР (Spot Filters) И ОТСТУПЫ ВОКРУГ НЕГО */
+        div[data-testid="stExpander"] { margin-top: -10px !important; margin-bottom: -5px !important; }
+        details[data-testid="stExpanderDetails"] { margin-bottom: 0 !important; }
+
+        /* 4. КНОПКИ ДЕЙСТВИЙ */
         div[data-testid="stHorizontalBlock"] { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(10px, 1fr)) !important; gap: 8px !important; width: 100% !important; }
         div[data-testid="column"] { width: 100% !important; min-width: 0 !important; max-width: 100% !important; margin-bottom: 0 !important; }
         div[data-testid="stButton"] { width: 100% !important; }
@@ -29,7 +31,7 @@ def show():
         div[data-testid="stButton"] button p { font-family: 'Roboto', sans-serif !important; font-size: 15px !important; font-weight: 900 !important; margin: 0 !important; letter-spacing: 0.5px !important; text-transform: uppercase !important; color: #ffffff !important; }
 
         /* ═══════════════════════════════════════════
-           CARBON NOIR v3 — Production CSS
+           БАЗОВЫЕ СТИЛИ (Дизайн переопределяется ниже)
            ═══════════════════════════════════════════ */
 
         .mobile-game-area {
@@ -37,7 +39,7 @@ def show():
           width: 100% !important;
           max-width: 390px !important;
           height: 250px !important;
-          margin: 15px auto 45px auto !important;
+          margin: 50px auto 55px auto !important; /* ЕЩЕ СИЛЬНЕЕ УБРАЛ ПУСТОТУ НАД СТОЛОМ */
           border-radius: 125px !important;
           overflow: visible !important;
           background:
@@ -254,6 +256,244 @@ def show():
           z-index: 40 !important;
         }
 
+        /* ── Carbon Noir: stats header ── */
+        .cn-mob-header {
+          margin-top: -15px;
+          margin-bottom: 2px;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+          -webkit-font-smoothing: antialiased;
+          border-radius: 14px;
+          overflow: hidden;
+          position: relative;
+          background: linear-gradient(165deg, rgba(18,22,28,0.92) 0%, rgba(8,10,14,0.96) 100%);
+          border: 1px solid rgba(255,255,255,0.08);
+          box-shadow:
+            0 1px 0 rgba(255,255,255,0.06) inset,
+            0 8px 32px rgba(0,0,0,0.55),
+            0 0 0 1px rgba(0,0,0,0.4);
+          backdrop-filter: blur(18px);
+          -webkit-backdrop-filter: blur(18px);
+        }
+        .cn-mob-header::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: 14px;
+          pointer-events: none;
+          background: linear-gradient(125deg, rgba(255,255,255,0.07) 0%, transparent 42%, transparent 58%, rgba(255,255,255,0.03) 100%);
+          z-index: 0;
+        }
+        .cn-mob-wr-track {
+          height: 3px;
+          width: 100%;
+          background: rgba(0,0,0,0.45);
+          position: relative;
+          z-index: 1;
+        }
+        .cn-mob-wr-fill {
+          height: 100%;
+          transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 0 12px currentColor;
+        }
+        .cn-mob-inner { position: relative; z-index: 1; padding: 8px 10px 9px; }
+        .cn-mob-row1 {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 8px;
+          margin-bottom: 6px;
+        }
+        .cn-mob-rank {
+          font-size: 11px;
+          font-weight: 800;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          color: rgba(255,214,120,0.95);
+          text-shadow: 0 0 20px rgba(255,200,80,0.25);
+          line-height: 1.15;
+        }
+        .cn-mob-xp-meta {
+          font-size: 9px;
+          font-weight: 700;
+          font-variant-numeric: tabular-nums;
+          color: rgba(180,190,205,0.85);
+          white-space: nowrap;
+          letter-spacing: 0.02em;
+        }
+        .cn-mob-xp-bar-wrap {
+          flex: 1;
+          min-width: 0;
+          margin-top: 3px;
+        }
+        .cn-mob-xp-bar-bg {
+          height: 4px;
+          border-radius: 4px;
+          background: rgba(0,0,0,0.5);
+          box-shadow: inset 0 1px 3px rgba(0,0,0,0.6);
+          overflow: hidden;
+        }
+        .cn-mob-xp-bar-fill {
+          height: 100%;
+          border-radius: 4px;
+          background: linear-gradient(90deg, #1a7a4a, #2ee88a);
+          box-shadow: 0 0 10px rgba(46,232,138,0.45);
+          transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .cn-mob-row2 {
+          display: flex;
+          align-items: stretch;
+          justify-content: space-between;
+          gap: 6px;
+          margin-top: 2px;
+        }
+        .cn-mob-stat {
+          flex: 1;
+          min-width: 0;
+        }
+        .cn-mob-stat-label {
+          font-size: 8px;
+          font-weight: 700;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+          color: rgba(140,150,165,0.75);
+          margin-bottom: 1px;
+        }
+        .cn-mob-stat-val {
+          font-size: 13px;
+          font-weight: 800;
+          font-variant-numeric: tabular-nums;
+          letter-spacing: -0.02em;
+          line-height: 1.1;
+        }
+        .cn-mob-stat-val.light { color: rgba(245,248,252,0.98); }
+        .cn-mob-combo-wrap {
+          flex: 1.15;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-width: 0;
+        }
+        .cn-mob-combo-pill {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 4px;
+          padding: 3px 11px 3px 9px;
+          border-radius: 999px;
+          background: linear-gradient(145deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.02) 100%);
+          border: 1px solid rgba(255,255,255,0.12);
+          box-shadow:
+            0 1px 0 rgba(255,255,255,0.08) inset,
+            0 4px 16px rgba(0,0,0,0.35);
+        }
+        .cn-mob-combo-fire {
+          font-size: 14px;
+          font-weight: 900;
+          color: #fff;
+          text-shadow: 0 0 18px rgba(255,120,40,0.55);
+          letter-spacing: -0.03em;
+        }
+        .cn-mob-shield {
+          font-size: 11px;
+          margin-left: 2px;
+          font-weight: 800;
+          color: rgba(120,230,255,0.95);
+          filter: drop-shadow(0 0 6px rgba(0,200,255,0.55));
+          align-items: center;
+          gap: 2px;
+        }
+
+        /* ── Rage bar: neon glass tube ── */
+        .rage-bar-container {
+          width: 100%;
+          max-width: 700px;
+          margin: 0 auto 5px auto;
+          height: 26px;
+          border-radius: 999px;
+          position: relative;
+          display: flex;
+          align-items: stretch;
+          padding: 3px;
+          background: linear-gradient(180deg, rgba(12,14,20,0.95) 0%, rgba(6,8,12,0.98) 100%);
+          border: 1px solid rgba(255,255,255,0.1);
+          box-shadow:
+            0 0 0 1px rgba(0,0,0,0.5),
+            0 4px 20px rgba(0,0,0,0.55),
+            inset 0 2px 6px rgba(0,0,0,0.65),
+            inset 0 -1px 0 rgba(255,255,255,0.05);
+          overflow: hidden;
+        }
+        .rage-bar-container::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          pointer-events: none;
+          background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%);
+          z-index: 3;
+        }
+        .rage-bar-fill {
+          height: 100%;
+          border-radius: 999px;
+          transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+          position: relative;
+          overflow: hidden;
+          min-width: 0;
+          box-shadow:
+            inset 0 2px 8px rgba(255,255,255,0.35),
+            inset 0 -3px 8px rgba(0,0,0,0.45),
+            0 0 20px rgba(255,255,255,0.12);
+        }
+        .rage-bar-fill::before, .rage-bar-fill::after {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background-image:
+            radial-gradient(circle, rgba(255,255,255,0.85) 1px, transparent 2px),
+            radial-gradient(circle, rgba(255,255,255,0.45) 2px, transparent 3px),
+            radial-gradient(circle, rgba(255,255,255,0.35) 1px, transparent 2px);
+          z-index: 1;
+          pointer-events: none;
+        }
+        .rage-bar-fill::before { background-size: 18px 22px, 32px 36px, 14px 18px; animation: bubbleRise1 1.15s infinite linear; opacity: 0.85; }
+        .rage-bar-fill::after { background-size: 22px 28px, 40px 46px, 20px 24px; animation: bubbleRise2 1.65s infinite linear; opacity: 0.45; }
+        @keyframes bubbleRise1 { 0% { background-position: 0px 22px, 0px 36px, 0px 18px; } 50% { background-position: 5px 11px, -5px 18px, 3px 9px; } 100% { background-position: 0px 0px, 0px 0px, 0px 0px; } }
+        @keyframes bubbleRise2 { 0% { background-position: 0px 28px, 0px 46px, 0px 24px; } 50% { background-position: -6px 14px, 6px 22px, -4px 12px; } 100% { background-position: 0px 0px, 0px 0px, 0px 0px; } }
+        .rage-labels {
+          position: absolute;
+          left: 0; right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0 14px;
+          pointer-events: none;
+          z-index: 4;
+          font-family: 'Inter', system-ui, sans-serif;
+          font-weight: 800;
+          font-size: 11px;
+          font-variant-numeric: tabular-nums;
+          letter-spacing: 0.02em;
+          color: rgba(255,255,255,0.98);
+          text-shadow:
+            0 1px 2px rgba(0,0,0,0.95),
+            0 0 12px rgba(0,0,0,0.8),
+            0 0 1px rgba(0,0,0,1);
+        }
+        .rage-pulse {
+          animation: ragePulseNeon 0.45s ease-in-out infinite alternate;
+        }
+        @keyframes ragePulseNeon {
+          0% { filter: brightness(1) saturate(1); box-shadow: inset 0 2px 8px rgba(255,255,255,0.3), 0 0 8px rgba(255,60,80,0.35); }
+          100% { filter: brightness(1.15) saturate(1.2); box-shadow: inset 0 2px 12px rgba(255,255,255,0.5), 0 0 22px rgba(255,80,100,0.65), 0 0 40px rgba(255,40,60,0.25); }
+        }
+        .rage-flash { animation: rageTubeFlash 0.65s ease-out; }
+        @keyframes rageTubeFlash {
+          0% { box-shadow: 0 0 0 1px rgba(255,255,255,0.9), 0 0 40px rgba(255,255,255,0.8), inset 0 0 30px rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.65); }
+          100% { box-shadow: 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65); border-color: rgba(255,255,255,0.1); }
+        }
+
         .combo-glow-5 { border-color: #0dcaf0 !important; box-shadow: 0 0 10px rgba(13, 202, 240, 0.4), 0 4px 15px rgba(0,0,0,0.8) !important; }
         .combo-glow-10 { border-color: #ffc107 !important; box-shadow: 0 0 15px rgba(255, 193, 7, 0.5), 0 4px 15px rgba(0,0,0,0.8) !important; }
         .combo-glow-25 { border-color: #fd7e14 !important; box-shadow: 0 0 20px rgba(253, 126, 20, 0.6), 0 4px 15px rgba(0,0,0,0.8) !important; animation: pulse-slow 2s infinite; }
@@ -425,76 +665,116 @@ def show():
         m_icon = "🌱"
         m_name = "Rookie I"
         table_css = """<style>
-        .mobile-game-area { background: radial-gradient(ellipse 50% 38% at 50% 44%, rgba(30,55,38,0.5) 0%, transparent 68%), radial-gradient(ellipse 90% 80% at 50% 50%, #1a2e20 0%, #111e16 55%, #090e0b 100%) !important; box-shadow: 0 0 0 8px #0e1410, 0 0 0 13px #182219, 0 0 0 17px #0b100d, 0 0 40px 6px rgba(0,0,0,0.9), inset 0 2px 16px rgba(255,255,255,0.02), inset 0 -3px 10px rgba(0,0,0,0.45) !important; }
+        .mobile-game-area { background: radial-gradient(ellipse 50% 38% at 50% 44%, rgba(30,55,38,0.5) 0%, transparent 68%), radial-gradient(ellipse 90% 80% at 50% 50%, #1a2e20 0%, #111e16 55%, #090e0b 100%) !important; box-shadow: 0 0 0 8px #0e1410, 0 0 0 13px #182219, 0 0 0 17px #0b100d, 0 0 40px 6px rgba(0,0,0,0.9), inset 0 2px 16px rgba(255,255,255,0.02) !important; }
         .mobile-game-area::before { background: repeating-linear-gradient(45deg,  rgba(255,255,255,0.008) 0px, rgba(255,255,255,0.008) 1px, transparent 1px, transparent 10px), repeating-linear-gradient(-45deg, rgba(255,255,255,0.008) 0px, rgba(255,255,255,0.008) 1px, transparent 1px, transparent 10px) !important; }
         .mobile-game-area::after { border: 1px solid rgba(255,255,255,0.04) !important; }
-        .seat::before { background: radial-gradient(circle at 38% 30%, #1a2d21 0%, #0e1a12 60%, #080d0a 100%) !important; border: 1.5px solid rgba(120,160,130,0.18) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.6), 0 0 4px rgba(120,160,130,0.06), inset 0 1px 2px rgba(255,255,255,0.04) !important; }
-        .seat-active::before { border-color: rgba(120,180,140,0.5) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.6), 0 0 8px rgba(120,180,140,0.22), inset 0 1px 2px rgba(255,255,255,0.05) !important; animation: pulse-seat 3s ease-in-out infinite !important; }
-        @keyframes pulse-seat { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.6), 0 0 6px rgba(120,180,140,0.18), inset 0 1px 2px rgba(255,255,255,0.05); } 50% { box-shadow: 0 0 0 3px rgba(0,0,0,0.6), 0 0 14px rgba(120,180,140,0.35), inset 0 1px 2px rgba(255,255,255,0.05); } }
+        .seat::before { background: radial-gradient(circle at 38% 30%, #1a2d21 0%, #0e1a12 60%, #080d0a 100%) !important; border: 1.5px solid rgba(120,160,130,0.18) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255,255,255,0.04) !important; }
+        .seat::after { background: rgba(255,255,255,0.06) !important; box-shadow: 0 8px 0 rgba(255,255,255,0.04) !important; }
+        .seat-active::before { border-color: rgba(120,180,140,0.55) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.6), 0 0 10px rgba(120,180,140,0.28) !important; animation: r1-pulse 3s ease-in-out infinite !important; }
+        @keyframes r1-pulse { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.6), 0 0 7px rgba(120,180,140,0.22); } 50% { box-shadow: 0 0 0 3px rgba(0,0,0,0.6), 0 0 16px rgba(120,180,140,0.42); } }
+        .seat-label { color: rgba(140,190,155,0.45) !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95) !important; }
+        .mob-info-spot { color: rgba(140,185,155,0.4) !important; text-shadow: 0 1px 4px rgba(0,0,0,0.95) !important; }
+        .mastery-badge { background: rgba(120,180,140,0.07) !important; border: 1px solid rgba(120,180,140,0.18) !important; color: rgba(130,190,150,0.8) !important; }
+        .mastery-bar-fill { background: linear-gradient(90deg, #6ab880, #4a9060) !important; }
+        .hands-left-mob { color: rgba(110,165,130,0.35) !important; }
+        .floating-reward { color: #6ab880 !important; text-shadow: 0 0 10px rgba(106,184,128,0.6) !important; }
         .card-mob { background: #f8faff !important; border: 1px solid rgba(255,255,255,0.85) !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -6px 16px rgba(0,0,0,0.7), 0 -12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1) !important; }
         .card-mob::after { background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; }
         .suit-red { color: #c00a0a !important; }
         .suit-black { color: #0a0a0a !important; }
+        .rng-badge { color: rgba(130,190,150,0.8) !important; background: rgba(120,180,140,0.08) !important; border: 1.5px solid rgba(120,180,140,0.25) !important; }
         </style>"""
     elif visual_rank == 2:
         m_icon = "💎"
         m_name = "Advanced II"
         table_css = """<style>
-        .mobile-game-area { background: radial-gradient(ellipse 55% 40% at 50% 40%, rgba(10,50,80,0.6) 0%, transparent 70%), radial-gradient(ellipse 88% 78% at 50% 50%, #0b3040 0%, #071e2e 58%, #030e18 100%) !important; box-shadow: 0 0 0 8px #081420, 0 0 0 13px #0f2234, 0 0 0 17px #060e17, 0 0 0 30px 5px rgba(0,80,140,0.04), 0 0 50px 8px rgba(0,0,0,0.92), inset 0 2px 18px rgba(255,255,255,0.025), inset 0 -3px 10px rgba(0,0,0,0.5) !important; }
+        .mobile-game-area { background: radial-gradient(ellipse 55% 40% at 50% 40%, rgba(10,50,80,0.6) 0%, transparent 70%), radial-gradient(ellipse 88% 78% at 50% 50%, #0b3040 0%, #071e2e 58%, #030e18 100%) !important; box-shadow: 0 0 0 8px #081420, 0 0 0 13px #0f2234, 0 0 0 17px #060e17, 0 0 50px 8px rgba(0,0,0,0.92), inset 0 2px 18px rgba(255,255,255,0.025) !important; }
         .mobile-game-area::before { background: repeating-linear-gradient(45deg,  rgba(100,180,255,0.012) 0px, rgba(100,180,255,0.012) 1px, transparent 1px, transparent 10px), repeating-linear-gradient(-45deg, rgba(100,180,255,0.012) 0px, rgba(100,180,255,0.012) 1px, transparent 1px, transparent 10px) !important; }
         .mobile-game-area::after { border: 1px solid rgba(100,180,255,0.07) !important; }
         .seat::before { background: radial-gradient(circle at 38% 30%, #162840 0%, #0c1a28 60%, #060e18 100%) !important; border: 1.5px solid rgba(60,130,200,0.22) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 7px rgba(60,130,200,0.1), inset 0 1px 3px rgba(255,255,255,0.05) !important; }
-        .seat-active::before { border-color: rgba(60,160,255,0.75) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 16px rgba(60,160,255,0.4), 0 0 28px rgba(60,160,255,0.15), inset 0 1px 3px rgba(255,255,255,0.08) !important; animation: pulse-seat 2.8s ease-in-out infinite !important; }
-        @keyframes pulse-seat { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 12px rgba(60,160,255,0.32), inset 0 1px 3px rgba(255,255,255,0.08); } 50%      { box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 24px rgba(60,160,255,0.6), 0 0 40px rgba(60,160,255,0.22), inset 0 1px 3px rgba(255,255,255,0.08); } }
+        .seat::after { background: rgba(255,255,255,0.065) !important; box-shadow: 0 8px 0 rgba(255,255,255,0.045) !important; }
+        .seat-active::before { border-color: rgba(60,160,255,0.78) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 16px rgba(60,160,255,0.42), 0 0 28px rgba(60,160,255,0.16) !important; animation: r2-pulse 2.8s ease-in-out infinite !important; }
+        @keyframes r2-pulse { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 12px rgba(60,160,255,0.34); } 50% { box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 24px rgba(60,160,255,0.62), 0 0 40px rgba(60,160,255,0.22); } }
+        .seat-label { color: rgba(80,160,230,0.55) !important; text-shadow: 0 0 4px rgba(60,140,220,0.2), 0 1px 3px rgba(0,0,0,0.98) !important; }
+        .mob-info-spot { color: rgba(100,170,220,0.45) !important; text-shadow: 0 1px 4px rgba(0,0,0,0.95) !important; }
+        .mastery-badge { background: rgba(60,130,200,0.09) !important; border: 1px solid rgba(60,130,200,0.22) !important; color: rgba(80,170,255,0.85) !important; }
+        .mastery-bar-fill { background: linear-gradient(90deg, #3ab0ff, #1480d8) !important; }
+        .hands-left-mob { color: rgba(70,140,210,0.35) !important; }
+        .floating-reward { color: #3ab0ff !important; text-shadow: 0 0 10px rgba(58,176,255,0.65) !important; }
         .card-mob { background: #f8faff !important; border: 1px solid rgba(255,255,255,0.85) !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -6px 16px rgba(0,0,0,0.7), 0 -12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1) !important; }
         .card-mob::after { background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; }
-        .suit-red   { color: #c00a0a !important; }
+        .suit-red { color: #c00a0a !important; }
         .suit-black { color: #0a0a0a !important; }
+        .rng-badge { color: rgba(80,170,255,0.85) !important; background: rgba(60,130,200,0.09) !important; border: 1.5px solid rgba(60,130,200,0.28) !important; }
         </style>"""
     elif visual_rank == 3:
         m_icon = "🔥"
         m_name = "Master III"
         table_css = """<style>
-        .mobile-game-area { background: radial-gradient(ellipse 52% 40% at 50% 42%, rgba(90,18,28,0.65) 0%, transparent 70%), radial-gradient(ellipse 88% 78% at 50% 50%, #3a0d14 0%, #240810 58%, #0f0408 100%) !important; box-shadow: 0 0 0 8px #1a080a, 0 0 0 13px #2e1014, 0 0 0 17px #12060a, 0 0 0 30px 4px rgba(160,60,20,0.04), 0 0 50px 8px rgba(0,0,0,0.95), inset 0 2px 18px rgba(255,255,255,0.025), inset 0 -3px 10px rgba(0,0,0,0.55) !important; }
+        .mobile-game-area { background: radial-gradient(ellipse 52% 40% at 50% 42%, rgba(90,18,28,0.65) 0%, transparent 70%), radial-gradient(ellipse 88% 78% at 50% 50%, #3a0d14 0%, #240810 58%, #0f0408 100%) !important; box-shadow: 0 0 0 8px #1a080a, 0 0 0 13px #2e1014, 0 0 0 17px #12060a, 0 0 50px 8px rgba(0,0,0,0.95), inset 0 2px 18px rgba(255,255,255,0.025) !important; }
         .mobile-game-area::before { background: repeating-linear-gradient(45deg,  rgba(200,100,50,0.014) 0px, rgba(200,100,50,0.014) 1px, transparent 1px, transparent 9px), repeating-linear-gradient(-45deg, rgba(200,100,50,0.014) 0px, rgba(200,100,50,0.014) 1px, transparent 1px, transparent 9px) !important; }
         .mobile-game-area::after { border: 1px solid rgba(200,120,60,0.08) !important; }
         .seat::before { background: radial-gradient(circle at 38% 30%, #3a1c10 0%, #221008 60%, #0f0804 100%) !important; border: 1.5px solid rgba(180,110,40,0.28) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 8px rgba(180,110,40,0.1), inset 0 1px 3px rgba(255,255,255,0.06) !important; }
-        .seat-active::before { border-color: rgba(210,150,50,0.85) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 16px rgba(210,150,50,0.45), 0 0 28px rgba(210,150,50,0.18), inset 0 1px 3px rgba(255,255,255,0.09) !important; animation: pulse-seat 2.6s ease-in-out infinite !important; }
-        @keyframes pulse-seat { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 12px rgba(210,150,50,0.38), inset 0 1px 3px rgba(255,255,255,0.09); } 50%      { box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 24px rgba(210,150,50,0.65), 0 0 38px rgba(210,150,50,0.22), inset 0 1px 3px rgba(255,255,255,0.09); } }
+        .seat::after { background: rgba(255,200,100,0.06) !important; box-shadow: 0 8px 0 rgba(255,200,100,0.04) !important; }
+        .seat-active::before { border-color: rgba(210,150,50,0.88) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 16px rgba(210,150,50,0.48), 0 0 28px rgba(210,150,50,0.18) !important; animation: r3-pulse 2.6s ease-in-out infinite !important; }
+        @keyframes r3-pulse { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 12px rgba(210,150,50,0.4); } 50% { box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 24px rgba(220,165,60,0.68), 0 0 38px rgba(210,150,50,0.22); } }
+        .seat-label { color: rgba(200,140,50,0.55) !important; text-shadow: 0 0 4px rgba(180,110,30,0.2), 0 1px 3px rgba(0,0,0,0.98) !important; }
+        .mob-info-spot { color: rgba(200,140,60,0.45) !important; text-shadow: 0 1px 4px rgba(0,0,0,0.95) !important; }
+        .mastery-badge { background: rgba(180,110,40,0.09) !important; border: 1px solid rgba(180,110,40,0.24) !important; color: rgba(220,165,65,0.88) !important; }
+        .mastery-bar-fill { background: linear-gradient(90deg, #d49030, #a86018) !important; }
+        .hands-left-mob { color: rgba(180,110,40,0.35) !important; }
+        .floating-reward { color: #d49030 !important; text-shadow: 0 0 10px rgba(212,144,48,0.65) !important; }
         .card-mob { background: linear-gradient(145deg, #f5f0e8 0%, #ede5d4 100%) !important; border: 1px solid rgba(210,175,110,0.7) !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.15), 0 -6px 16px rgba(0,0,0,0.65), 0 -12px 28px rgba(0,0,0,0.38), 0 0 14px rgba(200,150,60,0.12), inset 0 1px 0 rgba(255,255,255,0.9) !important; }
         .card-mob::after { background: linear-gradient(135deg, rgba(255,240,200,0.5) 0%, rgba(220,190,130,0.1) 50%, transparent 100%) !important; }
-        .suit-red   { color: #a80808 !important; }
+        .suit-red { color: #a80808 !important; }
         .suit-black { color: #1a0a04 !important; }
+        .rng-badge { color: rgba(220,165,65,0.88) !important; background: rgba(180,110,40,0.09) !important; border: 1.5px solid rgba(180,110,40,0.3) !important; }
         </style>"""
     elif visual_rank == 4:
         m_icon = "⚡"
         m_name = "Grandmaster IV"
         table_css = """<style>
-        .mobile-game-area { background: radial-gradient(ellipse 52% 40% at 50% 42%, rgba(55,20,90,0.6) 0%, transparent 70%), radial-gradient(ellipse 88% 78% at 50% 50%, #1e0d30 0%, #130820 58%, #07030f 100%) !important; box-shadow: 0 0 0 8px #120818, 0 0 0 13px #1e1028, 0 0 0 17px #0d0614, 0 0 0 28px 4px rgba(100,40,160,0.05), 0 0 50px 8px rgba(0,0,0,0.96), inset 0 2px 18px rgba(255,255,255,0.025), inset 0 -3px 10px rgba(0,0,0,0.55) !important; }
+        .mobile-game-area { background: radial-gradient(ellipse 52% 40% at 50% 42%, rgba(55,20,90,0.6) 0%, transparent 70%), radial-gradient(ellipse 88% 78% at 50% 50%, #1e0d30 0%, #130820 58%, #07030f 100%) !important; box-shadow: 0 0 0 8px #120818, 0 0 0 13px #1e1028, 0 0 0 17px #0d0614, 0 0 50px 8px rgba(0,0,0,0.96), inset 0 2px 18px rgba(255,255,255,0.025) !important; }
         .mobile-game-area::before { background: repeating-linear-gradient(45deg,  rgba(160,100,255,0.016) 0px, rgba(160,100,255,0.016) 1px, transparent 1px, transparent 9px), repeating-linear-gradient(-45deg, rgba(160,100,255,0.016) 0px, rgba(160,100,255,0.016) 1px, transparent 1px, transparent 9px) !important; }
         .mobile-game-area::after { border: 1px solid rgba(160,100,255,0.09) !important; }
         .seat::before { background: radial-gradient(circle at 38% 30%, #2a1840 0%, #180e28 60%, #0a0812 100%) !important; border: 1.5px solid rgba(160,130,220,0.28) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.68), 0 0 8px rgba(160,130,220,0.1), inset 0 1px 3px rgba(255,255,255,0.06) !important; }
-        .seat-active::before { border-color: rgba(190,160,255,0.85) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.68), 0 0 18px rgba(170,130,255,0.5), 0 0 32px rgba(170,130,255,0.2), inset 0 1px 3px rgba(255,255,255,0.09) !important; animation: pulse-seat 2.4s ease-in-out infinite !important; }
-        @keyframes pulse-seat { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.68), 0 0 14px rgba(170,130,255,0.4), inset 0 1px 3px rgba(255,255,255,0.09); } 50%      { box-shadow: 0 0 0 3px rgba(0,0,0,0.68), 0 0 26px rgba(190,150,255,0.68), 0 0 44px rgba(170,130,255,0.26), inset 0 1px 3px rgba(255,255,255,0.09); } }
+        .seat::after { background: rgba(180,150,255,0.06) !important; box-shadow: 0 8px 0 rgba(180,150,255,0.04) !important; }
+        .seat-active::before { border-color: rgba(190,160,255,0.88) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.68), 0 0 18px rgba(170,130,255,0.52), 0 0 32px rgba(170,130,255,0.2) !important; animation: r4-pulse 2.4s ease-in-out infinite !important; }
+        @keyframes r4-pulse { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.68), 0 0 14px rgba(170,130,255,0.42); } 50% { box-shadow: 0 0 0 3px rgba(0,0,0,0.68), 0 0 26px rgba(190,150,255,0.7), 0 0 44px rgba(170,130,255,0.26); } }
+        .seat-label { color: rgba(180,155,240,0.55) !important; text-shadow: 0 0 4px rgba(150,120,220,0.22), 0 1px 3px rgba(0,0,0,0.98) !important; }
+        .mob-info-spot { color: rgba(170,145,230,0.45) !important; text-shadow: 0 1px 4px rgba(0,0,0,0.95) !important; }
+        .mastery-badge { background: rgba(140,110,220,0.09) !important; border: 1px solid rgba(140,110,220,0.22) !important; color: rgba(190,165,255,0.88) !important; }
+        .mastery-bar-fill { background: linear-gradient(90deg, #a070ff, #7040d8) !important; }
+        .hands-left-mob { color: rgba(140,110,220,0.35) !important; }
+        .floating-reward { color: #a878ff !important; text-shadow: 0 0 12px rgba(168,120,255,0.7) !important; }
         .card-mob { background: linear-gradient(150deg, #2a2a32 0%, #1e1e26 100%) !important; border: 1px solid rgba(200,190,230,0.3) !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 -6px 16px rgba(0,0,0,0.75), 0 -12px 28px rgba(0,0,0,0.5), 0 0 16px rgba(160,130,255,0.14), inset 0 1px 0 rgba(255,255,255,0.12) !important; }
         .card-mob::after { background: linear-gradient(135deg, rgba(220,210,255,0.18) 0%, rgba(180,160,240,0.05) 40%, transparent 100%) !important; }
-        .suit-red   { color: #ff4466 !important; }
+        .suit-red { color: #ff4466 !important; }
         .suit-black { color: #d0c8f0 !important; }
+        .rng-badge { color: rgba(190,165,255,0.88) !important; background: rgba(140,110,220,0.09) !important; border: 1.5px solid rgba(140,110,220,0.3) !important; }
         </style>"""
     else:
         m_icon = "👑"
         m_name = "Legend V"
         table_css = """<style>
-        .mobile-game-area { background: radial-gradient(ellipse 50% 36% at 50% 42%, rgba(60,50,10,0.5) 0%, transparent 68%), radial-gradient(ellipse 88% 78% at 50% 50%, #141410 0%, #0c0c09 55%, #050504 100%) !important; box-shadow: 0 0 0 8px #0f0f0c, 0 0 0 13px #1c1c16, 0 0 0 17px #0a0a08, 0 0 0 28px 5px rgba(200,170,50,0.05), 0 0 60px 10px rgba(0,0,0,0.98), inset 0 2px 20px rgba(255,255,255,0.02), inset 0 -3px 12px rgba(0,0,0,0.6) !important; }
+        .mobile-game-area { background: radial-gradient(ellipse 50% 36% at 50% 42%, rgba(60,50,10,0.5) 0%, transparent 68%), radial-gradient(ellipse 88% 78% at 50% 50%, #141410 0%, #0c0c09 55%, #050504 100%) !important; box-shadow: 0 0 0 8px #0f0f0c, 0 0 0 13px #1c1c16, 0 0 0 17px #0a0a08, 0 0 0 28px 5px rgba(200,170,50,0.05), 0 0 60px 10px rgba(0,0,0,0.98), inset 0 2px 20px rgba(255,255,255,0.02) !important; }
         .mobile-game-area::before { background: repeating-linear-gradient(45deg,  rgba(220,185,80,0.022) 0px, rgba(220,185,80,0.022) 1px, transparent 1px, transparent 8px), repeating-linear-gradient(-45deg, rgba(220,185,80,0.022) 0px, rgba(220,185,80,0.022) 1px, transparent 1px, transparent 8px) !important; }
         .mobile-game-area::after { border: 1px solid rgba(200,168,60,0.12) !important; }
         .seat::before { background: radial-gradient(circle at 38% 30%, #1c1a10 0%, #111008 60%, #080806 100%) !important; border: 1.5px solid rgba(190,158,50,0.3) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.7), 0 0 8px rgba(190,158,50,0.1), inset 0 1px 3px rgba(255,255,255,0.06) !important; }
-        .seat-active::before { border-color: rgba(220,188,70,0.95) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.7), 0 0 18px rgba(220,188,70,0.55), 0 0 36px rgba(200,165,40,0.22), inset 0 1px 3px rgba(255,255,255,0.1) !important; animation: pulse-seat 2.2s ease-in-out infinite !important; }
-        @keyframes pulse-seat { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.7), 0 0 14px rgba(220,188,70,0.45), inset 0 1px 3px rgba(255,255,255,0.1); } 50%      { box-shadow: 0 0 0 3px rgba(0,0,0,0.7), 0 0 28px rgba(240,205,80,0.75), 0 0 50px rgba(220,185,50,0.28), inset 0 1px 3px rgba(255,255,255,0.1); } }
+        .seat::after { background: rgba(220,188,70,0.07) !important; box-shadow: 0 8px 0 rgba(220,188,70,0.05) !important; }
+        .seat-active::before { border-color: rgba(220,188,70,0.95) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.7), 0 0 18px rgba(220,188,70,0.58), 0 0 36px rgba(200,165,40,0.22) !important; animation: r5-pulse 2.2s ease-in-out infinite !important; }
+        @keyframes r5-pulse { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.7), 0 0 14px rgba(220,188,70,0.46); } 50% { box-shadow: 0 0 0 3px rgba(0,0,0,0.7), 0 0 28px rgba(240,205,80,0.78), 0 0 50px rgba(220,185,50,0.28); } }
+        .seat-label { color: rgba(215,182,60,0.55) !important; text-shadow: 0 0 4px rgba(190,158,40,0.25), 0 1px 3px rgba(0,0,0,0.98) !important; }
+        .mob-info-spot { color: rgba(210,178,55,0.45) !important; text-shadow: 0 0 8px rgba(190,155,40,0.22), 0 1px 4px rgba(0,0,0,0.95) !important; }
+        .mastery-badge { background: rgba(190,158,50,0.1) !important; border: 1px solid rgba(190,158,50,0.25) !important; color: rgba(220,188,70,0.9) !important; text-shadow: 0 0 6px rgba(190,155,40,0.4) !important; }
+        .mastery-bar-fill { background: linear-gradient(90deg, #d4a820, #a07810) !important; box-shadow: 0 0 5px rgba(212,168,32,0.6) !important; }
+        .hands-left-mob { color: rgba(180,148,40,0.35) !important; }
+        .floating-reward { color: #d4a820 !important; text-shadow: 0 0 14px rgba(212,168,32,0.8), 0 0 28px rgba(190,140,20,0.35) !important; }
         .card-mob { background: linear-gradient(150deg, #1a1a18 0%, #111110 100%) !important; border: 1px solid rgba(210,180,70,0.38) !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.6), 0 -6px 16px rgba(0,0,0,0.8), 0 -12px 30px rgba(0,0,0,0.55), 0 0 18px rgba(200,168,50,0.18), inset 0 1px 0 rgba(255,255,255,0.07) !important; }
         .card-mob::after { background: linear-gradient(135deg, rgba(240,210,90,0.16) 0%, rgba(200,168,50,0.04) 40%, transparent 100%) !important; }
-        .suit-red   { color: #ff3355 !important; }
+        .suit-red { color: #ff3355 !important; }
         .suit-black { color: #e8e0c8 !important; }
+        .rng-badge { color: rgba(220,188,70,0.9) !important; background: rgba(190,158,50,0.1) !important; border: 1.5px solid rgba(190,158,50,0.3) !important; box-shadow: 0 0 7px rgba(190,155,40,0.22) !important; }
         </style>"""
         
     st.markdown(table_css, unsafe_allow_html=True)
@@ -529,8 +809,8 @@ def show():
         rage_pct = int((c - prev_req) / (next_req - prev_req) * 100)
         lbl_left = f"x{curr_mult}"; lbl_right = f"x{next_mult}"
 
-    is_pulsing = "pulsing" if rage_pct >= 95 and next_mult != "MAX" else ""
-    is_flashing = "flashing" if st.session_state.pop("just_leveled_up", False) else ""
+    is_pulsing = "rage-pulse" if rage_pct >= 95 and next_mult != "MAX" else ""
+    is_flashing = "rage-flash" if st.session_state.pop("just_leveled_up", False) else ""
     
     if curr_mult == 1.0: grad = "linear-gradient(90deg, #17a2b8, #0dcaf0)"
     elif curr_mult == 1.5: grad = "linear-gradient(90deg, #0dcaf0, #28a745)"
@@ -542,191 +822,56 @@ def show():
 
     progress_pct = int((stats_data.get("xp", 0) / next_xp) * 100) if next_xp != "MAX" else 100
 
-    # ── Щит ─────────────────────────────────────────────────────────────
     shield_display = (
-        f'<span style="'
-        f'display:{"inline-flex" if st.session_state.shields > 0 else "none"};'
-        f'align-items:center;gap:2px;'
-        f'font-size:10px;font-weight:700;letter-spacing:0.04em;'
-        f'padding:1px 6px 1px 5px;margin-left:4px;'
-        f'background:rgba(13,202,240,0.09);'
-        f'border:1px solid rgba(13,202,240,0.28);'
-        f'border-radius:8px;'
-        f'color:rgba(13,202,240,0.92);'
-        f'box-shadow:0 0 8px rgba(13,202,240,0.12);'
-        f'">🛡️{st.session_state.shields}</span>'
+        f'<span class="cn-mob-shield" style="display:{"inline-flex" if st.session_state.shields > 0 else "none"};">'
+        f"🛡️x{st.session_state.shields}</span>"
     )
-
-    # ── Комбо-бейдж ─────────────────────────────────────────────────────
     combo_badge = (
-        f'<div style="flex:1;display:flex;justify-content:center;align-items:center;">'
-        f'<div style="'
-        f'display:inline-flex;align-items:center;gap:1px;'
-        f'padding:3px 11px 3px 9px;border-radius:20px;'
-        f'background:rgba(255,255,255,0.035);'
-        f'border:1px solid rgba(255,255,255,0.09);'
-        f'box-shadow:0 0 14px rgba(255,150,20,0.07),inset 0 1px 0 rgba(255,255,255,0.05);'
-        f'">'
-        f'<span style="'
-        f'font-size:14px;font-weight:900;color:#fff;letter-spacing:-0.03em;'
-        f'text-shadow:0 0 12px rgba(255,130,10,0.8),0 0 24px rgba(255,100,0,0.3);'
-        f'">🔥{c}</span>'
-        f'{shield_display}'
-        f'</div></div>'
+        f'<div class="cn-mob-combo-wrap">'
+        f'<div class="cn-mob-combo-pill">'
+        f'<span class="cn-mob-combo-fire">🔥 {c}</span>{shield_display}'
+        f"</div></div>"
     )
 
-    # ── Хедер статистики ────────────────────────────────────────────────
-    header_html = (
-        f'<div style="'
-        f'background:rgba(8,9,11,0.97);'
-        f'border-radius:16px;'
-        f'margin-top:-5px;margin-bottom:5px;'
-        f'border:1px solid rgba(255,255,255,0.06);'
-        f'overflow:hidden;'
-        f'font-family:-apple-system,BlinkMacSystemFont,\'SF Pro Display\',\'Helvetica Neue\',sans-serif;'
-        f'box-shadow:0 8px 32px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.04);'
-        f'">'
-
-        f'<div style="height:2px;width:100%;background:rgba(255,255,255,0.04);">'
-        f'<div style="height:100%;width:{wr if sh > 0 else 100}%;'
-        f'background:{wr_color if sh > 0 else "#2a2a2a"};'
-        f'box-shadow:0 0 8px {wr_color if sh > 0 else "transparent"};'
-        f'transition:width 0.5s ease;border-radius:0 1px 1px 0;"></div></div>'
-
-        f'<div style="padding:7px 12px 3px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px;">'
-        f'<div style="flex:1;min-width:0;">'
-        f'<div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;'
-        f'color:#ffc107;text-shadow:0 0 10px rgba(255,193,7,0.4);'
-        f'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{rank_name}</div>'
-        f'<div style="height:2.5px;background:rgba(255,255,255,0.06);border-radius:2px;margin-top:5px;overflow:hidden;">'
-        f'<div style="height:100%;width:{progress_pct}%;'
-        f'background:linear-gradient(90deg,#1a9e40,#25c252);border-radius:2px;'
-        f'box-shadow:0 0 6px rgba(30,180,70,0.55);transition:width 0.5s ease;"></div></div>'
-        f'</div>'
-        f'<div style="font-size:8.5px;font-weight:600;letter-spacing:0.03em;'
-        f'color:rgba(160,160,175,0.45);white-space:nowrap;flex-shrink:0;">'
-        f'${stats_data.get("xp", 0)}'
-        f'<span style="color:rgba(255,255,255,0.15);margin:0 2px;">/</span>'
-        f'${next_xp}</div>'
-        f'</div>'
-
-        f'<div style="display:flex;justify-content:space-between;align-items:center;padding:2px 12px 8px 12px;">'
-        f'<div style="flex:1;">'
-        f'<div style="font-size:8px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(150,150,165,0.45);">Winrate</div>'
-        f'<div style="font-size:16px;font-weight:800;letter-spacing:-0.03em;line-height:1.1;'
-        f'color:{wr_color};text-shadow:0 0 10px {wr_color}44;">{wr}%</div>'
-        f'</div>'
-        f'{combo_badge}'
-        f'<div style="flex:1;text-align:right;">'
-        f'<div style="font-size:8px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(150,150,165,0.45);">Hands</div>'
-        f'<div style="font-size:16px;font-weight:800;letter-spacing:-0.03em;line-height:1.1;color:rgba(230,230,240,0.88);">{sh}</div>'
-        f'</div>'
-        f'</div>'
-        f'</div>'
-    )
-
-    # ── Rage Bar — газировка ────────────────────────────────────────────
-    # Уникальный ID чтобы JS не конфликтовал при повторном рендере
-    _rb_id = f"rb_{abs(hash(str(rage_pct) + str(grad)))}"
-
-    rage_bar_html = f'''
-    <style>
-    #{_rb_id}-wrap{{position:relative;width:100%;height:22px;margin-bottom:5px;}}
-    #{_rb_id}-track{{
-        position:absolute;inset:0;border-radius:11px;
-        background:rgba(255,255,255,0.03);
-        border:1px solid rgba(255,255,255,0.07);
-        overflow:hidden;
-        box-shadow:inset 0 2px 5px rgba(0,0,0,0.7),inset 0 -1px 1px rgba(255,255,255,0.02);
-    }}
-    #{_rb_id}-fill{{
-        position:absolute;top:0;left:0;bottom:0;
-        width:{rage_pct}%;
-        background:{grad};
-        border-radius:11px;
-        overflow:hidden;
-        transition:width 0.4s cubic-bezier(.4,0,.2,1);
-        box-shadow:inset 0 1px 0 rgba(255,255,255,0.18);
-    }}
-    /* Блик поверх */
-    #{_rb_id}-fill::after{{
-        content:'';position:absolute;
-        top:0;left:0;right:0;height:40%;
-        background:linear-gradient(180deg,rgba(255,255,255,0.16) 0%,transparent 100%);
-        border-radius:11px 11px 0 0;pointer-events:none;z-index:2;
-    }}
-    /* Пузырёк */
-    #{_rb_id}-wrap .bbl{{
-        position:absolute;bottom:-6px;border-radius:50%;
-        background:rgba(255,255,255,0.55);
-        box-shadow:inset 0 -1px 1px rgba(0,0,0,0.1);
-        animation:rise_{_rb_id} linear infinite;z-index:1;
-    }}
-    @keyframes rise_{_rb_id}{{
-        0%  {{transform:translateY(0) translateX(0) scale(1);opacity:0;}}
-        8%  {{opacity:1;}}
-        80% {{opacity:0.7;}}
-        100%{{transform:translateY(-28px) translateX(var(--drift)) scale(0.55);opacity:0;}}
-    }}
-    /* Метки */
-    #{_rb_id}-labels{{
-        position:absolute;inset:0;display:flex;
-        justify-content:space-between;align-items:center;
-        padding:0 10px;pointer-events:none;z-index:5;
-    }}
-    #{_rb_id}-labels span{{
-        font-size:9px;font-weight:800;letter-spacing:0.07em;
-        color:rgba(255,255,255,0.92);
-        text-shadow:0 1px 5px rgba(0,0,0,0.98),0 0 12px rgba(0,0,0,0.9);
-        font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;
-    }}
-    /* Пульс */
-    .{_rb_id}-pulsing #{_rb_id}-fill{{animation:rb_pulse_{_rb_id} 1s ease-in-out infinite;}}
-    @keyframes rb_pulse_{_rb_id}{{
-        0%,100%{{filter:brightness(1);}}
-        50%    {{filter:brightness(1.38);}}
-    }}
-    /* Флэш */
-    .{_rb_id}-flashing #{_rb_id}-track{{animation:rb_flash_{_rb_id} .38s ease-out 3;}}
-    @keyframes rb_flash_{_rb_id}{{
-        0%  {{background:rgba(255,255,255,0.03);}}
-        50% {{background:rgba(255,255,255,0.14);}}
-        100%{{background:rgba(255,255,255,0.03);}}
-    }}
-    </style>
-
-    <div id="{_rb_id}-wrap" class="{_rb_id}-{is_pulsing} {_rb_id}-{is_flashing}">
-        <div id="{_rb_id}-track">
-            <div id="{_rb_id}-fill"></div>
+    header_html = f"""
+<div class="cn-mob-header">
+  <div class="cn-mob-wr-track">
+    <div class="cn-mob-wr-fill" style="width: {wr if sh > 0 else 100}%; background: {wr_color if sh > 0 else "#3a3f4a"}; color: {wr_color if sh > 0 else "#3a3f4a"};"></div>
+  </div>
+  <div class="cn-mob-inner">
+    <div class="cn-mob-row1">
+      <div style="flex:1; min-width:0;">
+        <div class="cn-mob-rank">{rank_name}</div>
+        <div class="cn-mob-xp-bar-wrap">
+          <div class="cn-mob-xp-bar-bg"><div class="cn-mob-xp-bar-fill" style="width: {progress_pct}%;"></div></div>
         </div>
-        <div id="{_rb_id}-labels">
-            <span>{lbl_left}</span>
-            <span>{lbl_right}</span>
-        </div>
+      </div>
+      <div class="cn-mob-xp-meta">${stats_data.get("xp", 0)} / ${next_xp}</div>
     </div>
+    <div class="cn-mob-row2">
+      <div class="cn-mob-stat">
+        <div class="cn-mob-stat-label">Winrate</div>
+        <div class="cn-mob-stat-val" style="color: {wr_color};">{wr}%</div>
+      </div>
+      {combo_badge}
+      <div class="cn-mob-stat" style="text-align:right;">
+        <div class="cn-mob-stat-label">Hands</div>
+        <div class="cn-mob-stat-val light">{sh}</div>
+      </div>
+    </div>
+  </div>
+</div>
+"""
 
-    <script>
-    (function(){{
-        var fill = document.getElementById('{_rb_id}-fill');
-        if(!fill) return;
-        var count = 22;
-        for(var i=0;i<count;i++){{
-            var b = document.createElement('span');
-            b.className = 'bbl';
-            var size = 1.5 + Math.random()*2.5;
-            b.style.width  = size+'px';
-            b.style.height = size+'px';
-            b.style.left   = (3 + Math.random()*94)+'%';
-            var dur = 0.8 + Math.random()*1.6;
-            b.style.animationDuration = dur+'s';
-            b.style.animationDelay   = -(Math.random()*dur*1.5)+'s';
-            b.style.setProperty('--drift', ((Math.random()-0.5)*10)+'px');
-            b.style.opacity = 0.3 + Math.random()*0.45;
-            fill.appendChild(b);
-        }}
-    }})();
-    </script>
-    '''
+    rage_bar_html = f"""
+<div class="rage-bar-container {is_flashing}">
+  <div class="rage-bar-fill {is_pulsing}" style="width: {rage_pct}%; background: {grad};"></div>
+  <div class="rage-labels">
+    <span>{lbl_left}</span>
+    <span>{lbl_right}</span>
+  </div>
+</div>
+"""
 
     anim_html = ""
     anim_reward = st.session_state.pop("anim_reward", None)
