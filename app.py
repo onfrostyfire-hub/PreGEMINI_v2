@@ -65,14 +65,15 @@ def main():
     if "actual_view_type" not in st.session_state:
         st.session_state.actual_view_type = "📱 Mobile" if detect_mobile() else "💻 Desktop"
         
-    if "actual_app_mode" not in st.session_state:
-        st.session_state.actual_app_mode = "🎮 Preflop"
+    # ЗАЩИТА ОТ КЭША: Если в памяти лежит старое название с эмодзи, сбрасываем на Preflop
+    if "actual_app_mode" not in st.session_state or st.session_state.actual_app_mode not in ["Preflop", "Postflop", "Ranges", "Stats"]:
+        st.session_state.actual_app_mode = "Preflop"
 
     st.markdown('<div class="compact-tabs"></div>', unsafe_allow_html=True)
     nav_mode = st.radio(
         "Nav", 
-        ["🎮 Preflop", "🃏 Postflop", "🔬 Range Lab", "📊 Stats"], 
-        index=["🎮 Preflop", "🃏 Postflop", "🔬 Range Lab", "📊 Stats"].index(st.session_state.actual_app_mode),
+        ["Preflop", "Postflop", "Ranges", "Stats"], 
+        index=["Preflop", "Postflop", "Ranges", "Stats"].index(st.session_state.actual_app_mode),
         horizontal=True, 
         label_visibility="collapsed"
     )
@@ -80,11 +81,12 @@ def main():
         st.session_state.actual_app_mode = nav_mode
         st.rerun()
 
-    if st.session_state.actual_app_mode == "🔬 Range Lab":
+    # ОБНОВЛЕННАЯ ЛОГИКА (без эмодзи)
+    if st.session_state.actual_app_mode == "Ranges":
         compare.show()
-    elif st.session_state.actual_app_mode == "📊 Stats":
+    elif st.session_state.actual_app_mode == "Stats":
         stats.show()
-    elif st.session_state.actual_app_mode == "🃏 Postflop":
+    elif st.session_state.actual_app_mode == "Postflop":
         if st.session_state.actual_view_type == "📱 Mobile":
             postflop_mobile.show()
         else:
