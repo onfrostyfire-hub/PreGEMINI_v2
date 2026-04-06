@@ -70,7 +70,7 @@ def show():
           width: 100% !important;
           max-width: 390px !important;
           height: 250px !important;
-          margin: 60px auto 55px auto !important; /* ЕЩЕ СИЛЬНЕЕ УБРАЛ ПУСТОТУ НАД СТОЛОМ */
+          margin: 65px auto 55px auto !important; /* ЕЩЕ СИЛЬНЕЕ УБРАЛ ПУСТОТУ НАД СТОЛОМ */
           border-radius: 125px !important;
           overflow: visible !important;
           background:
