@@ -851,55 +851,180 @@ def show():
     progress_pct = int((stats_data.get("xp", 0) / next_xp) * 100) if next_xp != "MAX" else 100
 
     shield_display = (
-        f'<span class="cn-mob-shield" style="display:{"inline-flex" if st.session_state.shields > 0 else "none"};">'
-        f"🛡️x{st.session_state.shields}</span>"
+        f'<span style="'
+        f'display:{"inline-flex" if st.session_state.shields > 0 else "none"};'
+        f'align-items:center;gap:2px;'
+        f'font-size:10px;font-weight:700;letter-spacing:0.04em;'
+        f'padding:1px 6px 1px 5px;margin-left:4px;'
+        f'background:rgba(13,202,240,0.09);'
+        f'border:1px solid rgba(13,202,240,0.28);'
+        f'border-radius:8px;'
+        f'color:rgba(13,202,240,0.92);'
+        f'box-shadow:0 0 8px rgba(13,202,240,0.12);'
+        f'">🛡️{st.session_state.shields}</span>'
     )
+
     combo_badge = (
-        f'<div class="cn-mob-combo-wrap">'
-        f'<div class="cn-mob-combo-pill">'
-        f'<span class="cn-mob-combo-fire">🔥 {c}</span>{shield_display}'
-        f"</div></div>"
+        f'<div style="flex:1;display:flex;justify-content:center;align-items:center;">'
+        f'<div style="'
+        f'display:inline-flex;align-items:center;gap:1px;'
+        f'padding:3px 11px 3px 9px;border-radius:20px;'
+        f'background:rgba(255,255,255,0.035);'
+        f'border:1px solid rgba(255,255,255,0.09);'
+        f'box-shadow:0 0 14px rgba(255,150,20,0.07),inset 0 1px 0 rgba(255,255,255,0.05);'
+        f'">'
+        f'<span style="'
+        f'font-size:14px;font-weight:900;color:#fff;letter-spacing:-0.03em;'
+        f'text-shadow:0 0 12px rgba(255,130,10,0.8),0 0 24px rgba(255,100,0,0.3);'
+        f'">🔥{c}</span>'
+        f'{shield_display}'
+        f'</div></div>'
     )
 
-    header_html = f"""
-<div class="cn-mob-header">
-  <div class="cn-mob-wr-track">
-    <div class="cn-mob-wr-fill" style="width: {wr if sh > 0 else 100}%; background: {wr_color if sh > 0 else "#3a3f4a"}; color: {wr_color if sh > 0 else "#3a3f4a"};"></div>
-  </div>
-  <div class="cn-mob-inner">
-    <div class="cn-mob-row1">
-      <div style="flex:1; min-width:0;">
-        <div class="cn-mob-rank">{rank_name}</div>
-        <div class="cn-mob-xp-bar-wrap">
-          <div class="cn-mob-xp-bar-bg"><div class="cn-mob-xp-bar-fill" style="width: {progress_pct}%;"></div></div>
-        </div>
-      </div>
-      <div class="cn-mob-xp-meta">${stats_data.get("xp", 0)} / ${next_xp}</div>
-    </div>
-    <div class="cn-mob-row2">
-      <div class="cn-mob-stat">
-        <div class="cn-mob-stat-label">Winrate</div>
-        <div class="cn-mob-stat-val" style="color: {wr_color};">{wr}%</div>
-      </div>
-      {combo_badge}
-      <div class="cn-mob-stat" style="text-align:right;">
-        <div class="cn-mob-stat-label">Hands</div>
-        <div class="cn-mob-stat-val light">{sh}</div>
-      </div>
-    </div>
-  </div>
-</div>
-"""
+    header_html = (
+        f'<div style="'
+        f'background:rgba(8,9,11,0.97);'
+        f'border-radius:16px;'
+        f'margin-top:-5px;margin-bottom:5px;'
+        f'border:1px solid rgba(255,255,255,0.06);'
+        f'overflow:hidden;'
+        f'font-family:-apple-system,BlinkMacSystemFont,\'SF Pro Display\',\'Helvetica Neue\',sans-serif;'
+        f'box-shadow:0 8px 32px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.04);'
+        f'">'
 
-    rage_bar_html = f"""
-<div class="rage-bar-container {is_flashing}">
-  <div class="rage-bar-fill {is_pulsing}" style="width: {rage_pct}%; background: {grad};"></div>
-  <div class="rage-labels">
-    <span>{lbl_left}</span>
-    <span>{lbl_right}</span>
-  </div>
+        f'<div style="height:2px;width:100%;background:rgba(255,255,255,0.04);">'
+        f'<div style="height:100%;width:{wr if sh > 0 else 100}%;'
+        f'background:{wr_color if sh > 0 else "#2a2a2a"};'
+        f'box-shadow:0 0 8px {wr_color if sh > 0 else "transparent"};'
+        f'transition:width 0.5s ease;border-radius:0 1px 1px 0;"></div></div>'
+
+        f'<div style="padding:7px 12px 3px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px;">'
+        f'<div style="flex:1;min-width:0;">'
+        f'<div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;'
+        f'color:#ffc107;text-shadow:0 0 10px rgba(255,193,7,0.4);'
+        f'white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{rank_name}</div>'
+        f'<div style="height:2.5px;background:rgba(255,255,255,0.06);border-radius:2px;margin-top:5px;overflow:hidden;">'
+        f'<div style="height:100%;width:{progress_pct}%;'
+        f'background:linear-gradient(90deg,#1a9e40,#25c252);border-radius:2px;'
+        f'box-shadow:0 0 6px rgba(30,180,70,0.55);transition:width 0.5s ease;"></div></div>'
+        f'</div>'
+        f'<div style="font-size:8.5px;font-weight:600;letter-spacing:0.03em;'
+        f'color:rgba(160,160,175,0.45);white-space:nowrap;flex-shrink:0;">'
+        f'${stats_data.get("xp", 0)}'
+        f'<span style="color:rgba(255,255,255,0.15);margin:0 2px;">/</span>'
+        f'${next_xp}</div>'
+        f'</div>'
+
+        f'<div style="display:flex;justify-content:space-between;align-items:center;padding:2px 12px 8px 12px;">'
+        f'<div style="flex:1;">'
+        f'<div style="font-size:8px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(150,150,165,0.45);">Winrate</div>'
+        f'<div style="font-size:16px;font-weight:800;letter-spacing:-0.03em;line-height:1.1;'
+        f'color:{wr_color};text-shadow:0 0 10px {wr_color}44;">{wr}%</div>'
+        f'</div>'
+        f'{combo_badge}'
+        f'<div style="flex:1;text-align:right;">'
+        f'<div style="font-size:8px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(150,150,165,0.45);">Hands</div>'
+        f'<div style="font-size:16px;font-weight:800;letter-spacing:-0.03em;line-height:1.1;color:rgba(230,230,240,0.88);">{sh}</div>'
+        f'</div>'
+        f'</div>'
+        f'</div>'
+    )
+
+    _rb_id = f"rb_{abs(hash(str(rage_pct) + str(grad)))}"
+
+    rage_bar_html = f'''
+<style>
+#{_rb_id}-wrap{{position:relative;width:100%;height:22px;margin-bottom:5px;}}
+#{_rb_id}-track{{
+    position:absolute;inset:0;border-radius:11px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.07);
+    overflow:hidden;
+    box-shadow:inset 0 2px 5px rgba(0,0,0,0.7),inset 0 -1px 1px rgba(255,255,255,0.02);
+}}
+#{_rb_id}-fill{{
+    position:absolute;top:0;left:0;bottom:0;
+    width:{rage_pct}%;
+    background:{grad};
+    border-radius:11px;
+    overflow:hidden;
+    transition:width 0.4s cubic-bezier(.4,0,.2,1);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.18);
+}}
+#{_rb_id}-fill::after{{
+    content:'';position:absolute;
+    top:0;left:0;right:0;height:40%;
+    background:linear-gradient(180deg,rgba(255,255,255,0.16) 0%,transparent 100%);
+    border-radius:11px 11px 0 0;pointer-events:none;z-index:2;
+}}
+#{_rb_id}-wrap .bbl{{
+    position:absolute;bottom:-6px;border-radius:50%;
+    background:rgba(255,255,255,0.55);
+    box-shadow:inset 0 -1px 1px rgba(0,0,0,0.1);
+    animation:rise_{_rb_id} linear infinite;z-index:1;
+}}
+@keyframes rise_{_rb_id}{{
+    0%  {{transform:translateY(0) translateX(0) scale(1);opacity:0;}}
+    8%  {{opacity:1;}}
+    80% {{opacity:0.7;}}
+    100%{{transform:translateY(-28px) translateX(var(--drift)) scale(0.55);opacity:0;}}
+}}
+#{_rb_id}-labels{{
+    position:absolute;inset:0;display:flex;
+    justify-content:space-between;align-items:center;
+    padding:0 10px;pointer-events:none;z-index:5;
+}}
+#{_rb_id}-labels span{{
+    font-size:9px;font-weight:800;letter-spacing:0.07em;
+    color:rgba(255,255,255,0.92);
+    text-shadow:0 1px 5px rgba(0,0,0,0.98),0 0 12px rgba(0,0,0,0.9);
+    font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;
+}}
+.{_rb_id}-rage-pulse #{_rb_id}-fill{{animation:rb_pulse_{_rb_id} 1s ease-in-out infinite;}}
+@keyframes rb_pulse_{_rb_id}{{
+    0%,100%{{filter:brightness(1);}}
+    50%    {{filter:brightness(1.38);}}
+}}
+.{_rb_id}-rage-flash #{_rb_id}-track{{animation:rb_flash_{_rb_id} .38s ease-out 3;}}
+@keyframes rb_flash_{_rb_id}{{
+    0%  {{background:rgba(255,255,255,0.03);}}
+    50% {{background:rgba(255,255,255,0.14);}}
+    100%{{background:rgba(255,255,255,0.03);}}
+}}
+</style>
+
+<div id="{_rb_id}-wrap" class="{_rb_id}-{is_pulsing} {_rb_id}-{is_flashing}">
+    <div id="{_rb_id}-track">
+        <div id="{_rb_id}-fill"></div>
+    </div>
+    <div id="{_rb_id}-labels">
+        <span>{lbl_left}</span>
+        <span>{lbl_right}</span>
+    </div>
 </div>
-"""
+
+<script>
+(function(){{
+    var fill = document.getElementById('{_rb_id}-fill');
+    if(!fill) return;
+    var count = 22;
+    for(var i=0;i<count;i++){{
+        var b = document.createElement('span');
+        b.className = 'bbl';
+        var size = 1.5 + Math.random()*2.5;
+        b.style.width  = size+'px';
+        b.style.height = size+'px';
+        b.style.left   = (3 + Math.random()*94)+'%';
+        var dur = 0.8 + Math.random()*1.6;
+        b.style.animationDuration = dur+'s';
+        b.style.animationDelay   = -(Math.random()*dur*1.5)+'s';
+        b.style.setProperty('--drift', ((Math.random()-0.5)*10)+'px');
+        b.style.opacity = 0.3 + Math.random()*0.45;
+        fill.appendChild(b);
+    }}
+}})();
+</script>
+'''
 
     anim_html = ""
     anim_reward = st.session_state.pop("anim_reward", None)
