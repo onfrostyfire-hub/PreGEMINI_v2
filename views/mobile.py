@@ -8,9 +8,21 @@ def show():
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap');
 
-        .block-container { padding-top: 1.5rem !important; padding-bottom: 1rem !important; max-width: 100% !important; overflow-x: hidden !important; }
-        [data-testid="stExpander"] { margin-top: -5px !important; margin-bottom: 5px !important; }
-        
+        /* 1. ПОДНИМАЕМ ВСЁ ВВЕРХ И УБИРАЕМ СКРЫТЫЕ ОТСТУПЫ */
+        .block-container { padding-top: 0.2rem !important; padding-bottom: 0.5rem !important; max-width: 100% !important; overflow-x: hidden !important; }
+        div.element-container { margin-bottom: 0 !important; }
+        div[data-testid="stVerticalBlock"] > div { padding-top: 0 !important; padding-bottom: 0 !important; margin-bottom: 0 !important; }
+
+        /* 2. СЖИМАЕМ МЕНЮ ИЗ app.py СТРОГО В ОДНУ СТРОКУ */
+        div[role="radiogroup"] { flex-wrap: nowrap !important; gap: 2px !important; justify-content: center !important; margin-bottom: -15px !important; }
+        div[role="radiogroup"] label { padding: 4px 8px !important; min-height: 20px !important; }
+        div[role="radiogroup"] label p { font-size: 12px !important; white-space: nowrap !important; }
+
+        /* 3. СЖИМАЕМ ЭКСПАНДЕР (Spot Filters) И ОТСТУПЫ ВОКРУГ НЕГО */
+        div[data-testid="stExpander"] { margin-top: -10px !important; margin-bottom: -5px !important; }
+        details[data-testid="stExpanderDetails"] { margin-bottom: 0 !important; }
+
+        /* 4. КНОПКИ ДЕЙСТВИЙ */
         div[data-testid="stHorizontalBlock"] { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(10px, 1fr)) !important; gap: 8px !important; width: 100% !important; }
         div[data-testid="column"] { width: 100% !important; min-width: 0 !important; max-width: 100% !important; margin-bottom: 0 !important; }
         div[data-testid="stButton"] { width: 100% !important; }
@@ -19,7 +31,7 @@ def show():
         div[data-testid="stButton"] button p { font-family: 'Roboto', sans-serif !important; font-size: 15px !important; font-weight: 900 !important; margin: 0 !important; letter-spacing: 0.5px !important; text-transform: uppercase !important; color: #ffffff !important; }
 
         /* ═══════════════════════════════════════════
-           CARBON NOIR v3 — Production CSS
+           БАЗОВЫЕ СТИЛИ (Дизайн переопределяется ниже)
            ═══════════════════════════════════════════ */
 
         .mobile-game-area {
@@ -27,7 +39,7 @@ def show():
           width: 100% !important;
           max-width: 390px !important;
           height: 250px !important;
-          margin: 35px auto 55px auto !important;
+          margin: 50px auto 55px auto !important; /* ЕЩЕ СИЛЬНЕЕ УБРАЛ ПУСТОТУ НАД СТОЛОМ */
           border-radius: 125px !important;
           overflow: visible !important;
           background:
@@ -63,10 +75,8 @@ def show():
           z-index: 0 !important;
         }
 
-        /* Скрываем старые элементы */
         .glass-shatter, .mastery-glow, .crest-left-mob, .crest-right-mob { display: none !important; }
 
-        /* ЦЕНТРАЛЬНАЯ ПАНЕЛЬ НА СУКНЕ */
         .mob-info {
           position: absolute !important;
           top: 50% !important;
@@ -107,7 +117,6 @@ def show():
         .mastery-bar-fill { height: 100% !important; background: linear-gradient(90deg, #17f07e, #00b85e) !important; border-radius: 2px !important; box-shadow: 0 0 5px rgba(23,240,126,0.65) !important; }
         .hands-left-mob { font-size: 9px !important; color: rgba(130,185,155,0.35) !important; letter-spacing: 0.06em !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95) !important; }
 
-        /* ПОСАДОЧНЫЕ МЕСТА (АВАТАРЫ) */
         .seat {
           position: absolute !important;
           z-index: 20 !important;
@@ -119,8 +128,8 @@ def show():
         .seat::before {
           content: '' !important;
           display: block !important;
-          width: 44px !important;
-          height: 44px !important;
+          width: 49px !important;
+          height: 49px !important;
           border-radius: 50% !important;
           background: radial-gradient(circle at 38% 30%, #203d2e 0%, #0e2018 60%, #080f0e 100%) !important;
           border: 1.5px solid rgba(0,240,110,0.2) !important;
@@ -158,7 +167,6 @@ def show():
         .seat-folded .opp-cards-mob { opacity: 0.5 !important; }
         .seat-label { font-size: 8px !important; font-weight: 700 !important; letter-spacing: 0.14em !important; text-transform: uppercase !important; color: rgba(160,210,180,0.5) !important; text-shadow: 0 0 4px rgba(0,220,100,0.25), 0 1px 3px rgba(0,0,0,0.98) !important; }
 
-        /* КАРТЫ ОППОНЕНТОВ */
         .opp-cards-mob { position: absolute !important; top: -18px !important; left: 50% !important; transform: translateX(-50%) !important; display: flex !important; align-items: flex-end !important; }
         .opp-card-mob {
           width: 14px !important; height: 20px !important; border-radius: 3px !important; position: relative !important;
@@ -168,7 +176,6 @@ def show():
         .opp-card-mob::before { content: '' !important; position: absolute !important; inset: 2px !important; border-radius: 2px !important; border: 1px solid rgba(80,140,255,0.15) !important; }
         .opp-card-mob.right { margin-left: -5px !important; transform: rotate(10deg) !important; z-index: -1 !important; }
 
-        /* ДИЛЕРСКИЙ БАТТОН */
         .dealer-mob {
           position: absolute !important; z-index: 30 !important; width: 20px !important; height: 20px !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important;
           font-size: 8px !important; font-weight: 900 !important; color: #120700 !important;
@@ -177,7 +184,6 @@ def show():
           box-shadow: 0 0 0 2px rgba(0,0,0,0.7), 0 2px 10px rgba(200,132,8,0.7), inset 0 1px 3px rgba(255,255,255,0.55) !important;
         }
 
-        /* ФИШКИ И СТАВКИ */
         .chip-container { position: absolute !important; z-index: 22 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 3px !important; }
         
         .chip-mob, .chip-3bet, .chip-4bet {
@@ -190,7 +196,7 @@ def show():
             radial-gradient(circle at 36% 30%, #1e3a8a, #0c1844) !important;
           border: 2px solid rgba(255,255,255,0.22) !important;
           box-shadow:
-            0 0 0 1px rgba(0,0,0,0.7),
+            0 0 0 1.5px rgba(0,0,0,0.7),
             0 2px 5px rgba(0,0,0,0.8),
             inset 0 1px 2px rgba(255,255,255,0.2) !important;
         }
@@ -213,7 +219,6 @@ def show():
         
         .bet-txt { font-size: 10px !important; font-weight: 700 !important; color: rgba(255,235,190,0.9) !important; text-shadow: 0 0 5px rgba(255,195,40,0.5), 0 1px 3px rgba(0,0,0,0.98) !important; letter-spacing: 0.03em !important; white-space: nowrap !important; }
 
-        /* КАРТЫ ГЕРОЯ */
         .hero-mob { position: absolute !important; bottom: -55px !important; left: 50% !important; transform: translateX(-50%) !important; z-index: 30 !important; display: flex !important; align-items: flex-start !important; gap: 7px !important; }
 
         .floating-reward { position: absolute !important; top: -38px !important; left: 50% !important; transform: translateX(-50%) !important; font-size: 14px !important; font-weight: 800 !important; color: #17f07e !important; text-shadow: 0 0 12px rgba(23,240,126,0.8), 0 0 28px rgba(23,240,126,0.3) !important; white-space: nowrap !important; animation: float-reward 2.2s ease-out forwards !important; pointer-events: none !important; }
@@ -226,19 +231,18 @@ def show():
         }
         .card-mob::after { content: '' !important; position: absolute !important; top: 0 !important; left: 0 !important; width: 60% !important; height: 45% !important; background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; pointer-events: none !important; border-radius: 8px 0 0 0 !important; }
         .tl-mob { padding: 4px 0 0 5px !important; font-size: 15px !important; font-weight: 900 !important; line-height: 0.9 !important; letter-spacing: -0.04em !important; z-index: 2 !important; position: relative !important; }
-        .c-mob { position: absolute !important; top: 55% !important; left: 50% !important; transform: translate(-50%,-50%) !important; font-size: 26px !important; opacity: 1 !important; line-height: 1 !important; z-index: 2 !important;}
+        .c-mob { position: absolute !important; top: 55% !important; left: 50% !important; transform: translate(-50%,-50%) !important; font-size: 24px !important; opacity: 1 !important; line-height: 1 !important; z-index: 2 !important;}
         .suit-red   { color: #c00a0a !important; }
         .suit-black { color: #0a0a0a !important; }
         .suit-blue  { color: #0056b3 !important; }
         .suit-green { color: #198754 !important; }
 
-        /* СТАРЫЙ RNG BADGE */
         .rng-badge {
           position: absolute !important;
           bottom: 50px !important;
-          right: -15px !important;
-          width: 30px !important;
-          height: 30px !important;
+          right: -31px !important;
+          width: 28px !important;
+          height: 28px !important;
           background: #6f42c1 !important;
           border: 2px solid #fff !important;
           border-radius: 50% !important;
@@ -252,21 +256,19 @@ def show():
           z-index: 40 !important;
         }
 
-        /* АНИМАЦИИ СТРИКА (RAGE BAR) */
-        .rage-bar-container { width: 100%; max-width: 700px; margin: 0 auto 5px auto; background: rgba(0,0,0,0.6); border: 2px solid #333; border-radius: 20px; padding: 4px; display: flex; align-items: center; position: relative; box-shadow: inset 0 2px 10px rgba(0,0,0,0.8); height: 32px; }
+        .rage-bar-container { width: 100%; max-width: 700px; margin: 2 auto 4px auto; background: rgba(0,0,0,0.6); border: 2px solid #333; border-radius: 20px; padding: 3px; display: flex; align-items: center; position: relative; box-shadow: inset 0 2px 10px rgba(0,0,0,0.8); height: 24px; }
         .rage-bar-fill { height: 100%; border-radius: 16px; transition: width 0.3s ease-out; position: relative; overflow: hidden; box-shadow: inset 0 2px 5px rgba(255,255,255,0.3), inset 0 -2px 5px rgba(0,0,0,0.4); }
         .rage-bar-fill::before, .rage-bar-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 2px), radial-gradient(circle, rgba(255,255,255,0.5) 2px, transparent 3px), radial-gradient(circle, rgba(255,255,255,0.4) 1px, transparent 2px); z-index: 1; pointer-events: none; }
         .rage-bar-fill::before { background-size: 20px 25px, 35px 40px, 15px 20px; animation: bubbleRise1 1.2s infinite linear; }
         .rage-bar-fill::after { background-size: 25px 30px, 45px 50px, 22px 28px; animation: bubbleRise2 1.7s infinite linear; opacity: 0.6; }
         @keyframes bubbleRise1 { 0% { background-position: 0px 25px, 0px 40px, 0px 20px; } 50% { background-position: 5px 12.5px, -5px 20px, 3px 10px; } 100% { background-position: 0px 0px, 0px 0px, 0px 0px; } }
         @keyframes bubbleRise2 { 0% { background-position: 0px 30px, 0px 50px, 0px 28px; } 50% { background-position: -6px 15px, 6px 25px, -4px 14px; } 100% { background-position: 0px 0px, 0px 0px, 0px 0px; } }
-        .rage-labels { position: absolute; width: 100%; display: flex; justify-content: space-between; padding: 0 15px; font-weight: 900; font-size: 14px; color: #fff; text-shadow: 0 1px 3px #000, 0 0 5px #000; pointer-events: none; z-index: 2; top: 50%; transform: translateY(-50%); }
+        .rage-labels { position: absolute; width: 100%; display: flex; justify-content: space-between; padding: 0 15px; font-weight: 900; font-size: 12px; color: #fff; text-shadow: 0 1px 3px #000, 0 0 5px #000; pointer-events: none; z-index: 2; top: 50%; transform: translateY(-50%); }
         .rage-pulse { animation: ragePulse 0.4s infinite alternate; }
         @keyframes ragePulse { 0% { filter: brightness(1); box-shadow: 0 0 5px #dc3545; } 100% { filter: brightness(1.3); box-shadow: 0 0 25px #dc3545, inset 0 0 10px #fff; } }
         .rage-flash { animation: whiteFlash 0.6s ease-out; }
         @keyframes whiteFlash { 0% { box-shadow: 0 0 50px #fff, inset 0 0 50px #fff; background: #fff; border-color: #fff; } 100% { box-shadow: 0 0 0 transparent; } }
 
-        /* ЭФФЕКТЫ GLOW */
         .combo-glow-5 { border-color: #0dcaf0 !important; box-shadow: 0 0 10px rgba(13, 202, 240, 0.4), 0 4px 15px rgba(0,0,0,0.8) !important; }
         .combo-glow-10 { border-color: #ffc107 !important; box-shadow: 0 0 15px rgba(255, 193, 7, 0.5), 0 4px 15px rgba(0,0,0,0.8) !important; }
         .combo-glow-25 { border-color: #fd7e14 !important; box-shadow: 0 0 20px rgba(253, 126, 20, 0.6), 0 4px 15px rgba(0,0,0,0.8) !important; animation: pulse-slow 2s infinite; }
@@ -329,11 +331,11 @@ def show():
         st.warning("⚠️ No spots selected.")
         st.stop()
 
-    # ИНИЦИАЛИЗАЦИЯ И СИНХРОНИЗАЦИЯ КОМБО С БАЗОЙ
     stats_data_init = utils.load_user_stats()
     if 'combo' not in st.session_state: st.session_state.combo = stats_data_init.get("combo", 0)
     if 'shields' not in st.session_state: st.session_state.shields = stats_data_init.get("shields", 0)
 
+    if 'shield_break_anim' not in st.session_state: st.session_state.shield_break_anim = False
     if 'session_hands' not in st.session_state: st.session_state.session_hands = 0
     if 'session_correct' not in st.session_state: st.session_state.session_correct = 0
     
@@ -429,6 +431,129 @@ def show():
         h_left = max(0, m_next - m_total)
         hands_left_text = f"Remaining: {h_left} hands"
 
+    # ─────────────────────────────────────────────────────────────────
+    # DYNAMIC SPOT MASTERY CSS INJECTION
+    # ─────────────────────────────────────────────────────────────────
+    visual_rank = m_rank if m_rank > 0 else 1
+    
+    if visual_rank == 1:
+        m_icon = "🌱"
+        m_name = "Rookie I"
+        table_css = """<style>
+        .mobile-game-area { background: radial-gradient(ellipse 50% 38% at 50% 44%, rgba(30,55,38,0.5) 0%, transparent 68%), radial-gradient(ellipse 90% 80% at 50% 50%, #1a2e20 0%, #111e16 55%, #090e0b 100%) !important; box-shadow: 0 0 0 8px #0e1410, 0 0 0 13px #182219, 0 0 0 17px #0b100d, 0 0 40px 6px rgba(0,0,0,0.9), inset 0 2px 16px rgba(255,255,255,0.02) !important; }
+        .mobile-game-area::before { background: repeating-linear-gradient(45deg,  rgba(255,255,255,0.008) 0px, rgba(255,255,255,0.008) 1px, transparent 1px, transparent 10px), repeating-linear-gradient(-45deg, rgba(255,255,255,0.008) 0px, rgba(255,255,255,0.008) 1px, transparent 1px, transparent 10px) !important; }
+        .mobile-game-area::after { border: 1px solid rgba(255,255,255,0.04) !important; }
+        .seat::before { background: radial-gradient(circle at 38% 30%, #1a2d21 0%, #0e1a12 60%, #080d0a 100%) !important; border: 1.5px solid rgba(120,160,130,0.18) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255,255,255,0.04) !important; }
+        .seat::after { background: rgba(255,255,255,0.06) !important; box-shadow: 0 8px 0 rgba(255,255,255,0.04) !important; }
+        .seat-active::before { border-color: rgba(120,180,140,0.55) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.6), 0 0 10px rgba(120,180,140,0.28) !important; animation: r1-pulse 3s ease-in-out infinite !important; }
+        @keyframes r1-pulse { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.6), 0 0 7px rgba(120,180,140,0.22); } 50% { box-shadow: 0 0 0 3px rgba(0,0,0,0.6), 0 0 16px rgba(120,180,140,0.42); } }
+        .seat-label { color: rgba(140,190,155,0.45) !important; text-shadow: 0 1px 3px rgba(0,0,0,0.95) !important; }
+        .mob-info-spot { color: rgba(140,185,155,0.4) !important; text-shadow: 0 1px 4px rgba(0,0,0,0.95) !important; }
+        .mastery-badge { background: rgba(120,180,140,0.07) !important; border: 1px solid rgba(120,180,140,0.18) !important; color: rgba(130,190,150,0.8) !important; }
+        .mastery-bar-fill { background: linear-gradient(90deg, #6ab880, #4a9060) !important; }
+        .hands-left-mob { color: rgba(110,165,130,0.35) !important; }
+        .floating-reward { color: #6ab880 !important; text-shadow: 0 0 10px rgba(106,184,128,0.6) !important; }
+        .card-mob { background: #f8faff !important; border: 1px solid rgba(255,255,255,0.85) !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -6px 16px rgba(0,0,0,0.7), 0 -12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1) !important; }
+        .card-mob::after { background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; }
+        .suit-red { color: #c00a0a !important; }
+        .suit-black { color: #0a0a0a !important; }
+        .rng-badge { color: rgba(130,190,150,0.8) !important; background: rgba(120,180,140,0.08) !important; border: 1.5px solid rgba(120,180,140,0.25) !important; }
+        </style>"""
+    elif visual_rank == 2:
+        m_icon = "💎"
+        m_name = "Advanced II"
+        table_css = """<style>
+        .mobile-game-area { background: radial-gradient(ellipse 55% 40% at 50% 40%, rgba(10,50,80,0.6) 0%, transparent 70%), radial-gradient(ellipse 88% 78% at 50% 50%, #0b3040 0%, #071e2e 58%, #030e18 100%) !important; box-shadow: 0 0 0 8px #081420, 0 0 0 13px #0f2234, 0 0 0 17px #060e17, 0 0 50px 8px rgba(0,0,0,0.92), inset 0 2px 18px rgba(255,255,255,0.025) !important; }
+        .mobile-game-area::before { background: repeating-linear-gradient(45deg,  rgba(100,180,255,0.012) 0px, rgba(100,180,255,0.012) 1px, transparent 1px, transparent 10px), repeating-linear-gradient(-45deg, rgba(100,180,255,0.012) 0px, rgba(100,180,255,0.012) 1px, transparent 1px, transparent 10px) !important; }
+        .mobile-game-area::after { border: 1px solid rgba(100,180,255,0.07) !important; }
+        .seat::before { background: radial-gradient(circle at 38% 30%, #162840 0%, #0c1a28 60%, #060e18 100%) !important; border: 1.5px solid rgba(60,130,200,0.22) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 7px rgba(60,130,200,0.1), inset 0 1px 3px rgba(255,255,255,0.05) !important; }
+        .seat::after { background: rgba(255,255,255,0.065) !important; box-shadow: 0 8px 0 rgba(255,255,255,0.045) !important; }
+        .seat-active::before { border-color: rgba(60,160,255,0.78) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 16px rgba(60,160,255,0.42), 0 0 28px rgba(60,160,255,0.16) !important; animation: r2-pulse 2.8s ease-in-out infinite !important; }
+        @keyframes r2-pulse { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 12px rgba(60,160,255,0.34); } 50% { box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 24px rgba(60,160,255,0.62), 0 0 40px rgba(60,160,255,0.22); } }
+        .seat-label { color: rgba(80,160,230,0.55) !important; text-shadow: 0 0 4px rgba(60,140,220,0.2), 0 1px 3px rgba(0,0,0,0.98) !important; }
+        .mob-info-spot { color: rgba(100,170,220,0.45) !important; text-shadow: 0 1px 4px rgba(0,0,0,0.95) !important; }
+        .mastery-badge { background: rgba(60,130,200,0.09) !important; border: 1px solid rgba(60,130,200,0.22) !important; color: rgba(80,170,255,0.85) !important; }
+        .mastery-bar-fill { background: linear-gradient(90deg, #3ab0ff, #1480d8) !important; }
+        .hands-left-mob { color: rgba(70,140,210,0.35) !important; }
+        .floating-reward { color: #3ab0ff !important; text-shadow: 0 0 10px rgba(58,176,255,0.65) !important; }
+        .card-mob { background: #f8faff !important; border: 1px solid rgba(255,255,255,0.85) !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -6px 16px rgba(0,0,0,0.7), 0 -12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1) !important; }
+        .card-mob::after { background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; }
+        .suit-red { color: #c00a0a !important; }
+        .suit-black { color: #0a0a0a !important; }
+        .rng-badge { color: rgba(80,170,255,0.85) !important; background: rgba(60,130,200,0.09) !important; border: 1.5px solid rgba(60,130,200,0.28) !important; }
+        </style>"""
+    elif visual_rank == 3:
+        m_icon = "🔥"
+        m_name = "Master III"
+        table_css = """<style>
+        .mobile-game-area { background: radial-gradient(ellipse 52% 40% at 50% 42%, rgba(90,18,28,0.65) 0%, transparent 70%), radial-gradient(ellipse 88% 78% at 50% 50%, #3a0d14 0%, #240810 58%, #0f0408 100%) !important; box-shadow: 0 0 0 8px #1a080a, 0 0 0 13px #2e1014, 0 0 0 17px #12060a, 0 0 50px 8px rgba(0,0,0,0.95), inset 0 2px 18px rgba(255,255,255,0.025) !important; }
+        .mobile-game-area::before { background: repeating-linear-gradient(45deg,  rgba(200,100,50,0.014) 0px, rgba(200,100,50,0.014) 1px, transparent 1px, transparent 9px), repeating-linear-gradient(-45deg, rgba(200,100,50,0.014) 0px, rgba(200,100,50,0.014) 1px, transparent 1px, transparent 9px) !important; }
+        .mobile-game-area::after { border: 1px solid rgba(200,120,60,0.08) !important; }
+        .seat::before { background: radial-gradient(circle at 38% 30%, #3a1c10 0%, #221008 60%, #0f0804 100%) !important; border: 1.5px solid rgba(180,110,40,0.28) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 8px rgba(180,110,40,0.1), inset 0 1px 3px rgba(255,255,255,0.06) !important; }
+        .seat::after { background: rgba(255,200,100,0.06) !important; box-shadow: 0 8px 0 rgba(255,200,100,0.04) !important; }
+        .seat-active::before { border-color: rgba(210,150,50,0.88) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 16px rgba(210,150,50,0.48), 0 0 28px rgba(210,150,50,0.18) !important; animation: r3-pulse 2.6s ease-in-out infinite !important; }
+        @keyframes r3-pulse { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 12px rgba(210,150,50,0.4); } 50% { box-shadow: 0 0 0 3px rgba(0,0,0,0.65), 0 0 24px rgba(220,165,60,0.68), 0 0 38px rgba(210,150,50,0.22); } }
+        .seat-label { color: rgba(200,140,50,0.55) !important; text-shadow: 0 0 4px rgba(180,110,30,0.2), 0 1px 3px rgba(0,0,0,0.98) !important; }
+        .mob-info-spot { color: rgba(200,140,60,0.45) !important; text-shadow: 0 1px 4px rgba(0,0,0,0.95) !important; }
+        .mastery-badge { background: rgba(180,110,40,0.09) !important; border: 1px solid rgba(180,110,40,0.24) !important; color: rgba(220,165,65,0.88) !important; }
+        .mastery-bar-fill { background: linear-gradient(90deg, #d49030, #a86018) !important; }
+        .hands-left-mob { color: rgba(180,110,40,0.35) !important; }
+        .floating-reward { color: #d49030 !important; text-shadow: 0 0 10px rgba(212,144,48,0.65) !important; }
+        .card-mob { background: linear-gradient(145deg, #f5f0e8 0%, #ede5d4 100%) !important; border: 1px solid rgba(210,175,110,0.7) !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.15), 0 -6px 16px rgba(0,0,0,0.65), 0 -12px 28px rgba(0,0,0,0.38), 0 0 14px rgba(200,150,60,0.12), inset 0 1px 0 rgba(255,255,255,0.9) !important; }
+        .card-mob::after { background: linear-gradient(135deg, rgba(255,240,200,0.5) 0%, rgba(220,190,130,0.1) 50%, transparent 100%) !important; }
+        .suit-red { color: #a80808 !important; }
+        .suit-black { color: #1a0a04 !important; }
+        .rng-badge { color: rgba(220,165,65,0.88) !important; background: rgba(180,110,40,0.09) !important; border: 1.5px solid rgba(180,110,40,0.3) !important; }
+        </style>"""
+    elif visual_rank == 4:
+        m_icon = "⚡"
+        m_name = "Grandmaster IV"
+        table_css = """<style>
+        .mobile-game-area { background: radial-gradient(ellipse 52% 40% at 50% 42%, rgba(55,20,90,0.6) 0%, transparent 70%), radial-gradient(ellipse 88% 78% at 50% 50%, #1e0d30 0%, #130820 58%, #07030f 100%) !important; box-shadow: 0 0 0 8px #120818, 0 0 0 13px #1e1028, 0 0 0 17px #0d0614, 0 0 50px 8px rgba(0,0,0,0.96), inset 0 2px 18px rgba(255,255,255,0.025) !important; }
+        .mobile-game-area::before { background: repeating-linear-gradient(45deg,  rgba(160,100,255,0.016) 0px, rgba(160,100,255,0.016) 1px, transparent 1px, transparent 9px), repeating-linear-gradient(-45deg, rgba(160,100,255,0.016) 0px, rgba(160,100,255,0.016) 1px, transparent 1px, transparent 9px) !important; }
+        .mobile-game-area::after { border: 1px solid rgba(160,100,255,0.09) !important; }
+        .seat::before { background: radial-gradient(circle at 38% 30%, #2a1840 0%, #180e28 60%, #0a0812 100%) !important; border: 1.5px solid rgba(160,130,220,0.28) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.68), 0 0 8px rgba(160,130,220,0.1), inset 0 1px 3px rgba(255,255,255,0.06) !important; }
+        .seat::after { background: rgba(180,150,255,0.06) !important; box-shadow: 0 8px 0 rgba(180,150,255,0.04) !important; }
+        .seat-active::before { border-color: rgba(190,160,255,0.88) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.68), 0 0 18px rgba(170,130,255,0.52), 0 0 32px rgba(170,130,255,0.2) !important; animation: r4-pulse 2.4s ease-in-out infinite !important; }
+        @keyframes r4-pulse { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.68), 0 0 14px rgba(170,130,255,0.42); } 50% { box-shadow: 0 0 0 3px rgba(0,0,0,0.68), 0 0 26px rgba(190,150,255,0.7), 0 0 44px rgba(170,130,255,0.26); } }
+        .seat-label { color: rgba(180,155,240,0.55) !important; text-shadow: 0 0 4px rgba(150,120,220,0.22), 0 1px 3px rgba(0,0,0,0.98) !important; }
+        .mob-info-spot { color: rgba(170,145,230,0.45) !important; text-shadow: 0 1px 4px rgba(0,0,0,0.95) !important; }
+        .mastery-badge { background: rgba(140,110,220,0.09) !important; border: 1px solid rgba(140,110,220,0.22) !important; color: rgba(190,165,255,0.88) !important; }
+        .mastery-bar-fill { background: linear-gradient(90deg, #a070ff, #7040d8) !important; }
+        .hands-left-mob { color: rgba(140,110,220,0.35) !important; }
+        .floating-reward { color: #a878ff !important; text-shadow: 0 0 12px rgba(168,120,255,0.7) !important; }
+        .card-mob { background: linear-gradient(150deg, #2a2a32 0%, #1e1e26 100%) !important; border: 1px solid rgba(200,190,230,0.3) !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 -6px 16px rgba(0,0,0,0.75), 0 -12px 28px rgba(0,0,0,0.5), 0 0 16px rgba(160,130,255,0.14), inset 0 1px 0 rgba(255,255,255,0.12) !important; }
+        .card-mob::after { background: linear-gradient(135deg, rgba(220,210,255,0.18) 0%, rgba(180,160,240,0.05) 40%, transparent 100%) !important; }
+        .suit-red { color: #ff4466 !important; }
+        .suit-black { color: #d0c8f0 !important; }
+        .rng-badge { color: rgba(190,165,255,0.88) !important; background: rgba(140,110,220,0.09) !important; border: 1.5px solid rgba(140,110,220,0.3) !important; }
+        </style>"""
+    else:
+        m_icon = "👑"
+        m_name = "Legend V"
+        table_css = """<style>
+        .mobile-game-area { background: radial-gradient(ellipse 50% 36% at 50% 42%, rgba(60,50,10,0.5) 0%, transparent 68%), radial-gradient(ellipse 88% 78% at 50% 50%, #141410 0%, #0c0c09 55%, #050504 100%) !important; box-shadow: 0 0 0 8px #0f0f0c, 0 0 0 13px #1c1c16, 0 0 0 17px #0a0a08, 0 0 0 28px 5px rgba(200,170,50,0.05), 0 0 60px 10px rgba(0,0,0,0.98), inset 0 2px 20px rgba(255,255,255,0.02) !important; }
+        .mobile-game-area::before { background: repeating-linear-gradient(45deg,  rgba(220,185,80,0.022) 0px, rgba(220,185,80,0.022) 1px, transparent 1px, transparent 8px), repeating-linear-gradient(-45deg, rgba(220,185,80,0.022) 0px, rgba(220,185,80,0.022) 1px, transparent 1px, transparent 8px) !important; }
+        .mobile-game-area::after { border: 1px solid rgba(200,168,60,0.12) !important; }
+        .seat::before { background: radial-gradient(circle at 38% 30%, #1c1a10 0%, #111008 60%, #080806 100%) !important; border: 1.5px solid rgba(190,158,50,0.3) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.7), 0 0 8px rgba(190,158,50,0.1), inset 0 1px 3px rgba(255,255,255,0.06) !important; }
+        .seat::after { background: rgba(220,188,70,0.07) !important; box-shadow: 0 8px 0 rgba(220,188,70,0.05) !important; }
+        .seat-active::before { border-color: rgba(220,188,70,0.95) !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.7), 0 0 18px rgba(220,188,70,0.58), 0 0 36px rgba(200,165,40,0.22) !important; animation: r5-pulse 2.2s ease-in-out infinite !important; }
+        @keyframes r5-pulse { 0%,100% { box-shadow: 0 0 0 3px rgba(0,0,0,0.7), 0 0 14px rgba(220,188,70,0.46); } 50% { box-shadow: 0 0 0 3px rgba(0,0,0,0.7), 0 0 28px rgba(240,205,80,0.78), 0 0 50px rgba(220,185,50,0.28); } }
+        .seat-label { color: rgba(215,182,60,0.55) !important; text-shadow: 0 0 4px rgba(190,158,40,0.25), 0 1px 3px rgba(0,0,0,0.98) !important; }
+        .mob-info-spot { color: rgba(210,178,55,0.45) !important; text-shadow: 0 0 8px rgba(190,155,40,0.22), 0 1px 4px rgba(0,0,0,0.95) !important; }
+        .mastery-badge { background: rgba(190,158,50,0.1) !important; border: 1px solid rgba(190,158,50,0.25) !important; color: rgba(220,188,70,0.9) !important; text-shadow: 0 0 6px rgba(190,155,40,0.4) !important; }
+        .mastery-bar-fill { background: linear-gradient(90deg, #d4a820, #a07810) !important; box-shadow: 0 0 5px rgba(212,168,32,0.6) !important; }
+        .hands-left-mob { color: rgba(180,148,40,0.35) !important; }
+        .floating-reward { color: #d4a820 !important; text-shadow: 0 0 14px rgba(212,168,32,0.8), 0 0 28px rgba(190,140,20,0.35) !important; }
+        .card-mob { background: linear-gradient(150deg, #1a1a18 0%, #111110 100%) !important; border: 1px solid rgba(210,180,70,0.38) !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.6), 0 -6px 16px rgba(0,0,0,0.8), 0 -12px 30px rgba(0,0,0,0.55), 0 0 18px rgba(200,168,50,0.18), inset 0 1px 0 rgba(255,255,255,0.07) !important; }
+        .card-mob::after { background: linear-gradient(135deg, rgba(240,210,90,0.16) 0%, rgba(200,168,50,0.04) 40%, transparent 100%) !important; }
+        .suit-red { color: #ff3355 !important; }
+        .suit-black { color: #e8e0c8 !important; }
+        .rng-badge { color: rgba(220,188,70,0.9) !important; background: rgba(190,158,50,0.1) !important; border: 1.5px solid rgba(190,158,50,0.3) !important; box-shadow: 0 0 7px rgba(190,155,40,0.22) !important; }
+        </style>"""
+        
+    st.markdown(table_css, unsafe_allow_html=True)
+
     combo_cls = ""
     if c >= 1000: combo_cls = "combo-glow-1000"
     elif c >= 500: combo_cls = "combo-glow-500"
@@ -472,10 +597,11 @@ def show():
 
     progress_pct = int((stats_data.get("xp", 0) / next_xp) * 100) if next_xp != "MAX" else 100
 
-    shield_display = f'<span style="font-size:14px; margin-left:8px; filter:drop-shadow(0 0 5px #0dcaf0); display:{"inline-flex" if st.session_state.shields > 0 else "none"};">🛡️x{st.session_state.shields}</span>'
-    combo_badge = f'<div style="flex:1; display:flex; justify-content:center; align-items:center;"><div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center;"><span style="font-size:18px; font-weight:900; color:#fff;">🔥 {c}</span>{shield_display}</div></div>'
+    shield_display = f'<span style="font-size:12px; margin-left:6px; filter:drop-shadow(0 0 5px #0dcaf0); display:{"inline-flex" if st.session_state.shields > 0 else "none"};">🛡️x{st.session_state.shields}</span>'
+    combo_badge = f'<div style="flex:1; display:flex; justify-content:center; align-items:center;"><div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 2px 10px; border-radius: 15px; display: inline-flex; align-items: center; justify-content: center;"><span style="font-size:15px; font-weight:900; color:#fff;">🔥 {c}</span>{shield_display}</div></div>'
 
-    header_html = f'<div style="background:#111; border-radius:10px; margin-bottom:10px; border:1px solid #333; overflow:hidden; font-family:sans-serif;"><div style="height: 3px; width: 100%; background: #222;"><div style="height: 100%; width: {wr if sh > 0 else 100}%; background: {wr_color if sh > 0 else "#444"}; transition: width 0.3s;"></div></div><div style="padding:6px 12px 0 12px; display:flex; justify-content:space-between; align-items:center;"><div style="flex:1;"><div style="font-size:13px; font-weight:bold; color:#ffc107;">{rank_name}</div><div style="background:#333; height:4px; border-radius:2px; margin-top:3px; width:100%;"><div style="background:#28a745; height:100%; width:{progress_pct}%; border-radius:2px;"></div></div></div><div style="font-size:10px; color:#aaa; margin-left:10px; font-weight:bold;">${stats_data.get("xp", 0)} / ${next_xp}</div></div><div style="display:flex; justify-content:space-between; align-items:center; padding:6px 12px;"><div style="flex:1;"><div style="font-size:11px; font-weight:bold; color:#aaa;">Winrate</div><div style="font-size:13px; font-weight:bold; color:{wr_color};">{wr}%</div></div>{combo_badge}<div style="flex:1; text-align:right;"><div style="font-size:11px; font-weight:bold; color:#aaa;">Hands</div><div style="font-size:13px; font-weight:bold; color:#fff;">{sh}</div></div></div></div>'
+    # Прибил этот блок выше за счет margin-top: -15px
+    header_html = f'<div style="margin-top:-15px; background:#111; border-radius:8px; margin-bottom:1px; border:1px solid #333; overflow:hidden; font-family:sans-serif;"><div style="height: 2px; width: 100%; background: #222;"><div style="height: 100%; width: {wr if sh > 0 else 100}%; background: {wr_color if sh > 0 else "#444"}; transition: width 0.3s;"></div></div><div style="padding:4px 10px 0 10px; display:flex; justify-content:space-between; align-items:center;"><div style="flex:1;"><div style="font-size:12px; font-weight:bold; color:#ffc107;">{rank_name}</div><div style="background:#333; height:4px; border-radius:2px; margin-top:2px; width:100%;"><div style="background:#28a745; height:100%; width:{progress_pct}%; border-radius:2px;"></div></div></div><div style="font-size:9px; color:#aaa; margin-left:10px; font-weight:bold;">${stats_data.get("xp", 0)} / ${next_xp}</div></div><div style="display:flex; justify-content:space-between; align-items:center; padding:2px 10px 4px 10px;"><div style="flex:1;"><div style="font-size:10px; font-weight:bold; color:#aaa;">Winrate</div><div style="font-size:12px; font-weight:bold; color:{wr_color};">{wr}%</div></div>{combo_badge}<div style="flex:1; text-align:right;"><div style="font-size:10px; font-weight:bold; color:#aaa;">Hands</div><div style="font-size:12px; font-weight:bold; color:#fff;">{sh}</div></div></div></div>'
     
     rage_bar_html = f'''
     <div class="rage-bar-container {is_flashing}">
@@ -507,32 +633,31 @@ def show():
 
     def get_seat_style(idx):
         return {
-            0: "bottom: -20px; left: 50%; transform: translateX(-50%);", 
-            1: "bottom: 10%; left: -5%;", 
-            2: "top: 10%; left: -5%;", 
-            3: "top: -20px; left: 50%; transform: translateX(-50%);", 
-            4: "top: 10%; right: -5%;", 
-            5: "bottom: 10%; right: -5%;"
+            1: "top: 75%; left: -2%; transform: translateY(-50%);", 
+            2: "top: 8%; left: 2%;", 
+            3: "top: -17%; left: 50%; transform: translateX(-50%);", 
+            4: "top: 8%; right: 2%;", 
+            5: "top: 75%; right: -2%; transform: translateY(-50%);"
         }.get(idx, "")
 
     def get_chip_style(idx):
         return {
-            0: "bottom: 35px; left: 50%; transform: translateX(-50%);", 
-            1: "bottom: 20%; left: 10%;", 
-            2: "top: 20%; left: 10%;",
-            3: "top: 35px; left: 50%; transform: translateX(-50%);", 
-            4: "top: 20%; right: 10%;", 
-            5: "bottom: 20%; right: 10%;"
+            0: "bottom: 38px; left: 50%; transform: translateX(-50%);", 
+            1: "top: 63%; left: 16%; transform: translateY(-50%);", 
+            2: "top: 23%; left: 20%;",
+            3: "top: 13%; left: 50%; transform: translateX(-50%);", 
+            4: "top: 23%; right: 20%;", 
+            5: "top: 63%; right: 16%; transform: translateY(-50%);"
         }.get(idx, "")
 
     def get_btn_style(idx):
         return {
-            0: "bottom: -10px; left: 50%; margin-left: -80px; z-index: 35;", 
-            1: "bottom: 24%; left: 10%;", 
-            2: "top: 10%; left: 16%;",
-            3: "top: 10%; left: 60%;", 
-            4: "top: 10%; right: 16%;", 
-            5: "bottom: 24%; right: 10%;"
+            0: "bottom: 15px; left: 50%; margin-left: -85px; z-index: 35;", 
+            1: "top: 77%; left: 13%; transform: translateY(-50%);", 
+            2: "top: 25%; left: 13%;",
+            3: "top: 10%; left: 55%;", 
+            4: "top: 25%; right: 13%;", 
+            5: "top: 77%; right: 13%; transform: translateY(-50%);"
         }.get(idx, "")
 
     opp_html = ""; chips_html = ""
@@ -549,16 +674,14 @@ def show():
         bet_amount = bets_on_table.get(p)
         if bet_amount is not None:
             bet_txt = f'<div class="bet-txt">{bet_amount}bb</div>'
-            
             if bet_amount >= 15.0:
-                chip_cls = "chip-4bet"
-                chips_html += f'<div class="chip-container" style="{cs}"><div class="{chip_cls}"></div><div class="{chip_cls}" style="margin-top:-12px;"></div><div class="{chip_cls}" style="margin-top:-12px;"></div>{bet_txt}</div>'
-            elif bet_amount > 1.0:
-                chip_cls = "chip-3bet" if is_3bet_pot else "chip-mob"
-                chips_html += f'<div class="chip-container" style="{cs}"><div class="{chip_cls}"></div><div class="{chip_cls}" style="margin-top:-12px;"></div>{bet_txt}</div>'
+                chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-4bet"></div><div class="chip-4bet" style="margin-top:-13px;"></div><div class="chip-4bet" style="margin-top:-13px;"></div>{bet_txt}</div>'
+            elif bet_amount <= 1.0:
+                if is_3bet_pot: chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-3bet"></div>{bet_txt}</div>'
+                else: chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-mob"></div>{bet_txt}</div>'
             else:
-                chip_cls = "chip-3bet" if is_3bet_pot else "chip-mob"
-                chips_html += f'<div class="chip-container" style="{cs}"><div class="{chip_cls}"></div>{bet_txt}</div>'
+                if is_3bet_pot: chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-3bet"></div><div class="chip-3bet" style="margin-top:-13px;"></div>{bet_txt}</div>'
+                else: chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-mob"></div><div class="chip-mob" style="margin-top:-13px;"></div>{bet_txt}</div>'
         
         if p == btn_pos:
             bs = get_btn_style(i)
@@ -567,16 +690,12 @@ def show():
     hero_cs = get_chip_style(0)
     if display_hero_bet is not None: 
         bet_txt = f'<div class="bet-txt">{display_hero_bet}bb</div>'
-        
         if display_hero_bet >= 15.0:
-            chip_cls = "chip-4bet"
-            chips_html += f'<div class="chip-container" style="{hero_cs}"><div class="{chip_cls}"></div><div class="{chip_cls}" style="margin-top:-12px;"></div><div class="{chip_cls}" style="margin-top:-12px;"></div>{bet_txt}</div>'
-        elif display_hero_bet > 1.0:
-            chip_cls = "chip-3bet" if is_3bet_pot else "chip-mob"
-            chips_html += f'<div class="chip-container" style="{hero_cs}"><div class="{chip_cls}"></div><div class="{chip_cls}" style="margin-top:-12px;"></div>{bet_txt}</div>'
+            chips_html += f'<div class="chip-container" style="{hero_cs}"><div class="chip-4bet"></div><div class="chip-4bet" style="margin-top:-13px;"></div><div class="chip-4bet" style="margin-top:-13px;"></div>{bet_txt}</div>'
+        elif display_hero_bet <= 1.0:
+            chips_html += f'<div class="chip-container" style="{hero_cs}"><div class="chip-mob"></div>{bet_txt}</div>'
         else:
-            chip_cls = "chip-3bet" if is_3bet_pot else "chip-mob"
-            chips_html += f'<div class="chip-container" style="{hero_cs}"><div class="{chip_cls}"></div>{bet_txt}</div>'
+            chips_html += f'<div class="chip-container" style="{hero_cs}"><div class="chip-mob"></div><div class="chip-mob" style="margin-top:-13px;"></div>{bet_txt}</div>'
         
     if rot[0] == btn_pos:
         hero_bs = get_btn_style(0)
@@ -664,7 +783,6 @@ def show():
             if alerts: st.session_state.toast_msgs.extend(alerts)
         except Exception: pass
         
-        # СОХРАНЕНИЕ КОМБО И ЩИТОВ В ОБЛАКО (ХИТРЫЙ ОБХОД ЧЕРЕЗ STATS)
         try:
             curr_stats = utils.load_user_stats()
             curr_stats["combo"] = st.session_state.combo
