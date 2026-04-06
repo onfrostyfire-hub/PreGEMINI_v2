@@ -9,7 +9,7 @@ def show():
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Roboto:wght@500;700;900&display=swap');
 
         /* 1. ПОДНИМАЕМ ВСЁ ВВЕРХ И УБИРАЕМ СКРЫТЫЕ ОТСТУПЫ */
-        .block-container { padding-top: 0.2rem !important; padding-bottom: 2rem !important; max-width: 100% !important; overflow-x: hidden !important; }
+        .block-container { padding-top: 0.2rem !important; padding-bottom: 6rem !important; max-width: 100% !important; overflow-x: hidden !important; }
         div.element-container { margin-bottom: 0 !important; }
         div[data-testid="stVerticalBlock"] > div { padding-top: 0 !important; padding-bottom: 0 !important; margin-bottom: 0 !important; }
 
@@ -25,12 +25,12 @@ def show():
         /* 4. КНОПКИ ДЕЙСТВИЙ */
         div[data-testid="stHorizontalBlock"] { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(10px, 1fr)) !important; gap: 8px !important; width: 100% !important; }
         div[data-testid="column"], div[data-testid="stColumn"] { width: 100% !important; min-width: 0 !important; max-width: 100% !important; margin-bottom: 0 !important; }
-        div[data-testid="stButton"] { width: 100% !important; }
+        div[data-testid="stButton"] { width: 100% !important; padding-bottom: 15px !important; }
         
         /* Базовый сброс и размеры — одинаковы для всех кнопок */
         div[data-testid="stButton"] button {
             width: 100% !important;
-            height: 44px !important;
+            height: 65px !important;
             padding: 0 !important;
             border: none !important;
             border-radius: 12px !important;
@@ -38,9 +38,12 @@ def show():
             cursor: pointer !important;
             position: relative !important;
             overflow: hidden !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
         }
         div[data-testid="stButton"] button:active {
-            transform: translateY(2px) !important;
+            transform: translateY(3px) !important;
         }
         /* Верхний блик на всех кнопках */
         div[data-testid="stButton"] button::after {
@@ -54,7 +57,7 @@ def show():
         }
         div[data-testid="stButton"] button p {
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif !important;
-            font-size: 13px !important;
+            font-size: 15px !important;
             font-weight: 900 !important;
             margin: 0 !important;
             letter-spacing: 0.12em !important;
