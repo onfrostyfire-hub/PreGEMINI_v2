@@ -26,9 +26,40 @@ def show():
         div[data-testid="stHorizontalBlock"] { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(10px, 1fr)) !important; gap: 8px !important; width: 100% !important; }
         div[data-testid="column"] { width: 100% !important; min-width: 0 !important; max-width: 100% !important; margin-bottom: 0 !important; }
         div[data-testid="stButton"] { width: 100% !important; }
-        div[data-testid="stButton"] button { width: 100% !important; height: 50px !important; padding: 0 !important; border-radius: 12px !important; border: none !important; transition: transform 0.1s !important; }
-        div[data-testid="stButton"] button:active { transform: translateY(4px) !important; box-shadow: 0 1px 0 transparent !important; }
-        div[data-testid="stButton"] button p { font-family: 'Roboto', sans-serif !important; font-size: 15px !important; font-weight: 900 !important; margin: 0 !important; letter-spacing: 0.5px !important; text-transform: uppercase !important; color: #ffffff !important; }
+        
+        /* Базовый сброс и размеры — одинаковы для всех кнопок */
+        div[data-testid="stButton"] button {
+            width: 100% !important;
+            height: 52px !important;
+            padding: 0 !important;
+            border: none !important;
+            border-radius: 14px !important;
+            transition: transform 0.08s ease, box-shadow 0.08s ease !important;
+            cursor: pointer !important;
+            position: relative !important;
+            overflow: hidden !important;
+        }
+        div[data-testid="stButton"] button:active {
+            transform: translateY(3px) !important;
+        }
+        /* Верхний блик на всех кнопках */
+        div[data-testid="stButton"] button::after {
+            content: '' !important;
+            position: absolute !important;
+            top: 0 !important; left: 0 !important; right: 0 !important;
+            height: 50% !important;
+            background: linear-gradient(180deg, rgba(255,255,255,0.07) 0%, transparent 100%) !important;
+            border-radius: 14px 14px 0 0 !important;
+            pointer-events: none !important;
+        }
+        div[data-testid="stButton"] button p {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif !important;
+            font-size: 13px !important;
+            font-weight: 900 !important;
+            margin: 0 !important;
+            letter-spacing: 0.12em !important;
+            text-transform: uppercase !important;
+        }
 
         /* ═══════════════════════════════════════════
            БАЗОВЫЕ СТИЛИ (Дизайн переопределяется ниже)
@@ -656,9 +687,6 @@ def show():
         h_left = max(0, m_next - m_total)
         hands_left_text = f"Remaining: {h_left} hands"
 
-    # ─────────────────────────────────────────────────────────────────
-    # DYNAMIC SPOT MASTERY CSS INJECTION
-    # ─────────────────────────────────────────────────────────────────
     visual_rank = m_rank if m_rank > 0 else 1
     
     if visual_rank == 1:
@@ -1064,6 +1092,33 @@ def show():
             st.markdown(utils.render_srs_matrix(data, src, sc, sp, utils.load_srs_data(), st.session_state.hand), unsafe_allow_html=True)
             
         st.markdown("<br>", unsafe_allow_html=True)
+        
+        st.markdown("""<style>
+        div[data-testid="stButton"] button[kind="primary"] {
+            background: linear-gradient(180deg, #1c3a55 0%, #102436 100%) !important;
+            box-shadow:
+                0 4px 0 #081520,
+                0 6px 20px rgba(30,120,200,0.15),
+                inset 0 1px 0 rgba(60,160,255,0.12),
+                inset 0 0 0 1px rgba(40,130,220,0.14) !important;
+            border: none !important;
+            height: 52px !important;
+            border-radius: 14px !important;
+        }
+        div[data-testid="stButton"] button[kind="primary"]:active {
+            transform: translateY(3px) !important;
+            box-shadow: 0 1px 0 #081520, inset 0 1px 0 rgba(60,160,255,0.08) !important;
+        }
+        div[data-testid="stButton"] button[kind="primary"] p {
+            color: rgba(80,180,255,0.95) !important;
+            text-shadow: 0 0 12px rgba(50,160,240,0.4) !important;
+            font-size: 13px !important;
+            font-weight: 900 !important;
+            letter-spacing: 0.1em !important;
+            text-transform: uppercase !important;
+        }
+        </style>""", unsafe_allow_html=True)
+        
         if st.button("UNDERSTOOD, NEXT", type="primary", use_container_width=True):
             st.session_state.last_error = False
             st.session_state.hand = None
@@ -1076,9 +1131,55 @@ def show():
             
         if is_defense:
             st.markdown("""<style>
-                div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button { background: linear-gradient(180deg, #6c757d, #495057) !important; box-shadow: 0 4px 0 #343a40 !important; }
-                div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button { background: linear-gradient(180deg, #20c997, #198754) !important; box-shadow: 0 4px 0 #0f5132 !important; }
-                div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) button { background: linear-gradient(180deg, #e83e8c, #dc3545) !important; box-shadow: 0 4px 0 #a02531 !important; }
+            /* ── FOLD ── тёмный антрацит */
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button {
+                background: linear-gradient(180deg, #252830 0%, #16181f 100%) !important;
+                box-shadow:
+                    0 4px 0 #0c0d12,
+                    0 6px 16px rgba(0,0,0,0.6),
+                    inset 0 1px 0 rgba(255,255,255,0.08),
+                    inset 0 0 0 1px rgba(255,255,255,0.06) !important;
+            }
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button:active {
+                box-shadow: 0 1px 0 #0c0d12, inset 0 1px 0 rgba(255,255,255,0.05) !important;
+            }
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button p {
+                color: rgba(190,190,205,0.8) !important;
+            }
+
+            /* ── CALL ── тёмный изумруд */
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button {
+                background: linear-gradient(180deg, #0c3828 0%, #071e16 100%) !important;
+                box-shadow:
+                    0 4px 0 #030f0b,
+                    0 6px 20px rgba(0,180,80,0.12),
+                    inset 0 1px 0 rgba(0,230,110,0.12),
+                    inset 0 0 0 1px rgba(0,200,90,0.1) !important;
+            }
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button:active {
+                box-shadow: 0 1px 0 #030f0b, inset 0 1px 0 rgba(0,200,90,0.08) !important;
+            }
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button p {
+                color: rgba(50,220,130,0.92) !important;
+                text-shadow: 0 0 12px rgba(30,200,100,0.4) !important;
+            }
+
+            /* ── RAISE ── тёмный кримсон */
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) button {
+                background: linear-gradient(180deg, #4a0909 0%, #300505 100%) !important;
+                box-shadow:
+                    0 4px 0 #1a0303,
+                    0 6px 20px rgba(180,20,20,0.2),
+                    inset 0 1px 0 rgba(255,80,80,0.14),
+                    inset 0 0 0 1px rgba(200,30,30,0.18) !important;
+            }
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) button:active {
+                box-shadow: 0 1px 0 #1a0303, inset 0 1px 0 rgba(255,80,80,0.1) !important;
+            }
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) button p {
+                color: rgba(255,90,90,0.95) !important;
+                text-shadow: 0 0 14px rgba(220,50,50,0.5) !important;
+            }
             </style>""", unsafe_allow_html=True)
             c1, c2, c3 = st.columns(3)
             with c1:
@@ -1089,8 +1190,38 @@ def show():
                 if st.button("RAISE", key="r"): handle_action("RAISE")
         else:
             st.markdown("""<style>
-                div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button { background: linear-gradient(180deg, #6c757d, #495057) !important; box-shadow: 0 4px 0 #343a40 !important; }
-                div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button { background: linear-gradient(180deg, #e83e8c, #dc3545) !important; box-shadow: 0 4px 0 #a02531 !important; }
+            /* ── FOLD ── тёмный антрацит */
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button {
+                background: linear-gradient(180deg, #252830 0%, #16181f 100%) !important;
+                box-shadow:
+                    0 4px 0 #0c0d12,
+                    0 6px 16px rgba(0,0,0,0.6),
+                    inset 0 1px 0 rgba(255,255,255,0.08),
+                    inset 0 0 0 1px rgba(255,255,255,0.06) !important;
+            }
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button:active {
+                box-shadow: 0 1px 0 #0c0d12, inset 0 1px 0 rgba(255,255,255,0.05) !important;
+            }
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button p {
+                color: rgba(190,190,205,0.8) !important;
+            }
+
+            /* ── RAISE ── тёмный кримсон */
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button {
+                background: linear-gradient(180deg, #4a0909 0%, #300505 100%) !important;
+                box-shadow:
+                    0 4px 0 #1a0303,
+                    0 6px 20px rgba(180,20,20,0.2),
+                    inset 0 1px 0 rgba(255,80,80,0.14),
+                    inset 0 0 0 1px rgba(200,30,30,0.18) !important;
+            }
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button:active {
+                box-shadow: 0 1px 0 #1a0303, inset 0 1px 0 rgba(255,80,80,0.1) !important;
+            }
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button p {
+                color: rgba(255,90,90,0.95) !important;
+                text-shadow: 0 0 14px rgba(220,50,50,0.5) !important;
+            }
             </style>""", unsafe_allow_html=True)
             c1, c2 = st.columns(2)
             with c1:
