@@ -930,101 +930,15 @@ def show():
         f'</div>'
     )
 
-    _rb_id = f"rb_{abs(hash(str(rage_pct) + str(grad)))}"
-
-    rage_bar_html = f'''
-<style>
-#{_rb_id}-wrap{{position:relative;width:100%;height:22px;margin-bottom:5px;}}
-#{_rb_id}-track{{
-    position:absolute;inset:0;border-radius:11px;
-    background:rgba(255,255,255,0.03);
-    border:1px solid rgba(255,255,255,0.07);
-    overflow:hidden;
-    box-shadow:inset 0 2px 5px rgba(0,0,0,0.7),inset 0 -1px 1px rgba(255,255,255,0.02);
-}}
-#{_rb_id}-fill{{
-    position:absolute;top:0;left:0;bottom:0;
-    width:{rage_pct}%;
-    background:{grad};
-    border-radius:11px;
-    overflow:hidden;
-    transition:width 0.4s cubic-bezier(.4,0,.2,1);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,0.18);
-}}
-#{_rb_id}-fill::after{{
-    content:'';position:absolute;
-    top:0;left:0;right:0;height:40%;
-    background:linear-gradient(180deg,rgba(255,255,255,0.16) 0%,transparent 100%);
-    border-radius:11px 11px 0 0;pointer-events:none;z-index:2;
-}}
-#{_rb_id}-wrap .bbl{{
-    position:absolute;bottom:-6px;border-radius:50%;
-    background:rgba(255,255,255,0.55);
-    box-shadow:inset 0 -1px 1px rgba(0,0,0,0.1);
-    animation:rise_{_rb_id} linear infinite;z-index:1;
-}}
-@keyframes rise_{_rb_id}{{
-    0%  {{transform:translateY(0) translateX(0) scale(1);opacity:0;}}
-    8%  {{opacity:1;}}
-    80% {{opacity:0.7;}}
-    100%{{transform:translateY(-28px) translateX(var(--drift)) scale(0.55);opacity:0;}}
-}}
-#{_rb_id}-labels{{
-    position:absolute;inset:0;display:flex;
-    justify-content:space-between;align-items:center;
-    padding:0 10px;pointer-events:none;z-index:5;
-}}
-#{_rb_id}-labels span{{
-    font-size:9px;font-weight:800;letter-spacing:0.07em;
-    color:rgba(255,255,255,0.92);
-    text-shadow:0 1px 5px rgba(0,0,0,0.98),0 0 12px rgba(0,0,0,0.9);
-    font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif;
-}}
-.{_rb_id}-rage-pulse #{_rb_id}-fill{{animation:rb_pulse_{_rb_id} 1s ease-in-out infinite;}}
-@keyframes rb_pulse_{_rb_id}{{
-    0%,100%{{filter:brightness(1);}}
-    50%    {{filter:brightness(1.38);}}
-}}
-.{_rb_id}-rage-flash #{_rb_id}-track{{animation:rb_flash_{_rb_id} .38s ease-out 3;}}
-@keyframes rb_flash_{_rb_id}{{
-    0%  {{background:rgba(255,255,255,0.03);}}
-    50% {{background:rgba(255,255,255,0.14);}}
-    100%{{background:rgba(255,255,255,0.03);}}
-}}
-</style>
-
-<div id="{_rb_id}-wrap" class="{_rb_id}-{is_pulsing} {_rb_id}-{is_flashing}">
-    <div id="{_rb_id}-track">
-        <div id="{_rb_id}-fill"></div>
-    </div>
-    <div id="{_rb_id}-labels">
-        <span>{lbl_left}</span>
-        <span>{lbl_right}</span>
-    </div>
+    rage_bar_html = f"""
+<div class="rage-bar-container {is_flashing}">
+  <div class="rage-bar-fill {is_pulsing}" style="width: {rage_pct}%; background: {grad};"></div>
+  <div class="rage-labels">
+    <span>{lbl_left}</span>
+    <span>{lbl_right}</span>
+  </div>
 </div>
-
-<script>
-(function(){{
-    var fill = document.getElementById('{_rb_id}-fill');
-    if(!fill) return;
-    var count = 22;
-    for(var i=0;i<count;i++){{
-        var b = document.createElement('span');
-        b.className = 'bbl';
-        var size = 1.5 + Math.random()*2.5;
-        b.style.width  = size+'px';
-        b.style.height = size+'px';
-        b.style.left   = (3 + Math.random()*94)+'%';
-        var dur = 0.8 + Math.random()*1.6;
-        b.style.animationDuration = dur+'s';
-        b.style.animationDelay   = -(Math.random()*dur*1.5)+'s';
-        b.style.setProperty('--drift', ((Math.random()-0.5)*10)+'px');
-        b.style.opacity = 0.3 + Math.random()*0.45;
-        fill.appendChild(b);
-    }}
-}})();
-</script>
-'''
+"""
 
     anim_html = ""
     anim_reward = st.session_state.pop("anim_reward", None)
@@ -1257,7 +1171,8 @@ def show():
         if is_defense:
             st.markdown("""<style>
             /* ── FOLD ── тёмный антрацит */
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button {
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button,
+            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button {
                 background: linear-gradient(180deg, #252830 0%, #16181f 100%) !important;
                 box-shadow:
                     0 4px 0 #0c0d12,
@@ -1265,15 +1180,18 @@ def show():
                     inset 0 1px 0 rgba(255,255,255,0.08),
                     inset 0 0 0 1px rgba(255,255,255,0.06) !important;
             }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button:active {
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button:active,
+            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button:active {
                 box-shadow: 0 1px 0 #0c0d12, inset 0 1px 0 rgba(255,255,255,0.05) !important;
             }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button p {
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button p,
+            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button p {
                 color: rgba(190,190,205,0.8) !important;
             }
 
             /* ── CALL ── тёмный изумруд */
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button {
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button,
+            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button {
                 background: linear-gradient(180deg, #0c3828 0%, #071e16 100%) !important;
                 box-shadow:
                     0 4px 0 #030f0b,
@@ -1281,16 +1199,19 @@ def show():
                     inset 0 1px 0 rgba(0,230,110,0.12),
                     inset 0 0 0 1px rgba(0,200,90,0.1) !important;
             }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button:active {
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button:active,
+            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button:active {
                 box-shadow: 0 1px 0 #030f0b, inset 0 1px 0 rgba(0,200,90,0.08) !important;
             }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button p {
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button p,
+            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button p {
                 color: rgba(50,220,130,0.92) !important;
                 text-shadow: 0 0 12px rgba(30,200,100,0.4) !important;
             }
 
             /* ── RAISE ── тёмный кримсон */
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) button {
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) button,
+            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(3) button {
                 background: linear-gradient(180deg, #4a0909 0%, #300505 100%) !important;
                 box-shadow:
                     0 4px 0 #1a0303,
@@ -1298,10 +1219,12 @@ def show():
                     inset 0 1px 0 rgba(255,80,80,0.14),
                     inset 0 0 0 1px rgba(200,30,30,0.18) !important;
             }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) button:active {
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) button:active,
+            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(3) button:active {
                 box-shadow: 0 1px 0 #1a0303, inset 0 1px 0 rgba(255,80,80,0.1) !important;
             }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) button p {
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) button p,
+            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(3) button p {
                 color: rgba(255,90,90,0.95) !important;
                 text-shadow: 0 0 14px rgba(220,50,50,0.5) !important;
             }
@@ -1316,7 +1239,8 @@ def show():
         else:
             st.markdown("""<style>
             /* ── FOLD ── тёмный антрацит */
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button {
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button,
+            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button {
                 background: linear-gradient(180deg, #252830 0%, #16181f 100%) !important;
                 box-shadow:
                     0 4px 0 #0c0d12,
@@ -1324,15 +1248,18 @@ def show():
                     inset 0 1px 0 rgba(255,255,255,0.08),
                     inset 0 0 0 1px rgba(255,255,255,0.06) !important;
             }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button:active {
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button:active,
+            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button:active {
                 box-shadow: 0 1px 0 #0c0d12, inset 0 1px 0 rgba(255,255,255,0.05) !important;
             }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button p {
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button p,
+            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button p {
                 color: rgba(190,190,205,0.8) !important;
             }
 
             /* ── RAISE ── тёмный кримсон */
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button {
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button,
+            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button {
                 background: linear-gradient(180deg, #4a0909 0%, #300505 100%) !important;
                 box-shadow:
                     0 4px 0 #1a0303,
@@ -1340,10 +1267,12 @@ def show():
                     inset 0 1px 0 rgba(255,80,80,0.14),
                     inset 0 0 0 1px rgba(200,30,30,0.18) !important;
             }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button:active {
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button:active,
+            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button:active {
                 box-shadow: 0 1px 0 #1a0303, inset 0 1px 0 rgba(255,80,80,0.1) !important;
             }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button p {
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button p,
+            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button p {
                 color: rgba(255,90,90,0.95) !important;
                 text-shadow: 0 0 14px rgba(220,50,50,0.5) !important;
             }
