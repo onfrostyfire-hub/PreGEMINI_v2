@@ -362,13 +362,23 @@ def update_srs_auto(spot_id, hand, is_correct):
     st.session_state["unsaved_count"] += 1
     check_auto_sync()
 
-def load_user_settings():
+def load_user_settings(is_postflop=False, **kwargs):
     init_cloud_data()
-    return st.session_state.get("user_settings", {})
+    settings = st.session_state.get("user_settings", {})
+    if is_postflop:
+        if "postflop_settings" not in settings:
+            settings["postflop_settings"] = {}
+        return settings["postflop_settings"]
+    return settings
 
-def save_user_settings(settings):
+def save_user_settings(settings, is_postflop=False, **kwargs):
     init_cloud_data()
-    st.session_state["user_settings"] = settings
+    if is_postflop:
+        curr = st.session_state.get("user_settings", {})
+        curr["postflop_settings"] = settings
+        st.session_state["user_settings"] = curr
+    else:
+        st.session_state["user_settings"] = settings
     st.session_state["settings_changed"] = True
     st.session_state["unsaved_count"] += 1
     check_auto_sync()
