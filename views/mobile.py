@@ -9,7 +9,7 @@ def show():
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Roboto:wght@500;700;900&display=swap');
 
         /* 1. ПОДНИМАЕМ ВСЁ ВВЕРХ И УБИРАЕМ СКРЫТЫЕ ОТСТУПЫ */
-        .block-container { padding-top: 0.2rem !important; padding-bottom: 0.5rem !important; max-width: 100% !important; overflow-x: hidden !important; }
+        .block-container { padding-top: 0.2rem !important; padding-bottom: 2rem !important; max-width: 100% !important; overflow-x: hidden !important; }
         div.element-container { margin-bottom: 0 !important; }
         div[data-testid="stVerticalBlock"] > div { padding-top: 0 !important; padding-bottom: 0 !important; margin-bottom: 0 !important; }
 
@@ -24,23 +24,23 @@ def show():
 
         /* 4. КНОПКИ ДЕЙСТВИЙ */
         div[data-testid="stHorizontalBlock"] { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(10px, 1fr)) !important; gap: 8px !important; width: 100% !important; }
-        div[data-testid="column"] { width: 100% !important; min-width: 0 !important; max-width: 100% !important; margin-bottom: 0 !important; }
+        div[data-testid="column"], div[data-testid="stColumn"] { width: 100% !important; min-width: 0 !important; max-width: 100% !important; margin-bottom: 0 !important; }
         div[data-testid="stButton"] { width: 100% !important; }
         
         /* Базовый сброс и размеры — одинаковы для всех кнопок */
         div[data-testid="stButton"] button {
             width: 100% !important;
-            height: 52px !important;
+            height: 44px !important;
             padding: 0 !important;
             border: none !important;
-            border-radius: 14px !important;
+            border-radius: 12px !important;
             transition: transform 0.08s ease, box-shadow 0.08s ease !important;
             cursor: pointer !important;
             position: relative !important;
             overflow: hidden !important;
         }
         div[data-testid="stButton"] button:active {
-            transform: translateY(3px) !important;
+            transform: translateY(2px) !important;
         }
         /* Верхний блик на всех кнопках */
         div[data-testid="stButton"] button::after {
@@ -49,7 +49,7 @@ def show():
             top: 0 !important; left: 0 !important; right: 0 !important;
             height: 50% !important;
             background: linear-gradient(180deg, rgba(255,255,255,0.07) 0%, transparent 100%) !important;
-            border-radius: 14px 14px 0 0 !important;
+            border-radius: 12px 12px 0 0 !important;
             pointer-events: none !important;
         }
         div[data-testid="stButton"] button p {
@@ -1141,8 +1141,8 @@ def show():
                 inset 0 1px 0 rgba(60,160,255,0.12),
                 inset 0 0 0 1px rgba(40,130,220,0.14) !important;
             border: none !important;
-            height: 52px !important;
-            border-radius: 14px !important;
+            height: 44px !important;
+            border-radius: 12px !important;
         }
         div[data-testid="stButton"] button[kind="primary"]:active {
             transform: translateY(3px) !important;
