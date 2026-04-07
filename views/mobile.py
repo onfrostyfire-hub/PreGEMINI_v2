@@ -1234,11 +1234,11 @@ def show():
             </style>""", unsafe_allow_html=True)
             c1, c2, c3 = st.columns(3)
             with c1:
-                if st.button("FOLD", key="f"): handle_action("FOLD")
+                if st.button("FOLD", key="f", use_container_width=True): handle_action("FOLD")
             with c2:
-                if st.button("CALL", key="c"): handle_action("CALL")
+                if st.button("CALL", key="c", use_container_width=True): handle_action("CALL")
             with c3:
-                if st.button("RAISE", key="r"): handle_action("RAISE")
+                if st.button("RAISE", key="r", use_container_width=True): handle_action("RAISE")
         else:
             st.markdown("""<style>
             /* ── FOLD ── тёмный антрацит */
@@ -1282,6 +1282,6 @@ def show():
             </style>""", unsafe_allow_html=True)
             c1, c2 = st.columns(2)
             with c1:
-                if st.button("FOLD", key="f"): handle_action("FOLD")
+                if st.button("FOLD", key="f", use_container_width=True): handle_action("FOLD")
             with c2:
-                if st.button("RAISE", key="r"): handle_action("RAISE")
+                if st.button("RAISE", key="r", use_container_width=True): handle_action("RAISE")
