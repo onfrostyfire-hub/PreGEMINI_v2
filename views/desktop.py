@@ -31,18 +31,18 @@ def show():
 
         /* БАЗОВЫЕ НАСТРОЙКИ ДЕСКТОПА */
         .stApp { background-color: #0b0c10; color: #e9ecef; }
-        .block-container { padding-top: 4.5rem !important; max-width: 1200px !important; }
+        .block-container { padding-top: 4.5rem !important; max-width: 1400px !important; }
         
-        /* СТОЛ ДЛЯ ДЕСКТОПА */
-        .game-area { position: relative; width: 100%; max-width: 700px; height: 400px; margin: 0 auto 50px auto; border-radius: 200px; transition: background 0.5s, box-shadow 0.5s, border-color 0.5s; overflow: visible; }
-        .game-area::before { content: ''; position: absolute; inset: 0; border-radius: 200px; pointer-events: none; z-index: 0; }
-        .game-area::after { content: ''; position: absolute; inset: 15px; border-radius: 185px; pointer-events: none; z-index: 0; }
+        /* СТОЛ ДЛЯ ДЕСКТОПА (ШИРОКИЙ ОВАЛ) */
+        .game-area { position: relative; width: 100%; max-width: 860px; height: 380px; margin: 0 auto 50px auto; border-radius: 190px; transition: background 0.5s, box-shadow 0.5s, border-color 0.5s; overflow: visible; }
+        .game-area::before { content: ''; position: absolute; inset: 0; border-radius: 190px; pointer-events: none; z-index: 0; }
+        .game-area::after { content: ''; position: absolute; inset: 15px; border-radius: 175px; pointer-events: none; z-index: 0; }
         
         /* СКРЫВАЕМ SVG ГЕРБЫ ИЗ СТАРОЙ ВЕРСИИ */
         .glass-shatter, .mastery-glow, .crest-left, .crest-right { display: none !important; }
 
         /* ИНФОБЛОК СТОЛА */
-        .table-info { position: absolute; top: 16%; width: 100%; text-align: center; pointer-events: none; z-index: 15; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .table-info { position: absolute; top: 18%; width: 100%; text-align: center; pointer-events: none; z-index: 15; display: flex; flex-direction: column; align-items: center; gap: 5px; }
         .info-spot { font-size: 20px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; z-index: 30; position: relative; text-shadow: 0 1px 4px rgba(0,0,0,0.95); }
         .info-src { display: none; }
         .mastery-badge { display: inline-flex; align-items: center; gap: 4px; border-radius: 20px; padding: 3px 12px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; }
@@ -57,7 +57,7 @@ def show():
         .seat-folded::before { border-color: rgba(80,80,80,0.15) !important; opacity: 0.6 !important; box-shadow: none !important; animation: none !important; }
         .seat-folded::after { opacity: 0.5 !important; }
         .seat-folded .opp-cards-desk { opacity: 0.5 !important; }
-        .seat-label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 5px; }
+        .seat-label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 5px; text-shadow: 0 1px 3px rgba(0,0,0,0.9); }
 
         /* КАРТЫ ОППОНЕНТОВ ДЕСКТОП */
         .opp-cards-desk { position: absolute; top: -15px; display: flex; align-items: flex-end; z-index: 20; }
@@ -89,7 +89,7 @@ def show():
         .rng-desktop { position: absolute; right: -25px; bottom: 15px; width: 34px; height: 34px; border-radius: 50%; font-weight: bold; font-size: 14px; display: flex; align-items: center; justify-content: center; z-index: 40; box-shadow: 0 2px 8px rgba(0,0,0,0.6); }
 
         /* CARBON NOIR STATS HEADER */
-        .cn-mob-header { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; -webkit-font-smoothing: antialiased; border-radius: 14px; overflow: hidden; position: relative; background: linear-gradient(165deg, rgba(18,22,28,0.92) 0%, rgba(8,10,14,0.96) 100%); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); max-width: 700px; margin: 0 auto 10px auto; }
+        .cn-mob-header { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; -webkit-font-smoothing: antialiased; border-radius: 14px; overflow: hidden; position: relative; background: linear-gradient(165deg, rgba(18,22,28,0.92) 0%, rgba(8,10,14,0.96) 100%); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); max-width: 860px; margin: 0 auto 10px auto; }
         .cn-mob-header::before { content: ''; position: absolute; inset: 0; border-radius: 14px; pointer-events: none; background: linear-gradient(125deg, rgba(255,255,255,0.07) 0%, transparent 42%, transparent 58%, rgba(255,255,255,0.03) 100%); z-index: 0; }
         .cn-mob-wr-track { height: 3px; width: 100%; background: rgba(0,0,0,0.45); position: relative; z-index: 1; }
         .cn-mob-wr-fill { height: 100%; transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 12px currentColor; }
@@ -111,7 +111,7 @@ def show():
         .cn-mob-shield { font-size: 11px; margin-left: 2px; font-weight: 800; color: rgba(120,230,255,0.95); filter: drop-shadow(0 0 6px rgba(0,200,255,0.55)); align-items: center; gap: 2px; }
 
         /* RAGE BAR NEON */
-        .rage-bar-container { width: 100%; max-width: 700px; margin: 0 auto 15px auto; height: 26px; border-radius: 999px; position: relative; display: flex; align-items: stretch; padding: 3px; background: linear-gradient(180deg, rgba(12,14,20,0.95) 0%, rgba(6,8,12,0.98) 100%); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65), inset 0 -1px 0 rgba(255,255,255,0.05); overflow: hidden; }
+        .rage-bar-container { width: 100%; max-width: 860px; margin: 0 auto 15px auto; height: 26px; border-radius: 999px; position: relative; display: flex; align-items: stretch; padding: 3px; background: linear-gradient(180deg, rgba(12,14,20,0.95) 0%, rgba(6,8,12,0.98) 100%); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65), inset 0 -1px 0 rgba(255,255,255,0.05); overflow: hidden; }
         .rage-bar-container::before { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%); z-index: 3; }
         .rage-bar-fill { height: 100%; border-radius: 999px; transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; min-width: 0; box-shadow: inset 0 2px 8px rgba(255,255,255,0.35), inset 0 -3px 8px rgba(0,0,0,0.45), 0 0 20px rgba(255,255,255,0.12); }
         .rage-bar-fill::before, .rage-bar-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle, rgba(255,255,255,0.85) 1px, transparent 2px), radial-gradient(circle, rgba(255,255,255,0.45) 2px, transparent 3px), radial-gradient(circle, rgba(255,255,255,0.35) 1px, transparent 2px); z-index: 1; pointer-events: none; }
@@ -137,8 +137,8 @@ def show():
         
         .rng-hint-box { text-align: center; color: #888; font-size: 13px; font-family: monospace; margin-top: 60px; margin-bottom: 10px; background: #2b2b2b; padding: 5px; border-radius: 6px; border: 1px solid #444; width: 100%; }
         
-        .floating-reward { position: absolute; top: -38px; left: 50%; transform: translateX(-50%); font-size: 18px; font-weight: 900; text-shadow: 0px 2px 5px rgba(0,0,0,0.9), 0px 0px 2px #000; z-index: 100; pointer-events: none; animation: float-reward 1.2s ease-out forwards; }
-        @keyframes float-reward { 0% { opacity: 1; transform: translate(-50%, 0) scale(0.8); } 20% { opacity: 1; transform: translate(-50%, -15px) scale(1.2); } 100% { opacity: 0; transform: translate(-50%, -50px) scale(1); } }
+        .floating-reward { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); font-size: 26px; font-weight: 900; text-shadow: 0px 2px 5px rgba(0,0,0,0.9), 0px 0px 2px #000; z-index: 100; pointer-events: none; animation: floatUpFade 1.2s ease-out forwards; }
+        @keyframes floatUpFade { 0% { opacity: 1; transform: translate(-50%, 0) scale(0.5); } 20% { opacity: 1; transform: translate(-50%, -15px) scale(1.2); } 100% { opacity: 0; transform: translate(-50%, -80px) scale(1); } }
 
         /* КНОПКИ ДЕЙСТВИЙ (АДАПТИВНО) */
         div[data-testid="stHorizontalBlock"] { display: flex !important; flex-direction: row !important; width: 100% !important; gap: 10px !important; padding: 0 5px !important; }
@@ -492,7 +492,7 @@ def show():
         
     shatter_html = '<div class="glass-shatter"></div>' if st.session_state.pop("shield_break_anim", False) else ""
 
-    col_center, col_right = st.columns([2, 1])
+    col_center, col_right = st.columns([2.2, 1])
 
     with col_center:
         st.markdown(header_html, unsafe_allow_html=True)
@@ -505,31 +505,31 @@ def show():
 
         def get_seat_style(idx):
             return {
-                1: "bottom: 15%; left: -20px;", 
-                2: "top: 15%; left: -20px;", 
+                1: "bottom: 12%; left: -10px;", 
+                2: "top: 12%; left: -10px;", 
                 3: "top: -30px; left: 50%; transform: translateX(-50%);", 
-                4: "top: 15%; right: -20px;", 
-                5: "bottom: 15%; right: -20px;"
+                4: "top: 12%; right: -10px;", 
+                5: "bottom: 12%; right: -10px;"
             }.get(idx, "")
 
         def get_chip_style(idx):
             return {
-                0: "bottom: 20%; left: 50%; transform: translateX(-50%);", 
-                1: "bottom: 22%; left: 16%;", 
-                2: "top: 22%; left: 16%;",
-                3: "top: 25%; left: 50%; transform: translateX(-50%);", 
-                4: "top: 22%; right: 16%;", 
-                5: "bottom: 22%; right: 16%;"
+                0: "bottom: 25%; left: 50%; transform: translateX(-50%);", 
+                1: "bottom: 25%; left: 12%;", 
+                2: "top: 25%; left: 12%;",
+                3: "top: 20%; left: 50%; transform: translateX(-50%);", 
+                4: "top: 25%; right: 12%;", 
+                5: "bottom: 25%; right: 12%;"
             }.get(idx, "")
 
         def get_btn_style(idx):
             return {
-                0: "bottom: -15px; left: 50%; margin-left: -110px; z-index: 35;", 
-                1: "bottom: 25%; left: 10%;", 
-                2: "top: 10%; left: 10%;",
-                3: "top: 10%; left: 60%;", 
-                4: "top: 10%; right: 10%;", 
-                5: "bottom: 25%; right: 10%;"
+                0: "bottom: -15px; left: 50%; margin-left: -130px; z-index: 35;", 
+                1: "bottom: 28%; left: 6%;", 
+                2: "top: 10%; left: 8%;",
+                3: "top: 8%; left: 55%;", 
+                4: "top: 10%; right: 8%;", 
+                5: "bottom: 28%; right: 6%;"
             }.get(idx, "")
 
         opp_html = ""; chips_html = ""
@@ -773,13 +773,7 @@ def show():
                     if st.button("RAISE", key="r", use_container_width=True): handle_action("RAISE")
 
     with col_right:
-        st.markdown(f"<div style='text-align:center;font-weight:bold;margin-bottom:10px;font-size:16px;'>{sp}</div>", unsafe_allow_html=True)
-        if st.session_state.last_error:
-            tab1, tab2 = st.tabs(["🎯 Correct Range", "🧠 SRS Matrix"])
-            with tab1:
-                st.markdown(utils.render_range_matrix(data, st.session_state.hand), unsafe_allow_html=True)
-            with tab2:
-                st.markdown(utils.render_srs_matrix(data, src, sc, sp, utils.load_srs_data(), st.session_state.hand), unsafe_allow_html=True)
-        else:
+        if not st.session_state.last_error:
+            st.markdown(f"<div style='text-align:center;font-weight:bold;margin-bottom:10px;'>{sp}</div>", unsafe_allow_html=True)
             with st.expander("🫣 Peek Range", expanded=False):
                 st.markdown(utils.render_range_matrix(data, st.session_state.hand), unsafe_allow_html=True)
