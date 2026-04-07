@@ -34,7 +34,7 @@ def show():
             padding: 0 !important;
             border: none !important;
             border-radius: 12px !important;
-            transition: transform 0.08s ease, box-shadow 0.08s ease !important;
+            transition: all 0.05s cubic-bezier(0.2, 0, 0, 1) !important;
             cursor: pointer !important;
             position: relative !important;
             overflow: hidden !important;
@@ -42,8 +42,10 @@ def show():
             align-items: center !important;
             justify-content: center !important;
         }
+        /* УЛЬТРА-МЕРЦАНИЕ И ВДАВЛИВАНИЕ ПРИ КЛИКЕ */
         div[data-testid="stButton"] button:active {
-            transform: translateY(3px) !important;
+            transform: translateY(4px) scale(0.95) !important;
+            filter: brightness(1.3) !important;
         }
         /* Верхний блик на всех кнопках */
         div[data-testid="stButton"] button::after {
@@ -73,7 +75,7 @@ def show():
           width: 100% !important;
           max-width: 390px !important;
           height: 250px !important;
-          margin: 75px auto 55px auto !important; /* ЕЩЕ СИЛЬНЕЕ УБРАЛ ПУСТОТУ НАД СТОЛОМ */
+          margin: 75px auto 55px auto !important;
           border-radius: 125px !important;
           overflow: visible !important;
           background:
@@ -1185,7 +1187,8 @@ def show():
             }
             div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button:active,
             div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button:active {
-                box-shadow: 0 1px 0 #0c0d12, inset 0 1px 0 rgba(255,255,255,0.05) !important;
+                box-shadow: 0 1px 0 #0c0d12, inset 0 1px 0 rgba(255,255,255,0.05), 0 0 20px rgba(255,255,255,0.2) !important;
+                filter: brightness(1.5) !important;
             }
             div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button p,
             div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button p {
@@ -1204,7 +1207,8 @@ def show():
             }
             div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button:active,
             div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button:active {
-                box-shadow: 0 1px 0 #030f0b, inset 0 1px 0 rgba(0,200,90,0.08) !important;
+                box-shadow: 0 1px 0 #030f0b, inset 0 1px 0 rgba(0,200,90,0.08), 0 0 20px rgba(0,255,100,0.5) !important;
+                filter: brightness(1.4) saturate(1.2) !important;
             }
             div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button p,
             div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button p {
@@ -1224,7 +1228,8 @@ def show():
             }
             div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) button:active,
             div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(3) button:active {
-                box-shadow: 0 1px 0 #1a0303, inset 0 1px 0 rgba(255,80,80,0.1) !important;
+                box-shadow: 0 1px 0 #1a0303, inset 0 1px 0 rgba(255,80,80,0.1), 0 0 20px rgba(255,50,50,0.5) !important;
+                filter: brightness(1.4) saturate(1.2) !important;
             }
             div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) button p,
             div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(3) button p {
@@ -1253,7 +1258,8 @@ def show():
             }
             div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button:active,
             div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button:active {
-                box-shadow: 0 1px 0 #0c0d12, inset 0 1px 0 rgba(255,255,255,0.05) !important;
+                box-shadow: 0 1px 0 #0c0d12, inset 0 1px 0 rgba(255,255,255,0.05), 0 0 20px rgba(255,255,255,0.15) !important;
+                filter: brightness(1.5) !important;
             }
             div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button p,
             div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button p {
@@ -1272,7 +1278,8 @@ def show():
             }
             div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button:active,
             div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button:active {
-                box-shadow: 0 1px 0 #1a0303, inset 0 1px 0 rgba(255,80,80,0.1) !important;
+                box-shadow: 0 1px 0 #1a0303, inset 0 1px 0 rgba(255,80,80,0.1), 0 0 20px rgba(255,50,50,0.5) !important;
+                filter: brightness(1.4) saturate(1.2) !important;
             }
             div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button p,
             div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button p {
