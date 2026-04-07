@@ -86,7 +86,7 @@ def show():
         .suit-black { color: #0a0a0a !important; }
         .suit-blue  { color: #0056b3 !important; }
         .suit-green { color: #198754 !important; }
-        .rng-desktop { position: absolute; right: -41px; bottom: 40px; width: 34px; height: 34px; border-radius: 50%; font-weight: bold; font-size: 14px; display: flex; align-items: center; justify-content: center; z-index: 40; box-shadow: 0 2px 8px rgba(0,0,0,0.6); }
+        .rng-desktop { position: absolute; right: -41px; bottom: 60px; width: 34px; height: 34px; border-radius: 50%; font-weight: bold; font-size: 14px; display: flex; align-items: center; justify-content: center; z-index: 40; box-shadow: 0 2px 8px rgba(0,0,0,0.6); }
 
         /* CARBON NOIR STATS HEADER */
         .cn-mob-header { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; -webkit-font-smoothing: antialiased; border-radius: 14px; overflow: hidden; position: relative; background: linear-gradient(165deg, rgba(18,22,28,0.92) 0%, rgba(8,10,14,0.96) 100%); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); max-width: 860px; margin: 0 auto 10px auto; }
