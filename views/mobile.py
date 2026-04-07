@@ -67,8 +67,9 @@ def show():
         }
 
         /* ═══════════════════════════════════════════
-           БАЗОВЫЕ СТИЛИ СТОЛА
+           БАЗОВЫЕ СТИЛИ (Дизайн переопределяется ниже)
            ═══════════════════════════════════════════ */
+
         .mobile-game-area {
           position: relative !important;
           width: 100% !important;
@@ -92,6 +93,7 @@ def show():
           position: absolute !important;
           inset: 10px !important;
           border-radius: 115px !important;
+          border: 1px solid rgba(255,255,255,0.06) !important;
           pointer-events: none !important;
           z-index: 0 !important;
         }
@@ -156,6 +158,8 @@ def show():
           width: 14px !important;
           height: 14px !important;
           border-radius: 50% !important;
+          background: rgba(255,255,255,0.07) !important;
+          box-shadow: 0 8px 0 rgba(255,255,255,0.05) !important;
           pointer-events: none !important;
         }
 
@@ -206,11 +210,16 @@ def show():
         .floating-reward { position: absolute !important; top: -38px !important; left: 50% !important; transform: translateX(-50%) !important; font-size: 14px !important; font-weight: 800 !important; color: #17f07e !important; text-shadow: 0 0 12px rgba(23,240,126,0.8), 0 0 28px rgba(23,240,126,0.3) !important; white-space: nowrap !important; animation: float-reward 2.2s ease-out forwards !important; pointer-events: none !important; }
         @keyframes float-reward { 0%   { opacity: 1; transform: translateX(-50%) translateY(0); } 100% { opacity: 0; transform: translateX(-50%) translateY(-24px); } }
 
-        .card-mob { display: flex !important; flex-direction: column !important; align-items: flex-start !important; overflow: hidden !important; width: 54px !important; height: 78px !important; border-radius: 8px !important; position: relative !important; }
+        .card-mob { display: flex !important; flex-direction: column !important; align-items: flex-start !important; overflow: hidden !important; width: 54px !important; height: 78px !important; border-radius: 8px !important; position: relative !important; background: #f8faff !important; border: 1px solid rgba(255,255,255,0.85) !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -6px 16px rgba(0,0,0,0.7), 0 -12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1) !important;}
+        .card-mob::after { content: '' !important; position: absolute !important; top: 0 !important; left: 0 !important; width: 60% !important; height: 45% !important; background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; pointer-events: none !important; border-radius: 8px 0 0 0 !important; }
         .tl-mob { padding: 4px 0 0 5px !important; font-size: 15px !important; font-weight: 900 !important; line-height: 0.9 !important; letter-spacing: -0.04em !important; z-index: 2 !important; position: relative !important; }
         .c-mob { position: absolute !important; top: 55% !important; left: 50% !important; transform: translate(-50%,-50%) !important; font-size: 24px !important; opacity: 1 !important; line-height: 1 !important; z-index: 2 !important;}
+        .suit-red   { color: #c00a0a !important; }
+        .suit-black { color: #0a0a0a !important; }
+        .suit-blue  { color: #0056b3 !important; }
+        .suit-green { color: #198754 !important; }
         
-        .rng-badge { position: absolute !important; bottom: 50px !important; right: -31px !important; width: 28px !important; height: 28px !important; border-radius: 50% !important; font-weight: bold !important; font-size: 12px !important; display: flex !important; align-items: center !important; justify-content: center !important; z-index: 40 !important; }
+        .rng-badge { position: absolute !important; bottom: 50px !important; right: -31px !important; width: 28px !important; height: 28px !important; background: #6f42c1 !important; border: 2px solid #fff !important; border-radius: 50% !important; color: white !important; font-weight: bold !important; font-size: 12px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 5px rgba(0,0,0,0.5) !important; z-index: 40 !important; }
 
         /* ── Carbon Noir: stats header ── */
         .cn-mob-header { margin-top: -15px; margin-bottom: 2px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; -webkit-font-smoothing: antialiased; border-radius: 14px; overflow: hidden; position: relative; background: linear-gradient(165deg, rgba(18,22,28,0.92) 0%, rgba(8,10,14,0.96) 100%); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
@@ -410,7 +419,7 @@ def show():
         hands_left_text = f"Remaining: {h_left} hands"
 
     # ─────────────────────────────────────────────────────────────────
-    # СЛОВАРЬ ДИЗАЙНОВ (THEMES) - ИЗБАВИЛИСЬ ОТ 400 СТРОК ДУБЛЕЙ
+    # СЛОВАРЬ ДИЗАЙНОВ (THEMES) - ИЗБАВИЛИСЬ ОТ ДУБЛЕЙ
     # ─────────────────────────────────────────────────────────────────
     visual_rank = m_rank if m_rank >= 0 else 0
     if visual_rank > 5: visual_rank = 5
@@ -432,10 +441,6 @@ def show():
             .mastery-bar-fill { background: linear-gradient(90deg, #8b959e, #5b636a) !important; }
             .hands-left-mob { color: rgba(130,140,150,0.35) !important; }
             .floating-reward { color: #8b959e !important; text-shadow: 0 0 10px rgba(139,149,158,0.6) !important; }
-            .card-mob { background: #f8faff !important; border: 1px solid rgba(255,255,255,0.85) !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -6px 16px rgba(0,0,0,0.7), 0 -12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1) !important; }
-            .card-mob::after { background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; }
-            .suit-red { color: #c00a0a !important; }
-            .suit-black { color: #0a0a0a !important; }
             .rng-badge { color: rgba(180,190,200,0.8) !important; background: rgba(150,160,170,0.08) !important; border: 1.5px solid rgba(150,160,170,0.25) !important; }
             </style>"""
         },
@@ -455,10 +460,6 @@ def show():
             .mastery-bar-fill { background: linear-gradient(90deg, #6ab880, #4a9060) !important; }
             .hands-left-mob { color: rgba(110,165,130,0.35) !important; }
             .floating-reward { color: #6ab880 !important; text-shadow: 0 0 10px rgba(106,184,128,0.6) !important; }
-            .card-mob { background: #f8faff !important; border: 1px solid rgba(255,255,255,0.85) !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -6px 16px rgba(0,0,0,0.7), 0 -12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1) !important; }
-            .card-mob::after { background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; }
-            .suit-red { color: #c00a0a !important; }
-            .suit-black { color: #0a0a0a !important; }
             .rng-badge { color: rgba(130,190,150,0.8) !important; background: rgba(120,180,140,0.08) !important; border: 1.5px solid rgba(120,180,140,0.25) !important; }
             </style>"""
         },
@@ -478,10 +479,6 @@ def show():
             .mastery-bar-fill { background: linear-gradient(90deg, #3ab0ff, #1480d8) !important; }
             .hands-left-mob { color: rgba(70,140,210,0.35) !important; }
             .floating-reward { color: #3ab0ff !important; text-shadow: 0 0 10px rgba(58,176,255,0.65) !important; }
-            .card-mob { background: #f8faff !important; border: 1px solid rgba(255,255,255,0.85) !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -6px 16px rgba(0,0,0,0.7), 0 -12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1) !important; }
-            .card-mob::after { background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; }
-            .suit-red { color: #c00a0a !important; }
-            .suit-black { color: #0a0a0a !important; }
             .rng-badge { color: rgba(80,170,255,0.85) !important; background: rgba(60,130,200,0.09) !important; border: 1.5px solid rgba(60,130,200,0.28) !important; }
             </style>"""
         },
@@ -501,10 +498,6 @@ def show():
             .mastery-bar-fill { background: linear-gradient(90deg, #d49030, #a86018) !important; }
             .hands-left-mob { color: rgba(180,110,40,0.35) !important; }
             .floating-reward { color: #d49030 !important; text-shadow: 0 0 10px rgba(212,144,48,0.65) !important; }
-            .card-mob { background: linear-gradient(145deg, #f5f0e8 0%, #ede5d4 100%) !important; border: 1px solid rgba(210,175,110,0.7) !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.15), 0 -6px 16px rgba(0,0,0,0.65), 0 -12px 28px rgba(0,0,0,0.38), 0 0 14px rgba(200,150,60,0.12), inset 0 1px 0 rgba(255,255,255,0.9) !important; }
-            .card-mob::after { background: linear-gradient(135deg, rgba(255,240,200,0.5) 0%, rgba(220,190,130,0.1) 50%, transparent 100%) !important; }
-            .suit-red { color: #a80808 !important; }
-            .suit-black { color: #1a0a04 !important; }
             .rng-badge { color: rgba(220,165,65,0.88) !important; background: rgba(180,110,40,0.09) !important; border: 1.5px solid rgba(180,110,40,0.3) !important; }
             </style>"""
         },
@@ -524,10 +517,6 @@ def show():
             .mastery-bar-fill { background: linear-gradient(90deg, #a070ff, #7040d8) !important; }
             .hands-left-mob { color: rgba(140,110,220,0.35) !important; }
             .floating-reward { color: #a878ff !important; text-shadow: 0 0 12px rgba(168,120,255,0.7) !important; }
-            .card-mob { background: linear-gradient(150deg, #2a2a32 0%, #1e1e26 100%) !important; border: 1px solid rgba(200,190,230,0.3) !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 -6px 16px rgba(0,0,0,0.75), 0 -12px 28px rgba(0,0,0,0.5), 0 0 16px rgba(160,130,255,0.14), inset 0 1px 0 rgba(255,255,255,0.12) !important; }
-            .card-mob::after { background: linear-gradient(135deg, rgba(220,210,255,0.18) 0%, rgba(180,160,240,0.05) 40%, transparent 100%) !important; }
-            .suit-red { color: #ff4466 !important; }
-            .suit-black { color: #d0c8f0 !important; }
             .rng-badge { color: rgba(190,165,255,0.88) !important; background: rgba(140,110,220,0.09) !important; border: 1.5px solid rgba(140,110,220,0.3) !important; }
             </style>"""
         },
@@ -547,166 +536,12 @@ def show():
             .mastery-bar-fill { background: linear-gradient(90deg, #d4a820, #a07810) !important; box-shadow: 0 0 5px rgba(212,168,32,0.6) !important; }
             .hands-left-mob { color: rgba(180,148,40,0.35) !important; }
             .floating-reward { color: #d4a820 !important; text-shadow: 0 0 14px rgba(212,168,32,0.8), 0 0 28px rgba(190,140,20,0.35) !important; }
-            .card-mob { background: linear-gradient(150deg, #1a1a18 0%, #111110 100%) !important; border: 1px solid rgba(210,180,70,0.38) !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.6), 0 -6px 16px rgba(0,0,0,0.8), 0 -12px 30px rgba(0,0,0,0.55), 0 0 18px rgba(200,168,50,0.18), inset 0 1px 0 rgba(255,255,255,0.07) !important; }
-            .card-mob::after { background: linear-gradient(135deg, rgba(240,210,90,0.16) 0%, rgba(200,168,50,0.04) 40%, transparent 100%) !important; }
-            .suit-red { color: #ff3355 !important; }
-            .suit-black { color: #e8e0c8 !important; }
             .rng-badge { color: rgba(220,188,70,0.9) !important; background: rgba(190,158,50,0.1) !important; border: 1.5px solid rgba(190,158,50,0.3) !important; box-shadow: 0 0 7px rgba(190,155,40,0.22) !important; }
             </style>"""
         }
     }
 
-    ranges_db = utils.load_ranges()
-    if not ranges_db: st.error("Ranges database is empty."); return
-
-    scenario_map = {}
-    for src, sc_dict in ranges_db.items():
-        for sc, sp_dict in sc_dict.items():
-            if sc not in scenario_map: scenario_map[sc] = []
-            for sp in sp_dict.keys():
-                scenario_map[sc].append((sp, f"{src}|{sc}|{sp}"))
-                
-    all_scenarios = sorted(list(scenario_map.keys()))
-
-    with st.expander("⚙️ Spot Filters", expanded=False):
-        c_v1, c_v2 = st.columns(2)
-        with c_v1:
-            if st.button("📱 Mobile View", key="mv_btn"):
-                st.session_state.actual_view_type = "📱 Mobile"; st.rerun()
-        with c_v2:
-            if st.button("💻 Desktop View", key="dv_btn"):
-                st.session_state.actual_view_type = "💻 Desktop"; st.rerun()
-        st.markdown("<hr style='margin: 5px 0;'>", unsafe_allow_html=True)
-
-        saved = utils.load_user_settings()
-        sel_sc = st.multiselect("Scenario", all_scenarios, default=[s for s in saved.get("scenarios", []) if s in all_scenarios])
-        
-        sel_spots_keys = []
-        if sel_sc:
-            st.markdown("**Spots for training:**")
-            saved_spots = saved.get("spots", [])
-            for sc in sel_sc:
-                st.markdown(f"<div style='color:#ffc107; font-size:14px; font-weight:bold; margin-top:8px;'>{sc}</div>", unsafe_allow_html=True)
-                for sp_name, sp_key in scenario_map[sc]:
-                    is_checked = (sp_key in saved_spots) if "spots" in saved else True
-                    if st.checkbox(sp_name, value=is_checked, key=f"m_chk_{sp_key}"):
-                        sel_spots_keys.append(sp_key)
-        
-        if st.button("🚀 Apply Settings", use_container_width=True):
-            saved["scenarios"] = sel_sc
-            saved["spots"] = sel_spots_keys
-            utils.save_user_settings(saved)
-            if hasattr(utils, "force_sync"):
-                utils.force_sync()
-            st.session_state.hand = None; st.rerun()
-
-    pool = sel_spots_keys
-    if not pool:
-        st.warning("⚠️ No spots selected.")
-        st.stop()
-
-    stats_data_init = utils.load_user_stats()
-    if 'combo' not in st.session_state: st.session_state.combo = stats_data_init.get("combo", 0)
-    if 'shields' not in st.session_state: st.session_state.shields = stats_data_init.get("shields", 0)
-
-    if 'shield_break_anim' not in st.session_state: st.session_state.shield_break_anim = False
-    if 'session_hands' not in st.session_state: st.session_state.session_hands = 0
-    if 'session_correct' not in st.session_state: st.session_state.session_correct = 0
-    
-    if 'toast_msgs' not in st.session_state: st.session_state.toast_msgs = []
-    if st.session_state.toast_msgs:
-        for msg in st.session_state.toast_msgs:
-            st.toast(msg, icon="🔥" if "Combo" in msg else "🎯")
-        st.session_state.toast_msgs = []
-
-    if 'hand' not in st.session_state: st.session_state.hand = None
-    if 'rng' not in st.session_state: st.session_state.rng = 0
-    if 'suits' not in st.session_state: st.session_state.suits = None
-    if 'current_spot_key' not in st.session_state: st.session_state.current_spot_key = None 
-    if 'last_error' not in st.session_state: st.session_state.last_error = False
-
-    if st.session_state.hand is None or st.session_state.current_spot_key is None or st.session_state.current_spot_key not in pool:
-        chosen = random.choice(pool)
-        st.session_state.current_spot_key = chosen
-        src, sc, sp = chosen.split('|')
-        data = ranges_db[src][sc][sp]
-        r_data = data.get("ranges", data)
-        t_range = r_data.get("training", r_data.get("source", r_data.get("full", "")))
-        poss = utils.parse_range_to_list(t_range)
-        srs = utils.load_srs_data()
-        w = [srs.get(f"{src}_{sc}_{sp}_{h}".replace(" ","_"), 100) for h in poss]
-        if sum(w) == 0: w = [100]*len(poss)
-            
-        st.session_state.hand = random.choices(poss, weights=w, k=1)[0]
-        st.session_state.rng = random.randint(0, 99)
-        ps = ['♠','♥','♦','♣']; s1 = random.choice(ps)
-        st.session_state.suits = [s1, s1 if 's' in st.session_state.hand else random.choice([x for x in ps if x!=s1])]
-
-    src, sc, sp = st.session_state.current_spot_key.split('|')
-    data = ranges_db[src][sc][sp]
-    r_data = data.get("ranges", data)
-    
-    setup = data.get("setup", {})
-    hero_pos = setup.get("hero_pos", "EP")
-    villain_pos = setup.get("villain_pos")
-    btn_pos = setup.get("btn_pos", "BTN")
-    cards_in_play = setup.get("active_players", [])
-    bets_on_table = setup.get("table_bets", {})
-    display_hero_bet = setup.get("hero_bet")
-    is_3bet_pot = setup.get("is_3bet_pot", False)
-
-    is_defense = bool(villain_pos is not None or "call" in r_data or "Call" in r_data)
-    rng = st.session_state.rng
-    correct_act = "FOLD"
-    r_call = r_data.get("call", r_data.get("Call", ""))
-    r_raise = r_data.get("4bet", r_data.get("3bet", r_data.get("Raise", "")))
-    r_full = r_data.get("full", r_data.get("Full", ""))
-
-    if is_defense:
-        w_c = utils.get_weight(st.session_state.hand, r_call)
-        w_raise_val = utils.get_weight(st.session_state.hand, r_raise)
-        if rng < w_raise_val: correct_act = "RAISE"
-        elif rng < (w_raise_val + w_c): correct_act = "CALL"
-    else:
-        w = utils.get_weight(st.session_state.hand, r_full)
-        if rng < w: correct_act = "RAISE"
-
-    h_val = st.session_state.hand; s1, s2 = st.session_state.suits
-    c1 = "suit-red" if s1 == '♥' else "suit-blue" if s1 == '♦' else "suit-green" if s1 == '♣' else "suit-black"
-    c2 = "suit-red" if s2 == '♥' else "suit-blue" if s2 == '♦' else "suit-green" if s2 == '♣' else "suit-black"
-
-    stats_data = utils.load_user_stats()
-    rank_name, next_xp = utils.get_rank_info(stats_data.get("xp", 0))
-    c = st.session_state.combo
-    
-    sh = st.session_state.session_hands
-    scorr = st.session_state.session_correct
-    wr = int((scorr / sh * 100)) if sh > 0 else 0
-    wr_color = '#28a745' if wr >= 90 else '#ffc107' if wr >= 80 else '#dc3545'
-
-    try:
-        mastery = utils.get_spot_mastery_info(stats_data.get("spot_mastery", {}).get(st.session_state.current_spot_key, {}))
-    except Exception as e:
-        mastery = {"rank": 0, "name": "Sandbox", "icon": "⚪", "color": "#6c757d", "is_rusty": False, "prog_pct": 0, "total": 0, "next": 100, "svg": ""}
-        
-    m_color = mastery['color']
-    m_svg = mastery.get("svg", "")
-    m_rust = mastery.get("is_rusty", False)
-    m_pct = mastery.get("prog_pct", 0)
-    m_total = mastery.get("total", 0)
-    m_next = mastery.get("next", 100)
-    m_rank = mastery.get("rank", 0)
-    
-    if m_rank >= 5:
-        hands_left_text = "MAX RANK"
-    else:
-        h_left = max(0, m_next - m_total)
-        hands_left_text = f"Remaining: {h_left} hands"
-
-    # Применяем вытащенный выше стиль
-    visual_rank = m_rank if m_rank >= 0 else 0
-    if visual_rank > 5: visual_rank = 5
-    
+    # Применяем вытащенный стиль
     theme = THEMES[visual_rank]
     m_icon = theme["icon"]
     m_name = theme["name"]
@@ -798,13 +633,11 @@ def show():
         f'font-family:-apple-system,BlinkMacSystemFont,\'SF Pro Display\',\'Helvetica Neue\',sans-serif;'
         f'box-shadow:0 8px 32px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.04);'
         f'">'
-
         f'<div style="height:2px;width:100%;background:rgba(255,255,255,0.04);">'
         f'<div style="height:100%;width:{wr if sh > 0 else 100}%;'
         f'background:{wr_color if sh > 0 else "#2a2a2a"};'
         f'box-shadow:0 0 8px {wr_color if sh > 0 else "transparent"};'
         f'transition:width 0.5s ease;border-radius:0 1px 1px 0;"></div></div>'
-
         f'<div style="padding:7px 12px 3px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px;">'
         f'<div style="flex:1;min-width:0;">'
         f'<div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;'
@@ -821,7 +654,6 @@ def show():
         f'<span style="color:rgba(255,255,255,0.15);margin:0 2px;">/</span>'
         f'${next_xp}</div>'
         f'</div>'
-
         f'<div style="display:flex;justify-content:space-between;align-items:center;padding:2px 12px 8px 12px;">'
         f'<div style="flex:1;">'
         f'<div style="font-size:8px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(150,150,165,0.45);">Winrate</div>'
