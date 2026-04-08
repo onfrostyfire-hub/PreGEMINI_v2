@@ -2,7 +2,6 @@ import streamlit as st
 import random
 from datetime import datetime
 import poker_utils as utils
-import inspect
 
 def generate_mobile_theme(bg_rad1, bg_rad2, shadow1, shadow2, shadow3, seat_rad, seat_border, seat_act_border, seat_act_shadow, anim_name, pulse_shadow1, pulse_shadow2, text_color, badge_bg, bar_fill, card_bg, card_border, rng_bg):
     return f"""<style>
@@ -154,8 +153,8 @@ def show():
         .suit-black { color: #0a0a0a !important; }
         .suit-blue  { color: #0056b3 !important; }
         .suit-green { color: #198754 !important; }
-
-        .rng-badge { position: absolute !important; bottom: 50px !important; right: -31px !important; width: 28px !important; height: 28px !important; border-radius: 50% !important; font-weight: bold !important; font-size: 12px !important; display: flex !important; align-items: center !important; justify-content: center !important; z-index: 40 !important; }
+        
+        .rng-badge { position: absolute !important; bottom: 50px !important; right: -31px !important; width: 28px !important; height: 28px !important; background: #6f42c1 !important; border: 2px solid #fff !important; border-radius: 50% !important; color: white !important; font-weight: bold !important; font-size: 12px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 5px rgba(0,0,0,0.5) !important; z-index: 40 !important; }
 
         /* ── Carbon Noir: stats header ── */
         .cn-mob-header { margin-top: -15px; margin-bottom: 2px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; -webkit-font-smoothing: antialiased; border-radius: 14px; overflow: hidden; position: relative; background: linear-gradient(165deg, rgba(18,22,28,0.92) 0%, rgba(8,10,14,0.96) 100%); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
@@ -194,7 +193,6 @@ def show():
         .rage-flash { animation: rageTubeFlash 0.65s ease-out; }
         @keyframes rageTubeFlash { 0% { box-shadow: 0 0 0 1px rgba(255,255,255,0.9), 0 0 40px rgba(255,255,255,0.8), inset 0 0 30px rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.65); } 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65); border-color: rgba(255,255,255,0.1); } }
 
-        /* COMBO GLOWS */
         .combo-glow-5 { border-color: #0dcaf0 !important; box-shadow: 0 0 10px rgba(13, 202, 240, 0.4), 0 4px 15px rgba(0,0,0,0.8) !important; }
         .combo-glow-10 { border-color: #ffc107 !important; box-shadow: 0 0 15px rgba(255, 193, 7, 0.5), 0 4px 15px rgba(0,0,0,0.8) !important; }
         .combo-glow-25 { border-color: #fd7e14 !important; box-shadow: 0 0 20px rgba(253, 126, 20, 0.6), 0 4px 15px rgba(0,0,0,0.8) !important; animation: pulse-slow 2s infinite; }
@@ -349,6 +347,7 @@ def show():
     m_total = mastery.get("total", 0)
     m_next = mastery.get("next", 100)
     m_rank = mastery.get("rank", 0)
+    m_svg = mastery.get("svg", "")
     
     if m_rank >= 5: hands_left_text = "MAX RANK"
     else: hands_left_text = f"Remaining: {max(0, m_next - m_total)} hands"
