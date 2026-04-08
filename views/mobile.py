@@ -108,7 +108,6 @@ def show():
         .mobile-game-area { position: relative !important; width: 100% !important; max-width: 390px !important; height: 250px !important; margin: 75px auto 55px auto !important; border-radius: 125px !important; overflow: visible !important; transition: background 0.5s, box-shadow 0.5s, border-color 0.5s; }
         .mobile-game-area::before { content: '' !important; position: absolute !important; inset: 0 !important; border-radius: 125px !important; pointer-events: none !important; z-index: 0 !important; }
         .mobile-game-area::after { content: '' !important; position: absolute !important; inset: 10px !important; border-radius: 115px !important; border: 1px solid rgba(255,255,255,0.06) !important; pointer-events: none !important; z-index: 0 !important; }
-        .glass-shatter, .mastery-glow, .crest-left-mob, .crest-right-mob { display: none !important; }
         
         .mob-info { position: absolute !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -52%) !important; z-index: 10 !important; text-align: center !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 4px !important; pointer-events: none !important; width: 100% !important; }
         .mob-info-spot { font-size: 11px !important; font-weight: 600 !important; letter-spacing: 0.2em !important; text-transform: uppercase !important; }
@@ -154,7 +153,7 @@ def show():
         .suit-blue  { color: #0056b3 !important; }
         .suit-green { color: #198754 !important; }
         
-        .rng-badge { position: absolute !important; bottom: 50px !important; right: -31px !important; width: 28px !important; height: 28px !important; background: #6f42c1 !important; border: 2px solid #fff !important; border-radius: 50% !important; color: white !important; font-weight: bold !important; font-size: 12px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 5px rgba(0,0,0,0.5) !important; z-index: 40 !important; }
+        .rng-badge { position: absolute !important; bottom: 50px !important; right: -31px !important; width: 28px !important; height: 28px !important; border-radius: 50% !important; font-weight: bold !important; font-size: 12px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 5px rgba(0,0,0,0.5) !important; z-index: 40 !important; }
 
         /* ── Carbon Noir: stats header ── */
         .cn-mob-header { margin-top: -15px; margin-bottom: 2px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; -webkit-font-smoothing: antialiased; border-radius: 14px; overflow: hidden; position: relative; background: linear-gradient(165deg, rgba(18,22,28,0.92) 0%, rgba(8,10,14,0.96) 100%); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
@@ -347,7 +346,6 @@ def show():
     m_total = mastery.get("total", 0)
     m_next = mastery.get("next", 100)
     m_rank = mastery.get("rank", 0)
-    m_svg = mastery.get("svg", "")
     
     if m_rank >= 5: hands_left_text = "MAX RANK"
     else: hands_left_text = f"Remaining: {max(0, m_next - m_total)} hands"
@@ -582,7 +580,7 @@ def show():
         hero_bs = get_btn_style(0)
         chips_html += f'<div class="dealer-mob" style="{hero_bs}">D</div>'
 
-    html = f'<div class="mobile-game-area {combo_cls}">{shatter_html}<div class="crest-left-mob">{m_svg}</div><div class="crest-right-mob">{m_svg}</div><div class="mastery-glow"></div><div class="mob-info"><div class="mob-info-spot">{sp}</div><div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width: {m_pct}%;"></div></div><div class="hands-left-mob">{hands_left_text}</div></div>{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="card-mob"><div class="tl-mob {c1}">{h_val[0]}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{h_val[1]}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{rng}</div></div></div>'
+    html = f'<div class="mobile-game-area {combo_cls}">{shatter_html}<div class="mob-info"><div class="mob-info-spot">{sp}</div><div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width: {m_pct}%;"></div></div><div class="hands-left-mob">{hands_left_text}</div></div>{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="card-mob"><div class="tl-mob {c1}">{h_val[0]}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{h_val[1]}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{rng}</div></div></div>'
     
     st.markdown(html, unsafe_allow_html=True)
 
