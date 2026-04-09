@@ -68,12 +68,13 @@ def show():
     # 3. Скрещиваем базы
     merged_counts = {sp: 0 for sp in all_spots_names}
     for sp, cnt in spot_counts.items():
+        # Если спот из истории есть в базе — обновляем, если нет — добавляем
         merged_counts[sp] = cnt
         
     # 4. Сортируем по убыванию
     sorted_spots = sorted(merged_counts.items(), key=lambda x: x[1], reverse=True)
     
-    # Собираем чистый HTML
+    # Собираем HTML плотно, без отступов, чтобы Streamlit не принял это за Markdown-код
     html_out = '<div style="display:flex; flex-direction:column; gap:10px; margin-bottom: 20px;">'
     for sp, cnt in sorted_spots:
         pct = min(100, (cnt / 5000) * 100)
@@ -97,21 +98,18 @@ def show():
             grad = "linear-gradient(90deg, #ffc107, #ffef96)"
             glow = "rgba(255, 193, 7, 0.8)"
             
-        html_out += f'''
-        <div style="display:flex; align-items:center; gap:15px; background:#16181c; padding:12px 18px; border-radius:12px; border:1px solid #2d3139; box-shadow:0 4px 6px rgba(0,0,0,0.2);">
-            <div style="flex:0 0 160px; color:#e9ecef; font-weight:800; font-size:13px; letter-spacing:0.05em; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="{sp}">{sp}</div>
-            <div style="flex:0 0 45px; color:#fff; font-weight:900; font-size:15px; text-align:right; font-variant-numeric:tabular-nums;">{cnt}</div>
-            <div style="flex:1; background:rgba(0,0,0,0.6); height:14px; border-radius:7px; box-shadow:inset 0 2px 4px rgba(0,0,0,0.8); position:relative; overflow:hidden;">
-                <div style="width:{pct}%; height:100%; background:{grad}; border-radius:7px; box-shadow:0 0 12px {glow}; transition:width 0.5s ease-out;"></div>
-            </div>
-            <div style="flex:0 0 40px; color:#6c757d; font-weight:700; font-size:13px; text-align:right;">5000</div>
-        </div>
-        '''
+        html_out += '<div style="display:flex; align-items:center; gap:15px; background:#16181c; padding:12px 18px; border-radius:12px; border:1px solid #2d3139; box-shadow:0 4px 6px rgba(0,0,0,0.2);">'
+        html_out += f'<div style="flex:0 0 160px; color:#e9ecef; font-weight:800; font-size:13px; letter-spacing:0.05em; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="{sp}">{sp}</div>'
+        html_out += f'<div style="flex:0 0 45px; color:#fff; font-weight:900; font-size:15px; text-align:right; font-variant-numeric:tabular-nums;">{cnt}</div>'
+        html_out += '<div style="flex:1; background:rgba(0,0,0,0.6); height:14px; border-radius:7px; box-shadow:inset 0 2px 4px rgba(0,0,0,0.8); position:relative; overflow:hidden;">'
+        html_out += f'<div style="width:{pct}%; height:100%; background:{grad}; border-radius:7px; box-shadow:0 0 12px {glow}; transition:width 0.5s ease-out;"></div>'
+        html_out += '</div>'
+        html_out += '<div style="flex:0 0 40px; color:#6c757d; font-weight:700; font-size:13px; text-align:right;">5000</div>'
+        html_out += '</div>'
+        
     html_out += '</div>'
-    
     st.markdown(html_out, unsafe_allow_html=True)
     # ==========================================
-
 
     with st.expander("📜 Raw History Log (click to expand)"):
         d = df.copy()
