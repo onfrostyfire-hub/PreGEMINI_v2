@@ -108,10 +108,10 @@ def show():
         .mastery-bar-fill { height: 100% !important; border-radius: 2px !important; }
         .hands-left-mob { font-size: 9px !important; letter-spacing: 0.06em !important; }
 
-        /* ИГРОКИ (iOS Flat) */
-        .seat { position: absolute !important; z-index: 20 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 0 !important; width: 50px !important; height: 40px !important; background: transparent !important; border: none !important; box-shadow: none !important; }
-        .ava { width: 44px !important; height: 22px !important; background: linear-gradient(180deg, #2a2d32 0%, #1c1e22 100%) !important; border-radius: 44px 44px 0 0 !important; border: 1.5px solid #3a3d42 !important; border-bottom: none !important; box-shadow: inset 0 2px 4px rgba(255,255,255,0.05) !important; transition: all 0.3s ease !important; }
-        .plate { width: 50px !important; height: 18px !important; background: #141518 !important; border-radius: 0 0 6px 6px !important; border: 1.5px solid #3a3d42 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 4px !important; box-sizing: border-box !important; font-size: 9px !important; box-shadow: 0 4px 6px rgba(0,0,0,0.5) !important; transition: all 0.3s ease !important; }
+        /* ИГРОКИ (iOS Flat - УВЕЛИЧЕНО) */
+        .seat { position: absolute !important; z-index: 20 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 0 !important; width: 56px !important; height: 46px !important; background: transparent !important; border: none !important; box-shadow: none !important; }
+        .ava { width: 50px !important; height: 25px !important; background: linear-gradient(180deg, #2a2d32 0%, #1c1e22 100%) !important; border-radius: 50px 50px 0 0 !important; border: 1.5px solid #3a3d42 !important; border-bottom: none !important; box-shadow: inset 0 2px 4px rgba(255,255,255,0.05) !important; transition: all 0.3s ease !important; }
+        .plate { width: 56px !important; height: 20px !important; background: #141518 !important; border-radius: 0 0 6px 6px !important; border: 1.5px solid #3a3d42 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 5px !important; box-sizing: border-box !important; font-size: 10px !important; box-shadow: 0 4px 6px rgba(0,0,0,0.5) !important; transition: all 0.3s ease !important; }
         .pos { font-weight: 900 !important; color: #fff !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.5) !important; }
         .stack { font-weight: 700 !important; color: #fff !important; }
 
@@ -137,21 +137,22 @@ def show():
         /* HERO PANEL */
         .hero-mob { position: absolute !important; bottom: -55px !important; left: 50% !important; transform: translateX(-50%) !important; z-index: 30 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 4px !important; width: 120px !important; }
         .hero-cards-wrap { display: flex !important; gap: 5px !important; position: relative !important; }
-        .hero-plate { width: 78px !important; height: 18px !important; background: #141518 !important; border-radius: 4px !important; border: 1.5px solid #ffc107 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 6px !important; box-sizing: border-box !important; font-size: 10px !important; box-shadow: 0 4px 10px rgba(0,0,0,0.6) !important; transition: border-color 0.3s; }
+        .hero-plate { width: 84px !important; height: 18px !important; background: #141518 !important; border-radius: 4px !important; border: 1.5px solid #ffc107 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 6px !important; box-sizing: border-box !important; font-size: 10px !important; font-weight: bold !important; box-shadow: 0 4px 10px rgba(0,0,0,0.6) !important; transition: border-color 0.3s; }
         
         .floating-reward { position: absolute !important; top: -38px !important; left: 50% !important; transform: translateX(-50%) !important; font-size: 14px !important; font-weight: 800 !important; color: #17f07e !important; text-shadow: 0 0 12px rgba(23,240,126,0.8), 0 0 28px rgba(23,240,126,0.3) !important; white-space: nowrap !important; animation: float-reward 2.2s ease-out forwards !important; pointer-events: none !important; }
         @keyframes float-reward { 0%   { opacity: 1; transform: translateX(-50%) translateY(0); } 100% { opacity: 0; transform: translateX(-50%) translateY(-24px); } }
 
-        .card-mob { width: 34px !important; height: 48px !important; border-radius: 6px !important; position: relative !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; overflow: hidden !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -6px 16px rgba(0,0,0,0.7), 0 -12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1) !important;}
-        .card-mob::after { content: '' !important; position: absolute !important; top: 0 !important; left: 0 !important; width: 60% !important; height: 45% !important; background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; pointer-events: none !important; border-radius: 6px 0 0 0 !important; }
-        .tl-mob { padding: 2px 0 0 3px !important; font-size: 13px !important; font-weight: 900 !important; line-height: 0.9 !important; letter-spacing: -0.04em !important; z-index: 2 !important; position: relative !important; font-family: Arial, sans-serif !important; }
-        .c-mob { position: absolute !important; top: 55% !important; left: 50% !important; transform: translate(-50%,-50%) !important; font-size: 18px !important; opacity: 1 !important; line-height: 1 !important; z-index: 2 !important; font-family: Arial, sans-serif !important; }
+        /* HERO CARDS (Слегка уменьшены) */
+        .card-mob { width: 44px !important; height: 62px !important; border-radius: 5px !important; position: relative !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; overflow: hidden !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -6px 16px rgba(0,0,0,0.7), 0 -12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1) !important;}
+        .card-mob::after { content: '' !important; position: absolute !important; top: 0 !important; left: 0 !important; width: 60% !important; height: 45% !important; background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; pointer-events: none !important; border-radius: 5px 0 0 0 !important; }
+        .tl-mob { padding: 3px 0 0 4px !important; font-size: 13px !important; font-weight: 900 !important; line-height: 0.9 !important; letter-spacing: -0.04em !important; z-index: 2 !important; position: relative !important; font-family: Arial, sans-serif !important; }
+        .c-mob { position: absolute !important; top: 55% !important; left: 50% !important; transform: translate(-50%,-50%) !important; font-size: 22px !important; opacity: 1 !important; line-height: 1 !important; z-index: 2 !important; font-family: Arial, sans-serif !important; }
         .suit-red   { color: #c00a0a !important; }
         .suit-black { color: #0a0a0a !important; }
         .suit-blue  { color: #0056b3 !important; }
         .suit-green { color: #198754 !important; }
         
-        .rng-badge { position: absolute !important; top: 12px !important; right: -30px !important; width: 24px !important; height: 24px !important; border-radius: 50% !important; font-weight: bold !important; font-size: 10px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 5px rgba(0,0,0,0.5) !important; z-index: 40 !important; }
+        .rng-badge { position: absolute !important; top: 50% !important; right: -30px !important; transform: translateY(-50%) !important; width: 24px !important; height: 24px !important; border-radius: 50% !important; font-weight: bold !important; font-size: 10px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 5px rgba(0,0,0,0.5) !important; z-index: 40 !important; }
 
         /* ── Carbon Noir: stats header ── */
         .cn-mob-header { margin-top: -15px; margin-bottom: 2px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; -webkit-font-smoothing: antialiased; border-radius: 14px; overflow: hidden; position: relative; background: linear-gradient(165deg, rgba(18,22,28,0.92) 0%, rgba(8,10,14,0.96) 100%); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
@@ -302,7 +303,7 @@ def show():
     display_hero_bet = setup.get("hero_bet")
     is_3bet_pot = setup.get("is_3bet_pot", False)
     table_size = setup.get("table_size", 6)
-    stacks_data = setup.get("stacks", {}) # <-- ПАРСИНГ СТЕКОВ
+    stacks_data = setup.get("stacks", {})
 
     is_defense = bool(villain_pos is not None or "call" in r_data or "Call" in r_data)
     rng = st.session_state.rng
@@ -505,12 +506,12 @@ def show():
 
     def get_btn_style(idx):
         return {
-            0: "bottom: 18px; left: 50%; margin-left: -65px; z-index: 35;", 
-            1: "top: 77%; left: 15%; transform: translateY(-50%);", 
-            2: "top: 28%; left: 15%;",
-            3: "top: -5%; left: 65%;", 
-            4: "top: 28%; right: 15%;", 
-            5: "top: 77%; right: 15%; transform: translateY(-50%);"
+            0: "bottom: 15px; left: 50%; margin-left: -85px; z-index: 35;", 
+            1: "top: 77%; left: 13%; transform: translateY(-50%);", 
+            2: "top: 25%; left: 13%;",
+            3: "top: 10%; left: 55%;", 
+            4: "top: 25%; right: 13%;", 
+            5: "top: 77%; right: 13%; transform: translateY(-50%);"
         }.get(idx, "")
 
     opp_html = ""; chips_html = ""
@@ -581,17 +582,7 @@ def show():
         chips_html += f'<div class="dealer-mob" style="{hero_bs}">D</div>'
 
     hero_stack = stacks_data.get(hero_pos, 100)
-    hero_html = f'''
-    <div class="hero-mob">
-        {anim_html}
-        <div class="hero-cards-wrap">
-            <div class="card-mob"><div class="tl-mob {c1}">{h_val[0]}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div>
-            <div class="card-mob"><div class="tl-mob {c2}">{h_val[1]}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div>
-            <div class="rng-badge">{rng}</div>
-        </div>
-        <div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div>
-    </div>
-    '''
+    hero_html = f'<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{h_val[0]}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{h_val[1]}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{rng}</div></div><div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div></div>'
 
     html = f'<div class="mobile-game-area {combo_cls}">{shatter_html}<div class="mob-info"><div class="mob-info-spot">{sp}</div><div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width: {m_pct}%;"></div></div><div class="hands-left-mob">{hands_left_text}</div></div>{opp_html}{chips_html}{hero_html}</div>'
     
