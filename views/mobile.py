@@ -97,7 +97,7 @@ def show():
            Если элементы не влезают, меняй эти параметры:
            ========================================== */
         .mobile-game-area { margin-bottom: 70px !important; } /* Отступ под столом для карт Хиро */
-        .rng-hint-wrap { margin-top: 5px !important; margin-bottom: 10px !important; } /* Отступы вокруг надписи RNG */
+        .rng-hint-wrap { margin-top: 1px !important; margin-bottom: 10px !important; } /* Отступы вокруг надписи RNG */
         div[data-testid="stExpander"] { margin-bottom: 5px !important; } /* Отступ после Peek Range */
         div[data-testid="stHorizontalBlock"] { margin-top: 5px !important; gap: 8px !important; } /* Отступ для кнопок действий */
         
