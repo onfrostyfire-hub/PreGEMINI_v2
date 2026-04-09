@@ -1,11 +1,16 @@
 import streamlit as st
 import random
+import time
 from datetime import datetime
 import poker_utils as utils
 
 def generate_mobile_theme(bg_rad1, bg_rad2, shadow1, shadow2, shadow3, seat_rad, seat_border, seat_act_border, seat_act_shadow, anim_name, pulse_shadow1, pulse_shadow2, text_color, badge_bg, bar_fill, card_bg, card_border, rng_bg):
+    # Убрали shadow2 и shadow3. Теперь shadow1 — это цвет единой кромки стола для конкретного ранга.
     return f"""<style>
-    .mobile-game-area {{ background: radial-gradient(ellipse 50% 38% at 50% 42%, {bg_rad1} 0%, transparent 70%), radial-gradient(ellipse 88% 78% at 50% 50%, {bg_rad2}) !important; box-shadow: 0 0 0 8px {shadow1}, 0 0 0 13px {shadow2}, 0 0 0 17px {shadow3}, 0 0 50px 8px rgba(0,0,0,0.95), inset 0 2px 20px rgba(255,255,255,0.03), inset 0 -3px 12px rgba(0,0,0,0.5) !important; }}
+    .mobile-game-area {{ 
+        background: radial-gradient(ellipse 50% 38% at 50% 42%, {bg_rad1} 0%, transparent 70%), radial-gradient(ellipse 88% 78% at 50% 50%, {bg_rad2}) !important; 
+        border-color: {shadow1} !important; 
+    }}
     
     .seat-active .ava, .seat-active .plate {{ border-color: {seat_act_border} !important; }}
     .seat-active .ava {{ box-shadow: 0 -4px 10px {pulse_shadow1}, inset 0 2px 4px rgba(255,255,255,0.1) !important; animation: {anim_name}_ava 2.6s ease-in-out infinite !important; }}
@@ -29,7 +34,7 @@ THEMES = {
     0: {
         "icon": "⚪", "name": "Sandbox",
         "css": generate_mobile_theme(
-            "rgba(50,55,60,0.5)", "#202428 0%, #15181a 55%, #0a0b0d 100%", "#0e1012", "#16181b", "#0b0d0f", 
+            "rgba(50,55,60,0.5)", "#202428 0%, #15181a 55%, #0a0b0d 100%", "#1f2329", "#16181b", "#0b0d0f", 
             "#1f2226 0%, #111316 60%, #08090a 100%", "rgba(140,150,160,0.18)", "rgba(160,170,180,0.55)", "rgba(160,170,180,0.48)",
             "r0-pulse", "rgba(160,170,180,0.38)", "rgba(160,170,180,0.7)", "rgba(150,160,170,0.9)", "rgba(150,160,170,0.09)", 
             "linear-gradient(90deg, #8b959e, #5b636a)", "#f8faff", "rgba(255,255,255,0.85)", "rgba(150,160,170,0.09)"
@@ -38,7 +43,7 @@ THEMES = {
     1: {
         "icon": "🌱", "name": "Basic",
         "css": generate_mobile_theme(
-            "rgba(30,55,38,0.5)", "#1a2e20 0%, #111e16 55%, #090e0b 100%", "#0e1410", "#182219", "#0b100d",
+            "rgba(30,55,38,0.5)", "#1a2e20 0%, #111e16 55%, #090e0b 100%", "#182b1d", "#182219", "#0b100d",
             "#1a2d21 0%, #0e1a12 60%, #080d0a 100%", "rgba(120,160,130,0.18)", "rgba(120,180,140,0.55)", "rgba(120,180,140,0.45)",
             "r1-pulse", "rgba(120,180,140,0.38)", "rgba(120,180,140,0.7)", "rgba(130,190,150,0.9)", "rgba(120,180,140,0.08)",
             "linear-gradient(90deg, #6ab880, #4a9060)", "#f8faff", "rgba(255,255,255,0.85)", "rgba(120,180,140,0.08)"
@@ -47,7 +52,7 @@ THEMES = {
     2: {
         "icon": "💎", "name": "Solid",
         "css": generate_mobile_theme(
-            "rgba(10,50,80,0.6)", "#0b3040 0%, #071e2e 58%, #030e18 100%", "#081420", "#0f2234", "#060e17",
+            "rgba(10,50,80,0.6)", "#0b3040 0%, #071e2e 58%, #030e18 100%", "#0c2738", "#0f2234", "#060e17",
             "#162840 0%, #0c1a28 60%, #060e18 100%", "rgba(60,130,200,0.22)", "rgba(60,160,255,0.78)", "rgba(60,160,255,0.42)",
             "r2-pulse", "rgba(60,160,255,0.34)", "rgba(60,160,255,0.62)", "rgba(80,170,255,0.9)", "rgba(60,130,200,0.09)",
             "linear-gradient(90deg, #3ab0ff, #1480d8)", "#f8faff", "rgba(255,255,255,0.85)", "rgba(60,130,200,0.09)"
@@ -56,7 +61,7 @@ THEMES = {
     3: {
         "icon": "🔥", "name": "Unexploitable",
         "css": generate_mobile_theme(
-            "rgba(90,18,28,0.65)", "#3a0d14 0%, #240810 58%, #0f0408 100%", "#1a080a", "#2e1014", "#12060a",
+            "rgba(90,18,28,0.65)", "#3a0d14 0%, #240810 58%, #0f0408 100%", "#2b0d12", "#2e1014", "#12060a",
             "#3a1c10 0%, #221008 60%, #0f0804 100%", "rgba(180,110,40,0.28)", "rgba(210,150,50,0.88)", "rgba(210,150,50,0.48)",
             "r3-pulse", "rgba(210,150,50,0.4)", "rgba(220,165,60,0.68)", "rgba(220,165,65,0.9)", "rgba(180,110,40,0.09)",
             "linear-gradient(90deg, #d49030, #a86018)", "linear-gradient(145deg, #f5f0e8 0%, #ede5d4 100%)", "rgba(210,175,110,0.7)", "rgba(180,110,40,0.09)"
@@ -65,7 +70,7 @@ THEMES = {
     4: {
         "icon": "⚡", "name": "Elite",
         "css": generate_mobile_theme(
-            "rgba(55,20,90,0.6)", "#1e0d30 0%, #130820 58%, #07030f 100%", "#120818", "#1e1028", "#0d0614",
+            "rgba(55,20,90,0.6)", "#1e0d30 0%, #130820 58%, #07030f 100%", "#1b0b2e", "#1e1028", "#0d0614",
             "#2a1840 0%, #180e28 60%, #0a0812 100%", "rgba(160,130,220,0.28)", "rgba(190,160,255,0.88)", "rgba(170,130,255,0.52)",
             "r4-pulse", "rgba(170,130,255,0.42)", "rgba(190,150,255,0.7)", "rgba(190,165,255,0.9)", "rgba(140,110,220,0.09)",
             "linear-gradient(90deg, #a070ff, #7040d8)", "linear-gradient(150deg, #2a2a32 0%, #1e1e26 100%)", "rgba(200,190,230,0.3)", "rgba(140,110,220,0.09)"
@@ -74,7 +79,7 @@ THEMES = {
     5: {
         "icon": "☢️", "name": "Solver",
         "css": generate_mobile_theme(
-            "rgba(60,50,10,0.5)", "#141410 0%, #0c0c09 55%, #050504 100%", "#0f0f0c", "#1c1c16", "#0a0a08",
+            "rgba(60,50,10,0.5)", "#141410 0%, #0c0c09 55%, #050504 100%", "#1a1a12", "#1c1c16", "#0a0a08",
             "#1c1a10 0%, #111008 60%, #080806 100%", "rgba(190,158,50,0.3)", "rgba(220,188,70,0.95)", "rgba(220,188,70,0.58)",
             "r5-pulse", "rgba(220,188,70,0.46)", "rgba(240,205,80,0.78)", "rgba(220,188,70,0.9)", "rgba(190,158,50,0.1)",
             "linear-gradient(90deg, #d4a820, #a07810)", "linear-gradient(150deg, #1a1a18 0%, #111110 100%)", "rgba(210,180,70,0.38)", "rgba(190,158,50,0.1)"
@@ -87,19 +92,46 @@ def show():
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap');
 
-        .block-container { padding-top: 1.5rem !important; padding-bottom: 1rem !important; max-width: 100% !important; overflow-x: hidden !important; }
-        [data-testid="stExpander"] { margin-top: -5px !important; margin-bottom: 5px !important; }
+        /* ==========================================
+           НАСТРОЙКИ ОТСТУПОВ (ДЛЯ АЙФОНА)
+           Если элементы не влезают, меняй эти параметры:
+           ========================================== */
+        .mobile-game-area { margin-bottom: 70px !important; } /* Отступ под столом для карт Хиро */
+        .rng-hint-wrap { margin-top: 15px !important; margin-bottom: 10px !important; } /* Отступы вокруг надписи RNG */
+        div[data-testid="stExpander"] { margin-bottom: 5px !important; } /* Отступ после Peek Range */
+        div[data-testid="stHorizontalBlock"] { margin-top: 5px !important; gap: 8px !important; } /* Отступ для кнопок действий */
         
-        div[data-testid="stHorizontalBlock"] { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(10px, 1fr)) !important; gap: 8px !important; width: 100% !important; }
+        /* ------------------------------------------ */
+
+        .block-container { padding-top: 1.5rem !important; padding-bottom: 1rem !important; max-width: 100% !important; overflow-x: hidden !important; }
+        [data-testid="stExpander"] { margin-top: -5px !important; }
+        
+        div[data-testid="stHorizontalBlock"] { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(10px, 1fr)) !important; width: 100% !important; }
         div[data-testid="column"] { width: 100% !important; min-width: 0 !important; max-width: 100% !important; margin-bottom: 0 !important; }
         div[data-testid="stButton"] { width: 100% !important; }
         div[data-testid="stButton"] button { width: 100% !important; height: 50px !important; padding: 0 !important; border-radius: 12px !important; border: none !important; transition: transform 0.1s !important; background: #343a40 !important; color: #fff !important; box-shadow: 0 4px 0 #1d2124 !important; }
         div[data-testid="stButton"] button:active { transform: translateY(4px) !important; box-shadow: 0 0 0 transparent !important; }
         div[data-testid="stButton"] button p { font-family: 'Roboto', sans-serif !important; font-size: 15px !important; font-weight: 900 !important; margin: 0 !important; letter-spacing: 0.5px !important; text-transform: uppercase !important; }
 
-        .mobile-game-area { position: relative; width: 100%; height: 280px; margin: 35px auto 10px auto; background: radial-gradient(ellipse at center, #1b5e20 0%, #0a2e0b 100%); border: 6px solid #3e2723; border-radius: 125px; box-shadow: 0 4px 15px rgba(0,0,0,0.8); transition: box-shadow 0.3s, border-color 0.3s; }
-        .mobile-game-area::before { content: '' !important; position: absolute !important; inset: 0 !important; border-radius: 125px !important; pointer-events: none !important; z-index: 0 !important; }
-        .mobile-game-area::after { content: '' !important; position: absolute !important; inset: 10px !important; border-radius: 115px !important; border: 1px solid rgba(255,255,255,0.06) !important; pointer-events: none !important; z-index: 0 !important; }
+        /* ЕДИНАЯ КРОМКА СТОЛА */
+        .mobile-game-area { 
+            position: relative; width: 100%; height: 280px; 
+            margin: 35px auto auto auto; 
+            border: 12px solid #1a1c20; 
+            border-radius: 135px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 3px 12px rgba(0,0,0,0.6); 
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; 
+        }
+        
+        /* СВЕЧЕНИЕ ПРИ ОТВЕТАХ */
+        .mobile-game-area.table-glow-correct {
+            border-color: #198754 !important;
+            box-shadow: 0 0 25px rgba(25,135,84,0.6), inset 0 0 15px rgba(25,135,84,0.4) !important;
+        }
+        .mobile-game-area.table-glow-incorrect {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 25px rgba(220,53,69,0.6), inset 0 0 15px rgba(220,53,69,0.4) !important;
+        }
 
         .mob-info { position: absolute !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -52%) !important; z-index: 10 !important; text-align: center !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 4px !important; pointer-events: none !important; width: 100% !important; }
         .mob-info-spot { font-size: 11px !important; font-weight: 600 !important; letter-spacing: 0.2em !important; text-transform: uppercase !important; }
@@ -142,7 +174,7 @@ def show():
         .floating-reward { position: absolute !important; top: -38px !important; left: 50% !important; transform: translateX(-50%) !important; font-size: 14px !important; font-weight: 800 !important; color: #17f07e !important; text-shadow: 0 0 12px rgba(23,240,126,0.8), 0 0 28px rgba(23,240,126,0.3) !important; white-space: nowrap !important; animation: float-reward 2.2s ease-out forwards !important; pointer-events: none !important; }
         @keyframes float-reward { 0%   { opacity: 1; transform: translateX(-50%) translateY(0); } 100% { opacity: 0; transform: translateX(-50%) translateY(-24px); } }
 
-        /* HERO CARDS (Слегка уменьшены) */
+        /* HERO CARDS */
         .card-mob { width: 44px !important; height: 62px !important; border-radius: 5px !important; position: relative !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; overflow: hidden !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -6px 16px rgba(0,0,0,0.7), 0 -12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1) !important;}
         .card-mob::after { content: '' !important; position: absolute !important; top: 0 !important; left: 0 !important; width: 60% !important; height: 45% !important; background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; pointer-events: none !important; border-radius: 5px 0 0 0 !important; }
         .tl-mob { padding: 3px 0 0 4px !important; font-size: 13px !important; font-weight: 900 !important; line-height: 0.9 !important; letter-spacing: -0.04em !important; z-index: 2 !important; position: relative !important; font-family: Arial, sans-serif !important; }
@@ -153,6 +185,9 @@ def show():
         .suit-green { color: #198754 !important; }
         
         .rng-badge { position: absolute !important; top: 50% !important; right: -30px !important; transform: translateY(-50%) !important; width: 24px !important; height: 24px !important; border-radius: 50% !important; font-weight: bold !important; font-size: 10px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 5px rgba(0,0,0,0.5) !important; z-index: 40 !important; }
+
+        /* RNG HINT */
+        .rng-hint-wrap { text-align: center; color: #6c757d; font-size: 11px; font-family: 'Roboto', sans-serif; font-weight: 500; letter-spacing: 0.5px; }
 
         /* ── Carbon Noir: stats header ── */
         .cn-mob-header { margin-top: -15px; margin-bottom: 2px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; -webkit-font-smoothing: antialiased; border-radius: 14px; overflow: hidden; position: relative; background: linear-gradient(165deg, rgba(18,22,28,0.92) 0%, rgba(8,10,14,0.96) 100%); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
@@ -191,16 +226,14 @@ def show():
         .rage-flash { animation: rageTubeFlash 0.65s ease-out; }
         @keyframes rageTubeFlash { 0% { box-shadow: 0 0 0 1px rgba(255,255,255,0.9), 0 0 40px rgba(255,255,255,0.8), inset 0 0 30px rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.65); } 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65); border-color: rgba(255,255,255,0.1); } }
 
-        .combo-glow-5 { border-color: #0dcaf0 !important; box-shadow: 0 0 10px rgba(13, 202, 240, 0.4), 0 4px 15px rgba(0,0,0,0.8) !important; }
-        .combo-glow-10 { border-color: #ffc107 !important; box-shadow: 0 0 15px rgba(255, 193, 7, 0.5), 0 4px 15px rgba(0,0,0,0.8) !important; }
-        .combo-glow-25 { border-color: #fd7e14 !important; box-shadow: 0 0 20px rgba(253, 126, 20, 0.6), 0 4px 15px rgba(0,0,0,0.8) !important; animation: pulse-slow 2s infinite; }
-        .combo-glow-50 { border-color: #dc3545 !important; box-shadow: 0 0 30px rgba(220, 53, 69, 0.7), 0 4px 15px rgba(0,0,0,0.8) !important; animation: pulse-menace 1.5s infinite; }
-        .combo-glow-100 { border-color: #6f42c1 !important; box-shadow: 0 0 40px rgba(111, 66, 193, 0.8), 0 4px 15px rgba(0,0,0,0.8) !important; animation: pulse-neon 1s infinite; }
-        .combo-glow-200 { border-color: #00e5ff !important; box-shadow: 0 0 50px rgba(0, 229, 255, 0.8), 0 4px 15px rgba(0,0,0,0.8) !important; animation: pulse-plasma 1s infinite alternate; }
-        .combo-glow-500 { border-color: #ff00ff !important; box-shadow: 0 0 60px rgba(255, 0, 255, 0.9), 0 4px 15px rgba(0,0,0,0.8) !important; animation: pulse-matrix 0.8s infinite alternate; }
-        .combo-glow-1000 { border-color: #00ff00 !important; box-shadow: 0 0 80px rgba(0, 255, 0, 1.0), 0 4px 15px rgba(0,0,0,0.8) !important; animation: pulse-god 0.5s infinite alternate; }
-        
-        .rng-hint { text-align: center; color: #6c757d; font-size: 11px; font-family: 'Roboto', sans-serif; font-weight: 500; margin-bottom: 8px; letter-spacing: 0.5px; }
+        .combo-glow-5 { box-shadow: 0 0 10px rgba(13, 202, 240, 0.4), 0 10px 30px rgba(0,0,0,0.8) !important; }
+        .combo-glow-10 { box-shadow: 0 0 15px rgba(255, 193, 7, 0.5), 0 10px 30px rgba(0,0,0,0.8) !important; }
+        .combo-glow-25 { box-shadow: 0 0 20px rgba(253, 126, 20, 0.6), 0 10px 30px rgba(0,0,0,0.8) !important; animation: pulse-slow 2s infinite; }
+        .combo-glow-50 { box-shadow: 0 0 30px rgba(220, 53, 69, 0.7), 0 10px 30px rgba(0,0,0,0.8) !important; animation: pulse-menace 1.5s infinite; }
+        .combo-glow-100 { box-shadow: 0 0 40px rgba(111, 66, 193, 0.8), 0 10px 30px rgba(0,0,0,0.8) !important; animation: pulse-neon 1s infinite; }
+        .combo-glow-200 { box-shadow: 0 0 50px rgba(0, 229, 255, 0.8), 0 10px 30px rgba(0,0,0,0.8) !important; animation: pulse-plasma 1s infinite alternate; }
+        .combo-glow-500 { box-shadow: 0 0 60px rgba(255, 0, 255, 0.9), 0 10px 30px rgba(0,0,0,0.8) !important; animation: pulse-matrix 0.8s infinite alternate; }
+        .combo-glow-1000 { box-shadow: 0 0 80px rgba(0, 255, 0, 1.0), 0 10px 30px rgba(0,0,0,0.8) !important; animation: pulse-god 0.5s infinite alternate; }
         </style>
     """, unsafe_allow_html=True)
 
@@ -367,6 +400,13 @@ def show():
     elif c >= 25: combo_cls = "combo-glow-25"
     elif c >= 10: combo_cls = "combo-glow-10"
     elif c >= 5: combo_cls = "combo-glow-5"
+
+    is_flashing_correct = st.session_state.get("flash_correct", False)
+    table_status_class = ""
+    if is_flashing_correct:
+        table_status_class = "table-glow-correct"
+    elif st.session_state.last_error:
+        table_status_class = "table-glow-incorrect"
 
     tiers = [(0, 1.0), (10, 1.5), (25, 2.0), (50, 3.0), (100, 4.0), (250, 5.0), (500, 10.0)]
     curr_mult = 1.0; next_mult = 1.5; prev_req = 0; next_req = 10
@@ -584,15 +624,9 @@ def show():
     hero_stack = stacks_data.get(hero_pos, 100)
     hero_html = f'<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{h_val[0]}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{h_val[1]}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{rng}</div></div><div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div></div>'
 
-    html = f'<div class="mobile-game-area {combo_cls}">{shatter_html}<div class="mob-info"><div class="mob-info-spot">{sp}</div><div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width: {m_pct}%;"></div></div><div class="hands-left-mob">{hands_left_text}</div></div>{opp_html}{chips_html}{hero_html}</div>'
+    html = f'<div class="mobile-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="mob-info"><div class="mob-info-spot">{sp}</div><div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width: {m_pct}%;"></div></div><div class="hands-left-mob">{hands_left_text}</div></div>{opp_html}{chips_html}{hero_html}</div>'
     
     st.markdown(html, unsafe_allow_html=True)
-
-    if not st.session_state.last_error:
-        if is_defense:
-            st.markdown('<div class="rng-hint">RNG 0-Freq: ACTION &nbsp;|&nbsp; Freq-100: FOLD</div>', unsafe_allow_html=True)
-        else:
-            st.markdown('<div class="rng-hint">RNG 0-Freq: RAISE &nbsp;|&nbsp; Freq-100: FOLD</div>', unsafe_allow_html=True)
 
     def handle_action(action):
         corr = (correct_act == action)
@@ -624,8 +658,9 @@ def show():
                 st.session_state.shields += 1
                 
             st.session_state.last_error = False
-            st.session_state.hand = None
+            st.session_state.flash_correct = True # Включаем вспышку зеленого стола
         else:
+            st.session_state.flash_correct = False
             if st.session_state.shields > 0:
                 st.session_state.shields -= 1
                 st.session_state.shield_break_anim = True
@@ -677,7 +712,11 @@ def show():
         
         st.rerun()
 
-    if st.session_state.last_error:
+    if is_flashing_correct:
+        # Пауза 0.5с после правильного ответа. Кнопки и текст скрыты.
+        pass
+    elif st.session_state.last_error:
+        # Вывод ошибки
         st.markdown(f'<div style="background:#dc3545; color:white; padding:12px; border-radius:12px; text-align:center; font-weight:bold; margin-bottom:15px; font-size:16px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">{st.session_state.msg}</div>', unsafe_allow_html=True)
         
         tab1, tab2 = st.tabs(["🎯 Correct Range", "🧠 SRS Matrix"])
@@ -691,27 +730,11 @@ def show():
         st.markdown("""<style>
         div[data-testid="stButton"] button[kind="primary"] {
             background: linear-gradient(180deg, #1c3a55 0%, #102436 100%) !important;
-            box-shadow:
-                0 4px 0 #081520,
-                0 6px 20px rgba(30,120,200,0.15),
-                inset 0 1px 0 rgba(60,160,255,0.12),
-                inset 0 0 0 1px rgba(40,130,220,0.14) !important;
-            border: none !important;
-            height: 44px !important;
-            border-radius: 12px !important;
+            box-shadow: 0 4px 0 #081520, 0 6px 20px rgba(30,120,200,0.15), inset 0 1px 0 rgba(60,160,255,0.12), inset 0 0 0 1px rgba(40,130,220,0.14) !important;
+            border: none !important; height: 44px !important; border-radius: 12px !important;
         }
-        div[data-testid="stButton"] button[kind="primary"]:active {
-            transform: translateY(3px) !important;
-            box-shadow: 0 1px 0 #081520, inset 0 1px 0 rgba(60,160,255,0.08) !important;
-        }
-        div[data-testid="stButton"] button[kind="primary"] p {
-            color: rgba(80,180,255,0.95) !important;
-            text-shadow: 0 0 12px rgba(50,160,240,0.4) !important;
-            font-size: 13px !important;
-            font-weight: 900 !important;
-            letter-spacing: 0.1em !important;
-            text-transform: uppercase !important;
-        }
+        div[data-testid="stButton"] button[kind="primary"]:active { transform: translateY(3px) !important; box-shadow: 0 1px 0 #081520, inset 0 1px 0 rgba(60,160,255,0.08) !important; }
+        div[data-testid="stButton"] button[kind="primary"] p { color: rgba(80,180,255,0.95) !important; text-shadow: 0 0 12px rgba(50,160,240,0.4) !important; font-size: 13px !important; font-weight: 900 !important; letter-spacing: 0.1em !important; text-transform: uppercase !important; }
         </style>""", unsafe_allow_html=True)
         
         if st.button("UNDERSTOOD, NEXT", type="primary", use_container_width=True):
@@ -719,74 +742,35 @@ def show():
             st.session_state.hand = None
             st.session_state.shield_break_anim = False
             st.rerun()
-
     else:
+        # Вывод текста RNG под столом
+        if is_defense:
+            st.markdown('<div class="rng-hint-wrap">RNG 0-Freq: ACTION &nbsp;|&nbsp; Freq-100: FOLD</div>', unsafe_allow_html=True)
+        else:
+            st.markdown('<div class="rng-hint-wrap">RNG 0-Freq: RAISE &nbsp;|&nbsp; Freq-100: FOLD</div>', unsafe_allow_html=True)
+
         with st.expander("🫣 Peek Range", expanded=False):
             st.markdown(utils.render_range_matrix(data, st.session_state.hand), unsafe_allow_html=True)
             
         if is_defense:
             st.markdown("""<style>
-            /* ── FOLD ── тёмный антрацит */
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button,
-            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button {
-                background: linear-gradient(180deg, #252830 0%, #16181f 100%) !important;
-                box-shadow:
-                    0 4px 0 #0c0d12,
-                    0 6px 16px rgba(0,0,0,0.6),
-                    inset 0 1px 0 rgba(255,255,255,0.08),
-                    inset 0 0 0 1px rgba(255,255,255,0.06) !important;
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button, div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button {
+                background: linear-gradient(180deg, #252830 0%, #16181f 100%) !important; box-shadow: 0 4px 0 #0c0d12, 0 6px 16px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 0 0 1px rgba(255,255,255,0.06) !important;
             }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button:active,
-            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button:active {
-                box-shadow: 0 1px 0 #0c0d12, inset 0 1px 0 rgba(255,255,255,0.05), 0 0 20px rgba(255,255,255,0.15) !important;
-                filter: brightness(1.5) !important;
-            }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button p,
-            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button p {
-                color: rgba(190,190,205,0.8) !important;
-            }
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button:active, div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button:active { box-shadow: 0 1px 0 #0c0d12, inset 0 1px 0 rgba(255,255,255,0.05), 0 0 20px rgba(255,255,255,0.15) !important; filter: brightness(1.5) !important; }
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button p, div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button p { color: rgba(190,190,205,0.8) !important; }
 
-            /* ── CALL ── тёмный изумруд */
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button,
-            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button {
-                background: linear-gradient(180deg, #0c3828 0%, #071e16 100%) !important;
-                box-shadow:
-                    0 4px 0 #030f0b,
-                    0 6px 20px rgba(0,180,80,0.12),
-                    inset 0 1px 0 rgba(0,230,110,0.12),
-                    inset 0 0 0 1px rgba(0,200,90,0.1) !important;
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button, div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button {
+                background: linear-gradient(180deg, #0c3828 0%, #071e16 100%) !important; box-shadow: 0 4px 0 #030f0b, 0 6px 20px rgba(0,180,80,0.12), inset 0 1px 0 rgba(0,230,110,0.12), inset 0 0 0 1px rgba(0,200,90,0.1) !important;
             }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button:active,
-            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button:active {
-                box-shadow: 0 1px 0 #030f0b, inset 0 1px 0 rgba(0,200,90,0.08), 0 0 20px rgba(0,255,100,0.5) !important;
-                filter: brightness(1.4) saturate(1.2) !important;
-            }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button p,
-            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button p {
-                color: rgba(50,220,130,0.92) !important;
-                text-shadow: 0 0 12px rgba(30,200,100,0.4) !important;
-            }
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button:active, div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button:active { box-shadow: 0 1px 0 #030f0b, inset 0 1px 0 rgba(0,200,90,0.08), 0 0 20px rgba(0,255,100,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button p, div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button p { color: rgba(50,220,130,0.92) !important; text-shadow: 0 0 12px rgba(30,200,100,0.4) !important; }
 
-            /* ── RAISE ── тёмный кримсон */
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) button,
-            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(3) button {
-                background: linear-gradient(180deg, #4a0909 0%, #300505 100%) !important;
-                box-shadow:
-                    0 4px 0 #1a0303,
-                    0 6px 20px rgba(180,20,20,0.2),
-                    inset 0 1px 0 rgba(255,80,80,0.14),
-                    inset 0 0 0 1px rgba(200,30,30,0.18) !important;
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) button, div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(3) button {
+                background: linear-gradient(180deg, #4a0909 0%, #300505 100%) !important; box-shadow: 0 4px 0 #1a0303, 0 6px 20px rgba(180,20,20,0.2), inset 0 1px 0 rgba(255,80,80,0.14), inset 0 0 0 1px rgba(200,30,30,0.18) !important;
             }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) button:active,
-            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(3) button:active {
-                box-shadow: 0 1px 0 #1a0303, inset 0 1px 0 rgba(255,80,80,0.1), 0 0 20px rgba(255,50,50,0.5) !important;
-                filter: brightness(1.4) saturate(1.2) !important;
-            }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) button p,
-            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(3) button p {
-                color: rgba(255,90,90,0.95) !important;
-                text-shadow: 0 0 14px rgba(220,50,50,0.5) !important;
-            }
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) button:active, div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(3) button:active { box-shadow: 0 1px 0 #1a0303, inset 0 1px 0 rgba(255,80,80,0.1), 0 0 20px rgba(255,50,50,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) button p, div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(3) button p { color: rgba(255,90,90,0.95) !important; text-shadow: 0 0 14px rgba(220,50,50,0.5) !important; }
             </style>""", unsafe_allow_html=True)
             c1, c2, c3 = st.columns(3)
             with c1:
@@ -797,49 +781,27 @@ def show():
                 if st.button("RAISE", key="r", use_container_width=True): handle_action("RAISE")
         else:
             st.markdown("""<style>
-            /* ── FOLD ── тёмный антрацит */
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button,
-            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button {
-                background: linear-gradient(180deg, #252830 0%, #16181f 100%) !important;
-                box-shadow:
-                    0 4px 0 #0c0d12,
-                    0 6px 16px rgba(0,0,0,0.6),
-                    inset 0 1px 0 rgba(255,255,255,0.08),
-                    inset 0 0 0 1px rgba(255,255,255,0.06) !important;
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button, div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button {
+                background: linear-gradient(180deg, #252830 0%, #16181f 100%) !important; box-shadow: 0 4px 0 #0c0d12, 0 6px 16px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 0 0 1px rgba(255,255,255,0.06) !important;
             }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button:active,
-            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button:active {
-                box-shadow: 0 1px 0 #0c0d12, inset 0 1px 0 rgba(255,255,255,0.05), 0 0 20px rgba(255,255,255,0.15) !important;
-                filter: brightness(1.5) !important;
-            }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button p,
-            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button p {
-                color: rgba(190,190,205,0.8) !important;
-            }
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button:active, div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button:active { box-shadow: 0 1px 0 #0c0d12, inset 0 1px 0 rgba(255,255,255,0.05), 0 0 20px rgba(255,255,255,0.15) !important; filter: brightness(1.5) !important; }
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button p, div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button p { color: rgba(190,190,205,0.8) !important; }
 
-            /* ── RAISE ── тёмный кримсон */
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button,
-            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button {
-                background: linear-gradient(180deg, #4a0909 0%, #300505 100%) !important;
-                box-shadow:
-                    0 4px 0 #1a0303,
-                    0 6px 20px rgba(180,20,20,0.2),
-                    inset 0 1px 0 rgba(255,80,80,0.14),
-                    inset 0 0 0 1px rgba(200,30,30,0.18) !important;
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button, div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button {
+                background: linear-gradient(180deg, #4a0909 0%, #300505 100%) !important; box-shadow: 0 4px 0 #1a0303, 0 6px 20px rgba(180,20,20,0.2), inset 0 1px 0 rgba(255,80,80,0.14), inset 0 0 0 1px rgba(200,30,30,0.18) !important;
             }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button:active,
-            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button:active {
-                box-shadow: 0 1px 0 #1a0303, inset 0 1px 0 rgba(255,80,80,0.1), 0 0 20px rgba(255,50,50,0.5) !important;
-                filter: brightness(1.4) saturate(1.2) !important;
-            }
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button p,
-            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button p {
-                color: rgba(255,90,90,0.95) !important;
-                text-shadow: 0 0 14px rgba(220,50,50,0.5) !important;
-            }
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button:active, div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button:active { box-shadow: 0 1px 0 #1a0303, inset 0 1px 0 rgba(255,80,80,0.1), 0 0 20px rgba(255,50,50,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
+            div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) button p, div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(2) button p { color: rgba(255,90,90,0.95) !important; text-shadow: 0 0 14px rgba(220,50,50,0.5) !important; }
             </style>""", unsafe_allow_html=True)
             c1, c2 = st.columns(2)
             with c1:
                 if st.button("FOLD", key="f", use_container_width=True): handle_action("FOLD")
             with c2:
                 if st.button("RAISE", key="r", use_container_width=True): handle_action("RAISE")
+
+    # Обработка зеленого свечения (пауза и переход)
+    if is_flashing_correct:
+        time.sleep(0.5)
+        st.session_state.flash_correct = False
+        st.session_state.hand = None
+        st.rerun()
