@@ -3,7 +3,16 @@
   "scenario": "Def vs 4bet",
   "spots": {
     "BU def vs 4bet CO": {
-      "setup": { "hero_pos": "BTN", "villain_pos": "CO", "btn_pos": "BTN", "active_players": ["CO", "BTN"], "table_bets": {"CO": 22.0, "BTN": 7.5, "SB": 0.5, "BB": 1.0}, "hero_bet": 7.5, "is_3bet_pot": true },
+      "setup": { 
+        "hero_pos": "BTN", 
+        "villain_pos": "CO", 
+        "btn_pos": "BTN", 
+        "active_players": ["CO", "BTN"], 
+        "table_bets": {"CO": 22.0, "BTN": 7.5, "SB": 0.5, "BB": 1.0}, 
+        "hero_bet": 7.5, 
+        "is_3bet_pot": true,
+        "stacks": {"EP": 100, "MP": 100, "CO": 78.0, "BTN": 92.5, "SB": 99.5, "BB": 99.0}
+      },
       "stats": { "5bet": "2.0%", "Call": "6.4%", "Fold": "38%"  },
       "ranges": {
         "call": "AA,QQ:0.5,JJ:0.5,TT,99,88:0.5,77:0.5,66:0.5,AKs:0.5,AQ,AJs,ATs,A5s:0.5,A4s:0.5,KQs,KJs,KTs,QJs:0.5,JTs:0.5,76s:0.5,65s:0.5,54s:0.5",
@@ -12,7 +21,16 @@
       }
     },
     "SB def vs 4bet CO": {
-      "setup": { "hero_pos": "SB", "villain_pos": "CO", "btn_pos": "BTN", "active_players": ["CO", "SB"], "table_bets": {"CO": 24.0, "SB": 12.0, "BB": 1.0}, "hero_bet": 12.0, "is_3bet_pot": true },
+      "setup": { 
+        "hero_pos": "SB", 
+        "villain_pos": "CO", 
+        "btn_pos": "BTN", 
+        "active_players": ["CO", "SB"], 
+        "table_bets": {"CO": 24.0, "SB": 12.0, "BB": 1.0}, 
+        "hero_bet": 12.0, 
+        "is_3bet_pot": true,
+        "stacks": {"EP": 100, "MP": 100, "CO": 76.0, "BTN": 100, "SB": 88.0, "BB": 99.0}
+      },
       "stats": { "5bet": "2.9%", "Call": "5.3%",  "Fold": "37%"   },
       "ranges": {
         "call": "AA:0.5,JJ:0.5,TT,99,88,AQs,AJs,ATs:0.5,A5s:0.5,A4s:0.5,KQs,KJs,KTs,JTs:0.5,T9s:0.5",
@@ -21,7 +39,16 @@
       }
     },
     "SB def vs 4bet BU": {
-      "setup": { "hero_pos": "SB", "villain_pos": "BTN", "btn_pos": "BTN", "active_players": ["BTN", "SB"], "table_bets": {"BTN": 24.0, "SB": 12.0, "BB": 1.0}, "hero_bet": 12.0, "is_3bet_pot": true },
+      "setup": { 
+        "hero_pos": "SB", 
+        "villain_pos": "BTN", 
+        "btn_pos": "BTN", 
+        "active_players": ["BTN", "SB"], 
+        "table_bets": {"BTN": 24.0, "SB": 12.0, "BB": 1.0}, 
+        "hero_bet": 12.0, 
+        "is_3bet_pot": true,
+        "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 76.0, "SB": 88.0, "BB": 99.0}
+      },
       "stats": { "5bet": "3.6", "Call": "7.1%",  "Fold": "33%"    },
       "ranges": {
         "call": "AA:0.5,TT:0.5,99,88,77,66:0.5,AQ,AJs,ATs,A9s:0.5,KQs,KJs,KTs,K9s:0.5,QJs:0.5,QTs:0.5,JTs:0.5,T9s:0.5",
@@ -30,7 +57,16 @@
       }
     },
     "BB def vs 4bet SB": {
-      "setup": { "hero_pos": "BB", "villain_pos": "SB", "btn_pos": "BTN", "active_players": ["SB", "BB"], "table_bets": {"BB": 9.0, "SB": 22.0}, "hero_bet": 9.0, "is_3bet_pot": true },
+      "setup": { 
+        "hero_pos": "BB", 
+        "villain_pos": "SB", 
+        "btn_pos": "BTN", 
+        "active_players": ["SB", "BB"], 
+        "table_bets": {"BB": 9.0, "SB": 22.0}, 
+        "hero_bet": 9.0, 
+        "is_3bet_pot": true,
+        "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 100, "SB": 78.0, "BB": 91.0}
+      },
       "stats": {  "5bet": "2.9%", "Call": "6.2%", "Fold": "42%" },
       "ranges": {
         "call": "AA,KK:0.5,JJ:0.5,TT:0.5,99,88:0.5,AKs:0.5,AQs,AQo:0.75,AJs,AJo:0.25,ATs:0.5,A5s:0.5,A4s:0.5,KQs,KJs:0.5,KTs:0.5,QJs:0.5,JTs,T9s,98s,87s,76s,65s,54s",
