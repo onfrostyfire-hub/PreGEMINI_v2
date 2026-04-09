@@ -89,7 +89,7 @@ def show():
         .rng-desktop { position: absolute; right: -55px; bottom: 15px; width: 34px; height: 34px; border-radius: 50%; font-weight: bold; font-size: 14px; display: flex; align-items: center; justify-content: center; z-index: 40; box-shadow: 0 2px 8px rgba(0,0,0,0.6); }
 
         /* CARBON NOIR STATS HEADER */
-        .cn-mob-header { margin-top: -35px; margin-bottom: 5px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; -webkit-font-smoothing: antialiased; border-radius: 14px; overflow: hidden; position: relative; background: linear-gradient(165deg, rgba(18,22,28,0.92) 0%, rgba(8,10,14,0.96) 100%); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); max-width: 860px; margin: 0 auto 10px auto; }
+        .cn-mob-header { margin-top: -35px; margin-bottom: 5px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; -webkit-font-smoothing: antialiased; border-radius: 14px; overflow: hidden; position: relative; background: linear-gradient(165deg, rgba(18,22,28,0.92) 0%, rgba(8,10,14,0.96) 100%); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); max-width: 860px; margin-left: auto; margin-right: auto; }
         .cn-mob-header::before { content: ''; position: absolute; inset: 0; border-radius: 14px; pointer-events: none; background: linear-gradient(125deg, rgba(255,255,255,0.07) 0%, transparent 42%, transparent 58%, rgba(255,255,255,0.03) 100%); z-index: 0; }
         .cn-mob-wr-track { height: 3px; width: 100%; background: rgba(0,0,0,0.45); position: relative; z-index: 1; }
         .cn-mob-wr-fill { height: 100%; transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 12px currentColor; }
@@ -105,14 +105,13 @@ def show():
         .cn-mob-stat-label { font-size: 8px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(140,150,165,0.75); margin-bottom: 1px; }
         .cn-mob-stat-val { font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; line-height: 1.1; }
         .cn-mob-stat-val.light { color: rgba(245,248,252,0.98); }
-        .cn-mob-combo-wrap { flex: 1.15; display: flex; justify-content: center; align-items: center; min-width: 0; position: relative; }
+        .cn-mob-combo-wrap { flex: 1.15; display: flex; justify-content: center; align-items: center; min-width: 0; }
         .cn-mob-combo-pill { display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 3px 11px 3px 9px; border-radius: 999px; background: linear-gradient(145deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.02) 100%); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 4px 16px rgba(0,0,0,0.35); }
         .cn-mob-combo-fire { font-size: 14px; font-weight: 900; color: #fff; text-shadow: 0 0 18px rgba(255,120,40,0.55); letter-spacing: -0.03em; }
         .cn-mob-shield { font-size: 11px; margin-left: 2px; font-weight: 800; color: rgba(120,230,255,0.95); filter: drop-shadow(0 0 6px rgba(0,200,255,0.55)); align-items: center; gap: 2px; }
 
-        /* ПЕЧАТЬ BOT ДЛЯ 1000+ КОМБО */
-        .bot-stamp { position: absolute; right: -40px; top: -10px; color: #dc3545; font-size: 14px; font-weight: 900; letter-spacing: 0.15em; border: 2px solid #dc3545; padding: 2px 6px; border-radius: 4px; transform: rotate(-15deg); font-family: 'Courier New', Courier, monospace; text-shadow: 0 0 5px rgba(220,53,69,0.6); box-shadow: 0 0 10px rgba(220,53,69,0.3), inset 0 0 5px rgba(220,53,69,0.3); pointer-events: none; opacity: 0.9; z-index: 50; animation: stamp-appear 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        @keyframes stamp-appear { 0% { transform: scale(2) rotate(-30deg); opacity: 0; } 100% { transform: scale(1) rotate(-15deg); opacity: 0.9; } }
+        /* ПЕЧАТЬ BOT (ДЛЯ 1000+ КОМБО) */
+        .bot-stamp { position: absolute; top: -12px; right: -25px; color: #ff2a2a; border: 2px solid #ff2a2a; border-radius: 4px; padding: 1px 6px; font-size: 13px; font-weight: 900; font-family: 'Courier New', Courier, monospace; letter-spacing: 2px; text-transform: uppercase; transform: rotate(15deg); box-shadow: 0 0 10px rgba(255,42,42,0.6), inset 0 0 5px rgba(255,42,42,0.6); text-shadow: 0 0 5px rgba(255,42,42,0.9); pointer-events: none; z-index: 100; background: rgba(255,42,42,0.05); }
 
         /* RAGE BAR NEON */
         .rage-bar-container { width: 100%; max-width: 860px; margin: 5px auto 45px auto !important; height: 26px; border-radius: 999px; position: relative; display: flex; align-items: stretch; padding: 3px; background: linear-gradient(180deg, rgba(12,14,20,0.95) 0%, rgba(6,8,12,0.98) 100%); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65), inset 0 -1px 0 rgba(255,255,255,0.05); overflow: hidden; }
@@ -141,8 +140,8 @@ def show():
         
         .rng-hint-box { text-align: center; color: #888; font-size: 13px; font-family: monospace; margin-top: 60px; margin-bottom: 10px; background: #2b2b2b; padding: 5px; border-radius: 6px; border: 1px solid #444; width: 100%; }
         
-        .floating-reward { position: absolute; top: -38px; left: 50%; transform: translateX(-50%); font-size: 18px; font-weight: 900; text-shadow: 0px 2px 5px rgba(0,0,0,0.9), 0px 0px 2px #000; z-index: 100; pointer-events: none; animation: float-reward 1.2s ease-out forwards; }
-        @keyframes float-reward { 0% { opacity: 1; transform: translate(-50%, 0) scale(0.8); } 20% { opacity: 1; transform: translate(-50%, -15px) scale(1.2); } 100% { opacity: 0; transform: translate(-50%, -50px) scale(1); } }
+        .floating-reward { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); font-size: 26px; font-weight: 900; text-shadow: 0px 2px 5px rgba(0,0,0,0.9), 0px 0px 2px #000; z-index: 100; pointer-events: none; animation: floatUpFade 1.2s ease-out forwards; }
+        @keyframes floatUpFade { 0% { opacity: 1; transform: translate(-50%, 0) scale(0.5); } 20% { opacity: 1; transform: translate(-50%, -15px) scale(1.2); } 100% { opacity: 0; transform: translate(-50%, -80px) scale(1); } }
 
         /* КНОПКИ ДЕЙСТВИЙ (АДАПТИВНО) */
         div[data-testid="stHorizontalBlock"] { display: flex !important; flex-direction: row !important; width: 100% !important; gap: 10px !important; padding: 0 5px !important; }
@@ -323,7 +322,6 @@ def show():
     bets_on_table = setup.get("table_bets", {})
     display_hero_bet = setup.get("hero_bet")
     is_3bet_pot = setup.get("is_3bet_pot", False)
-    table_size = setup.get("table_size", 6)
 
     is_defense = bool(villain_pos is not None or "call" in r_data or "Call" in r_data)
     rng = st.session_state.rng
@@ -356,11 +354,8 @@ def show():
 
     try:
         mastery_dict = stats_data.get("spot_mastery", {})
-        if isinstance(mastery_dict, dict):
-            spot_data_mastery = mastery_dict.get(st.session_state.current_spot_key, {})
-        else:
-            spot_data_mastery = {}
-        mastery = utils.get_spot_mastery_info(spot_data_mastery)
+        m_data = mastery_dict.get(st.session_state.current_spot_key, {})
+        mastery = utils.get_spot_mastery_info(m_data)
     except Exception:
         mastery = {"rank": 0, "name": "Sandbox", "icon": "⚪", "color": "#6c757d", "is_rusty": False, "prog_pct": 0, "total": 0, "next": 100, "svg": ""}
         
@@ -421,25 +416,41 @@ def show():
     elif curr_mult == 4.0: grad = "linear-gradient(90deg, #fd7e14, #dc3545)"
     elif curr_mult == 5.0: grad = "linear-gradient(90deg, #dc3545, #6f42c1)"
     elif curr_mult == 10.0: grad = "linear-gradient(90deg, #6f42c1, #ff00ff)"
-    else: grad = "linear-gradient(90deg, #ff00ff, #00ff00)" # ЯДОВИТО-ЗЕЛЕНЫЙ ДЛЯ 1000+
+    else: grad = "linear-gradient(90deg, #ff00ff, #00ff00)"
 
     progress_pct = int((stats_data.get("xp", 0) / next_xp) * 100) if next_xp != "MAX" else 100
 
     shield_display = (
-        f'<span class="cn-mob-shield" style="'
+        f'<span style="'
         f'display:{"inline-flex" if st.session_state.shields > 0 else "none"};'
+        f'align-items:center;gap:2px;'
+        f'font-size:10px;font-weight:700;letter-spacing:0.04em;'
+        f'padding:1px 6px 1px 5px;margin-left:4px;'
+        f'background:rgba(13,202,240,0.09);'
+        f'border:1px solid rgba(13,202,240,0.28);'
+        f'border-radius:8px;'
+        f'color:rgba(13,202,240,0.92);'
+        f'box-shadow:0 0 8px rgba(13,202,240,0.12);'
         f'">🛡️{st.session_state.shields}</span>'
     )
-    
-    # ДОБАВЛЯЕМ ПЕЧАТЬ [BOT]
+
     bot_stamp = '<div class="bot-stamp">BOT</div>' if c >= 1000 else ''
 
     combo_badge = (
-        f'<div class="cn-mob-combo-wrap">'
-        f'<div class="cn-mob-combo-pill">'
-        f'<span class="cn-mob-combo-fire">🔥{c}</span>'
-        f'{shield_display}'
+        f'<div style="flex:1;display:flex;justify-content:center;align-items:center;">'
+        f'<div style="'
+        f'display:inline-flex;align-items:center;gap:1px;position:relative;'
+        f'padding:3px 11px 3px 9px;border-radius:20px;'
+        f'background:rgba(255,255,255,0.035);'
+        f'border:1px solid rgba(255,255,255,0.09);'
+        f'box-shadow:0 0 14px rgba(255,150,20,0.07),inset 0 1px 0 rgba(255,255,255,0.05);'
+        f'">'
         f'{bot_stamp}'
+        f'<span style="'
+        f'font-size:14px;font-weight:900;color:#fff;letter-spacing:-0.03em;'
+        f'text-shadow:0 0 12px rgba(255,130,10,0.8),0 0 24px rgba(255,100,0,0.3);'
+        f'">🔥{c}</span>'
+        f'{shield_display}'
         f'</div></div>'
     )
 
@@ -460,7 +471,7 @@ def show():
         f'<div class="cn-mob-stat-label">Winrate</div>'
         f'<div class="cn-mob-stat-val" style="color:{wr_color}; text-shadow:0 0 10px {wr_color}44;">{wr}%</div>'
         f'</div>'
-        f'{combo_badge}'
+        f'<div class="cn-mob-combo-wrap">{combo_badge}</div>'
         f'<div class="cn-mob-stat" style="text-align:right;">'
         f'<div class="cn-mob-stat-label">Hands</div>'
         f'<div class="cn-mob-stat-val light">{sh}</div>'
@@ -485,6 +496,8 @@ def show():
         elif anim_reward < 0: a_color = "#ff0000"; a_text = f"-${abs(anim_reward)}"
         else: a_color = "#888"; a_text = "$0"
         anim_html = f'<div class="floating-reward" style="color: {a_color}">{a_text}</div>'
+        
+    shatter_html = '<div class="glass-shatter"></div>' if st.session_state.pop("shield_break_anim", False) else ""
 
     col_center, col_right = st.columns([2.2, 1])
 
@@ -526,6 +539,8 @@ def show():
                 5: "bottom: 28%; right: 6%;"
             }.get(idx, "")
 
+        # ОПРЕДЕЛЯЕМ РАЗМЕР СТОЛА (HU ИЛИ 6-MAX)
+        table_size = setup.get("table_size", 6)
         opp_html = ""; chips_html = ""
 
         if table_size == 2:
@@ -591,7 +606,7 @@ def show():
             hero_bs = get_btn_style(0)
             chips_html += f'<div class="dealer-button" style="{hero_bs}">D</div>'
 
-        html = f'<div class="game-area {combo_cls}"><div class="table-info"><div class="info-src">{sc}</div><div class="info-spot">{sp}</div><div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width: {m_pct}%;"></div></div><div class="hands-left">{hands_left_text}</div></div>{opp_html}{chips_html}<div class="hero-panel">{anim_html}<div class="card"><div class="tl {c1}">{h_val[0]}<br>{s1}</div><div class="cent {c1}">{s1}</div></div><div class="card"><div class="tl {c2}">{h_val[1]}<br>{s2}</div><div class="cent {c2}">{s2}</div></div><div class="rng-desktop">{rng}</div></div></div>'
+        html = f'<div class="game-area {combo_cls}">{shatter_html}<div class="table-info"><div class="info-src">{sc}</div><div class="info-spot">{sp}</div><div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill"></div></div><div class="hands-left">{hands_left_text}</div></div>{opp_html}{chips_html}<div class="hero-panel">{anim_html}<div class="card"><div class="tl {c1}">{h_val[0]}<br>{s1}</div><div class="cent {c1}">{s1}</div></div><div class="card"><div class="tl {c2}">{h_val[1]}<br>{s2}</div><div class="cent {c2}">{s2}</div></div><div class="rng-desktop">{rng}</div></div></div>'
         
         st.markdown(html, unsafe_allow_html=True)
 
@@ -636,6 +651,7 @@ def show():
             else:
                 if st.session_state.shields > 0:
                     st.session_state.shields -= 1
+                    st.session_state.shield_break_anim = True
                     st.session_state.last_error = True
                     shield_used = True
                     st.session_state.msg = f"🛡️ ЩИТ СЛОМАН! Защита от мисклика. GTO: {correct_act}"
@@ -658,6 +674,7 @@ def show():
                 st.session_state.just_leveled_up = True
 
             try:
+                import inspect
                 sig = inspect.signature(utils.process_gamification)
                 if 'shield_used' in sig.parameters:
                     res = utils.process_gamification(corr, st.session_state.combo, st.session_state.session_hands, st.session_state.current_spot_key, shield_used=shield_used)
