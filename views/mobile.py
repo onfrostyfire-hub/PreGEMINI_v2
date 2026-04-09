@@ -6,10 +6,14 @@ import poker_utils as utils
 def generate_mobile_theme(bg_rad1, bg_rad2, shadow1, shadow2, shadow3, seat_rad, seat_border, seat_act_border, seat_act_shadow, anim_name, pulse_shadow1, pulse_shadow2, text_color, badge_bg, bar_fill, card_bg, card_border, rng_bg):
     return f"""<style>
     .mobile-game-area {{ background: radial-gradient(ellipse 50% 38% at 50% 42%, {bg_rad1} 0%, transparent 70%), radial-gradient(ellipse 88% 78% at 50% 50%, {bg_rad2}) !important; box-shadow: 0 0 0 8px {shadow1}, 0 0 0 13px {shadow2}, 0 0 0 17px {shadow3}, 0 0 50px 8px rgba(0,0,0,0.95), inset 0 2px 20px rgba(255,255,255,0.03), inset 0 -3px 12px rgba(0,0,0,0.5) !important; }}
-    .seat::before {{ background: radial-gradient(circle at 38% 30%, {seat_rad}) !important; border: 1.5px solid {seat_border} !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.6), inset 0 1px 3px rgba(255,255,255,0.06) !important; }}
-    .seat-active::before {{ border-color: {seat_act_border} !important; box-shadow: 0 0 0 3px rgba(0,0,0,0.6), 0 0 16px {seat_act_shadow} !important; animation: {anim_name} 2.6s ease-in-out infinite !important; }}
-    @keyframes {anim_name} {{ 0%,100% {{ box-shadow: 0 0 0 3px rgba(0,0,0,0.6), 0 0 12px {pulse_shadow1}, inset 0 1px 3px rgba(255,255,255,0.09); }} 50% {{ box-shadow: 0 0 0 3px rgba(0,0,0,0.6), 0 0 26px {pulse_shadow2}, inset 0 1px 3px rgba(255,255,255,0.09); }} }}
-    .seat-label {{ color: {text_color} !important; text-shadow: 0 1px 3px rgba(0,0,0,0.98) !important; }}
+    
+    .seat-active .ava, .seat-active .plate {{ border-color: {seat_act_border} !important; }}
+    .seat-active .ava {{ box-shadow: 0 -4px 10px {pulse_shadow1}, inset 0 2px 4px rgba(255,255,255,0.1) !important; animation: {anim_name}_ava 2.6s ease-in-out infinite !important; }}
+    .seat-active .plate {{ box-shadow: 0 4px 10px {pulse_shadow1} !important; animation: {anim_name}_plate 2.6s ease-in-out infinite !important; }}
+    
+    @keyframes {anim_name}_ava {{ 0%,100% {{ box-shadow: 0 -4px 8px {pulse_shadow1}, inset 0 2px 4px rgba(255,255,255,0.1); }} 50% {{ box-shadow: 0 -4px 20px {pulse_shadow2}, inset 0 2px 4px rgba(255,255,255,0.1); }} }}
+    @keyframes {anim_name}_plate {{ 0%,100% {{ box-shadow: 0 4px 8px {pulse_shadow1}; }} 50% {{ box-shadow: 0 4px 20px {pulse_shadow2}; }} }}
+    
     .mob-info-spot {{ color: {text_color} !important; text-shadow: 0 1px 4px rgba(0,0,0,0.95) !important; }}
     .mastery-badge {{ background: {badge_bg} !important; border: 1px solid {seat_border} !important; color: {text_color} !important; text-shadow: 0 0 6px rgba(0,0,0,0.4) !important; }}
     .mastery-bar-fill {{ background: {bar_fill} !important; }}
@@ -17,6 +21,8 @@ def generate_mobile_theme(bg_rad1, bg_rad2, shadow1, shadow2, shadow3, seat_rad,
     .floating-reward {{ color: {text_color} !important; }}
     .card-mob {{ background: {card_bg} !important; border: 1px solid {card_border} !important; }}
     .rng-badge {{ color: {text_color} !important; background: {rng_bg} !important; border: 1.5px solid {seat_border} !important; }}
+    .hero-plate {{ border-color: {seat_act_border} !important; }}
+    .hero-plate .pos {{ color: {seat_act_border} !important; }}
     </style>"""
 
 THEMES = {
@@ -79,36 +85,22 @@ THEMES = {
 def show():
     st.markdown("""
         <style>
-        /* БАЗОВЫЕ ГЛОБАЛЬНЫЕ СТИЛИ */
-        .block-container { padding-top: 0.2rem !important; padding-bottom: 6rem !important; max-width: 100% !important; overflow-x: hidden !important; }
-        div.element-container { margin-bottom: 0 !important; }
-        div[data-testid="stVerticalBlock"] > div { padding-top: 0 !important; padding-bottom: 0 !important; margin-bottom: 0 !important; }
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap');
 
-        div[role="radiogroup"] { flex-wrap: nowrap !important; gap: 2px !important; justify-content: center !important; margin-bottom: -15px !important; }
-        div[role="radiogroup"] label { padding: 4px 8px !important; min-height: 20px !important; }
-        div[role="radiogroup"] label p { font-size: 12px !important; white-space: nowrap !important; }
-
-        div[data-testid="stExpander"] { margin-top: -10px !important; margin-bottom: -5px !important; }
-        details[data-testid="stExpanderDetails"] { margin-bottom: 0 !important; }
-
-        /* КНОПКИ ДЕЙСТВИЙ */
-        div[data-testid="stHorizontalBlock"] { display: flex !important; flex-direction: row !important; width: 100% !important; gap: 10px !important; padding: 0 5px !important; }
-        div[data-testid="column"], div[data-testid="stColumn"] { flex: 1 1 0px !important; width: 100% !important; min-width: 0 !important; margin-bottom: 0 !important; }
-        div[data-testid="stButton"] { width: 100% !important; padding-bottom: 15px !important; }
+        .block-container { padding-top: 1.5rem !important; padding-bottom: 1rem !important; max-width: 100% !important; overflow-x: hidden !important; }
+        [data-testid="stExpander"] { margin-top: -5px !important; margin-bottom: 5px !important; }
         
-        div[data-testid="stButton"] button {
-            width: 100% !important; height: 65px !important; padding: 0 !important; border: none !important; border-radius: 12px !important;
-            transition: all 0.05s cubic-bezier(0.2, 0, 0, 1) !important; cursor: pointer !important; position: relative !important; overflow: hidden !important; display: flex !important; align-items: center !important; justify-content: center !important;
-        }
-        div[data-testid="stButton"] button:active { transform: translateY(4px) scale(0.95) !important; filter: brightness(1.3) !important; }
-        div[data-testid="stButton"] button::after { content: '' !important; position: absolute !important; top: 0 !important; left: 0 !important; right: 0 !important; height: 50% !important; background: linear-gradient(180deg, rgba(255,255,255,0.07) 0%, transparent 100%) !important; border-radius: 12px 12px 0 0 !important; pointer-events: none !important; }
-        div[data-testid="stButton"] button p { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif !important; font-size: 15px !important; font-weight: 900 !important; margin: 0 !important; letter-spacing: 0.12em !important; text-transform: uppercase !important; }
+        div[data-testid="stHorizontalBlock"] { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(10px, 1fr)) !important; gap: 8px !important; width: 100% !important; }
+        div[data-testid="column"] { width: 100% !important; min-width: 0 !important; max-width: 100% !important; margin-bottom: 0 !important; }
+        div[data-testid="stButton"] { width: 100% !important; }
+        div[data-testid="stButton"] button { width: 100% !important; height: 50px !important; padding: 0 !important; border-radius: 12px !important; border: none !important; transition: transform 0.1s !important; background: #343a40 !important; color: #fff !important; box-shadow: 0 4px 0 #1d2124 !important; }
+        div[data-testid="stButton"] button:active { transform: translateY(4px) !important; box-shadow: 0 0 0 transparent !important; }
+        div[data-testid="stButton"] button p { font-family: 'Roboto', sans-serif !important; font-size: 15px !important; font-weight: 900 !important; margin: 0 !important; letter-spacing: 0.5px !important; text-transform: uppercase !important; }
 
-        /* ОСНОВА СТОЛА (АДАПТИВ) */
-        .mobile-game-area { position: relative !important; width: 100% !important; max-width: 390px !important; height: 250px !important; margin: 75px auto 55px auto !important; border-radius: 125px !important; overflow: visible !important; transition: background 0.5s, box-shadow 0.5s, border-color 0.5s; }
+        .mobile-game-area { position: relative; width: 100%; height: 280px; margin: 35px auto 10px auto; background: radial-gradient(ellipse at center, #1b5e20 0%, #0a2e0b 100%); border: 6px solid #3e2723; border-radius: 125px; box-shadow: 0 4px 15px rgba(0,0,0,0.8); transition: box-shadow 0.3s, border-color 0.3s; }
         .mobile-game-area::before { content: '' !important; position: absolute !important; inset: 0 !important; border-radius: 125px !important; pointer-events: none !important; z-index: 0 !important; }
         .mobile-game-area::after { content: '' !important; position: absolute !important; inset: 10px !important; border-radius: 115px !important; border: 1px solid rgba(255,255,255,0.06) !important; pointer-events: none !important; z-index: 0 !important; }
-        
+
         .mob-info { position: absolute !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -52%) !important; z-index: 10 !important; text-align: center !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 4px !important; pointer-events: none !important; width: 100% !important; }
         .mob-info-spot { font-size: 11px !important; font-weight: 600 !important; letter-spacing: 0.2em !important; text-transform: uppercase !important; }
         .mastery-badge { display: inline-flex !important; align-items: center !important; gap: 4px !important; border-radius: 20px !important; padding: 2px 9px 2px 7px !important; font-size: 9.5px !important; font-weight: 700 !important; letter-spacing: 0.05em !important; }
@@ -116,15 +108,17 @@ def show():
         .mastery-bar-fill { height: 100% !important; border-radius: 2px !important; }
         .hands-left-mob { font-size: 9px !important; letter-spacing: 0.06em !important; }
 
-        .seat { position: absolute !important; z-index: 20 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 3px !important; }
-        .seat::before { content: '' !important; display: block !important; width: 49px !important; height: 49px !important; border-radius: 50% !important; }
-        .seat::after { content: '' !important; position: absolute !important; top: 7px !important; left: 50% !important; transform: translateX(-50%) !important; width: 14px !important; height: 14px !important; border-radius: 50% !important; background: rgba(255,255,255,0.07) !important; box-shadow: 0 8px 0 rgba(255,255,255,0.05) !important; pointer-events: none !important; }
-        .seat-folded::before { border-color: rgba(80,80,80,0.15) !important; opacity: 0.6 !important; box-shadow: none !important; animation: none !important; }
-        .seat-folded::after { opacity: 0.5 !important; }
-        .seat-folded .opp-cards-mob { opacity: 0.5 !important; }
-        .seat-label { font-size: 8px !important; font-weight: 700 !important; letter-spacing: 0.14em !important; text-transform: uppercase !important; }
+        /* ИГРОКИ (iOS Flat) */
+        .seat { position: absolute !important; z-index: 20 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 0 !important; width: 50px !important; height: 40px !important; background: transparent !important; border: none !important; box-shadow: none !important; }
+        .ava { width: 44px !important; height: 22px !important; background: linear-gradient(180deg, #2a2d32 0%, #1c1e22 100%) !important; border-radius: 44px 44px 0 0 !important; border: 1.5px solid #3a3d42 !important; border-bottom: none !important; box-shadow: inset 0 2px 4px rgba(255,255,255,0.05) !important; transition: all 0.3s ease !important; }
+        .plate { width: 50px !important; height: 18px !important; background: #141518 !important; border-radius: 0 0 6px 6px !important; border: 1.5px solid #3a3d42 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 4px !important; box-sizing: border-box !important; font-size: 9px !important; box-shadow: 0 4px 6px rgba(0,0,0,0.5) !important; transition: all 0.3s ease !important; }
+        .pos { font-weight: 900 !important; color: #fff !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.5) !important; }
+        .stack { font-weight: 700 !important; color: #fff !important; }
 
-        .opp-cards-mob { position: absolute !important; top: -18px !important; left: 50% !important; transform: translateX(-50%) !important; display: flex !important; align-items: flex-end !important; }
+        .seat-folded { opacity: 0.85 !important; filter: grayscale(50%) !important; }
+        .seat-folded .opp-cards-mob { opacity: 0.6 !important; }
+        
+        .opp-cards-mob { position: absolute !important; top: -16px !important; left: 50% !important; transform: translateX(-50%) !important; display: flex !important; align-items: flex-end !important; pointer-events: none; }
         .opp-card-mob { width: 14px !important; height: 20px !important; border-radius: 3px !important; position: relative !important; background: repeating-linear-gradient(45deg, rgba(15,70,185,0.95) 0px, rgba(15,70,185,0.95) 2px, rgba(8,44,130,0.95) 2px, rgba(8,44,130,0.95) 6px) !important; border: 1px solid rgba(80,140,255,0.3) !important; box-shadow: 0 2px 5px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.06) !important; }
         .opp-card-mob::before { content: '' !important; position: absolute !important; inset: 2px !important; border-radius: 2px !important; border: 1px solid rgba(80,140,255,0.15) !important; }
         .opp-card-mob.right { margin-left: -5px !important; transform: rotate(10deg) !important; z-index: -1 !important; }
@@ -140,20 +134,24 @@ def show():
         
         .bet-txt { font-size: 10px !important; font-weight: 700 !important; color: rgba(255,235,190,0.9) !important; text-shadow: 0 0 5px rgba(255,195,40,0.5), 0 1px 3px rgba(0,0,0,0.98) !important; letter-spacing: 0.03em !important; white-space: nowrap !important; }
 
-        .hero-mob { position: absolute !important; bottom: -55px !important; left: 50% !important; transform: translateX(-50%) !important; z-index: 30 !important; display: flex !important; align-items: flex-start !important; gap: 7px !important; }
+        /* HERO PANEL */
+        .hero-mob { position: absolute !important; bottom: -55px !important; left: 50% !important; transform: translateX(-50%) !important; z-index: 30 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 4px !important; width: 120px !important; }
+        .hero-cards-wrap { display: flex !important; gap: 5px !important; position: relative !important; }
+        .hero-plate { width: 78px !important; height: 18px !important; background: #141518 !important; border-radius: 4px !important; border: 1.5px solid #ffc107 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 6px !important; box-sizing: border-box !important; font-size: 10px !important; box-shadow: 0 4px 10px rgba(0,0,0,0.6) !important; transition: border-color 0.3s; }
+        
         .floating-reward { position: absolute !important; top: -38px !important; left: 50% !important; transform: translateX(-50%) !important; font-size: 14px !important; font-weight: 800 !important; color: #17f07e !important; text-shadow: 0 0 12px rgba(23,240,126,0.8), 0 0 28px rgba(23,240,126,0.3) !important; white-space: nowrap !important; animation: float-reward 2.2s ease-out forwards !important; pointer-events: none !important; }
         @keyframes float-reward { 0%   { opacity: 1; transform: translateX(-50%) translateY(0); } 100% { opacity: 0; transform: translateX(-50%) translateY(-24px); } }
 
-        .card-mob { width: 54px !important; height: 78px !important; border-radius: 8px !important; position: relative !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; overflow: hidden !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -6px 16px rgba(0,0,0,0.7), 0 -12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1) !important;}
-        .card-mob::after { content: '' !important; position: absolute !important; top: 0 !important; left: 0 !important; width: 60% !important; height: 45% !important; background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; pointer-events: none !important; border-radius: 8px 0 0 0 !important; }
-        .tl-mob { padding: 4px 0 0 5px !important; font-size: 15px !important; font-weight: 900 !important; line-height: 0.9 !important; letter-spacing: -0.04em !important; z-index: 2 !important; position: relative !important; }
-        .c-mob { position: absolute !important; top: 55% !important; left: 50% !important; transform: translate(-50%,-50%) !important; font-size: 24px !important; opacity: 1 !important; line-height: 1 !important; z-index: 2 !important;}
+        .card-mob { width: 34px !important; height: 48px !important; border-radius: 6px !important; position: relative !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; overflow: hidden !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -6px 16px rgba(0,0,0,0.7), 0 -12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1) !important;}
+        .card-mob::after { content: '' !important; position: absolute !important; top: 0 !important; left: 0 !important; width: 60% !important; height: 45% !important; background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; pointer-events: none !important; border-radius: 6px 0 0 0 !important; }
+        .tl-mob { padding: 2px 0 0 3px !important; font-size: 13px !important; font-weight: 900 !important; line-height: 0.9 !important; letter-spacing: -0.04em !important; z-index: 2 !important; position: relative !important; font-family: Arial, sans-serif !important; }
+        .c-mob { position: absolute !important; top: 55% !important; left: 50% !important; transform: translate(-50%,-50%) !important; font-size: 18px !important; opacity: 1 !important; line-height: 1 !important; z-index: 2 !important; font-family: Arial, sans-serif !important; }
         .suit-red   { color: #c00a0a !important; }
         .suit-black { color: #0a0a0a !important; }
         .suit-blue  { color: #0056b3 !important; }
         .suit-green { color: #198754 !important; }
         
-        .rng-badge { position: absolute !important; bottom: 50px !important; right: -31px !important; width: 28px !important; height: 28px !important; border-radius: 50% !important; font-weight: bold !important; font-size: 12px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 5px rgba(0,0,0,0.5) !important; z-index: 40 !important; }
+        .rng-badge { position: absolute !important; top: 12px !important; right: -30px !important; width: 24px !important; height: 24px !important; border-radius: 50% !important; font-weight: bold !important; font-size: 10px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 5px rgba(0,0,0,0.5) !important; z-index: 40 !important; }
 
         /* ── Carbon Noir: stats header ── */
         .cn-mob-header { margin-top: -15px; margin-bottom: 2px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; -webkit-font-smoothing: antialiased; border-radius: 14px; overflow: hidden; position: relative; background: linear-gradient(165deg, rgba(18,22,28,0.92) 0%, rgba(8,10,14,0.96) 100%); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
@@ -304,6 +302,7 @@ def show():
     display_hero_bet = setup.get("hero_bet")
     is_3bet_pot = setup.get("is_3bet_pot", False)
     table_size = setup.get("table_size", 6)
+    stacks_data = setup.get("stacks", {}) # <-- ПАРСИНГ СТЕКОВ
 
     is_defense = bool(villain_pos is not None or "call" in r_data or "Call" in r_data)
     rng = st.session_state.rng
@@ -506,23 +505,23 @@ def show():
 
     def get_btn_style(idx):
         return {
-            0: "bottom: 15px; left: 50%; margin-left: -85px; z-index: 35;", 
-            1: "top: 77%; left: 13%; transform: translateY(-50%);", 
-            2: "top: 25%; left: 13%;",
-            3: "top: 10%; left: 55%;", 
-            4: "top: 25%; right: 13%;", 
-            5: "top: 77%; right: 13%; transform: translateY(-50%);"
+            0: "bottom: 18px; left: 50%; margin-left: -65px; z-index: 35;", 
+            1: "top: 77%; left: 15%; transform: translateY(-50%);", 
+            2: "top: 28%; left: 15%;",
+            3: "top: -5%; left: 65%;", 
+            4: "top: 28%; right: 15%;", 
+            5: "top: 77%; right: 15%; transform: translateY(-50%);"
         }.get(idx, "")
 
-    # ОПРЕДЕЛЯЕМ РАЗМЕР СТОЛА (HU ИЛИ 6-MAX)
     opp_html = ""; chips_html = ""
 
     if table_size == 2:
         villain_p = "BB" if hero_pos == "SB" else "SB"
+        p_stack = stacks_data.get(villain_p, 100)
         cls = "seat-active"
         cards = '<div class="opp-cards-mob"><div class="opp-card-mob"></div><div class="opp-card-mob right"></div></div>'
         ss = get_seat_style(3)
-        opp_html += f'<div class="seat {cls}" style="{ss}">{cards}<span class="seat-label">{villain_p}</span></div>'
+        opp_html += f'<div class="seat {cls}" style="{ss}">{cards}<div class="ava"></div><div class="plate"><span class="pos">{villain_p}</span><span class="stack">{p_stack}</span></div></div>'
         
         cs = get_chip_style(3)
         bet_amount = bets_on_table.get(villain_p)
@@ -543,11 +542,12 @@ def show():
     else:
         for i in range(1, 6):
             p = rot[i]
+            p_stack = stacks_data.get(p, 100)
             has_cards = (p in cards_in_play)
             cls = "seat-active" if has_cards else "seat-folded"
             cards = '<div class="opp-cards-mob"><div class="opp-card-mob"></div><div class="opp-card-mob right"></div></div>' if has_cards else ""
             ss = get_seat_style(i)
-            opp_html += f'<div class="seat {cls}" style="{ss}">{cards}<span class="seat-label">{p}</span></div>'
+            opp_html += f'<div class="seat {cls}" style="{ss}">{cards}<div class="ava"></div><div class="plate"><span class="pos">{p}</span><span class="stack">{p_stack}</span></div></div>'
             
             cs = get_chip_style(i)
             bet_amount = bets_on_table.get(p)
@@ -580,7 +580,20 @@ def show():
         hero_bs = get_btn_style(0)
         chips_html += f'<div class="dealer-mob" style="{hero_bs}">D</div>'
 
-    html = f'<div class="mobile-game-area {combo_cls}">{shatter_html}<div class="mob-info"><div class="mob-info-spot">{sp}</div><div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width: {m_pct}%;"></div></div><div class="hands-left-mob">{hands_left_text}</div></div>{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="card-mob"><div class="tl-mob {c1}">{h_val[0]}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{h_val[1]}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{rng}</div></div></div>'
+    hero_stack = stacks_data.get(hero_pos, 100)
+    hero_html = f'''
+    <div class="hero-mob">
+        {anim_html}
+        <div class="hero-cards-wrap">
+            <div class="card-mob"><div class="tl-mob {c1}">{h_val[0]}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div>
+            <div class="card-mob"><div class="tl-mob {c2}">{h_val[1]}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div>
+            <div class="rng-badge">{rng}</div>
+        </div>
+        <div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div>
+    </div>
+    '''
+
+    html = f'<div class="mobile-game-area {combo_cls}">{shatter_html}<div class="mob-info"><div class="mob-info-spot">{sp}</div><div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width: {m_pct}%;"></div></div><div class="hands-left-mob">{hands_left_text}</div></div>{opp_html}{chips_html}{hero_html}</div>'
     
     st.markdown(html, unsafe_allow_html=True)
 
