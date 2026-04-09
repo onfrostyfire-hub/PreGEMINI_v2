@@ -49,6 +49,72 @@ def show():
     all_spots = stats.sort_values(by="count", ascending=False)
     st.dataframe(all_spots[["Spot", "Errors", "Accuracy", "count"]].rename(columns={"count": "Total"}), use_container_width=True, hide_index=True)
 
+
+    # ==========================================
+    # НОВЫЙ РАЗДЕЛ: GRIND PROGRESS (ROAD TO 5K)
+    # ==========================================
+    st.markdown("### 🚀 Road to Mastery (5k Hands)")
+    
+    # 1. Достаем все возможные споты из JSON файлов
+    ranges_db = utils.load_ranges()
+    all_spots_names = set()
+    for src, sc_dict in ranges_db.items():
+        for sc, sp_dict in sc_dict.items():
+            for sp in sp_dict.keys():
+                all_spots_names.add(sp)
+                
+    # 2. Берем количество сыгранных рук из истории
+    spot_counts = df["Spot"].value_counts().to_dict()
+    
+    # 3. Скрещиваем базы
+    merged_counts = {sp: 0 for sp in all_spots_names}
+    for sp, cnt in spot_counts.items():
+        # Если спот из истории есть в базе — обновляем, если нет — добавляем
+        merged_counts[sp] = cnt
+        
+    # 4. Сортируем по убыванию
+    sorted_spots = sorted(merged_counts.items(), key=lambda x: x[1], reverse=True)
+    
+    html_out = "<div style='display:flex; flex-direction:column; gap:10px; margin-bottom: 20px;'>"
+    for sp, cnt in sorted_spots:
+        # Считаем процент, макс. 100%
+        pct = min(100, (cnt / 5000) * 100)
+        
+        # Меняем цвет градиента в зависимости от количества раздач
+        if cnt < 100:
+            grad = "linear-gradient(90deg, #6c757d, #495057)"
+            glow = "rgba(108, 117, 125, 0.3)"
+        elif cnt < 500:
+            grad = "linear-gradient(90deg, #198754, #20c997)"
+            glow = "rgba(32, 201, 151, 0.4)"
+        elif cnt < 1500:
+            grad = "linear-gradient(90deg, #0dcaf0, #0d6efd)"
+            glow = "rgba(13, 202, 240, 0.5)"
+        elif cnt < 3000:
+            grad = "linear-gradient(90deg, #6f42c1, #d63384)"
+            glow = "rgba(214, 51, 132, 0.5)"
+        elif cnt < 5000:
+            grad = "linear-gradient(90deg, #dc3545, #fd7e14)"
+            glow = "rgba(253, 126, 20, 0.6)"
+        else:
+            grad = "linear-gradient(90deg, #ffc107, #ffef96)"
+            glow = "rgba(255, 193, 7, 0.8)"
+            
+        html_out += f'''
+        <div style="display: flex; align-items: center; gap: 15px; background: #16181c; padding: 12px 18px; border-radius: 12px; border: 1px solid #2d3139; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+            <div style="flex: 0 0 160px; color: #e9ecef; font-weight: 800; font-size: 13px; letter-spacing: 0.05em; text-transform: uppercase; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{sp}">{sp}</div>
+            <div style="flex: 0 0 45px; color: #fff; font-weight: 900; font-size: 15px; text-align: right; font-variant-numeric: tabular-nums;">{cnt}</div>
+            <div style="flex: 1; background: rgba(0,0,0,0.6); height: 14px; border-radius: 7px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.8); position: relative; overflow: hidden;">
+                <div style="width: {pct}%; height: 100%; background: {grad}; border-radius: 7px; box-shadow: 0 0 12px {glow}; transition: width 0.5s ease-out;"></div>
+            </div>
+            <div style="flex: 0 0 40px; color: #6c757d; font-weight: 700; font-size: 13px; text-align: right;">5000</div>
+        </div>
+        '''
+    html_out += "</div>"
+    st.markdown(html_out, unsafe_allow_html=True)
+    # ==========================================
+
+
     with st.expander("📜 Raw History Log (click to expand)"):
         d = df.copy()
         d["Result"] = d["Result"].apply(lambda x: "✅" if x==1 else "❌")
