@@ -271,8 +271,8 @@ def process_gamification(is_correct, combo, session_total_hands, spot_key=None, 
         m_rank = m_info["rank"]
 
     multiplier = 1.0
-    if combo >= 1000: mult = 25
-    elif combo >= 500: mult = 10
+    if combo >= 1000: multiplier = 25.0
+    elif combo >= 500: multiplier = 10.0
     elif combo >= 250: multiplier = 5.0
     elif combo >= 100: multiplier = 4.0
     elif combo >= 50: multiplier = 3.0
