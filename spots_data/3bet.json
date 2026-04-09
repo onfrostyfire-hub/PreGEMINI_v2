@@ -11,6 +11,15 @@
       },
       "stats": { "3bet": "13%" }
     },
+    "3bet SBvsEP": {
+      "setup": { "hero_pos": "SB", "villain_pos": "EP", "btn_pos": "BTN", "active_players": ["EP", "SB", "BB"], "table_bets": {"EP": 2.5, "BB": 1.0}, "hero_bet": 0.5, "is_3bet_pot": false },
+      "ranges": {
+        "3bet": "AA,KK,QQ,JJ,TT,99,AK,AQs,AQo:0.5,AJs,ATs,A5s,KQs,KJs,KTs,QJs,QTs,65s:0.5,54s:0.5",
+        "call": "",
+        "training": "99,88,77,A5s,A4s,KQo,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,87s,76s,65s"
+      },
+      "stats": { "3bet": "7.5%" }
+    },
     "3bet SBvsMP": {
       "setup": { "hero_pos": "SB", "villain_pos": "MP", "btn_pos": "BTN", "active_players": ["MP", "SB", "BB"], "table_bets": {"MP": 2.5, "BB": 1.0}, "hero_bet": 0.5, "is_3bet_pot": false },
       "ranges": {
