@@ -42,7 +42,7 @@ def show():
         .glass-shatter, .mastery-glow, .crest-left, .crest-right { display: none !important; }
 
         /* ИНФОБЛОК СТОЛА */
-        .table-info { position: absolute; top: 50%; width: 100%; text-align: center; pointer-events: none; z-index: 15; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .table-info { position: absolute; top: 40%; width: 100%; text-align: center; pointer-events: none; z-index: 15; display: flex; flex-direction: column; align-items: center; gap: 5px; }
         .info-spot { font-size: 20px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; z-index: 30; position: relative; text-shadow: 0 1px 4px rgba(0,0,0,0.95); }
         .info-src { display: none; }
         .mastery-badge { display: inline-flex; align-items: center; gap: 4px; border-radius: 20px; padding: 3px 12px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; }
