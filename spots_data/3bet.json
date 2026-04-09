@@ -9,7 +9,7 @@
         "call": "",
         "training": "88,77,AJo,A9s,A8s,A7s,A5s,A4s,KQo,K9s,QTs,Q9s,JTs,J9s,T9s,98s,87s,76s,65s,54s"
       },
-       stats": { "3bet": "9%" }
+       "stats": { "3bet": "9%" }
     "3bet BUvsMP": {
       "setup": { "hero_pos": "BTN", "villain_pos": "MP", "btn_pos": "BTN", "active_players": ["MP", "BTN", "SB", "BB"], "table_bets": {"MP": 2.5, "SB": 0.5, "BB": 1.0}, "hero_bet": null, "is_3bet_pot": false },
       "ranges": {
