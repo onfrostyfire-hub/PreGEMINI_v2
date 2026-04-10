@@ -74,7 +74,7 @@
       "stats": { "Call": "4.0%", "Fold": "40%" },
       "ranges": {
         "call": "AA,KK,QQ,JJ,TT,99:0.5,AK,AQs",
-       
+        "Raise": "",
         "training": "AA,KK,QQ,JJ,TT,99,AK,AQ,AJs,ATs,KQs,KJs,KTs"
       }
     }
