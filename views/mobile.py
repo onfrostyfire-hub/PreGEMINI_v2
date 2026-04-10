@@ -5,7 +5,6 @@ from datetime import datetime
 import poker_utils as utils
 
 def generate_mobile_theme(bg_rad1, bg_rad2, shadow1, shadow2, shadow3, seat_rad, seat_border, seat_act_border, seat_act_shadow, anim_name, pulse_shadow1, pulse_shadow2, text_color, badge_bg, bar_fill, card_bg, card_border, rng_bg):
-    # Убрали shadow2 и shadow3. Теперь shadow1 — это цвет единой кромки стола для конкретного ранга.
     return f"""<style>
     .mobile-game-area {{ 
         background: radial-gradient(ellipse 50% 38% at 50% 42%, {bg_rad1} 0%, transparent 70%), radial-gradient(ellipse 88% 78% at 50% 50%, {bg_rad2}) !important; 
@@ -92,16 +91,10 @@ def show():
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap');
 
-        /* ==========================================
-           НАСТРОЙКИ ОТСТУПОВ (ДЛЯ АЙФОНА)
-           Если элементы не влезают, меняй эти параметры:
-           ========================================== */
-        .mobile-game-area { margin-bottom: 70px !important; } /* Отступ под столом для карт Хиро */
-        .rng-hint-wrap { margin-top: -5px !important; margin-bottom: 5px !important; } /* Отступы вокруг надписи RNG */
-        div[data-testid="stExpander"] { margin-bottom: -15px !important; } /* Отступ после Peek Range */
-        div[data-testid="stHorizontalBlock"] { margin-top: 5px !important; gap: 8px !important; } /* Отступ для кнопок действий */
-        
-        /* ------------------------------------------ */
+        .mobile-game-area { margin-bottom: 70px !important; } 
+        .rng-hint-wrap { margin-top: 15px !important; margin-bottom: 10px !important; } 
+        div[data-testid="stExpander"] { margin-bottom: 5px !important; } 
+        div[data-testid="stHorizontalBlock"] { margin-top: 5px !important; gap: 8px !important; } 
 
         .block-container { padding-top: 1.5rem !important; padding-bottom: 1rem !important; max-width: 100% !important; overflow-x: hidden !important; }
         [data-testid="stExpander"] { margin-top: -5px !important; }
@@ -140,7 +133,7 @@ def show():
         .mastery-bar-fill { height: 100% !important; border-radius: 2px !important; }
         .hands-left-mob { font-size: 9px !important; letter-spacing: 0.06em !important; }
 
-        /* ИГРОКИ (iOS Flat - УВЕЛИЧЕНО) */
+        /* ИГРОКИ */
         .seat { position: absolute !important; z-index: 20 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 0 !important; width: 56px !important; height: 46px !important; background: transparent !important; border: none !important; box-shadow: none !important; }
         .ava { width: 50px !important; height: 25px !important; background: linear-gradient(180deg, #2a2d32 0%, #1c1e22 100%) !important; border-radius: 50px 50px 0 0 !important; border: 1.5px solid #3a3d42 !important; border-bottom: none !important; box-shadow: inset 0 2px 4px rgba(255,255,255,0.05) !important; transition: all 0.3s ease !important; }
         .plate { width: 56px !important; height: 20px !important; background: #141518 !important; border-radius: 0 0 6px 6px !important; border: 1.5px solid #3a3d42 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 5px !important; box-sizing: border-box !important; font-size: 10px !important; box-shadow: 0 4px 6px rgba(0,0,0,0.5) !important; transition: all 0.3s ease !important; }
@@ -337,6 +330,9 @@ def show():
     is_3bet_pot = setup.get("is_3bet_pot", False)
     table_size = setup.get("table_size", 6)
     stacks_data = setup.get("stacks", {})
+    
+    # ПАРСИМ КАСТОМНЫЙ ТЕКСТ КНОПКИ (ЕСЛИ ЕСТЬ)
+    btn_raise_text = setup.get("btn_raise_text", "RAISE").upper()
 
     is_defense = bool(villain_pos is not None or "call" in r_data or "Call" in r_data)
     rng = st.session_state.rng
@@ -658,7 +654,7 @@ def show():
                 st.session_state.shields += 1
                 
             st.session_state.last_error = False
-            st.session_state.flash_correct = True # Включаем вспышку зеленого стола
+            st.session_state.flash_correct = True
         else:
             st.session_state.flash_correct = False
             if st.session_state.shields > 0:
@@ -713,10 +709,11 @@ def show():
         st.rerun()
 
     if is_flashing_correct:
-        # Пауза 0.5с после правильного ответа. Кнопки и текст скрыты.
-        pass
+        time.sleep(0.5)
+        st.session_state.flash_correct = False
+        st.session_state.hand = None
+        st.rerun()
     elif st.session_state.last_error:
-        # Вывод ошибки
         st.markdown(f'<div style="background:#dc3545; color:white; padding:12px; border-radius:12px; text-align:center; font-weight:bold; margin-bottom:15px; font-size:16px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">{st.session_state.msg}</div>', unsafe_allow_html=True)
         
         tab1, tab2 = st.tabs(["🎯 Correct Range", "🧠 SRS Matrix"])
@@ -743,11 +740,10 @@ def show():
             st.session_state.shield_break_anim = False
             st.rerun()
     else:
-        # Вывод текста RNG под столом
         if is_defense:
             st.markdown('<div class="rng-hint-wrap">RNG 0-Freq: ACTION &nbsp;|&nbsp; Freq-100: FOLD</div>', unsafe_allow_html=True)
         else:
-            st.markdown('<div class="rng-hint-wrap">RNG 0-Freq: RAISE &nbsp;|&nbsp; Freq-100: FOLD</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="rng-hint-wrap">RNG 0-Freq: {btn_raise_text} &nbsp;|&nbsp; Freq-100: FOLD</div>', unsafe_allow_html=True)
 
         with st.expander("🫣 Peek Range", expanded=False):
             st.markdown(utils.render_range_matrix(data, st.session_state.hand), unsafe_allow_html=True)
@@ -778,7 +774,7 @@ def show():
             with c2:
                 if st.button("CALL", key="c", use_container_width=True): handle_action("CALL")
             with c3:
-                if st.button("RAISE", key="r", use_container_width=True): handle_action("RAISE")
+                if st.button(btn_raise_text, key="r", use_container_width=True): handle_action("RAISE")
         else:
             st.markdown("""<style>
             div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) button, div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"]:nth-child(1) button {
@@ -797,11 +793,4 @@ def show():
             with c1:
                 if st.button("FOLD", key="f", use_container_width=True): handle_action("FOLD")
             with c2:
-                if st.button("RAISE", key="r", use_container_width=True): handle_action("RAISE")
-
-    # Обработка зеленого свечения (пауза и переход)
-    if is_flashing_correct:
-        time.sleep(0.5)
-        st.session_state.flash_correct = False
-        st.session_state.hand = None
-        st.rerun()
+                if st.button(btn_raise_text, key="r", use_container_width=True): handle_action("RAISE")
