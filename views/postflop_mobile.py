@@ -3,8 +3,34 @@ import random
 import time
 import os
 import json
+import inspect
 from datetime import datetime
 import poker_utils as utils
+
+# --- УМНЫЕ ОБЁРТКИ ДЛЯ НЕЗАВИСИМЫХ СТАТОВ ПОСТФЛОПА ---
+def safe_load_stats():
+    sig = inspect.signature(utils.load_user_stats)
+    if 'is_postflop' in sig.parameters:
+        return utils.load_user_stats(is_postflop=True)
+    try:
+        with open("postflop_stats.json", "r") as f: return json.load(f)
+    except:
+        return {"xp": 0, "combo": 0, "shields": 0, "spot_mastery": {}}
+
+def safe_save_stats(data):
+    sig = inspect.signature(utils.save_user_stats)
+    if 'is_postflop' in sig.parameters:
+        utils.save_user_stats(data, is_postflop=True)
+    else:
+        with open("postflop_stats.json", "w") as f: json.dump(data, f)
+
+def safe_save_history(data):
+    sig = inspect.signature(utils.save_to_history)
+    if 'is_postflop' in sig.parameters:
+        utils.save_to_history(data, is_postflop=True)
+    else:
+        utils.save_to_history(data) # Fallback, если нет изоляции истории
+# --------------------------------------------------------
 
 @st.cache_data(ttl=0)
 def custom_load_postflop_ranges():
@@ -89,13 +115,13 @@ def show():
         /* ==========================================
            НАСТРОЙКИ ОТСТУПОВ (ДЛЯ АЙФОНА) ПОСТФЛОП
            ========================================== */
-        .pf-pot-badge { position: absolute; top: 22%; left: 50%; transform: translateX(-50%); z-index: 15; }
-        .pf-board { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
-        .pf-mastery { position: absolute; top: 68%; left: 50%; transform: translateX(-50%); z-index: 15; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;}
+        .pf-pot-badge { position: absolute; top: 20%; left: 50%; transform: translateX(-50%); z-index: 15; }
+        .pf-board { position: absolute; top: 43%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
+        .pf-mastery { position: absolute; top: 61%; left: 50%; transform: translateX(-50%); z-index: 15; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;}
         
-        .mobile-game-area { margin-bottom: 70px !important; }
-        .rng-hint-wrap { margin-top: 15px !important; margin-bottom: 10px !important; }
-        div[data-testid="stHorizontalBlock"] { margin-top: 5px !important; gap: 8px !important; }
+        .mobile-game-area { margin-top: 15px !important; margin-bottom: 75px !important; }
+        .rng-hint-wrap { margin-top: 12px !important; margin-bottom: 8px !important; }
+        div[data-testid="stHorizontalBlock"] { margin-top: 0px !important; gap: 8px !important; }
         /* ------------------------------------------ */
 
         .block-container { padding-top: 1.5rem !important; padding-bottom: 1rem !important; max-width: 100% !important; overflow-x: hidden !important; }
@@ -110,7 +136,6 @@ def show():
 
         .mobile-game-area { 
             position: relative; width: 100%; height: 280px; 
-            margin: 35px auto auto auto; 
             border: 12px solid #1a1c20; 
             border-radius: 135px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 3px 12px rgba(0,0,0,0.6); 
@@ -150,8 +175,8 @@ def show():
         .board-card-mob { width: 38px; height: 54px; background: white; border-radius: 3px; position: relative; color: black; box-shadow: 0 1px 3px rgba(0,0,0,0.5); font-family: Arial, sans-serif !important; }
         .bc-tl-mob { position: absolute; top: 2px; left: 3px; font-weight: bold; font-size: 12px; line-height: 1; }
         .bc-c-mob { position: absolute; top: 55%; left: 50%; transform: translate(-50%,-50%); font-size: 20px; line-height: 1; }
-        .villain-act-badge-mob { position: absolute; background: #dc3545; color: #fff; font-weight: bold; font-size: 9px; padding: 1px 5px; border-radius: 4px; border: 1px solid #ffaaaa; box-shadow: 0 2px 3px rgba(0,0,0,0.5); z-index: 25; text-transform: uppercase; white-space: nowrap; left: 50%; transform: translateX(-50%); }
-        .act-bottom-mob { bottom: -12px; } .act-top-mob { top: -12px; }
+        
+        .villain-act-badge-mob { position: absolute; background: #dc3545; color: #fff; font-weight: bold; font-size: 9px; padding: 1px 5px; border-radius: 4px; border: 1px solid #ffaaaa; box-shadow: 0 2px 3px rgba(0,0,0,0.5); z-index: 25; text-transform: uppercase; white-space: nowrap; left: 50%; transform: translateX(-50%); bottom: -16px; }
 
         .dealer-mob { position: absolute !important; z-index: 30 !important; width: 20px !important; height: 20px !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 8px !important; font-weight: 900 !important; color: #120700 !important; background: radial-gradient(circle at 38% 30%, #ffd84a, #c88408) !important; border: 1.5px solid rgba(255,255,255,0.35) !important; box-shadow: 0 0 0 2px rgba(0,0,0,0.7), 0 2px 10px rgba(200,132,8,0.7), inset 0 1px 3px rgba(255,255,255,0.55) !important; }
 
@@ -204,15 +229,20 @@ def show():
         .cn-mob-combo-fire { font-size: 14px; font-weight: 900; color: #fff; text-shadow: 0 0 18px rgba(255,120,40,0.55); letter-spacing: -0.03em; }
         .cn-mob-shield { font-size: 11px; margin-left: 2px; font-weight: 800; color: rgba(120,230,255,0.95); filter: drop-shadow(0 0 6px rgba(0,200,255,0.55)); align-items: center; gap: 2px; }
 
-        .combo-glow-5 { box-shadow: 0 0 10px rgba(13, 202, 240, 0.4), 0 10px 30px rgba(0,0,0,0.8) !important; }
-        .combo-glow-10 { box-shadow: 0 0 15px rgba(255, 193, 7, 0.5), 0 10px 30px rgba(0,0,0,0.8) !important; }
-        .combo-glow-25 { box-shadow: 0 0 20px rgba(253, 126, 20, 0.6), 0 10px 30px rgba(0,0,0,0.8) !important; animation: pulse-slow 2s infinite; }
-        .combo-glow-50 { box-shadow: 0 0 30px rgba(220, 53, 69, 0.7), 0 10px 30px rgba(0,0,0,0.8) !important; animation: pulse-menace 1.5s infinite; }
-        .combo-glow-100 { box-shadow: 0 0 40px rgba(111, 66, 193, 0.8), 0 10px 30px rgba(0,0,0,0.8) !important; animation: pulse-neon 1s infinite; }
-        .combo-glow-200 { box-shadow: 0 0 50px rgba(0, 229, 255, 0.8), 0 10px 30px rgba(0,0,0,0.8) !important; animation: pulse-plasma 1s infinite alternate; }
-        .combo-glow-500 { box-shadow: 0 0 60px rgba(255, 0, 255, 0.9), 0 10px 30px rgba(0,0,0,0.8) !important; animation: pulse-matrix 0.8s infinite alternate; }
-        .combo-glow-1000 { box-shadow: 0 0 80px rgba(0, 255, 0, 1.0), 0 10px 30px rgba(0,0,0,0.8) !important; animation: pulse-god 0.5s infinite alternate; }
-        
+        .rage-bar-container { width: 100%; max-width: 700px; margin: 0 auto 5px auto; height: 26px; border-radius: 999px; position: relative; display: flex; align-items: stretch; padding: 3px; background: linear-gradient(180deg, rgba(12,14,20,0.95) 0%, rgba(6,8,12,0.98) 100%); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65), inset 0 -1px 0 rgba(255,255,255,0.05); overflow: hidden; }
+        .rage-bar-container::before { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%); z-index: 3; }
+        .rage-bar-fill { height: 100%; border-radius: 999px; transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; min-width: 0; box-shadow: inset 0 2px 8px rgba(255,255,255,0.35), inset 0 -3px 8px rgba(0,0,0,0.45), 0 0 20px rgba(255,255,255,0.12); }
+        .rage-bar-fill::before, .rage-bar-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle, rgba(255,255,255,0.85) 1px, transparent 2px), radial-gradient(circle, rgba(255,255,255,0.45) 2px, transparent 3px), radial-gradient(circle, rgba(255,255,255,0.35) 1px, transparent 2px); z-index: 1; pointer-events: none; }
+        .rage-bar-fill::before { background-size: 18px 22px, 32px 36px, 14px 18px; animation: bubbleRise1 1.15s infinite linear; opacity: 0.85; }
+        .rage-bar-fill::after { background-size: 22px 28px, 40px 46px, 20px 24px; animation: bubbleRise2 1.65s infinite linear; opacity: 0.45; }
+        @keyframes bubbleRise1 { 0% { background-position: 0px 22px, 0px 36px, 0px 18px; } 50% { background-position: 5px 11px, -5px 18px, 3px 9px; } 100% { background-position: 0px 0px, 0px 0px, 0px 0px; } }
+        @keyframes bubbleRise2 { 0% { background-position: 0px 28px, 0px 46px, 0px 24px; } 50% { background-position: -6px 14px, 6px 22px, -4px 12px; } 100% { background-position: 0px 0px, 0px 0px, 0px 0px; } }
+        .rage-labels { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); display: flex; justify-content: space-between; align-items: center; padding: 0 14px; pointer-events: none; z-index: 4; font-family: 'Inter', system-ui, sans-serif; font-weight: 800; font-size: 11px; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; color: rgba(255,255,255,0.98); text-shadow: 0 1px 2px rgba(0,0,0,0.95), 0 0 12px rgba(0,0,0,0.8), 0 0 1px rgba(0,0,0,1); }
+        .rage-pulse { animation: ragePulseNeon 0.45s ease-in-out infinite alternate; }
+        @keyframes ragePulseNeon { 0% { filter: brightness(1) saturate(1); box-shadow: inset 0 2px 8px rgba(255,255,255,0.3), 0 0 8px rgba(255,60,80,0.35); } 100% { filter: brightness(1.15) saturate(1.2); box-shadow: inset 0 2px 12px rgba(255,255,255,0.5), 0 0 22px rgba(255,80,100,0.65), 0 0 40px rgba(255,40,60,0.25); } }
+        .rage-flash { animation: rageTubeFlash 0.65s ease-out; }
+        @keyframes rageTubeFlash { 0% { box-shadow: 0 0 0 1px rgba(255,255,255,0.9), 0 0 40px rgba(255,255,255,0.8), inset 0 0 30px rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.65); } 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65); border-color: rgba(255,255,255,0.1); } }
+
         .pf-btn-0 button {
             background: linear-gradient(180deg, #252830 0%, #16181f 100%) !important;
             box-shadow: 0 4px 0 #0c0d12, 0 6px 16px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 0 0 1px rgba(255,255,255,0.06) !important;
@@ -331,7 +361,7 @@ def show():
         st.warning("⚠️ Выбери фильтры.")
         st.stop()
 
-    stats_data_init = utils.load_user_stats()
+    stats_data_init = safe_load_stats()
     if 'shields' not in st.session_state: st.session_state.shields = stats_data_init.get("shields", 0)
 
     for k in ['pf_combo', 'pf_session_hands', 'pf_session_correct', 'pf_rng']:
@@ -393,10 +423,10 @@ def show():
         
     c1, c2 = get_suit_color_class(s1), get_suit_color_class(s2)
 
-    stats_data = utils.load_user_stats()
-    rank_name, next_xp = utils.get_rank_info(stats_data["xp"])
+    stats_data = safe_load_stats()
+    rank_name, next_xp = utils.get_rank_info(stats_data.get("xp", 0))
     c = st.session_state.pf_combo
-    progress_pct = int((stats_data["xp"] / next_xp) * 100) if next_xp != "MAX" else 100
+    progress_pct = int((stats_data.get("xp", 0) / next_xp) * 100) if next_xp != "MAX" else 100
     
     sh = st.session_state.pf_session_hands
     scorr = st.session_state.pf_session_correct
@@ -437,6 +467,37 @@ def show():
         table_status_class = "table-glow-correct"
     elif st.session_state.pf_last_error:
         table_status_class = "table-glow-incorrect"
+
+    tiers = [(0, 1.0), (10, 1.5), (25, 2.0), (50, 3.0), (100, 4.0), (250, 5.0), (500, 10.0)]
+    curr_mult = 1.0; next_mult = 1.5; prev_req = 0; next_req = 10
+    for i in range(len(tiers)):
+        if c >= tiers[i][0]:
+            curr_mult = tiers[i][1]
+            prev_req = tiers[i][0]
+            if i + 1 < len(tiers):
+                next_req = tiers[i+1][0]
+                next_mult = tiers[i+1][1]
+            else:
+                next_req = c 
+                next_mult = "MAX"
+                
+    if next_mult == "MAX":
+        rage_pct = 100
+        lbl_left = f"x{curr_mult}"; lbl_right = "MAX"
+    else:
+        rage_pct = int((c - prev_req) / (next_req - prev_req) * 100)
+        lbl_left = f"x{curr_mult}"; lbl_right = f"x{next_mult}"
+
+    is_pulsing = "rage-pulse" if rage_pct >= 95 and next_mult != "MAX" else ""
+    is_flashing = "rage-flash" if st.session_state.pop("just_leveled_up", False) else ""
+    
+    if curr_mult == 1.0: grad = "linear-gradient(90deg, #17a2b8, #0dcaf0)"
+    elif curr_mult == 1.5: grad = "linear-gradient(90deg, #0dcaf0, #28a745)"
+    elif curr_mult == 2.0: grad = "linear-gradient(90deg, #28a745, #ffc107)"
+    elif curr_mult == 3.0: grad = "linear-gradient(90deg, #ffc107, #fd7e14)"
+    elif curr_mult == 4.0: grad = "linear-gradient(90deg, #fd7e14, #dc3545)"
+    elif curr_mult == 5.0: grad = "linear-gradient(90deg, #dc3545, #6f42c1)"
+    else: grad = "linear-gradient(90deg, #6f42c1, #ff00ff)"
 
     shield_display = (
         f'<span style="'
@@ -494,6 +555,16 @@ def show():
         f'</div></div></div>'
     )
 
+    rage_bar_html = f"""
+<div class="rage-bar-container {is_flashing}">
+  <div class="rage-bar-fill {is_pulsing}" style="width: {rage_pct}%; background: {grad};"></div>
+  <div class="rage-labels">
+    <span>{lbl_left}</span>
+    <span>{lbl_right}</span>
+  </div>
+</div>
+"""
+
     anim_html = ""
     anim_reward = st.session_state.pop("anim_reward", None)
     if anim_reward is not None:
@@ -505,6 +576,7 @@ def show():
     shatter_html = '<div class="glass-shatter"></div>' if st.session_state.pop("shield_break_anim", False) else ""
 
     st.markdown(header_html, unsafe_allow_html=True)
+    st.markdown(rage_bar_html, unsafe_allow_html=True)
 
     order = ["EP", "MP", "CO", "BTN", "SB", "BB"]
     try: hero_idx = order.index(hero_pos)
@@ -556,7 +628,7 @@ def show():
         
         if villain_act:
             if not is_bet:
-                v_act_html = f'<div class="villain-act-badge-mob act-bottom-mob">{villain_act}</div>'
+                v_act_html = f'<div class="villain-act-badge-mob">{villain_act}</div>'
                 
         opp_html += f'<div class="seat {cls}" style="{ss}">{cards}<div class="ava"></div><div class="plate"><span class="pos">{villain_p}</span><span class="stack">{p_stack}</span></div>{v_act_html}</div>'
         
@@ -583,8 +655,7 @@ def show():
             
             if p == villain_pos and villain_act:
                 if not is_bet:
-                    pos_class = "act-bottom-mob" if i in [2, 3, 4] else "act-top-mob"
-                    v_act_html = f'<div class="villain-act-badge-mob {pos_class}">{villain_act}</div>'
+                    v_act_html = f'<div class="villain-act-badge-mob">{villain_act}</div>'
                 
             opp_html += f'<div class="seat {cls}" style="{ss}">{cards}<div class="ava"></div><div class="plate"><span class="pos">{p}</span><span class="stack">{p_stack}</span></div>{v_act_html}</div>'
 
@@ -610,7 +681,7 @@ def show():
         sc = get_suit_color_class(suit)
         board_html += f'<div class="board-card-mob"><div class="bc-tl-mob {sc}">{rank_str}</div><div class="bc-c-mob {sc}">{suit}</div></div>'
 
-    html = f'<div class="mobile-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge"><div class="pot-badge-mob">Pot: {pot_size} bb</div></div><div class="pf-board"><div class="board-container-mob">{board_html}</div></div><div class="pf-mastery"><div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width:{m_pct}%;"></div></div><div class="hands-left-mob">{hands_left_text}</div></div>{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{st.session_state.pf_rng}</div></div><div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div></div></div>'
+    html = f'<div class="mobile-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge"><div class="pot-badge-mob">Pot: {pot_size} bb</div></div><div class="pf-board"><div class="board-container-mob">{board_html}</div></div><div class="pf-mastery"><div class="mastery-badge rusty-{m_rust}" style="color:{theme["text_color"]}; border-color:{theme["seat_border"]};">{m_icon} {m_name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width:{m_pct}%;"></div></div><div class="hands-left-mob">{hands_left_text}</div></div>{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{st.session_state.pf_rng}</div></div><div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div></div></div>'
     
     st.markdown(html, unsafe_allow_html=True)
 
@@ -621,7 +692,7 @@ def show():
         k = f"{chosen_key}_{h_val}".replace(" ","_")
         utils.update_srs_auto(k, h_val, corr)
         
-        utils.save_to_history({
+        safe_save_history({
             "Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 
             "Spot": chosen_key, "Hand": f"{h_val}", "Result": int(corr), 
             "CorrectAction": correct_act, "UserAction": action
@@ -646,9 +717,30 @@ def show():
                 st.session_state.pf_last_error = True
                 st.session_state.msg = f"❌ ОШИБКА! Правильно: {correct_act}"
             
+        c_new = st.session_state.pf_combo
+        new_mult = 1.0
+        if c_new >= 500: new_mult = 10.0
+        elif c_new >= 250: new_mult = 5.0
+        elif c_new >= 100: new_mult = 4.0
+        elif c_new >= 50: new_mult = 3.0
+        elif c_new >= 25: new_mult = 2.0
+        elif c_new >= 10: new_mult = 1.5
+
+        if new_mult > curr_mult:
+            st.session_state.just_leveled_up = True
+
         try:
             alerts, _ = utils.process_gamification(corr, st.session_state.pf_combo, st.session_state.pf_session_hands, chosen_key, shield_used=shield_used)
             if alerts: st.session_state.pf_toast_msgs.extend(alerts)
+        except Exception: pass
+        
+        try:
+            curr_stats = safe_load_stats()
+            curr_stats["combo"] = st.session_state.pf_combo
+            curr_stats["shields"] = st.session_state.shields
+            safe_save_stats(curr_stats)
+            if hasattr(utils, "force_sync"):
+                utils.force_sync()
         except Exception: pass
         
         st.rerun()
