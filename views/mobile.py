@@ -91,8 +91,8 @@ def show():
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap');
 
-        .mobile-game-area { margin-bottom: 70px !important; } 
-        .rng-hint-wrap { margin-top: 15px !important; margin-bottom: 10px !important; } 
+        .mobile-game-area { margin-bottom: 45px !important; } 
+        .rng-hint-wrap { margin-top: 5px !important; margin-bottom: 10px !important; } 
         div[data-testid="stExpander"] { margin-bottom: 5px !important; } 
         div[data-testid="stHorizontalBlock"] { margin-top: 5px !important; gap: 8px !important; } 
 
