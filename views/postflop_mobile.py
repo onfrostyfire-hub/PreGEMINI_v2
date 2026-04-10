@@ -119,7 +119,7 @@ def show():
         .pf-board { position: absolute; top: 43%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
         .pf-mastery { position: absolute; top: 61%; left: 50%; transform: translateX(-50%); z-index: 15; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;}
         
-        .mobile-game-area { margin-top: 15px !important; margin-bottom: 75px !important; }
+        .mobile-game-area { margin-top: 30px !important; margin-bottom: 75px !important; }
         .rng-hint-wrap { margin-top: 12px !important; margin-bottom: 8px !important; }
         div[data-testid="stHorizontalBlock"] { margin-top: 0px !important; gap: 8px !important; }
         /* ------------------------------------------ */
