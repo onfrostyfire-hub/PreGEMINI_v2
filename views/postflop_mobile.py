@@ -29,7 +29,7 @@ def safe_save_history(data):
     if 'is_postflop' in sig.parameters:
         utils.save_to_history(data, is_postflop=True)
     else:
-        utils.save_to_history(data) # Fallback, если нет изоляции истории
+        utils.save_to_history(data)
 # --------------------------------------------------------
 
 @st.cache_data(ttl=0)
@@ -243,34 +243,21 @@ def show():
         .rage-flash { animation: rageTubeFlash 0.65s ease-out; }
         @keyframes rageTubeFlash { 0% { box-shadow: 0 0 0 1px rgba(255,255,255,0.9), 0 0 40px rgba(255,255,255,0.8), inset 0 0 30px rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.65); } 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65); border-color: rgba(255,255,255,0.1); } }
 
-        .pf-btn-0 button {
-            background: linear-gradient(180deg, #252830 0%, #16181f 100%) !important;
-            box-shadow: 0 4px 0 #0c0d12, 0 6px 16px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 0 0 1px rgba(255,255,255,0.06) !important;
-        }
+        .pf-btn-0 button { background: linear-gradient(180deg, #252830 0%, #16181f 100%) !important; box-shadow: 0 4px 0 #0c0d12, 0 6px 16px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 0 0 1px rgba(255,255,255,0.06) !important; }
         .pf-btn-0 button:active { box-shadow: 0 1px 0 #0c0d12, inset 0 1px 0 rgba(255,255,255,0.05), 0 0 20px rgba(255,255,255,0.15) !important; filter: brightness(1.5) !important; }
         .pf-btn-0 button p { color: rgba(190,190,205,0.8) !important; }
 
-        .pf-btn-1 button {
-            background: linear-gradient(180deg, #0c3828 0%, #071e16 100%) !important;
-            box-shadow: 0 4px 0 #030f0b, 0 6px 20px rgba(0,180,80,0.12), inset 0 1px 0 rgba(0,230,110,0.12), inset 0 0 0 1px rgba(0,200,90,0.1) !important;
-        }
+        .pf-btn-1 button { background: linear-gradient(180deg, #0c3828 0%, #071e16 100%) !important; box-shadow: 0 4px 0 #030f0b, 0 6px 20px rgba(0,180,80,0.12), inset 0 1px 0 rgba(0,230,110,0.12), inset 0 0 0 1px rgba(0,200,90,0.1) !important; }
         .pf-btn-1 button:active { box-shadow: 0 1px 0 #030f0b, inset 0 1px 0 rgba(0,200,90,0.08), 0 0 20px rgba(0,255,100,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
         .pf-btn-1 button p { color: rgba(50,220,130,0.92) !important; text-shadow: 0 0 12px rgba(30,200,100,0.4) !important; }
 
-        .pf-btn-2 button {
-            background: linear-gradient(180deg, #4a0909 0%, #300505 100%) !important;
-            box-shadow: 0 4px 0 #1a0303, 0 6px 20px rgba(180,20,20,0.2), inset 0 1px 0 rgba(255,80,80,0.14), inset 0 0 0 1px rgba(200,30,30,0.18) !important;
-        }
+        .pf-btn-2 button { background: linear-gradient(180deg, #4a0909 0%, #300505 100%) !important; box-shadow: 0 4px 0 #1a0303, 0 6px 20px rgba(180,20,20,0.2), inset 0 1px 0 rgba(255,80,80,0.14), inset 0 0 0 1px rgba(200,30,30,0.18) !important; }
         .pf-btn-2 button:active { box-shadow: 0 1px 0 #1a0303, inset 0 1px 0 rgba(255,80,80,0.1), 0 0 20px rgba(255,50,50,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
         .pf-btn-2 button p { color: rgba(255,90,90,0.95) !important; text-shadow: 0 0 14px rgba(220,50,50,0.5) !important; }
 
-        .pf-btn-3 button {
-            background: linear-gradient(180deg, #30094a 0%, #160530 100%) !important;
-            box-shadow: 0 4px 0 #0f031a, 0 6px 20px rgba(180,20,220,0.2), inset 0 1px 0 rgba(220,80,255,0.14), inset 0 0 0 1px rgba(200,30,220,0.18) !important;
-        }
+        .pf-btn-3 button { background: linear-gradient(180deg, #30094a 0%, #160530 100%) !important; box-shadow: 0 4px 0 #0f031a, 0 6px 20px rgba(180,20,220,0.2), inset 0 1px 0 rgba(220,80,255,0.14), inset 0 0 0 1px rgba(200,30,220,0.18) !important; }
         .pf-btn-3 button:active { box-shadow: 0 1px 0 #0f031a, inset 0 1px 0 rgba(220,80,255,0.1), 0 0 20px rgba(220,50,255,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
         .pf-btn-3 button p { color: rgba(230,90,255,0.95) !important; text-shadow: 0 0 14px rgba(220,50,255,0.5) !important; }
-
         </style>
     """, unsafe_allow_html=True)
 
@@ -628,7 +615,7 @@ def show():
         
         if villain_act:
             if not is_bet:
-                v_act_html = f'<div class="villain-act-badge-mob">{villain_act}</div>'
+                v_act_html = f'<div class="villain-act-badge-mob act-bottom-mob">{villain_act}</div>'
                 
         opp_html += f'<div class="seat {cls}" style="{ss}">{cards}<div class="ava"></div><div class="plate"><span class="pos">{villain_p}</span><span class="stack">{p_stack}</span></div>{v_act_html}</div>'
         
@@ -655,7 +642,7 @@ def show():
             
             if p == villain_pos and villain_act:
                 if not is_bet:
-                    v_act_html = f'<div class="villain-act-badge-mob">{villain_act}</div>'
+                    v_act_html = f'<div class="villain-act-badge-mob act-bottom-mob">{villain_act}</div>'
                 
             opp_html += f'<div class="seat {cls}" style="{ss}">{cards}<div class="ava"></div><div class="plate"><span class="pos">{p}</span><span class="stack">{p_stack}</span></div>{v_act_html}</div>'
 
@@ -681,7 +668,7 @@ def show():
         sc = get_suit_color_class(suit)
         board_html += f'<div class="board-card-mob"><div class="bc-tl-mob {sc}">{rank_str}</div><div class="bc-c-mob {sc}">{suit}</div></div>'
 
-    html = f'<div class="mobile-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge"><div class="pot-badge-mob">Pot: {pot_size} bb</div></div><div class="pf-board"><div class="board-container-mob">{board_html}</div></div><div class="pf-mastery"><div class="mastery-badge rusty-{m_rust}" style="color:{theme["text_color"]}; border-color:{theme["seat_border"]};">{m_icon} {m_name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width:{m_pct}%;"></div></div><div class="hands-left-mob">{hands_left_text}</div></div>{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{st.session_state.pf_rng}</div></div><div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div></div></div>'
+    html = f'<div class="mobile-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge"><div class="pot-badge-mob">Pot: {pot_size} bb</div></div><div class="pf-board"><div class="board-container-mob">{board_html}</div></div><div class="pf-mastery"><div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width:{m_pct}%;"></div></div><div class="hands-left-mob">{hands_left_text}</div></div>{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{st.session_state.pf_rng}</div></div><div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div></div></div>'
     
     st.markdown(html, unsafe_allow_html=True)
 
