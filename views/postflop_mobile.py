@@ -6,7 +6,6 @@ import json
 from datetime import datetime
 import poker_utils as utils
 
-# Кастомный загрузчик, который понимает и старый, и "плоский" формат JSON постфлопа
 @st.cache_data(ttl=0)
 def custom_load_postflop_ranges():
     db = {}
@@ -91,13 +90,13 @@ def show():
            НАСТРОЙКИ ОТСТУПОВ (ДЛЯ АЙФОНА) ПОСТФЛОП
            Двигай эти проценты, чтобы выровнять элементы по центру стола:
            ========================================== */
-        .pf-pot-badge { position: absolute; top: 22%; left: 50%; transform: translateX(-50%); z-index: 15; } /* Банк */
-        .pf-board { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); z-index: 15; } /* Карты флопа */
-        .pf-mastery { position: absolute; top: 68%; left: 50%; transform: translateX(-50%); z-index: 15; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;} /* Инфа о споте и прогресс-бар */
+        .pf-pot-badge { position: absolute; top: 22%; left: 50%; transform: translateX(-50%); z-index: 15; }
+        .pf-board { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
+        .pf-mastery { position: absolute; top: 68%; left: 50%; transform: translateX(-50%); z-index: 15; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;}
         
-        .mobile-game-area { margin-bottom: 70px !important; } /* Отступ под столом для карт Хиро */
-        .rng-hint-wrap { margin-top: 15px !important; margin-bottom: 10px !important; } /* Отступы вокруг надписи RNG */
-        div[data-testid="stHorizontalBlock"] { margin-top: 5px !important; gap: 8px !important; } /* Отступ для кнопок действий */
+        .mobile-game-area { margin-bottom: 70px !important; }
+        .rng-hint-wrap { margin-top: 15px !important; margin-bottom: 10px !important; }
+        div[data-testid="stHorizontalBlock"] { margin-top: 5px !important; gap: 8px !important; }
         /* ------------------------------------------ */
 
         .block-container { padding-top: 1.5rem !important; padding-bottom: 1rem !important; max-width: 100% !important; overflow-x: hidden !important; }
@@ -110,7 +109,6 @@ def show():
         div[data-testid="stButton"] button:active { transform: translateY(4px) !important; box-shadow: 0 0 0 transparent !important; }
         div[data-testid="stButton"] button p { font-family: 'Roboto', sans-serif !important; font-size: 15px !important; font-weight: 900 !important; margin: 0 !important; letter-spacing: 0.5px !important; text-transform: uppercase !important; }
 
-        /* ЕДИНАЯ КРОМКА СТОЛА */
         .mobile-game-area { 
             position: relative; width: 100%; height: 280px; 
             margin: 35px auto auto auto; 
@@ -120,7 +118,6 @@ def show():
             transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; 
         }
         
-        /* СВЕЧЕНИЕ ПРИ ОТВЕТАХ */
         .mobile-game-area.table-glow-correct {
             border-color: #198754 !important;
             box-shadow: 0 0 25px rgba(25,135,84,0.6), inset 0 0 15px rgba(25,135,84,0.4) !important;
@@ -135,7 +132,6 @@ def show():
         .mastery-bar-fill { height: 100% !important; border-radius: 2px !important; }
         .hands-left-mob { font-size: 9px !important; letter-spacing: 0.06em !important; }
 
-        /* ИГРОКИ (iOS Flat) */
         .seat { position: absolute !important; z-index: 20 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 0 !important; width: 56px !important; height: 46px !important; background: transparent !important; border: none !important; box-shadow: none !important; }
         .ava { width: 50px !important; height: 25px !important; background: linear-gradient(180deg, #2a2d32 0%, #1c1e22 100%) !important; border-radius: 50px 50px 0 0 !important; border: 1.5px solid #3a3d42 !important; border-bottom: none !important; box-shadow: inset 0 2px 4px rgba(255,255,255,0.05) !important; transition: all 0.3s ease !important; }
         .plate { width: 56px !important; height: 20px !important; background: #141518 !important; border-radius: 0 0 6px 6px !important; border: 1.5px solid #3a3d42 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 5px !important; box-sizing: border-box !important; font-size: 10px !important; box-shadow: 0 4px 6px rgba(0,0,0,0.5) !important; transition: all 0.3s ease !important; }
@@ -150,7 +146,6 @@ def show():
         .opp-card-mob::before { content: '' !important; position: absolute !important; inset: 2px !important; border-radius: 2px !important; border: 1px solid rgba(80,140,255,0.15) !important; }
         .opp-card-mob.right { margin-left: -5px !important; transform: rotate(10deg) !important; z-index: -1 !important; }
 
-        /* POSTFLOP SPECIFIC: BOARD & POT & VILLAIN ACT */
         .pot-badge-mob { background: #111; color: #ffc107; font-weight: bold; font-size: 11px; padding: 2px 10px; border-radius: 12px; border: 1px solid #ffc107; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
         .board-container-mob { display: flex; gap: 4px; background: rgba(0,0,0,0.4); padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 2px 10px rgba(0,0,0,0.4); }
         .board-card-mob { width: 38px; height: 54px; background: white; border-radius: 3px; position: relative; color: black; box-shadow: 0 1px 3px rgba(0,0,0,0.5); font-family: Arial, sans-serif !important; }
@@ -170,7 +165,6 @@ def show():
         
         .bet-txt { font-size: 10px !important; font-weight: 700 !important; color: rgba(255,235,190,0.9) !important; text-shadow: 0 0 5px rgba(255,195,40,0.5), 0 1px 3px rgba(0,0,0,0.98) !important; letter-spacing: 0.03em !important; white-space: nowrap !important; }
 
-        /* HERO PANEL */
         .hero-mob { position: absolute !important; bottom: -55px !important; left: 50% !important; transform: translateX(-50%) !important; z-index: 30 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 4px !important; width: 120px !important; }
         .hero-cards-wrap { display: flex !important; gap: 5px !important; position: relative !important; }
         .hero-plate { width: 84px !important; height: 18px !important; background: #141518 !important; border-radius: 4px !important; border: 1.5px solid #ffc107 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 6px !important; box-sizing: border-box !important; font-size: 10px !important; font-weight: bold !important; box-shadow: 0 4px 10px rgba(0,0,0,0.6) !important; transition: border-color 0.3s; }
@@ -178,7 +172,6 @@ def show():
         .floating-reward { position: absolute !important; top: -38px !important; left: 50% !important; transform: translateX(-50%) !important; font-size: 14px !important; font-weight: 800 !important; color: #17f07e !important; text-shadow: 0 0 12px rgba(23,240,126,0.8), 0 0 28px rgba(23,240,126,0.3) !important; white-space: nowrap !important; animation: float-reward 2.2s ease-out forwards !important; pointer-events: none !important; }
         @keyframes float-reward { 0%   { opacity: 1; transform: translateX(-50%) translateY(0); } 100% { opacity: 0; transform: translateX(-50%) translateY(-24px); } }
 
-        /* HERO CARDS */
         .card-mob { width: 44px !important; height: 62px !important; border-radius: 5px !important; position: relative !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; overflow: hidden !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -6px 16px rgba(0,0,0,0.7), 0 -12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1) !important;}
         .card-mob::after { content: '' !important; position: absolute !important; top: 0 !important; left: 0 !important; width: 60% !important; height: 45% !important; background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; pointer-events: none !important; border-radius: 5px 0 0 0 !important; }
         .tl-mob { padding: 3px 0 0 4px !important; font-size: 13px !important; font-weight: 900 !important; line-height: 0.9 !important; letter-spacing: -0.04em !important; z-index: 2 !important; position: relative !important; font-family: Arial, sans-serif !important; }
@@ -189,11 +182,8 @@ def show():
         .suit-green { color: #198754 !important; }
         
         .rng-badge { position: absolute !important; top: 50% !important; right: -30px !important; transform: translateY(-50%) !important; width: 24px !important; height: 24px !important; border-radius: 50% !important; font-weight: bold !important; font-size: 10px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 5px rgba(0,0,0,0.5) !important; z-index: 40 !important; }
-
-        /* RNG HINT */
         .rng-hint-wrap { text-align: center; color: #6c757d; font-size: 11px; font-family: 'Roboto', sans-serif; font-weight: 500; letter-spacing: 0.5px; }
 
-        /* ── Carbon Noir: stats header ── */
         .cn-mob-header { margin-top: -15px; margin-bottom: 2px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; -webkit-font-smoothing: antialiased; border-radius: 14px; overflow: hidden; position: relative; background: linear-gradient(165deg, rgba(18,22,28,0.92) 0%, rgba(8,10,14,0.96) 100%); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
         .cn-mob-header::before { content: ''; position: absolute; inset: 0; border-radius: 14px; pointer-events: none; background: linear-gradient(125deg, rgba(255,255,255,0.07) 0%, transparent 42%, transparent 58%, rgba(255,255,255,0.03) 100%); z-index: 0; }
         .cn-mob-wr-track { height: 3px; width: 100%; background: rgba(0,0,0,0.45); position: relative; z-index: 1; }
@@ -215,21 +205,6 @@ def show():
         .cn-mob-combo-fire { font-size: 14px; font-weight: 900; color: #fff; text-shadow: 0 0 18px rgba(255,120,40,0.55); letter-spacing: -0.03em; }
         .cn-mob-shield { font-size: 11px; margin-left: 2px; font-weight: 800; color: rgba(120,230,255,0.95); filter: drop-shadow(0 0 6px rgba(0,200,255,0.55)); align-items: center; gap: 2px; }
 
-        /* ── Rage bar: neon glass tube ── */
-        .rage-bar-container { width: 100%; max-width: 700px; margin: 0 auto 5px auto; height: 26px; border-radius: 999px; position: relative; display: flex; align-items: stretch; padding: 3px; background: linear-gradient(180deg, rgba(12,14,20,0.95) 0%, rgba(6,8,12,0.98) 100%); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65), inset 0 -1px 0 rgba(255,255,255,0.05); overflow: hidden; }
-        .rage-bar-container::before { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%); z-index: 3; }
-        .rage-bar-fill { height: 100%; border-radius: 999px; transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; min-width: 0; box-shadow: inset 0 2px 8px rgba(255,255,255,0.35), inset 0 -3px 8px rgba(0,0,0,0.45), 0 0 20px rgba(255,255,255,0.12); }
-        .rage-bar-fill::before, .rage-bar-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle, rgba(255,255,255,0.85) 1px, transparent 2px), radial-gradient(circle, rgba(255,255,255,0.45) 2px, transparent 3px), radial-gradient(circle, rgba(255,255,255,0.35) 1px, transparent 2px); z-index: 1; pointer-events: none; }
-        .rage-bar-fill::before { background-size: 18px 22px, 32px 36px, 14px 18px; animation: bubbleRise1 1.15s infinite linear; opacity: 0.85; }
-        .rage-bar-fill::after { background-size: 22px 28px, 40px 46px, 20px 24px; animation: bubbleRise2 1.65s infinite linear; opacity: 0.45; }
-        @keyframes bubbleRise1 { 0% { background-position: 0px 22px, 0px 36px, 0px 18px; } 50% { background-position: 5px 11px, -5px 18px, 3px 9px; } 100% { background-position: 0px 0px, 0px 0px, 0px 0px; } }
-        @keyframes bubbleRise2 { 0% { background-position: 0px 28px, 0px 46px, 0px 24px; } 50% { background-position: -6px 14px, 6px 22px, -4px 12px; } 100% { background-position: 0px 0px, 0px 0px, 0px 0px; } }
-        .rage-labels { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); display: flex; justify-content: space-between; align-items: center; padding: 0 14px; pointer-events: none; z-index: 4; font-family: 'Inter', system-ui, sans-serif; font-weight: 800; font-size: 11px; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; color: rgba(255,255,255,0.98); text-shadow: 0 1px 2px rgba(0,0,0,0.95), 0 0 12px rgba(0,0,0,0.8), 0 0 1px rgba(0,0,0,1); }
-        .rage-pulse { animation: ragePulseNeon 0.45s ease-in-out infinite alternate; }
-        @keyframes ragePulseNeon { 0% { filter: brightness(1) saturate(1); box-shadow: inset 0 2px 8px rgba(255,255,255,0.3), 0 0 8px rgba(255,60,80,0.35); } 100% { filter: brightness(1.15) saturate(1.2); box-shadow: inset 0 2px 12px rgba(255,255,255,0.5), 0 0 22px rgba(255,80,100,0.65), 0 0 40px rgba(255,40,60,0.25); } }
-        .rage-flash { animation: rageTubeFlash 0.65s ease-out; }
-        @keyframes rageTubeFlash { 0% { box-shadow: 0 0 0 1px rgba(255,255,255,0.9), 0 0 40px rgba(255,255,255,0.8), inset 0 0 30px rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.65); } 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65); border-color: rgba(255,255,255,0.1); } }
-
         .combo-glow-5 { box-shadow: 0 0 10px rgba(13, 202, 240, 0.4), 0 10px 30px rgba(0,0,0,0.8) !important; }
         .combo-glow-10 { box-shadow: 0 0 15px rgba(255, 193, 7, 0.5), 0 10px 30px rgba(0,0,0,0.8) !important; }
         .combo-glow-25 { box-shadow: 0 0 20px rgba(253, 126, 20, 0.6), 0 10px 30px rgba(0,0,0,0.8) !important; animation: pulse-slow 2s infinite; }
@@ -239,7 +214,6 @@ def show():
         .combo-glow-500 { box-shadow: 0 0 60px rgba(255, 0, 255, 0.9), 0 10px 30px rgba(0,0,0,0.8) !important; animation: pulse-matrix 0.8s infinite alternate; }
         .combo-glow-1000 { box-shadow: 0 0 80px rgba(0, 255, 0, 1.0), 0 10px 30px rgba(0,0,0,0.8) !important; animation: pulse-god 0.5s infinite alternate; }
         
-        /* ── Action Buttons Color Overrides ── */
         .pf-btn-0 button {
             background: linear-gradient(180deg, #252830 0%, #16181f 100%) !important;
             box-shadow: 0 4px 0 #0c0d12, 0 6px 16px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 0 0 1px rgba(255,255,255,0.06) !important;
@@ -358,6 +332,9 @@ def show():
         st.warning("⚠️ Выбери фильтры.")
         st.stop()
 
+    stats_data_init = utils.load_user_stats()
+    if 'shields' not in st.session_state: st.session_state.shields = stats_data_init.get("shields", 0)
+
     for k in ['pf_combo', 'pf_session_hands', 'pf_session_correct', 'pf_rng']:
         if k not in st.session_state: st.session_state[k] = 0
     if 'pf_toast_msgs' not in st.session_state: st.session_state.pf_toast_msgs = []
@@ -374,7 +351,7 @@ def show():
         data = pf_db[chosen_key]
         t_range = data.get("ranges", {}).get("training", "")
         poss = pf_parse_range(t_range)
-        srs = utils.load_srs_data() # is_postflop=True можно добавить в utils
+        srs = utils.load_srs_data() 
         w = [srs.get(f"{chosen_key}_{h}".replace(" ","_"), 100) for h in poss]
         
         if sum(w) == 0: w = [100]*len(poss)
@@ -383,7 +360,6 @@ def show():
 
     chosen_key = st.session_state.pf_current_spot_key
     data = pf_db[chosen_key]
-    parts = [p.strip() for p in chosen_key.split('|')]
     
     hero_pos = data.get("hero_pos", "BTN")
     villain_pos = data.get("villain_pos", "BB")
@@ -392,7 +368,6 @@ def show():
     board_raw = data.get("board_cards", [])
     pot_size = data.get("pot_size", 0)
     villain_act = data.get("villain_action", "")
-    info_link = data.get("info_link", "")
     actions = data.get("actions", ["Check"])
     ranges = data.get("ranges", {})
 
@@ -429,6 +404,8 @@ def show():
     try: mastery = utils.get_spot_mastery_info(stats_data.get("spot_mastery", {}).get(chosen_key, {}))
     except: mastery = {"rank": 0, "name": "Sandbox", "icon": "⚪", "color": "#6c757d", "is_rusty": False, "prog_pct": 0, "total": 0, "next": 100, "svg": ""}
 
+    m_rust = mastery.get("is_rusty", False)
+    m_pct = mastery.get("prog_pct", 0)
     m_total = mastery.get("total", 0)
     m_next = mastery.get("next", 100)
     if mastery.get("rank", 0) >= 5: hands_left_text = "MAX RANK"
@@ -458,19 +435,6 @@ def show():
         table_status_class = "table-glow-correct"
     elif st.session_state.pf_last_error:
         table_status_class = "table-glow-incorrect"
-
-    tiers = [(0, 1.0), (10, 1.5), (25, 2.0), (50, 3.0), (100, 4.0), (250, 5.0), (500, 10.0)]
-    curr_mult = 1.0; next_mult = 1.5; prev_req = 0; next_req = 10
-    for i in range(len(tiers)):
-        if c >= tiers[i][0]:
-            curr_mult = tiers[i][1]
-            prev_req = tiers[i][0]
-            if i + 1 < len(tiers):
-                next_req = tiers[i+1][0]
-                next_mult = tiers[i+1][1]
-            else:
-                next_req = c 
-                next_mult = "MAX"
 
     shield_display = (
         f'<span style="'
@@ -545,7 +509,6 @@ def show():
     except ValueError: hero_idx = 0
     rot = order[hero_idx:] + order[:hero_idx]
 
-    # Изолируем логику HU для постфлопа (если 2 игрока)
     is_hu = (len(active_players) == 2)
 
     def get_seat_style(idx):
@@ -631,7 +594,6 @@ def show():
                 bet_txt = f'<div class="bet-txt">{bet_amount_str}</div>'
                 chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-mob"></div>{bet_txt}</div>'
 
-    # Board Render
     board_html = ""
     for card in board_raw:
         rank_str = card[:-1].upper()
@@ -645,7 +607,7 @@ def show():
         <div class="pf-pot-badge"><div class="pot-badge-mob">Pot: {pot_size} bb</div></div>
         <div class="pf-board"><div class="board-container-mob">{board_html}</div></div>
         <div class="pf-mastery">
-            <div class="mastery-badge rusty-{m_rust}" style="color:{theme["text_color"]}; border-color:{theme["seat_border"]};">{m_icon} {m_name}</div>
+            <div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div>
             <div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width:{m_pct}%;"></div></div>
             <div class="hands-left-mob">{hands_left_text}</div>
         </div>
