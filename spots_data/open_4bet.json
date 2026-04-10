@@ -1,0 +1,82 @@
+{
+  "source": "Jayser",
+  "scenario": "Open 4bet",
+  "spots": {
+    "BB open 4bet vs SB": {
+      "setup": {
+        "hero_pos": "BB",
+        "villain_pos": "SB",
+        "btn_pos": "BTN",
+        "active_players": ["BTN", "SB", "BB"],
+        "table_bets": {"BTN": 2.5, "SB": 12.0, "BB": 1.0},
+        "hero_bet": 1.0,
+        "is_3bet_pot": true,
+        "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 88.0, "BB": 99.0},
+        "btn_raise_text": "RAISE 25bb"
+      },
+      "stats": { "4bet": "6.6%" },
+      "ranges": {
+        "call": "",
+        "Raise": "AA,KK,QQ,JJ,TT,99,AK,AQ,AJs,ATs,KQs,KJs,KTs",
+        "training": "AA,KK,QQ,JJ,TT,99,88,AK,AQ,AJ,ATs,A5s,A4s,KQ,KJs,KTs,QJs,QTs,JTs,T9s"
+      }
+    },
+    "BU def vs BB open 4bet": {
+      "setup": {
+        "hero_pos": "BTN",
+        "villain_pos": "BB",
+        "btn_pos": "BTN",
+        "active_players": ["BTN", "SB", "BB"],
+        "table_bets": {"BTN": 2.5, "SB": 12.0, "BB": 25.0},
+        "hero_bet": 2.5,
+        "is_3bet_pot": true,
+        "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 88.0, "BB": 75.0},
+        "btn_raise_text": "RAISE ALL-IN"
+      },
+      "stats": { "5bet": "3.0%" },
+      "ranges": {
+        "call": "",
+        "Raise": "AA,KK,QQ,JJ:0.5,AK,AQs:0.5",
+        "training": "AA,KK,QQ,JJ,TT,99,AK,AQ,AJs,KQs"
+      }
+    },
+    "SB def vs BB open 4bet": {
+      "setup": {
+        "hero_pos": "SB",
+        "villain_pos": "BB",
+        "btn_pos": "BTN",
+        "active_players": ["SB", "BB"],
+        "table_bets": {"BTN": 2.5, "SB": 12.0, "BB": 25.0},
+        "hero_bet": 12.0,
+        "is_3bet_pot": true,
+        "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 88.0, "BB": 75.0},
+        "btn_raise_text": "RAISE ALL-IN"
+      },
+      "stats": { "5bet": "4.0%", "Call": "3.7%" },
+      "ranges": {
+        "call": "AA:0.5,99:0.5,88,77,66,AQ:0.5,AJs:0.5,A5s:0.5,KQs:0.5,KJs,KTs,QJs:0.5,JTs:0.5",
+        "Raise": "AA:0.5,KK,QQ,JJ,TT,99:0.5,AK,AQs:0.5,AJs:0.5,KQs:0.5",
+        "training": "AA,KK,QQ,JJ,TT,99,88,77,66,AK,AQ,AJs,ATs,A5s,A4s,KQs,KJs,KTs,QJs,QTs,JTs,T9s,98s,87s,76s,65s"
+      }
+    },
+    "BB call 5bet ph from SB": {
+      "setup": {
+        "hero_pos": "BB",
+        "villain_pos": "SB",
+        "btn_pos": "BTN",
+        "active_players": ["SB", "BB"],
+        "table_bets": {"BTN": 2.5, "SB": 100.0, "BB": 25.0},
+        "hero_bet": 25.0,
+        "is_3bet_pot": true,
+        "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 0.0, "BB": 75.0},
+        "btn_raise_text": "RAISE"
+      },
+      "stats": { "Call": "4.0%", "Fold": "40%" },
+      "ranges": {
+        "call": "AA,KK,QQ,JJ,TT,99:0.5,AK,AQs",
+        "Raise": "",
+        "training": "AA,KK,QQ,JJ,TT,99,AK,AQ,AJs,ATs,KQs,KJs,KTs"
+      }
+    }
+  }
+}
