@@ -1,9 +1,28 @@
 import streamlit as st
 import random
+import time
+import os
+import json
 from datetime import datetime
 import poker_utils as utils
 
-ACTION_COLORS = ["#28a745", "#d63384", "#0dcaf0", "#ffc107", "#6f42c1"]
+# Кастомный загрузчик, который понимает и старый, и "плоский" формат JSON постфлопа
+@st.cache_data(ttl=0)
+def custom_load_postflop_ranges():
+    db = {}
+    pf_dir = 'postflop_data' if os.path.exists('postflop_data') else 'spots_data'
+    if not os.path.exists(pf_dir): return db
+    for file in os.listdir(pf_dir):
+        if file.endswith('.json'):
+            with open(os.path.join(pf_dir, file), 'r', encoding='utf-8') as f:
+                try:
+                    data = json.load(f)
+                    if "spots" in data:
+                        db.update(data["spots"])
+                    else:
+                        db.update(data)
+                except Exception as e: st.error(f"Read error {file}: {e}")
+    return db
 
 def map_suit(s):
     mapping = {'h': '♥\ufe0e', 'd': '♦\ufe0e', 'c': '♣\ufe0e', 's': '♠\ufe0e'}
@@ -30,82 +49,232 @@ def pf_get_weight(hand, r_str):
         if h == hand: return w
     return 0.0
 
+def generate_mobile_theme(bg_rad1, bg_rad2, shadow1, shadow2, shadow3, seat_rad, seat_border, seat_act_border, seat_act_shadow, anim_name, pulse_shadow1, pulse_shadow2, text_color, badge_bg, bar_fill, card_bg, card_border, rng_bg):
+    return f"""<style>
+    .mobile-game-area {{ 
+        background: radial-gradient(ellipse 50% 38% at 50% 42%, {bg_rad1} 0%, transparent 70%), radial-gradient(ellipse 88% 78% at 50% 50%, {bg_rad2}) !important; 
+        border-color: {shadow1} !important; 
+    }}
+    .seat-active .ava, .seat-active .plate {{ border-color: {seat_act_border} !important; }}
+    .seat-active .ava {{ box-shadow: 0 -4px 10px {pulse_shadow1}, inset 0 2px 4px rgba(255,255,255,0.1) !important; animation: {anim_name}_ava 2.6s ease-in-out infinite !important; }}
+    .seat-active .plate {{ box-shadow: 0 4px 10px {pulse_shadow1} !important; animation: {anim_name}_plate 2.6s ease-in-out infinite !important; }}
+    
+    @keyframes {anim_name}_ava {{ 0%,100% {{ box-shadow: 0 -4px 8px {pulse_shadow1}, inset 0 2px 4px rgba(255,255,255,0.1); }} 50% {{ box-shadow: 0 -4px 20px {pulse_shadow2}, inset 0 2px 4px rgba(255,255,255,0.1); }} }}
+    @keyframes {anim_name}_plate {{ 0%,100% {{ box-shadow: 0 4px 8px {pulse_shadow1}; }} 50% {{ box-shadow: 0 4px 20px {pulse_shadow2}; }} }}
+    
+    .mob-info-spot {{ color: {text_color} !important; text-shadow: 0 1px 4px rgba(0,0,0,0.95) !important; }}
+    .mastery-badge {{ background: {badge_bg} !important; border: 1px solid {seat_border} !important; color: {text_color} !important; text-shadow: 0 0 6px rgba(0,0,0,0.4) !important; }}
+    .mastery-bar-fill {{ background: {bar_fill} !important; }}
+    .hands-left-mob {{ color: {text_color} !important; opacity: 0.8; }}
+    .floating-reward {{ color: {text_color} !important; }}
+    .card-mob {{ background: {card_bg} !important; border: 1px solid {card_border} !important; }}
+    .rng-badge {{ color: {text_color} !important; background: {rng_bg} !important; border: 1.5px solid {seat_border} !important; }}
+    .hero-plate {{ border-color: {seat_act_border} !important; }}
+    .hero-plate .pos {{ color: {seat_act_border} !important; }}
+    </style>"""
+
+THEMES = {
+    0: {"icon": "⚪", "name": "Sandbox", "css": generate_mobile_theme("rgba(50,55,60,0.5)", "#202428 0%, #15181a 55%, #0a0b0d 100%", "#1f2329", "#16181b", "#0b0d0f", "#1f2226 0%, #111316 60%, #08090a 100%", "rgba(140,150,160,0.18)", "rgba(160,170,180,0.55)", "rgba(160,170,180,0.48)", "r0-pulse", "rgba(160,170,180,0.38)", "rgba(160,170,180,0.7)", "rgba(150,160,170,0.9)", "rgba(150,160,170,0.09)", "linear-gradient(90deg, #8b959e, #5b636a)", "#f8faff", "rgba(255,255,255,0.85)", "rgba(150,160,170,0.09)")},
+    1: {"icon": "🌱", "name": "Basic", "css": generate_mobile_theme("rgba(30,55,38,0.5)", "#1a2e20 0%, #111e16 55%, #090e0b 100%", "#182b1d", "#182219", "#0b100d", "#1a2d21 0%, #0e1a12 60%, #080d0a 100%", "rgba(120,160,130,0.18)", "rgba(120,180,140,0.55)", "rgba(120,180,140,0.45)", "r1-pulse", "rgba(120,180,140,0.38)", "rgba(120,180,140,0.7)", "rgba(130,190,150,0.9)", "rgba(120,180,140,0.08)", "linear-gradient(90deg, #6ab880, #4a9060)", "#f8faff", "rgba(255,255,255,0.85)", "rgba(120,180,140,0.08)")},
+    2: {"icon": "💎", "name": "Solid", "css": generate_mobile_theme("rgba(10,50,80,0.6)", "#0b3040 0%, #071e2e 58%, #030e18 100%", "#0c2738", "#0f2234", "#060e17", "#162840 0%, #0c1a28 60%, #060e18 100%", "rgba(60,130,200,0.22)", "rgba(60,160,255,0.78)", "rgba(60,160,255,0.42)", "r2-pulse", "rgba(60,160,255,0.34)", "rgba(60,160,255,0.62)", "rgba(80,170,255,0.9)", "rgba(60,130,200,0.09)", "linear-gradient(90deg, #3ab0ff, #1480d8)", "#f8faff", "rgba(255,255,255,0.85)", "rgba(60,130,200,0.09)")},
+    3: {"icon": "🔥", "name": "Unexploitable", "css": generate_mobile_theme("rgba(90,18,28,0.65)", "#3a0d14 0%, #240810 58%, #0f0408 100%", "#2b0d12", "#2e1014", "#12060a", "#3a1c10 0%, #221008 60%, #0f0804 100%", "rgba(180,110,40,0.28)", "rgba(210,150,50,0.88)", "rgba(210,150,50,0.48)", "r3-pulse", "rgba(210,150,50,0.4)", "rgba(220,165,60,0.68)", "rgba(220,165,65,0.9)", "rgba(180,110,40,0.09)", "linear-gradient(90deg, #d49030, #a86018)", "linear-gradient(145deg, #f5f0e8 0%, #ede5d4 100%)", "rgba(210,175,110,0.7)", "rgba(180,110,40,0.09)")},
+    4: {"icon": "⚡", "name": "Elite", "css": generate_mobile_theme("rgba(55,20,90,0.6)", "#1e0d30 0%, #130820 58%, #07030f 100%", "#1b0b2e", "#1e1028", "#0d0614", "#2a1840 0%, #180e28 60%, #0a0812 100%", "rgba(160,130,220,0.28)", "rgba(190,160,255,0.88)", "rgba(170,130,255,0.52)", "r4-pulse", "rgba(170,130,255,0.42)", "rgba(190,150,255,0.7)", "rgba(190,165,255,0.9)", "rgba(140,110,220,0.09)", "linear-gradient(90deg, #a070ff, #7040d8)", "linear-gradient(150deg, #2a2a32 0%, #1e1e26 100%)", "rgba(200,190,230,0.3)", "rgba(140,110,220,0.09)")},
+    5: {"icon": "☢️", "name": "Solver", "css": generate_mobile_theme("rgba(60,50,10,0.5)", "#141410 0%, #0c0c09 55%, #050504 100%", "#1a1a12", "#1c1c16", "#0a0a08", "#1c1a10 0%, #111008 60%, #080806 100%", "rgba(190,158,50,0.3)", "rgba(220,188,70,0.95)", "rgba(220,188,70,0.58)", "r5-pulse", "rgba(220,188,70,0.46)", "rgba(240,205,80,0.78)", "rgba(220,188,70,0.9)", "rgba(190,158,50,0.1)", "linear-gradient(90deg, #d4a820, #a07810)", "linear-gradient(150deg, #1a1a18 0%, #111110 100%)", "rgba(210,180,70,0.38)", "rgba(190,158,50,0.1)")}
+}
+
 def show():
     st.markdown("""
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap');
 
-        .block-container { padding-top: 1.5rem !important; padding-bottom: 1rem !important; max-width: 100% !important; overflow-x: hidden !important; }
-        [data-testid="stExpander"] { margin-top: -5px !important; margin-bottom: 5px !important; }
+        /* ==========================================
+           НАСТРОЙКИ ОТСТУПОВ (ДЛЯ АЙФОНА) ПОСТФЛОП
+           Двигай эти проценты, чтобы выровнять элементы по центру стола:
+           ========================================== */
+        .pf-pot-badge { position: absolute; top: 22%; left: 50%; transform: translateX(-50%); z-index: 15; } /* Банк */
+        .pf-board { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); z-index: 15; } /* Карты флопа */
+        .pf-mastery { position: absolute; top: 68%; left: 50%; transform: translateX(-50%); z-index: 15; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;} /* Инфа о споте и прогресс-бар */
         
-        div[data-testid="stHorizontalBlock"] { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(10px, 1fr)) !important; gap: 8px !important; width: 100% !important; }
+        .mobile-game-area { margin-bottom: 70px !important; } /* Отступ под столом для карт Хиро */
+        .rng-hint-wrap { margin-top: 15px !important; margin-bottom: 10px !important; } /* Отступы вокруг надписи RNG */
+        div[data-testid="stHorizontalBlock"] { margin-top: 5px !important; gap: 8px !important; } /* Отступ для кнопок действий */
+        /* ------------------------------------------ */
+
+        .block-container { padding-top: 1.5rem !important; padding-bottom: 1rem !important; max-width: 100% !important; overflow-x: hidden !important; }
+        [data-testid="stExpander"] { margin-top: -5px !important; }
+        
+        div[data-testid="stHorizontalBlock"] { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(10px, 1fr)) !important; width: 100% !important; }
         div[data-testid="column"] { width: 100% !important; min-width: 0 !important; max-width: 100% !important; margin-bottom: 0 !important; }
         div[data-testid="stButton"] { width: 100% !important; }
         div[data-testid="stButton"] button { width: 100% !important; height: 50px !important; padding: 0 !important; border-radius: 12px !important; border: none !important; transition: transform 0.1s !important; background: #343a40 !important; color: #fff !important; box-shadow: 0 4px 0 #1d2124 !important; }
         div[data-testid="stButton"] button:active { transform: translateY(4px) !important; box-shadow: 0 0 0 transparent !important; }
         div[data-testid="stButton"] button p { font-family: 'Roboto', sans-serif !important; font-size: 15px !important; font-weight: 900 !important; margin: 0 !important; letter-spacing: 0.5px !important; text-transform: uppercase !important; }
 
-        .mobile-game-area { position: relative; width: 100%; height: 280px; margin: 35px auto 10px auto; background: radial-gradient(ellipse at center, #1b5e20 0%, #0a2e0b 100%); border: 6px solid #3e2723; border-radius: 125px; box-shadow: 0 4px 15px rgba(0,0,0,0.8); transition: box-shadow 0.3s, border-color 0.3s; }
+        /* ЕДИНАЯ КРОМКА СТОЛА */
+        .mobile-game-area { 
+            position: relative; width: 100%; height: 280px; 
+            margin: 35px auto auto auto; 
+            border: 12px solid #1a1c20; 
+            border-radius: 135px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 3px 12px rgba(0,0,0,0.6); 
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; 
+        }
         
-        .mastery-glow { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: inherit; pointer-events: none; z-index: 1; transition: box-shadow 0.5s ease; }
-        .crest-left-mob { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 75px; height: 75px; z-index: 1; pointer-events: none; display: flex; justify-content: center; align-items: center; }
-        .crest-right-mob { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); width: 75px; height: 75px; z-index: 1; pointer-events: none; display: flex; justify-content: center; align-items: center; }
+        /* СВЕЧЕНИЕ ПРИ ОТВЕТАХ */
+        .mobile-game-area.table-glow-correct {
+            border-color: #198754 !important;
+            box-shadow: 0 0 25px rgba(25,135,84,0.6), inset 0 0 15px rgba(25,135,84,0.4) !important;
+        }
+        .mobile-game-area.table-glow-incorrect {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 25px rgba(220,53,69,0.6), inset 0 0 15px rgba(220,53,69,0.4) !important;
+        }
+
+        .mastery-badge { display: inline-flex !important; align-items: center !important; gap: 4px !important; border-radius: 20px !important; padding: 2px 9px 2px 7px !important; font-size: 9.5px !important; font-weight: 700 !important; letter-spacing: 0.05em !important; }
+        .mastery-bar-bg { width: 60px !important; height: 2px !important; background: rgba(255,255,255,0.07) !important; border-radius: 2px !important; overflow: hidden !important; }
+        .mastery-bar-fill { height: 100% !important; border-radius: 2px !important; }
+        .hands-left-mob { font-size: 9px !important; letter-spacing: 0.06em !important; }
+
+        /* ИГРОКИ (iOS Flat) */
+        .seat { position: absolute !important; z-index: 20 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 0 !important; width: 56px !important; height: 46px !important; background: transparent !important; border: none !important; box-shadow: none !important; }
+        .ava { width: 50px !important; height: 25px !important; background: linear-gradient(180deg, #2a2d32 0%, #1c1e22 100%) !important; border-radius: 50px 50px 0 0 !important; border: 1.5px solid #3a3d42 !important; border-bottom: none !important; box-shadow: inset 0 2px 4px rgba(255,255,255,0.05) !important; transition: all 0.3s ease !important; }
+        .plate { width: 56px !important; height: 20px !important; background: #141518 !important; border-radius: 0 0 6px 6px !important; border: 1.5px solid #3a3d42 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 5px !important; box-sizing: border-box !important; font-size: 10px !important; box-shadow: 0 4px 6px rgba(0,0,0,0.5) !important; transition: all 0.3s ease !important; }
+        .pos { font-weight: 900 !important; color: #fff !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.5) !important; }
+        .stack { font-weight: 700 !important; color: #fff !important; }
+
+        .seat-folded { opacity: 0.85 !important; filter: grayscale(50%) !important; }
+        .seat-folded .opp-cards-mob { opacity: 0.6 !important; }
         
-        .center-column-mob { position: absolute; top: 12%; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; z-index: 20; }
-        .mob-info-spot { font-size: 16px; font-weight: 900; color: rgba(255,255,255,0.3); text-transform: uppercase; line-height: 1; text-align: center; }
+        .opp-cards-mob { position: absolute !important; top: -16px !important; left: 50% !important; transform: translateX(-50%) !important; display: flex !important; align-items: flex-end !important; pointer-events: none; }
+        .opp-card-mob { width: 14px !important; height: 20px !important; border-radius: 3px !important; position: relative !important; background: repeating-linear-gradient(45deg, rgba(15,70,185,0.95) 0px, rgba(15,70,185,0.95) 2px, rgba(8,44,130,0.95) 2px, rgba(8,44,130,0.95) 6px) !important; border: 1px solid rgba(80,140,255,0.3) !important; box-shadow: 0 2px 5px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.06) !important; }
+        .opp-card-mob::before { content: '' !important; position: absolute !important; inset: 2px !important; border-radius: 2px !important; border: 1px solid rgba(80,140,255,0.15) !important; }
+        .opp-card-mob.right { margin-left: -5px !important; transform: rotate(10deg) !important; z-index: -1 !important; }
+
+        /* POSTFLOP SPECIFIC: BOARD & POT & VILLAIN ACT */
         .pot-badge-mob { background: #111; color: #ffc107; font-weight: bold; font-size: 11px; padding: 2px 10px; border-radius: 12px; border: 1px solid #ffc107; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
         .board-container-mob { display: flex; gap: 4px; background: rgba(0,0,0,0.4); padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 2px 10px rgba(0,0,0,0.4); }
-        .mastery-badge { font-size: 9px; font-weight: bold; background: rgba(0,0,0,0.6); padding: 2px 8px; border-radius: 10px; display: inline-flex; align-items: center; gap: 4px; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1); }
-        .rusty-True { filter: grayscale(100%) opacity(0.6); }
-        .mastery-bar-bg { width: 80px; height: 3px; background: #111; border-radius: 2px; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.8); }
-        .mastery-bar-fill { height: 100%; transition: width 0.3s; }
-        .hands-left-mob { font-size: 8px; color: #aaa; text-transform: uppercase; font-weight: bold; margin-top: -2px; }
-
         .board-card-mob { width: 38px; height: 54px; background: white; border-radius: 3px; position: relative; color: black; box-shadow: 0 1px 3px rgba(0,0,0,0.5); font-family: Arial, sans-serif !important; }
         .bc-tl-mob { position: absolute; top: 2px; left: 3px; font-weight: bold; font-size: 12px; line-height: 1; }
         .bc-c-mob { position: absolute; top: 55%; left: 50%; transform: translate(-50%,-50%); font-size: 20px; line-height: 1; }
-
-        .seat { position: absolute; width: 44px; height: 44px; background: #222; border: 1px solid #444; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 5; }
-        .seat-label { font-size: 9px; color: #fff; font-weight: bold; margin-top: auto; margin-bottom: 2px; }
-        .seat-active { border-color: #ffc107; background: #2a2a2a; }
-        .seat-folded { opacity: 0.4; border-color: #333; }
-        
-        .opp-cards-mob { position: absolute; top: -14px; display: flex; z-index: 20; }
-        .opp-card-mob { width: 18px; height: 26px; background: #fff; border-radius: 2px; border: 1px solid #777; background-image: repeating-linear-gradient(45deg, #b71c1c 0, #b71c1c 2px, #fff 2px, #fff 4px); box-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
-        .opp-card-mob.right { margin-left: -8px; transform: rotate(12deg) translateY(2px); }
-
         .villain-act-badge-mob { position: absolute; background: #dc3545; color: #fff; font-weight: bold; font-size: 9px; padding: 1px 5px; border-radius: 4px; border: 1px solid #ffaaaa; box-shadow: 0 2px 3px rgba(0,0,0,0.5); z-index: 25; text-transform: uppercase; white-space: nowrap; left: 50%; transform: translateX(-50%); }
-        .act-bottom-mob { bottom: -18px; } .act-top-mob { top: -18px; }
+        .act-bottom-mob { bottom: -12px; } .act-top-mob { top: -12px; }
 
-        .dealer-mob { width: 16px; height: 16px; background: #ffc107; border-radius: 50%; color: #000; font-weight: bold; font-size: 9px; display: flex; justify-content: center; align-items: center; border: 1px solid #bfa006; position: absolute; z-index: 15; box-shadow: 1px 1px 2px rgba(0,0,0,0.6); }
-        
-        .chip-container { position: absolute; z-index: 25; display: flex; flex-direction: column; align-items: center; pointer-events: none; }
-        .chip-mob { width: 14px; height: 14px; background: #111; border: 2px dashed #d32f2f; border-radius: 50%; box-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
-        .bet-txt { font-size: 10px; font-weight: bold; color: #fff; text-shadow: 1px 1px 2px #000; background: rgba(0,0,0,0.6); padding: 1px 3px; border-radius: 4px; margin-top: -5px; z-index: 20; text-transform: lowercase;}
+        .dealer-mob { position: absolute !important; z-index: 30 !important; width: 20px !important; height: 20px !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 8px !important; font-weight: 900 !important; color: #120700 !important; background: radial-gradient(circle at 38% 30%, #ffd84a, #c88408) !important; border: 1.5px solid rgba(255,255,255,0.35) !important; box-shadow: 0 0 0 2px rgba(0,0,0,0.7), 0 2px 10px rgba(200,132,8,0.7), inset 0 1px 3px rgba(255,255,255,0.55) !important; }
 
-        .hero-mob { position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); display: flex; gap: 5px; z-index: 30; background: #222; padding: 4px 8px; border-radius: 12px; border: 1px solid #ffc107; }
-        .card-mob { width: 38px; height: 54px; background: white; border-radius: 4px; position: relative; color: black; box-shadow: 0 2px 5px rgba(0,0,0,0.5); font-family: Arial, sans-serif !important; }
-        .tl-mob { position: absolute; top: 1px; left: 3px; font-weight: bold; font-size: 12px; line-height: 1; }
-        .c-mob { position: absolute; top: 55%; left: 50%; transform: translate(-50%,-50%); font-size: 20px; line-height: 1; }
+        .chip-container { position: absolute !important; z-index: 22 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 3px !important; }
+        .chip-mob, .chip-3bet, .chip-4bet { width: 15px !important; height: 15px !important; border-radius: 50% !important; position: relative !important; background: repeating-conic-gradient(rgba(255,255,255,0.13) 0deg 18deg, transparent 18deg 36deg), radial-gradient(circle at 36% 30%, #1e3a8a, #0c1844) !important; border: 2px solid rgba(255,255,255,0.22) !important; box-shadow: 0 0 0 1.5px rgba(0,0,0,0.7), 0 2px 5px rgba(0,0,0,0.8), inset 0 1px 2px rgba(255,255,255,0.2) !important; }
+        .chip-3bet { background: radial-gradient(circle at 36% 30%, #ff5722, #9e3211) !important; }
+        .chip-4bet { background: repeating-conic-gradient(rgba(255,255,255,0.15) 0deg 18deg, transparent 18deg 36deg), radial-gradient(circle at 36% 30%, #68158e, #3F055B) !important; }
+        .chip-mob::before, .chip-3bet::before, .chip-4bet::before { content: '' !important; position: absolute !important; inset: 4px !important; border-radius: 50% !important; border: 1px solid rgba(255,255,255,0.12) !important; }
+        .chip-mob::after, .chip-3bet::after, .chip-4bet::after { content: '' !important; position: absolute !important; top: 2px !important; left: 2px !important; width: 6px !important; height: 4px !important; border-radius: 50% !important; background: rgba(255,255,255,0.22) !important; filter: blur(1px) !important; }
         
-        .suit-red { color: #d32f2f !important; font-family: Arial, sans-serif !important; } 
-        .suit-blue { color: #0056b3 !important; font-family: Arial, sans-serif !important; } 
-        .suit-black { color: #111 !important; font-family: Arial, sans-serif !important; } 
-        .suit-green { color: #198754 !important; font-family: Arial, sans-serif !important; }
+        .bet-txt { font-size: 10px !important; font-weight: 700 !important; color: rgba(255,235,190,0.9) !important; text-shadow: 0 0 5px rgba(255,195,40,0.5), 0 1px 3px rgba(0,0,0,0.98) !important; letter-spacing: 0.03em !important; white-space: nowrap !important; }
+
+        /* HERO PANEL */
+        .hero-mob { position: absolute !important; bottom: -55px !important; left: 50% !important; transform: translateX(-50%) !important; z-index: 30 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 4px !important; width: 120px !important; }
+        .hero-cards-wrap { display: flex !important; gap: 5px !important; position: relative !important; }
+        .hero-plate { width: 84px !important; height: 18px !important; background: #141518 !important; border-radius: 4px !important; border: 1.5px solid #ffc107 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 6px !important; box-sizing: border-box !important; font-size: 10px !important; font-weight: bold !important; box-shadow: 0 4px 10px rgba(0,0,0,0.6) !important; transition: border-color 0.3s; }
         
-        .rng-badge { position: absolute; top: 50%; right: -36px; transform: translateY(-50%); width: 28px; height: 28px; background: #6f42c1; border: 2px solid #fff; border-radius: 50%; color: white; font-weight: bold; font-size: 11px; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 40; }
-        .info-badge-mob { position: absolute; top: 50%; left: -36px; transform: translateY(-50%); width: 28px; height: 28px; background: #17a2b8; border: 2px solid #fff; border-radius: 50%; color: white; font-weight: bold; font-size: 14px; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 40; text-decoration: none; }
+        .floating-reward { position: absolute !important; top: -38px !important; left: 50% !important; transform: translateX(-50%) !important; font-size: 14px !important; font-weight: 800 !important; color: #17f07e !important; text-shadow: 0 0 12px rgba(23,240,126,0.8), 0 0 28px rgba(23,240,126,0.3) !important; white-space: nowrap !important; animation: float-reward 2.2s ease-out forwards !important; pointer-events: none !important; }
+        @keyframes float-reward { 0%   { opacity: 1; transform: translateX(-50%) translateY(0); } 100% { opacity: 0; transform: translateX(-50%) translateY(-24px); } }
+
+        /* HERO CARDS */
+        .card-mob { width: 44px !important; height: 62px !important; border-radius: 5px !important; position: relative !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; overflow: hidden !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -6px 16px rgba(0,0,0,0.7), 0 -12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1) !important;}
+        .card-mob::after { content: '' !important; position: absolute !important; top: 0 !important; left: 0 !important; width: 60% !important; height: 45% !important; background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; pointer-events: none !important; border-radius: 5px 0 0 0 !important; }
+        .tl-mob { padding: 3px 0 0 4px !important; font-size: 13px !important; font-weight: 900 !important; line-height: 0.9 !important; letter-spacing: -0.04em !important; z-index: 2 !important; position: relative !important; font-family: Arial, sans-serif !important; }
+        .c-mob { position: absolute !important; top: 55% !important; left: 50% !important; transform: translate(-50%,-50%) !important; font-size: 22px !important; opacity: 1 !important; line-height: 1 !important; z-index: 2 !important; font-family: Arial, sans-serif !important; }
+        .suit-red   { color: #c00a0a !important; }
+        .suit-black { color: #0a0a0a !important; }
+        .suit-blue  { color: #0056b3 !important; }
+        .suit-green { color: #198754 !important; }
         
-        .combo-glow-5 { border-color: #0dcaf0 !important; box-shadow: 0 0 10px rgba(13, 202, 240, 0.4), 0 4px 15px rgba(0,0,0,0.8) !important; }
-        .combo-glow-10 { border-color: #ffc107 !important; box-shadow: 0 0 15px rgba(255, 193, 7, 0.5), 0 4px 15px rgba(0,0,0,0.8) !important; }
-        .combo-glow-25 { border-color: #fd7e14 !important; box-shadow: 0 0 20px rgba(253, 126, 20, 0.6), 0 4px 15px rgba(0,0,0,0.8) !important; }
-        .combo-glow-50 { border-color: #dc3545 !important; box-shadow: 0 0 30px rgba(220, 53, 69, 0.7), 0 4px 15px rgba(0,0,0,0.8) !important; }
-        .combo-glow-100 { border-color: #6f42c1 !important; box-shadow: 0 0 40px rgba(111, 66, 193, 0.8), 0 4px 15px rgba(0,0,0,0.8) !important; }
+        .rng-badge { position: absolute !important; top: 50% !important; right: -30px !important; transform: translateY(-50%) !important; width: 24px !important; height: 24px !important; border-radius: 50% !important; font-weight: bold !important; font-size: 10px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 5px rgba(0,0,0,0.5) !important; z-index: 40 !important; }
+
+        /* RNG HINT */
+        .rng-hint-wrap { text-align: center; color: #6c757d; font-size: 11px; font-family: 'Roboto', sans-serif; font-weight: 500; letter-spacing: 0.5px; }
+
+        /* ── Carbon Noir: stats header ── */
+        .cn-mob-header { margin-top: -15px; margin-bottom: 2px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; -webkit-font-smoothing: antialiased; border-radius: 14px; overflow: hidden; position: relative; background: linear-gradient(165deg, rgba(18,22,28,0.92) 0%, rgba(8,10,14,0.96) 100%); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+        .cn-mob-header::before { content: ''; position: absolute; inset: 0; border-radius: 14px; pointer-events: none; background: linear-gradient(125deg, rgba(255,255,255,0.07) 0%, transparent 42%, transparent 58%, rgba(255,255,255,0.03) 100%); z-index: 0; }
+        .cn-mob-wr-track { height: 3px; width: 100%; background: rgba(0,0,0,0.45); position: relative; z-index: 1; }
+        .cn-mob-wr-fill { height: 100%; transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 12px currentColor; }
+        .cn-mob-inner { position: relative; z-index: 1; padding: 8px 10px 9px; }
+        .cn-mob-row1 { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+        .cn-mob-rank { font-size: 11px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: rgba(255,214,120,0.95); text-shadow: 0 0 20px rgba(255,200,80,0.25); line-height: 1.15; }
+        .cn-mob-xp-meta { font-size: 9px; font-weight: 700; font-variant-numeric: tabular-nums; color: rgba(180,190,205,0.85); white-space: nowrap; letter-spacing: 0.02em; }
+        .cn-mob-xp-bar-wrap { flex: 1; min-width: 0; margin-top: 3px; }
+        .cn-mob-xp-bar-bg { height: 4px; border-radius: 4px; background: rgba(0,0,0,0.5); box-shadow: inset 0 1px 3px rgba(0,0,0,0.6); overflow: hidden; }
+        .cn-mob-xp-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #1a7a4a, #2ee88a); box-shadow: 0 0 10px rgba(46,232,138,0.45); transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+        .cn-mob-row2 { display: flex; align-items: stretch; justify-content: space-between; gap: 6px; margin-top: 2px; }
+        .cn-mob-stat { flex: 1; min-width: 0; }
+        .cn-mob-stat-label { font-size: 8px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(140,150,165,0.75); margin-bottom: 1px; }
+        .cn-mob-stat-val { font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; line-height: 1.1; }
+        .cn-mob-stat-val.light { color: rgba(245,248,252,0.98); }
+        .cn-mob-combo-wrap { flex: 1.15; display: flex; justify-content: center; align-items: center; min-width: 0; }
+        .cn-mob-combo-pill { display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 3px 11px 3px 9px; border-radius: 999px; background: linear-gradient(145deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.02) 100%); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 4px 16px rgba(0,0,0,0.35); }
+        .cn-mob-combo-fire { font-size: 14px; font-weight: 900; color: #fff; text-shadow: 0 0 18px rgba(255,120,40,0.55); letter-spacing: -0.03em; }
+        .cn-mob-shield { font-size: 11px; margin-left: 2px; font-weight: 800; color: rgba(120,230,255,0.95); filter: drop-shadow(0 0 6px rgba(0,200,255,0.55)); align-items: center; gap: 2px; }
+
+        /* ── Rage bar: neon glass tube ── */
+        .rage-bar-container { width: 100%; max-width: 700px; margin: 0 auto 5px auto; height: 26px; border-radius: 999px; position: relative; display: flex; align-items: stretch; padding: 3px; background: linear-gradient(180deg, rgba(12,14,20,0.95) 0%, rgba(6,8,12,0.98) 100%); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65), inset 0 -1px 0 rgba(255,255,255,0.05); overflow: hidden; }
+        .rage-bar-container::before { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%); z-index: 3; }
+        .rage-bar-fill { height: 100%; border-radius: 999px; transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; min-width: 0; box-shadow: inset 0 2px 8px rgba(255,255,255,0.35), inset 0 -3px 8px rgba(0,0,0,0.45), 0 0 20px rgba(255,255,255,0.12); }
+        .rage-bar-fill::before, .rage-bar-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle, rgba(255,255,255,0.85) 1px, transparent 2px), radial-gradient(circle, rgba(255,255,255,0.45) 2px, transparent 3px), radial-gradient(circle, rgba(255,255,255,0.35) 1px, transparent 2px); z-index: 1; pointer-events: none; }
+        .rage-bar-fill::before { background-size: 18px 22px, 32px 36px, 14px 18px; animation: bubbleRise1 1.15s infinite linear; opacity: 0.85; }
+        .rage-bar-fill::after { background-size: 22px 28px, 40px 46px, 20px 24px; animation: bubbleRise2 1.65s infinite linear; opacity: 0.45; }
+        @keyframes bubbleRise1 { 0% { background-position: 0px 22px, 0px 36px, 0px 18px; } 50% { background-position: 5px 11px, -5px 18px, 3px 9px; } 100% { background-position: 0px 0px, 0px 0px, 0px 0px; } }
+        @keyframes bubbleRise2 { 0% { background-position: 0px 28px, 0px 46px, 0px 24px; } 50% { background-position: -6px 14px, 6px 22px, -4px 12px; } 100% { background-position: 0px 0px, 0px 0px, 0px 0px; } }
+        .rage-labels { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); display: flex; justify-content: space-between; align-items: center; padding: 0 14px; pointer-events: none; z-index: 4; font-family: 'Inter', system-ui, sans-serif; font-weight: 800; font-size: 11px; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; color: rgba(255,255,255,0.98); text-shadow: 0 1px 2px rgba(0,0,0,0.95), 0 0 12px rgba(0,0,0,0.8), 0 0 1px rgba(0,0,0,1); }
+        .rage-pulse { animation: ragePulseNeon 0.45s ease-in-out infinite alternate; }
+        @keyframes ragePulseNeon { 0% { filter: brightness(1) saturate(1); box-shadow: inset 0 2px 8px rgba(255,255,255,0.3), 0 0 8px rgba(255,60,80,0.35); } 100% { filter: brightness(1.15) saturate(1.2); box-shadow: inset 0 2px 12px rgba(255,255,255,0.5), 0 0 22px rgba(255,80,100,0.65), 0 0 40px rgba(255,40,60,0.25); } }
+        .rage-flash { animation: rageTubeFlash 0.65s ease-out; }
+        @keyframes rageTubeFlash { 0% { box-shadow: 0 0 0 1px rgba(255,255,255,0.9), 0 0 40px rgba(255,255,255,0.8), inset 0 0 30px rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.65); } 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65); border-color: rgba(255,255,255,0.1); } }
+
+        .combo-glow-5 { box-shadow: 0 0 10px rgba(13, 202, 240, 0.4), 0 10px 30px rgba(0,0,0,0.8) !important; }
+        .combo-glow-10 { box-shadow: 0 0 15px rgba(255, 193, 7, 0.5), 0 10px 30px rgba(0,0,0,0.8) !important; }
+        .combo-glow-25 { box-shadow: 0 0 20px rgba(253, 126, 20, 0.6), 0 10px 30px rgba(0,0,0,0.8) !important; animation: pulse-slow 2s infinite; }
+        .combo-glow-50 { box-shadow: 0 0 30px rgba(220, 53, 69, 0.7), 0 10px 30px rgba(0,0,0,0.8) !important; animation: pulse-menace 1.5s infinite; }
+        .combo-glow-100 { box-shadow: 0 0 40px rgba(111, 66, 193, 0.8), 0 10px 30px rgba(0,0,0,0.8) !important; animation: pulse-neon 1s infinite; }
+        .combo-glow-200 { box-shadow: 0 0 50px rgba(0, 229, 255, 0.8), 0 10px 30px rgba(0,0,0,0.8) !important; animation: pulse-plasma 1s infinite alternate; }
+        .combo-glow-500 { box-shadow: 0 0 60px rgba(255, 0, 255, 0.9), 0 10px 30px rgba(0,0,0,0.8) !important; animation: pulse-matrix 0.8s infinite alternate; }
+        .combo-glow-1000 { box-shadow: 0 0 80px rgba(0, 255, 0, 1.0), 0 10px 30px rgba(0,0,0,0.8) !important; animation: pulse-god 0.5s infinite alternate; }
+        
+        /* ── Action Buttons Color Overrides ── */
+        .pf-btn-0 button {
+            background: linear-gradient(180deg, #252830 0%, #16181f 100%) !important;
+            box-shadow: 0 4px 0 #0c0d12, 0 6px 16px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 0 0 1px rgba(255,255,255,0.06) !important;
+        }
+        .pf-btn-0 button:active { box-shadow: 0 1px 0 #0c0d12, inset 0 1px 0 rgba(255,255,255,0.05), 0 0 20px rgba(255,255,255,0.15) !important; filter: brightness(1.5) !important; }
+        .pf-btn-0 button p { color: rgba(190,190,205,0.8) !important; }
+
+        .pf-btn-1 button {
+            background: linear-gradient(180deg, #0c3828 0%, #071e16 100%) !important;
+            box-shadow: 0 4px 0 #030f0b, 0 6px 20px rgba(0,180,80,0.12), inset 0 1px 0 rgba(0,230,110,0.12), inset 0 0 0 1px rgba(0,200,90,0.1) !important;
+        }
+        .pf-btn-1 button:active { box-shadow: 0 1px 0 #030f0b, inset 0 1px 0 rgba(0,200,90,0.08), 0 0 20px rgba(0,255,100,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
+        .pf-btn-1 button p { color: rgba(50,220,130,0.92) !important; text-shadow: 0 0 12px rgba(30,200,100,0.4) !important; }
+
+        .pf-btn-2 button {
+            background: linear-gradient(180deg, #4a0909 0%, #300505 100%) !important;
+            box-shadow: 0 4px 0 #1a0303, 0 6px 20px rgba(180,20,20,0.2), inset 0 1px 0 rgba(255,80,80,0.14), inset 0 0 0 1px rgba(200,30,30,0.18) !important;
+        }
+        .pf-btn-2 button:active { box-shadow: 0 1px 0 #1a0303, inset 0 1px 0 rgba(255,80,80,0.1), 0 0 20px rgba(255,50,50,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
+        .pf-btn-2 button p { color: rgba(255,90,90,0.95) !important; text-shadow: 0 0 14px rgba(220,50,50,0.5) !important; }
+
+        .pf-btn-3 button {
+            background: linear-gradient(180deg, #30094a 0%, #160530 100%) !important;
+            box-shadow: 0 4px 0 #0f031a, 0 6px 20px rgba(180,20,220,0.2), inset 0 1px 0 rgba(220,80,255,0.14), inset 0 0 0 1px rgba(200,30,220,0.18) !important;
+        }
+        .pf-btn-3 button:active { box-shadow: 0 1px 0 #0f031a, inset 0 1px 0 rgba(220,80,255,0.1), 0 0 20px rgba(220,50,255,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
+        .pf-btn-3 button p { color: rgba(230,90,255,0.95) !important; text-shadow: 0 0 14px rgba(220,50,255,0.5) !important; }
+
         </style>
     """, unsafe_allow_html=True)
 
-    pf_db = utils.load_postflop_ranges()
-    if not pf_db: st.error("База пуста"); return
+    pf_db = custom_load_postflop_ranges()
+    if not pf_db: 
+        st.error("База пуста. Проверь файлы JSON в папке postflop_data или spots_data.")
+        return
 
     tree = {}
     for full_key in pf_db.keys():
@@ -205,7 +374,7 @@ def show():
         data = pf_db[chosen_key]
         t_range = data.get("ranges", {}).get("training", "")
         poss = pf_parse_range(t_range)
-        srs = utils.load_srs_data(is_postflop=True)
+        srs = utils.load_srs_data() # is_postflop=True можно добавить в utils
         w = [srs.get(f"{chosen_key}_{h}".replace(" ","_"), 100) for h in poss]
         
         if sum(w) == 0: w = [100]*len(poss)
@@ -247,7 +416,7 @@ def show():
         
     c1, c2 = get_suit_color_class(s1), get_suit_color_class(s2)
 
-    stats_data = utils.load_user_stats(is_postflop=True)
+    stats_data = utils.load_user_stats()
     rank_name, next_xp = utils.get_rank_info(stats_data["xp"])
     c = st.session_state.pf_combo
     progress_pct = int((stats_data["xp"] / next_xp) * 100) if next_xp != "MAX" else 100
@@ -257,9 +426,6 @@ def show():
     wr = int((scorr / sh * 100)) if sh > 0 else 0
     wr_color = '#28a745' if wr >= 90 else '#ffc107' if wr >= 80 else '#dc3545'
 
-    glow_color = '#00ff00' if c >= 1000 else '#ff00ff' if c >= 500 else '#00e5ff' if c >= 200 else '#6f42c1' if c >= 100 else '#dc3545' if c >= 50 else '#fd7e14' if c >= 25 else '#ffc107' if c >= 10 else '#0dcaf0' if c >= 5 else '#888'
-    combo_cls = f"combo-glow-{max([v for v in [5,10,25,50,100] if c >= v] + [0])}" if c >= 5 else ""
-
     try: mastery = utils.get_spot_mastery_info(stats_data.get("spot_mastery", {}).get(chosen_key, {}))
     except: mastery = {"rank": 0, "name": "Sandbox", "icon": "⚪", "color": "#6c757d", "is_rusty": False, "prog_pct": 0, "total": 0, "next": 100, "svg": ""}
 
@@ -268,11 +434,110 @@ def show():
     if mastery.get("rank", 0) >= 5: hands_left_text = "MAX RANK"
     else: hands_left_text = f"Remaining: {max(0, m_next - m_total)} hands"
 
-    multiplier = st.session_state.get("xp_multiplier", 1.0)
-    mult_html = f'<span style="background: rgba(255,255,255,0.2); color:#fff; font-size:9px; font-weight:900; margin-left:4px; padding: 1px 4px; border-radius: 6px;">x{multiplier}</span>' if multiplier > 1.0 else ''
-    combo_badge = f'<div style="flex:1; display:flex; justify-content:center; align-items:center;"><div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 4px 12px; border-radius: 20px; display: inline-flex; align-items: center; justify-content: center;"><span style="font-size:14px; font-weight:900; color:{glow_color};">🔥 {c}</span>{mult_html}</div></div>'
+    visual_rank = mastery.get("rank", 0)
+    if visual_rank > 5: visual_rank = 5
 
-    header_html = f'<div style="background:#111; border-radius:10px; margin-bottom:5px; border:1px solid #333; overflow:hidden; font-family:sans-serif;"><div style="height: 3px; width: 100%; background: #222;"><div style="height: 100%; width: {wr if sh > 0 else 100}%; background: {wr_color if sh > 0 else "#444"}; transition: width 0.3s;"></div></div><div style="padding:6px 12px 0 12px; display:flex; justify-content:space-between; align-items:center;"><div style="flex:1;"><div style="font-size:13px; font-weight:bold; color:#ffc107;">{rank_name}</div><div style="background:#333; height:4px; border-radius:2px; margin-top:3px; width:100%;"><div style="background:#28a745; height:100%; width:{progress_pct}%; border-radius:2px;"></div></div></div><div style="font-size:10px; color:#aaa; margin-left:10px; font-weight:bold;">{stats_data["xp"]} / {next_xp} XP</div></div><div style="display:flex; justify-content:space-between; align-items:center; padding:6px 12px;"><div style="flex:1;"><div style="font-size:11px; font-weight:bold; color:#aaa;">Winrate</div><div style="font-size:13px; font-weight:bold; color:{wr_color};">{wr}%</div></div>{combo_badge}<div style="flex:1; text-align:right;"><div style="font-size:11px; font-weight:bold; color:#aaa;">Hands</div><div style="font-size:13px; font-weight:bold; color:#fff;">{sh}</div></div></div></div>'
+    theme = THEMES[visual_rank]
+    m_icon = theme["icon"]
+    m_name = theme["name"]
+    st.markdown(theme["css"], unsafe_allow_html=True)
+
+    combo_cls = ""
+    if c >= 1000: combo_cls = "combo-glow-1000"
+    elif c >= 500: combo_cls = "combo-glow-500"
+    elif c >= 200: combo_cls = "combo-glow-200"
+    elif c >= 100: combo_cls = "combo-glow-100"
+    elif c >= 50: combo_cls = "combo-glow-50"
+    elif c >= 25: combo_cls = "combo-glow-25"
+    elif c >= 10: combo_cls = "combo-glow-10"
+    elif c >= 5: combo_cls = "combo-glow-5"
+
+    is_flashing_correct = st.session_state.get("pf_flash_correct", False)
+    table_status_class = ""
+    if is_flashing_correct:
+        table_status_class = "table-glow-correct"
+    elif st.session_state.pf_last_error:
+        table_status_class = "table-glow-incorrect"
+
+    tiers = [(0, 1.0), (10, 1.5), (25, 2.0), (50, 3.0), (100, 4.0), (250, 5.0), (500, 10.0)]
+    curr_mult = 1.0; next_mult = 1.5; prev_req = 0; next_req = 10
+    for i in range(len(tiers)):
+        if c >= tiers[i][0]:
+            curr_mult = tiers[i][1]
+            prev_req = tiers[i][0]
+            if i + 1 < len(tiers):
+                next_req = tiers[i+1][0]
+                next_mult = tiers[i+1][1]
+            else:
+                next_req = c 
+                next_mult = "MAX"
+
+    shield_display = (
+        f'<span style="'
+        f'display:{"inline-flex" if st.session_state.shields > 0 else "none"};'
+        f'align-items:center;gap:2px;'
+        f'font-size:10px;font-weight:700;letter-spacing:0.04em;'
+        f'padding:1px 6px 1px 5px;margin-left:4px;'
+        f'background:rgba(13,202,240,0.09);'
+        f'border:1px solid rgba(13,202,240,0.28);'
+        f'border-radius:8px;'
+        f'color:rgba(13,202,240,0.92);'
+        f'box-shadow:0 0 8px rgba(13,202,240,0.12);'
+        f'">🛡️{st.session_state.shields}</span>'
+    )
+
+    combo_badge = (
+        f'<div style="flex:1;display:flex;justify-content:center;align-items:center;">'
+        f'<div style="'
+        f'display:inline-flex;align-items:center;gap:1px;'
+        f'padding:3px 11px 3px 9px;border-radius:20px;'
+        f'background:rgba(255,255,255,0.035);'
+        f'border:1px solid rgba(255,255,255,0.09);'
+        f'box-shadow:0 0 14px rgba(255,150,20,0.07),inset 0 1px 0 rgba(255,255,255,0.05);'
+        f'">'
+        f'<span style="'
+        f'font-size:14px;font-weight:900;color:#fff;letter-spacing:-0.03em;'
+        f'text-shadow:0 0 12px rgba(255,130,10,0.8),0 0 24px rgba(255,100,0,0.3);'
+        f'">🔥{c}</span>'
+        f'{shield_display}'
+        f'</div></div>'
+    )
+
+    header_html = (
+        f'<div class="cn-mob-header">'
+        f'<div class="cn-mob-wr-track">'
+        f'<div class="cn-mob-wr-fill" style="width:{wr if sh > 0 else 100}%; background:{wr_color if sh > 0 else "#2a2a2a"}; box-shadow:0 0 8px {wr_color if sh > 0 else "transparent"};"></div></div>'
+        f'<div class="cn-mob-inner">'
+        f'<div class="cn-mob-row1">'
+        f'<div style="flex:1;min-width:0;">'
+        f'<div class="cn-mob-rank">{rank_name}</div>'
+        f'<div class="cn-mob-xp-bar-wrap"><div class="cn-mob-xp-bar-bg"><div class="cn-mob-xp-bar-fill" style="width:{progress_pct}%;"></div></div></div>'
+        f'</div>'
+        f'<div class="cn-mob-xp-meta">${stats_data.get("xp", 0)} <span style="color:rgba(255,255,255,0.15);margin:0 2px;">/</span> ${next_xp}</div>'
+        f'</div>'
+        f'<div class="cn-mob-row2">'
+        f'<div class="cn-mob-stat">'
+        f'<div class="cn-mob-stat-label">Winrate</div>'
+        f'<div class="cn-mob-stat-val" style="color:{wr_color}; text-shadow:0 0 10px {wr_color}44;">{wr}%</div>'
+        f'</div>'
+        f'<div class="cn-mob-combo-wrap">{combo_badge}</div>'
+        f'<div class="cn-mob-stat" style="text-align:right;">'
+        f'<div class="cn-mob-stat-label">Hands</div>'
+        f'<div class="cn-mob-stat-val light">{sh}</div>'
+        f'</div>'
+        f'</div></div></div>'
+    )
+
+    anim_html = ""
+    anim_reward = st.session_state.pop("anim_reward", None)
+    if anim_reward is not None:
+        if anim_reward > 0: a_color = "#00ff00"; a_text = f"+${anim_reward}"
+        elif anim_reward < 0: a_color = "#ff0000"; a_text = f"-${abs(anim_reward)}"
+        else: a_color = "#888"; a_text = "$0"
+        anim_html = f'<div class="floating-reward" style="color: {a_color}">{a_text}</div>'
+        
+    shatter_html = '<div class="glass-shatter"></div>' if st.session_state.pop("shield_break_anim", False) else ""
+
     st.markdown(header_html, unsafe_allow_html=True)
 
     order = ["EP", "MP", "CO", "BTN", "SB", "BB"]
@@ -280,89 +545,118 @@ def show():
     except ValueError: hero_idx = 0
     rot = order[hero_idx:] + order[:hero_idx]
 
-    def get_seat_style(idx):
-        return {0: "bottom: -20px; left: 50%; transform: translateX(-50%);", 1: "bottom: 10%; left: -5%;", 2: "top: 10%; left: -5%;", 
-                3: "top: -20px; left: 50%; transform: translateX(-50%);", 4: "top: 10%; right: -5%;", 5: "bottom: 10%; right: -5%;"}.get(idx, "")
+    # Изолируем логику HU для постфлопа (если 2 игрока)
+    is_hu = (len(active_players) == 2)
 
-    def get_btn_style(idx):
-        return {0: "bottom: 25px; left: 60%;", 1: "bottom: 25%; left: 16%;", 2: "top: 10%; left: 16%;",
-                3: "top: 10%; left: 60%;", 4: "top: 10%; right: 16%;", 5: "bottom: 25%; right: 16%;"}.get(idx, "")
+    def get_seat_style(idx):
+        return {
+            1: "top: 75%; left: -2%; transform: translateY(-50%);", 
+            2: "top: 8%; left: 2%;", 
+            3: "top: -17%; left: 50%; transform: translateX(-50%);", 
+            4: "top: 8%; right: 2%;", 
+            5: "top: 75%; right: -2%; transform: translateY(-50%);"
+        }.get(idx, "")
 
     def get_chip_style(idx):
         return {
-            0: "bottom: 75px; left: 50%; transform: translateX(-50%);", 
-            1: "bottom: 20%; left: 10%;", 
-            2: "top: 20%; left: 10%;",
-            3: "top: 35px; left: 50%; transform: translateX(-50%);", 
-            4: "top: 20%; right: 10%;", 
-            5: "bottom: 20%; right: 10%;"
+            0: "bottom: 38px; left: 50%; transform: translateX(-50%);", 
+            1: "top: 63%; left: 16%; transform: translateY(-50%);", 
+            2: "top: 23%; left: 20%;",
+            3: "top: 13%; left: 50%; transform: translateX(-50%);", 
+            4: "top: 23%; right: 20%;", 
+            5: "top: 63%; right: 16%; transform: translateY(-50%);"
+        }.get(idx, "")
+
+    def get_btn_style(idx):
+        return {
+            0: "bottom: 15px; left: 50%; margin-left: -85px; z-index: 35;", 
+            1: "top: 77%; left: 13%; transform: translateY(-50%);", 
+            2: "top: 25%; left: 13%;",
+            3: "top: 10%; left: 55%;", 
+            4: "top: 25%; right: 13%;", 
+            5: "top: 77%; right: 13%; transform: translateY(-50%);"
         }.get(idx, "")
 
     opp_html = ""; chips_html = ""
 
-    for i in range(1, 6):
-        p = rot[i]
-        has_cards = (p in active_players)
-        cls = "seat-active" if has_cards else "seat-folded"
-        cards = '<div class="opp-cards-mob"><div class="opp-card-mob"></div><div class="opp-card-mob right"></div></div>' if has_cards else ""
-        ss = get_seat_style(i)
+    if is_hu:
+        villain_p = [p for p in active_players if p != hero_pos][0] if len(active_players) > 1 else "BB"
+        cls = "seat-active"
+        cards = '<div class="opp-cards-mob"><div class="opp-card-mob"></div><div class="opp-card-mob right"></div></div>'
+        ss = get_seat_style(3)
         
         v_act_html = ""
-        is_bet = villain_act and ("BET" in villain_act.upper() or "RAISE" in villain_act.upper())
+        is_bet = villain_act and ("BET" in villain_act.upper() or "RAISE" in villain_act.upper() or "ALL-IN" in villain_act.upper())
         
-        if p == villain_pos and villain_act:
+        if villain_act:
             if not is_bet:
-                pos_class = "act-bottom-mob" if i in [2, 3, 4] else "act-top-mob"
-                v_act_html = f'<div class="villain-act-badge-mob {pos_class}">{villain_act}</div>'
-            
-        opp_html += f'<div class="seat {cls}" style="{ss}">{cards}<span class="seat-label">{p}</span>{v_act_html}</div>'
-
-        if p == btn_pos:
-            bs = get_btn_style(i)
-            chips_html += f'<div class="dealer-mob" style="{bs}">D</div>'
-            
-        if p == villain_pos and is_bet:
-            cs = get_chip_style(i)
+                v_act_html = f'<div class="villain-act-badge-mob act-bottom-mob">{villain_act}</div>'
+                
+        opp_html += f'<div class="seat {cls}" style="{ss}">{cards}<div class="ava"></div><div class="plate"><span class="pos">{villain_p}</span><span class="stack">---</span></div>{v_act_html}</div>'
+        
+        cs = get_chip_style(3)
+        if is_bet:
             bet_amount_str = villain_act.upper().replace("BET", "").replace("RAISE", "").strip().lower()
             bet_txt = f'<div class="bet-txt">{bet_amount_str}</div>'
             chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-mob"></div>{bet_txt}</div>'
+        
+        if villain_p == btn_pos:
+            bs = get_btn_style(3)
+            chips_html += f'<div class="dealer-mob" style="{bs}">D</div>'
+    else:
+        for i in range(1, 6):
+            p = rot[i]
+            has_cards = (p in active_players)
+            cls = "seat-active" if has_cards else "seat-folded"
+            cards = '<div class="opp-cards-mob"><div class="opp-card-mob"></div><div class="opp-card-mob right"></div></div>' if has_cards else ""
+            ss = get_seat_style(i)
+            
+            v_act_html = ""
+            is_bet = villain_act and ("BET" in villain_act.upper() or "RAISE" in villain_act.upper() or "ALL-IN" in villain_act.upper())
+            
+            if p == villain_pos and villain_act:
+                if not is_bet:
+                    pos_class = "act-bottom-mob" if i in [2, 3, 4] else "act-top-mob"
+                    v_act_html = f'<div class="villain-act-badge-mob {pos_class}">{villain_act}</div>'
+                
+            opp_html += f'<div class="seat {cls}" style="{ss}">{cards}<div class="ava"></div><div class="plate"><span class="pos">{p}</span><span class="stack">---</span></div>{v_act_html}</div>'
 
-    if rot[0] == btn_pos:
-        hero_bs = get_btn_style(0)
-        chips_html += f'<div class="dealer-mob" style="{hero_bs}">D</div>'
-    
+            if p == btn_pos:
+                bs = get_btn_style(i)
+                chips_html += f'<div class="dealer-mob" style="{bs}">D</div>'
+                
+            if p == villain_pos and is_bet:
+                cs = get_chip_style(i)
+                bet_amount_str = villain_act.upper().replace("BET", "").replace("RAISE", "").strip().lower()
+                bet_txt = f'<div class="bet-txt">{bet_amount_str}</div>'
+                chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-mob"></div>{bet_txt}</div>'
+
+    # Board Render
     board_html = ""
     for card in board_raw:
-        rank = card[:-1].upper()
+        rank_str = card[:-1].upper()
         suit = map_suit(card[-1])
         sc = get_suit_color_class(suit)
-        board_html += f'<div class="board-card-mob"><div class="bc-tl-mob {sc}">{rank}</div><div class="bc-c-mob {sc}">{suit}</div></div>'
-        
-    mobile_link = info_link
-    if mobile_link and mobile_link.startswith("https://"):
-        mobile_link = "onenote:" + mobile_link
-    
-    link_html = f'<a href="{mobile_link}" target="_blank" class="info-badge-mob" title="Open in OneNote">ℹ️</a>' if info_link else ""
+        board_html += f'<div class="board-card-mob"><div class="bc-tl-mob {sc}">{rank_str}</div><div class="bc-c-mob {sc}">{suit}</div></div>'
 
     html = f'''
-    <div class="mobile-game-area {combo_cls}">
-        <div class="crest-left-mob">{mastery.get("svg","")}</div><div class="crest-right-mob">{mastery.get("svg","")}</div>
-        <div class="mastery-glow" style="box-shadow: inset 0 0 35px {mastery.get("color","#888")};"></div>
-        <div class="center-column-mob">
-            <div class="mob-info-spot">{parts[3]}</div>
-            <div class="pot-badge-mob">Pot: {pot_size} bb</div>
-            <div class="board-container-mob">{board_html}</div>
-            <div class="mastery-badge rusty-{mastery.get("is_rusty",False)}" style="color:{mastery.get("color")}; border-color:{mastery.get("color")};">{mastery.get("icon")} {mastery.get("name")}</div>
-            <div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width:{mastery.get("prog_pct",0)}%; background:{mastery.get("color")};"></div></div>
+    <div class="mobile-game-area {combo_cls} {table_status_class}">
+        {shatter_html}
+        <div class="pf-pot-badge"><div class="pot-badge-mob">Pot: {pot_size} bb</div></div>
+        <div class="pf-board"><div class="board-container-mob">{board_html}</div></div>
+        <div class="pf-mastery">
+            <div class="mastery-badge rusty-{m_rust}" style="color:{theme["text_color"]}; border-color:{theme["seat_border"]};">{m_icon} {m_name}</div>
+            <div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width:{m_pct}%;"></div></div>
             <div class="hands-left-mob">{hands_left_text}</div>
         </div>
         {opp_html}{chips_html}
         <div class="hero-mob">
-            {link_html}
+            {anim_html}
             <div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div>
             <div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div>
             <div class="rng-badge">{st.session_state.pf_rng}</div>
         </div>
+        <div class="hero-plate" style="position: absolute; bottom: -75px; left: 50%; transform: translateX(-50%); width: 84px;"><span class="pos">HERO {hero_pos}</span><span class="stack">---</span></div>
     </div>
     '''
     
@@ -373,41 +667,69 @@ def show():
         st.session_state.pf_session_hands += 1
         
         k = f"{chosen_key}_{h_val}".replace(" ","_")
-        utils.update_srs_auto(k, h_val, corr, is_postflop=True)
+        utils.update_srs_auto(k, h_val, corr)
         
         utils.save_to_history({
             "Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 
             "Spot": chosen_key, "Hand": f"{h_val}", "Result": int(corr), 
             "CorrectAction": correct_act, "UserAction": action
-        }, is_postflop=True)
+        })
         
+        shield_used = False
         if corr:
             st.session_state.pf_session_correct += 1
             st.session_state.pf_combo += 1
             st.session_state.pf_last_error = False
-            st.session_state.pf_hand = None
+            st.session_state.pf_flash_correct = True
         else:
-            st.session_state.pf_combo = 0
-            st.session_state.pf_last_error = True
-            st.session_state.msg = f"❌ ОШИБКА! Правильно: {correct_act}"
+            st.session_state.pf_flash_correct = False
+            if st.session_state.shields > 0:
+                st.session_state.shields -= 1
+                st.session_state.shield_break_anim = True
+                st.session_state.pf_last_error = True
+                shield_used = True
+                st.session_state.msg = f"🛡️ ЩИТ СЛОМАН! Защита от мисклика. Правильно: {correct_act}"
+            else:
+                st.session_state.pf_combo = 0
+                st.session_state.pf_last_error = True
+                st.session_state.msg = f"❌ ОШИБКА! Правильно: {correct_act}"
             
         try:
-            alerts = utils.process_gamification(corr, st.session_state.pf_combo, st.session_state.pf_session_hands, chosen_key, is_postflop=True)
+            alerts, _ = utils.process_gamification(corr, st.session_state.pf_combo, st.session_state.pf_session_hands, chosen_key, shield_used=shield_used)
             if alerts: st.session_state.pf_toast_msgs.extend(alerts)
-        except: pass
+        except Exception: pass
+        
         st.rerun()
 
-    if st.session_state.pf_last_error:
-        st.markdown(f'<div style="background:#dc3545; color:white; padding:12px; border-radius:12px; text-align:center; font-weight:bold; margin-bottom:15px; font-size:14px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">{st.session_state.msg}</div>', unsafe_allow_html=True)
+    if is_flashing_correct:
+        time.sleep(0.5)
+        st.session_state.pf_flash_correct = False
+        st.session_state.pf_hand = None
+        st.rerun()
+    elif st.session_state.pf_last_error:
+        st.markdown(f'<div style="background:#dc3545; color:white; padding:12px; border-radius:12px; text-align:center; font-weight:bold; margin-bottom:15px; font-size:16px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">{st.session_state.msg}</div>', unsafe_allow_html=True)
+        st.markdown("""<style>
+        div[data-testid="stButton"] button[kind="primary"] {
+            background: linear-gradient(180deg, #1c3a55 0%, #102436 100%) !important;
+            box-shadow: 0 4px 0 #081520, 0 6px 20px rgba(30,120,200,0.15), inset 0 1px 0 rgba(60,160,255,0.12), inset 0 0 0 1px rgba(40,130,220,0.14) !important;
+            border: none !important; height: 44px !important; border-radius: 12px !important;
+        }
+        div[data-testid="stButton"] button[kind="primary"]:active { transform: translateY(3px) !important; box-shadow: 0 1px 0 #081520, inset 0 1px 0 rgba(60,160,255,0.08) !important; }
+        div[data-testid="stButton"] button[kind="primary"] p { color: rgba(80,180,255,0.95) !important; text-shadow: 0 0 12px rgba(50,160,240,0.4) !important; font-size: 13px !important; font-weight: 900 !important; letter-spacing: 0.1em !important; text-transform: uppercase !important; }
+        </style>""", unsafe_allow_html=True)
+        
         if st.button("ПОНЯТНО, ДАЛЬШЕ", type="primary", use_container_width=True):
             st.session_state.pf_last_error = False
             st.session_state.pf_hand = None
+            st.session_state.shield_break_anim = False
             st.rerun()
     else:
+        st.markdown('<div class="rng-hint-wrap">RNG 0-Freq: ACTION &nbsp;|&nbsp; Freq-100: FOLD/CHECK</div>', unsafe_allow_html=True)
+
         btn_cols = st.columns(len(actions))
         for i, act in enumerate(actions):
             with btn_cols[i]:
-                color = ACTION_COLORS[i % len(ACTION_COLORS)]
-                st.markdown(f"""<style>div[data-testid="column"]:nth-of-type({i+1}) button {{ border-top: 3px solid {color} !important; }}</style>""", unsafe_allow_html=True)
-                if st.button(act, key=f"pf_btn_{i}", use_container_width=True):
+                st.markdown(f'<div class="pf-btn-{i}">', unsafe_allow_html=True)
+                if st.button(act.upper(), key=f"pf_btn_{i}", use_container_width=True):
                     handle_action(act)
+                st.markdown('</div>', unsafe_allow_html=True)
