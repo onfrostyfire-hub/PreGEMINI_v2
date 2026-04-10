@@ -88,7 +88,6 @@ def show():
 
         /* ==========================================
            НАСТРОЙКИ ОТСТУПОВ (ДЛЯ АЙФОНА) ПОСТФЛОП
-           Двигай эти проценты, чтобы выровнять элементы по центру стола:
            ========================================== */
         .pf-pot-badge { position: absolute; top: 22%; left: 50%; transform: translateX(-50%); z-index: 15; }
         .pf-board { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
@@ -611,7 +610,7 @@ def show():
         sc = get_suit_color_class(suit)
         board_html += f'<div class="board-card-mob"><div class="bc-tl-mob {sc}">{rank_str}</div><div class="bc-c-mob {sc}">{suit}</div></div>'
 
-    html = f'<div class="mobile-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge"><div class="pot-badge-mob">Pot: {pot_size} bb</div></div><div class="pf-board"><div class="board-container-mob">{board_html}</div></div><div class="pf-mastery"><div class="mastery-badge rusty-{m_rust}" style="color:{theme["text_color"]}; border-color:{theme["seat_border"]};">{m_icon} {m_name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width:{m_pct}%;"></div></div><div class="hands-left-mob">{hands_left_text}</div></div>{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{st.session_state.pf_rng}</div></div><div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div></div></div>'
+    html = f'<div class="mobile-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge"><div class="pot-badge-mob">Pot: {pot_size} bb</div></div><div class="pf-board"><div class="board-container-mob">{board_html}</div></div><div class="pf-mastery"><div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width:{m_pct}%;"></div></div><div class="hands-left-mob">{hands_left_text}</div></div>{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{st.session_state.pf_rng}</div></div><div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div></div></div>'
     
     st.markdown(html, unsafe_allow_html=True)
 
