@@ -370,6 +370,9 @@ def show():
     villain_act = data.get("villain_action", "")
     actions = data.get("actions", ["Check"])
     ranges = data.get("ranges", {})
+    
+    table_size = data.get("table_size", 6)
+    stacks_data = data.get("stacks", {})
 
     h_val = st.session_state.pf_hand
     action_weights = {act: pf_get_weight(h_val, ranges.get(act, "")) for act in actions}
@@ -509,7 +512,7 @@ def show():
     except ValueError: hero_idx = 0
     rot = order[hero_idx:] + order[:hero_idx]
 
-    is_hu = (len(active_players) == 2)
+    is_hu = (table_size == 2)
 
     def get_seat_style(idx):
         return {
@@ -544,6 +547,7 @@ def show():
 
     if is_hu:
         villain_p = [p for p in active_players if p != hero_pos][0] if len(active_players) > 1 else "BB"
+        p_stack = stacks_data.get(villain_p, "---")
         cls = "seat-active"
         cards = '<div class="opp-cards-mob"><div class="opp-card-mob"></div><div class="opp-card-mob right"></div></div>'
         ss = get_seat_style(3)
@@ -555,7 +559,7 @@ def show():
             if not is_bet:
                 v_act_html = f'<div class="villain-act-badge-mob act-bottom-mob">{villain_act}</div>'
                 
-        opp_html += f'<div class="seat {cls}" style="{ss}">{cards}<div class="ava"></div><div class="plate"><span class="pos">{villain_p}</span><span class="stack">---</span></div>{v_act_html}</div>'
+        opp_html += f'<div class="seat {cls}" style="{ss}">{cards}<div class="ava"></div><div class="plate"><span class="pos">{villain_p}</span><span class="stack">{p_stack}</span></div>{v_act_html}</div>'
         
         cs = get_chip_style(3)
         if is_bet:
@@ -569,6 +573,7 @@ def show():
     else:
         for i in range(1, 6):
             p = rot[i]
+            p_stack = stacks_data.get(p, "---")
             has_cards = (p in active_players)
             cls = "seat-active" if has_cards else "seat-folded"
             cards = '<div class="opp-cards-mob"><div class="opp-card-mob"></div><div class="opp-card-mob right"></div></div>' if has_cards else ""
@@ -582,7 +587,7 @@ def show():
                     pos_class = "act-bottom-mob" if i in [2, 3, 4] else "act-top-mob"
                     v_act_html = f'<div class="villain-act-badge-mob {pos_class}">{villain_act}</div>'
                 
-            opp_html += f'<div class="seat {cls}" style="{ss}">{cards}<div class="ava"></div><div class="plate"><span class="pos">{p}</span><span class="stack">---</span></div>{v_act_html}</div>'
+            opp_html += f'<div class="seat {cls}" style="{ss}">{cards}<div class="ava"></div><div class="plate"><span class="pos">{p}</span><span class="stack">{p_stack}</span></div>{v_act_html}</div>'
 
             if p == btn_pos:
                 bs = get_btn_style(i)
@@ -594,6 +599,11 @@ def show():
                 bet_txt = f'<div class="bet-txt">{bet_amount_str}</div>'
                 chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-mob"></div>{bet_txt}</div>'
 
+    hero_stack = stacks_data.get(hero_pos, "---")
+    if rot[0] == btn_pos:
+        hero_bs = get_btn_style(0)
+        chips_html += f'<div class="dealer-mob" style="{hero_bs}">D</div>'
+
     board_html = ""
     for card in board_raw:
         rank_str = card[:-1].upper()
@@ -601,7 +611,28 @@ def show():
         sc = get_suit_color_class(suit)
         board_html += f'<div class="board-card-mob"><div class="bc-tl-mob {sc}">{rank_str}</div><div class="bc-c-mob {sc}">{suit}</div></div>'
 
-    html = f'<div class="mobile-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge"><div class="pot-badge-mob">Pot: {pot_size} bb</div></div><div class="pf-board"><div class="board-container-mob">{board_html}</div></div><div class="pf-mastery"><div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width:{m_pct}%;"></div></div><div class="hands-left-mob">{hands_left_text}</div></div>{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{st.session_state.pf_rng}</div></div><div class="hero-plate" style="position: absolute; bottom: -75px; left: 50%; transform: translateX(-50%); width: 84px;"><span class="pos">HERO {hero_pos}</span><span class="stack">---</span></div></div></div>'
+    html = f'''
+    <div class="mobile-game-area {combo_cls} {table_status_class}">
+        {shatter_html}
+        <div class="pf-pot-badge"><div class="pot-badge-mob">Pot: {pot_size} bb</div></div>
+        <div class="pf-board"><div class="board-container-mob">{board_html}</div></div>
+        <div class="pf-mastery">
+            <div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div>
+            <div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width:{m_pct}%;"></div></div>
+            <div class="hands-left-mob">{hands_left_text}</div>
+        </div>
+        {opp_html}{chips_html}
+        <div class="hero-mob">
+            {anim_html}
+            <div class="hero-cards-wrap">
+                <div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div>
+                <div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div>
+                <div class="rng-badge">{st.session_state.pf_rng}</div>
+            </div>
+            <div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div>
+        </div>
+    </div>
+    '''
     
     st.markdown(html, unsafe_allow_html=True)
 
