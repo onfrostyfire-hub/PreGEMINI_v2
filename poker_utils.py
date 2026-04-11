@@ -73,11 +73,11 @@ def rebuild_srs_from_history():
         w = weights.get(key, 100)
         
         if result == 1:
-            w = int(w * 0.8)
+            w = int(w * 0.7)
         else:
-            w = int((w * 1.5) + (20 if w < 50 else 50))
+            w = int((w * 1.6) + 40)
             
-        weights[key] = max(10, min(w, 2000))
+        weights[key] = max(5, min(w, 2500))
         
     return weights
 
@@ -355,11 +355,11 @@ def update_srs_auto(spot_id, hand, is_correct):
     w = data.get(key, 100)
     
     if is_correct:
-        w = int(w * 0.8)
+        w = int(w * 0.7)
     else:
-        w = int((w * 1.5) + (20 if w < 50 else 50))
+        w = int((w * 1.6) + 40)
             
-    data[key] = max(10, min(w, 2000))
+    data[key] = max(5, min(w, 2500))
     st.session_state["unsaved_count"] += 1
     check_auto_sync()
 
