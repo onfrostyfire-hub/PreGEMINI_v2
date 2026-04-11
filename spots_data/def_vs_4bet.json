@@ -15,8 +15,8 @@
       },
       "stats": { "5bet": "2.0%", "Call": "6.4%", "Fold": "38%"  },
       "ranges": {
-        "call": "AA,QQ:0.5,JJ:0.5,TT,99,88:0.5,77:0.5,66:0.5,AKs:0.5,AQ,AJs,ATs,A5s:0.5,A4s:0.5,KQs,KJs,KTs,QJs:0.5,JTs:0.5,76s:0.5,65s:0.5,54s:0.5",
-        "Raise": "KK,QQ:0.5,JJ:0.5,AKs:0.5,AKo",
+        "call": "AA,JJ:0.5,TT,99,88:0.5,77:0.5,66:0.5,AKs:0.5,AQ,AJs,ATs,A5s:0.5,A4s:0.5,KQs,KJs,KTs,QJs:0.5,JTs:0.5,76s:0.5,65s:0.5,54s:0.5",
+        "Raise": "KK,QQ,JJ:0.5,AKs:0.5,AKo",
         "training": "QQ,JJ,TT,99,88,77,66,AK,AQ,AJs,ATs,A5s,A4s,KQs,KJs,KTs,QJs,QTs,JTs,T9s,76s,65s,54s"
       }
     },
