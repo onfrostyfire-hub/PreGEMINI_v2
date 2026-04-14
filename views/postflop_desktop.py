@@ -120,7 +120,7 @@ def show():
         
         .desktop-game-area { 
             position: relative; width: 100%; max-width: 850px; height: 380px; 
-            margin: 40px auto 90px auto; 
+            margin: 20px auto 90px auto; 
             border: 16px solid #1a1c20; 
             border-radius: 200px; 
             box-shadow: 0 10px 40px rgba(0,0,0,0.8), inset 0 3px 15px rgba(0,0,0,0.6); 
@@ -138,14 +138,45 @@ def show():
         div[data-testid="stButton"] button:active { transform: translateY(5px) !important; box-shadow: 0 0 0 transparent !important; }
         div[data-testid="stButton"] button p { font-family: 'Roboto', sans-serif !important; font-size: 18px !important; font-weight: 900 !important; margin: 0 !important; letter-spacing: 1px !important; text-transform: uppercase !important; }
 
-        .desktop-game-area.table-glow-correct {
-            border-color: #198754 !important;
-            box-shadow: 0 0 35px rgba(25,135,84,0.6), inset 0 0 25px rgba(25,135,84,0.4) !important;
-        }
-        .desktop-game-area.table-glow-incorrect {
-            border-color: #dc3545 !important;
-            box-shadow: 0 0 35px rgba(220,53,69,0.6), inset 0 0 25px rgba(220,53,69,0.4) !important;
-        }
+        /* ── CARBON NOIR DESKTOP HEADER ── */
+        .cn-desk-header { max-width: 850px; margin: 0 auto 10px auto; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; -webkit-font-smoothing: antialiased; border-radius: 16px; overflow: hidden; position: relative; background: linear-gradient(165deg, rgba(18,22,28,0.92) 0%, rgba(8,10,14,0.96) 100%); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+        .cn-desk-header::before { content: ''; position: absolute; inset: 0; border-radius: 16px; pointer-events: none; background: linear-gradient(125deg, rgba(255,255,255,0.07) 0%, transparent 42%, transparent 58%, rgba(255,255,255,0.03) 100%); z-index: 0; }
+        .cn-desk-wr-track { height: 4px; width: 100%; background: rgba(0,0,0,0.45); position: relative; z-index: 1; }
+        .cn-desk-wr-fill { height: 100%; transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 12px currentColor; }
+        .cn-desk-inner { position: relative; z-index: 1; padding: 12px 20px 14px; }
+        .cn-desk-row1 { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+        .cn-desk-rank { font-size: 14px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: rgba(255,214,120,0.95); text-shadow: 0 0 20px rgba(255,200,80,0.25); line-height: 1.15; }
+        .cn-desk-xp-meta { font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; color: rgba(180,190,205,0.85); white-space: nowrap; letter-spacing: 0.02em; }
+        .cn-desk-xp-bar-wrap { flex: 1; min-width: 0; margin-top: 4px; }
+        .cn-desk-xp-bar-bg { height: 6px; border-radius: 6px; background: rgba(0,0,0,0.5); box-shadow: inset 0 1px 3px rgba(0,0,0,0.6); overflow: hidden; }
+        .cn-desk-xp-bar-fill { height: 100%; border-radius: 6px; background: linear-gradient(90deg, #1a7a4a, #2ee88a); box-shadow: 0 0 10px rgba(46,232,138,0.45); transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+        .cn-desk-row2 { display: flex; align-items: stretch; justify-content: space-between; gap: 10px; margin-top: 4px; }
+        .cn-desk-stat { flex: 1; min-width: 0; }
+        .cn-desk-stat-label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(140,150,165,0.75); margin-bottom: 2px; }
+        .cn-desk-stat-val { font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; line-height: 1.1; }
+        .cn-desk-stat-val.light { color: rgba(245,248,252,0.98); }
+        .cn-desk-combo-wrap { flex: 1.15; display: flex; justify-content: center; align-items: center; min-width: 0; }
+        .cn-desk-combo-pill { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 4px 16px 4px 12px; border-radius: 999px; background: linear-gradient(145deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.02) 100%); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 4px 16px rgba(0,0,0,0.35); }
+        .cn-desk-combo-fire { font-size: 18px; font-weight: 900; color: #fff; text-shadow: 0 0 18px rgba(255,120,40,0.55); letter-spacing: -0.03em; }
+        .cn-desk-shield { font-size: 14px; margin-left: 4px; font-weight: 800; color: rgba(120,230,255,0.95); filter: drop-shadow(0 0 6px rgba(0,200,255,0.55)); align-items: center; gap: 3px; }
+
+        /* ── RAGE BAR DESKTOP ── */
+        .rage-bar-container-desk { width: 100%; max-width: 850px; margin: 0 auto 15px auto; height: 32px; border-radius: 999px; position: relative; display: flex; align-items: stretch; padding: 4px; background: linear-gradient(180deg, rgba(12,14,20,0.95) 0%, rgba(6,8,12,0.98) 100%); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65), inset 0 -1px 0 rgba(255,255,255,0.05); overflow: hidden; }
+        .rage-bar-container-desk::before { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%); z-index: 3; }
+        .rage-bar-fill-desk { height: 100%; border-radius: 999px; transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; min-width: 0; box-shadow: inset 0 2px 8px rgba(255,255,255,0.35), inset 0 -3px 8px rgba(0,0,0,0.45), 0 0 20px rgba(255,255,255,0.12); }
+        .rage-bar-fill-desk::before, .rage-bar-fill-desk::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle, rgba(255,255,255,0.85) 1px, transparent 2px), radial-gradient(circle, rgba(255,255,255,0.45) 2px, transparent 3px), radial-gradient(circle, rgba(255,255,255,0.35) 1px, transparent 2px); z-index: 1; pointer-events: none; }
+        .rage-bar-fill-desk::before { background-size: 18px 22px, 32px 36px, 14px 18px; animation: bubbleRise1 1.15s infinite linear; opacity: 0.85; }
+        .rage-bar-fill-desk::after { background-size: 22px 28px, 40px 46px, 20px 24px; animation: bubbleRise2 1.65s infinite linear; opacity: 0.45; }
+        .rage-labels-desk { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); display: flex; justify-content: space-between; align-items: center; padding: 0 16px; pointer-events: none; z-index: 4; font-family: 'Inter', system-ui, sans-serif; font-weight: 800; font-size: 13px; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; color: rgba(255,255,255,0.98); text-shadow: 0 1px 2px rgba(0,0,0,0.95), 0 0 12px rgba(0,0,0,0.8), 0 0 1px rgba(0,0,0,1); }
+        .rage-pulse-desk { animation: ragePulseNeon 0.45s ease-in-out infinite alternate; }
+        .rage-flash-desk { animation: rageTubeFlash 0.65s ease-out; }
+        @keyframes bubbleRise1 { 0% { background-position: 0px 22px, 0px 36px, 0px 18px; } 50% { background-position: 5px 11px, -5px 18px, 3px 9px; } 100% { background-position: 0px 0px, 0px 0px, 0px 0px; } }
+        @keyframes bubbleRise2 { 0% { background-position: 0px 28px, 0px 46px, 0px 24px; } 50% { background-position: -6px 14px, 6px 22px, -4px 12px; } 100% { background-position: 0px 0px, 0px 0px, 0px 0px; } }
+        @keyframes ragePulseNeon { 0% { filter: brightness(1) saturate(1); box-shadow: inset 0 2px 8px rgba(255,255,255,0.3), 0 0 8px rgba(255,60,80,0.35); } 100% { filter: brightness(1.15) saturate(1.2); box-shadow: inset 0 2px 12px rgba(255,255,255,0.5), 0 0 22px rgba(255,80,100,0.65), 0 0 40px rgba(255,40,60,0.25); } }
+        @keyframes rageTubeFlash { 0% { box-shadow: 0 0 0 1px rgba(255,255,255,0.9), 0 0 40px rgba(255,255,255,0.8), inset 0 0 30px rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.65); } 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65); border-color: rgba(255,255,255,0.1); } }
+
+        .desktop-game-area.table-glow-correct { border-color: #198754 !important; box-shadow: 0 0 35px rgba(25,135,84,0.6), inset 0 0 25px rgba(25,135,84,0.4) !important; }
+        .desktop-game-area.table-glow-incorrect { border-color: #dc3545 !important; box-shadow: 0 0 35px rgba(220,53,69,0.6), inset 0 0 25px rgba(220,53,69,0.4) !important; }
 
         .mastery-badge-desk { display: inline-flex !important; align-items: center !important; gap: 5px !important; border-radius: 20px !important; padding: 3px 12px 3px 10px !important; font-size: 12px !important; font-weight: 700 !important; letter-spacing: 0.05em !important; }
         .mastery-bar-bg-desk { width: 80px !important; height: 3px !important; background: rgba(255,255,255,0.07) !important; border-radius: 3px !important; overflow: hidden !important; }
@@ -438,13 +469,82 @@ def show():
         rage_pct = int((c - prev_req) / (next_req - prev_req) * 100)
         lbl_left = f"x{curr_mult}"; lbl_right = f"x{next_mult}"
 
-    header_cols = st.columns([1, 1, 1])
-    with header_cols[0]:
-        st.markdown(f"<div style='text-align:center; padding:10px; background:#111; border-radius:10px; border:1px solid #333;'><b>🎯 WR:</b> <span style='color:{wr_color}'>{wr}%</span> ({scorr}/{sh})</div>", unsafe_allow_html=True)
-    with header_cols[1]:
-        st.markdown(f"<div style='text-align:center; padding:10px; background:#111; border-radius:10px; border:1px solid #333;'><b>🔥 COMBO:</b> <span style='color:#ffc107'>{c}</span></div>", unsafe_allow_html=True)
-    with header_cols[2]:
-        st.markdown(f"<div style='text-align:center; padding:10px; background:#111; border-radius:10px; border:1px solid #333;'><b>🛡️ SHIELDS:</b> <span style='color:#0dcaf0'>{st.session_state.shields}</span></div>", unsafe_allow_html=True)
+    is_pulsing = "rage-pulse-desk" if rage_pct >= 95 and next_mult != "MAX" else ""
+    is_flashing = "rage-flash-desk" if st.session_state.pop("just_leveled_up", False) else ""
+    
+    if curr_mult == 1.0: grad = "linear-gradient(90deg, #17a2b8, #0dcaf0)"
+    elif curr_mult == 1.5: grad = "linear-gradient(90deg, #0dcaf0, #28a745)"
+    elif curr_mult == 2.0: grad = "linear-gradient(90deg, #28a745, #ffc107)"
+    elif curr_mult == 3.0: grad = "linear-gradient(90deg, #ffc107, #fd7e14)"
+    elif curr_mult == 4.0: grad = "linear-gradient(90deg, #fd7e14, #dc3545)"
+    elif curr_mult == 5.0: grad = "linear-gradient(90deg, #dc3545, #6f42c1)"
+    else: grad = "linear-gradient(90deg, #6f42c1, #ff00ff)"
+
+    shield_display = (
+        f'<span style="'
+        f'display:{"inline-flex" if st.session_state.shields > 0 else "none"};'
+        f'align-items:center;gap:3px;'
+        f'font-size:14px;font-weight:800;letter-spacing:0.04em;'
+        f'padding:2px 8px 2px 6px;margin-left:6px;'
+        f'background:rgba(13,202,240,0.09);'
+        f'border:1px solid rgba(13,202,240,0.28);'
+        f'border-radius:8px;'
+        f'color:rgba(13,202,240,0.92);'
+        f'box-shadow:0 0 8px rgba(13,202,240,0.12);'
+        f'">🛡️{st.session_state.shields}</span>'
+    )
+
+    combo_badge = (
+        f'<div style="flex:1;display:flex;justify-content:center;align-items:center;">'
+        f'<div style="'
+        f'display:inline-flex;align-items:center;gap:2px;'
+        f'padding:4px 16px 4px 12px;border-radius:20px;'
+        f'background:rgba(255,255,255,0.035);'
+        f'border:1px solid rgba(255,255,255,0.09);'
+        f'box-shadow:0 0 14px rgba(255,150,20,0.07),inset 0 1px 0 rgba(255,255,255,0.05);'
+        f'">'
+        f'<span style="'
+        f'font-size:18px;font-weight:900;color:#fff;letter-spacing:-0.03em;'
+        f'text-shadow:0 0 12px rgba(255,130,10,0.8),0 0 24px rgba(255,100,0,0.3);'
+        f'">🔥{c}</span>'
+        f'{shield_display}'
+        f'</div></div>'
+    )
+
+    header_html = (
+        f'<div class="cn-desk-header">'
+        f'<div class="cn-desk-wr-track">'
+        f'<div class="cn-desk-wr-fill" style="width:{wr if sh > 0 else 100}%; background:{wr_color if sh > 0 else "#2a2a2a"}; box-shadow:0 0 8px {wr_color if sh > 0 else "transparent"};"></div></div>'
+        f'<div class="cn-desk-inner">'
+        f'<div class="cn-desk-row1">'
+        f'<div style="flex:1;min-width:0;">'
+        f'<div class="cn-desk-rank">{rank_name}</div>'
+        f'<div class="cn-desk-xp-bar-wrap"><div class="cn-desk-xp-bar-bg"><div class="cn-desk-xp-bar-fill" style="width:{progress_pct}%;"></div></div></div>'
+        f'</div>'
+        f'<div class="cn-desk-xp-meta">${stats_data.get("xp", 0)} <span style="color:rgba(255,255,255,0.15);margin:0 4px;">/</span> ${next_xp}</div>'
+        f'</div>'
+        f'<div class="cn-desk-row2">'
+        f'<div class="cn-desk-stat">'
+        f'<div class="cn-desk-stat-label">Winrate</div>'
+        f'<div class="cn-desk-stat-val" style="color:{wr_color}; text-shadow:0 0 10px {wr_color}44;">{wr}%</div>'
+        f'</div>'
+        f'<div class="cn-desk-combo-wrap">{combo_badge}</div>'
+        f'<div class="cn-desk-stat" style="text-align:right;">'
+        f'<div class="cn-desk-stat-label">Hands</div>'
+        f'<div class="cn-desk-stat-val light">{sh}</div>'
+        f'</div>'
+        f'</div></div></div>'
+    )
+
+    rage_bar_html = f"""
+    <div class="rage-bar-container-desk {is_flashing}">
+      <div class="rage-bar-fill-desk {is_pulsing}" style="width: {rage_pct}%; background: {grad};"></div>
+      <div class="rage-labels-desk">
+        <span>{lbl_left}</span>
+        <span>{lbl_right}</span>
+      </div>
+    </div>
+    """
 
     anim_html = ""
     anim_reward = st.session_state.pop("anim_reward", None)
@@ -455,6 +555,9 @@ def show():
         anim_html = f'<div class="floating-reward-desk" style="color: {a_color}">{a_text}</div>'
         
     shatter_html = '<div class="glass-shatter"></div>' if st.session_state.pop("shield_break_anim", False) else ""
+
+    st.markdown(header_html, unsafe_allow_html=True)
+    st.markdown(rage_bar_html, unsafe_allow_html=True)
 
     order = ["EP", "MP", "CO", "BTN", "SB", "BB"]
     try: hero_idx = order.index(hero_pos)
