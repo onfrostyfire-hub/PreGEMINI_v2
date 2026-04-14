@@ -10,7 +10,7 @@
     "pot_size": 5.5,
     "villain_action": "CHECK",
     "info_link": "https://onenote.com/твоя_ссылка",
-    "actions": ["Check", "Bet 1.7bb", "Bet 3.6bb"],
+    "actions": ["Check", "Bet 1.7bb", "Bet 2.7bb", "Bet 3.6bb"],
     "ranges": {
       "Check": "AsAc, KsKc, QsQc, JsTs",
       "Bet 1.7bb": "8s8c, 7s7c, AsKs",
