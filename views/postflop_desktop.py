@@ -1,11 +1,54 @@
 import streamlit as st
 import random
+import time
+import os
+import json
+import inspect
 from datetime import datetime
 import poker_utils as utils
 
-ACTION_COLORS = ["#28a745", "#d63384", "#0dcaf0", "#ffc107", "#6f42c1"]
+# --- УМНЫЕ ОБЁРТКИ ДЛЯ НЕЗАВИСИМЫХ СТАТОВ ПОСТФЛОПА ---
+def safe_load_stats():
+    sig = inspect.signature(utils.load_user_stats)
+    if 'is_postflop' in sig.parameters:
+        return utils.load_user_stats(is_postflop=True)
+    try:
+        with open("postflop_stats.json", "r") as f: return json.load(f)
+    except:
+        return {"xp": 0, "combo": 0, "shields": 0, "spot_mastery": {}}
 
-# Хак \ufe0e заставляет iOS/Android рендерить масти как текст, а не как эмодзи. Цвета больше не слетят.
+def safe_save_stats(data):
+    sig = inspect.signature(utils.save_user_stats)
+    if 'is_postflop' in sig.parameters:
+        utils.save_user_stats(data, is_postflop=True)
+    else:
+        with open("postflop_stats.json", "w") as f: json.dump(data, f)
+
+def safe_save_history(data):
+    sig = inspect.signature(utils.save_to_history)
+    if 'is_postflop' in sig.parameters:
+        utils.save_to_history(data, is_postflop=True)
+    else:
+        utils.save_to_history(data)
+# --------------------------------------------------------
+
+@st.cache_data(ttl=0)
+def custom_load_postflop_ranges():
+    db = {}
+    pf_dir = 'postflop_data' if os.path.exists('postflop_data') else 'spots_data'
+    if not os.path.exists(pf_dir): return db
+    for file in os.listdir(pf_dir):
+        if file.endswith('.json'):
+            with open(os.path.join(pf_dir, file), 'r', encoding='utf-8') as f:
+                try:
+                    data = json.load(f)
+                    if "spots" in data:
+                        db.update(data["spots"])
+                    else:
+                        db.update(data)
+                except Exception as e: st.error(f"Read error {file}: {e}")
+    return db
+
 def map_suit(s):
     mapping = {'h': '♥\ufe0e', 'd': '♦\ufe0e', 'c': '♣\ufe0e', 's': '♠\ufe0e'}
     return mapping.get(s.lower(), '♠\ufe0e')
@@ -31,75 +74,159 @@ def pf_get_weight(hand, r_str):
         if h == hand: return w
     return 0.0
 
+def generate_desktop_theme(bg_rad1, bg_rad2, shadow1, shadow2, shadow3, seat_rad, seat_border, seat_act_border, seat_act_shadow, anim_name, pulse_shadow1, pulse_shadow2, text_color, badge_bg, bar_fill, card_bg, card_border, rng_bg):
+    return f"""<style>
+    .desktop-game-area {{ 
+        background: radial-gradient(ellipse 50% 38% at 50% 42%, {bg_rad1} 0%, transparent 70%), radial-gradient(ellipse 88% 78% at 50% 50%, {bg_rad2}) !important; 
+        border-color: {shadow1} !important; 
+    }}
+    .seat-active-desk .ava-desk, .seat-active-desk .plate-desk {{ border-color: {seat_act_border} !important; }}
+    .seat-active-desk .ava-desk {{ box-shadow: 0 -4px 10px {pulse_shadow1}, inset 0 2px 4px rgba(255,255,255,0.1) !important; animation: {anim_name}_ava 2.6s ease-in-out infinite !important; }}
+    .seat-active-desk .plate-desk {{ box-shadow: 0 4px 10px {pulse_shadow1} !important; animation: {anim_name}_plate 2.6s ease-in-out infinite !important; }}
+    
+    @keyframes {anim_name}_ava {{ 0%,100% {{ box-shadow: 0 -4px 8px {pulse_shadow1}, inset 0 2px 4px rgba(255,255,255,0.1); }} 50% {{ box-shadow: 0 -4px 20px {pulse_shadow2}, inset 0 2px 4px rgba(255,255,255,0.1); }} }}
+    @keyframes {anim_name}_plate {{ 0%,100% {{ box-shadow: 0 4px 8px {pulse_shadow1}; }} 50% {{ box-shadow: 0 4px 20px {pulse_shadow2}; }} }}
+    
+    .mastery-badge-desk {{ background: {badge_bg} !important; border: 1px solid {seat_border} !important; color: {text_color} !important; text-shadow: 0 0 6px rgba(0,0,0,0.4) !important; }}
+    .mastery-bar-fill-desk {{ background: {bar_fill} !important; }}
+    .hands-left-desk {{ color: {text_color} !important; opacity: 0.8; }}
+    .floating-reward-desk {{ color: {text_color} !important; }}
+    .card-desk {{ background: {card_bg} !important; border: 1px solid {card_border} !important; }}
+    .rng-badge-desk {{ color: {text_color} !important; background: {rng_bg} !important; border: 1.5px solid {seat_border} !important; }}
+    .hero-plate-desk {{ border-color: {seat_act_border} !important; }}
+    .hero-plate-desk .pos-desk {{ color: {seat_act_border} !important; }}
+    </style>"""
+
+THEMES = {
+    0: {"icon": "⚪", "name": "Sandbox", "css": generate_desktop_theme("rgba(50,55,60,0.5)", "#202428 0%, #15181a 55%, #0a0b0d 100%", "#1f2329", "#16181b", "#0b0d0f", "#1f2226 0%, #111316 60%, #08090a 100%", "rgba(140,150,160,0.18)", "rgba(160,170,180,0.55)", "rgba(160,170,180,0.48)", "r0-pulse", "rgba(160,170,180,0.38)", "rgba(160,170,180,0.7)", "rgba(150,160,170,0.9)", "rgba(150,160,170,0.09)", "linear-gradient(90deg, #8b959e, #5b636a)", "#f8faff", "rgba(255,255,255,0.85)", "rgba(150,160,170,0.09)")},
+    1: {"icon": "🌱", "name": "Basic", "css": generate_desktop_theme("rgba(30,55,38,0.5)", "#1a2e20 0%, #111e16 55%, #090e0b 100%", "#182b1d", "#182219", "#0b100d", "#1a2d21 0%, #0e1a12 60%, #080d0a 100%", "rgba(120,160,130,0.18)", "rgba(120,180,140,0.55)", "rgba(120,180,140,0.45)", "r1-pulse", "rgba(120,180,140,0.38)", "rgba(120,180,140,0.7)", "rgba(130,190,150,0.9)", "rgba(120,180,140,0.08)", "linear-gradient(90deg, #6ab880, #4a9060)", "#f8faff", "rgba(255,255,255,0.85)", "rgba(120,180,140,0.08)")},
+    2: {"icon": "💎", "name": "Solid", "css": generate_desktop_theme("rgba(10,50,80,0.6)", "#0b3040 0%, #071e2e 58%, #030e18 100%", "#0c2738", "#0f2234", "#060e17", "#162840 0%, #0c1a28 60%, #060e18 100%", "rgba(60,130,200,0.22)", "rgba(60,160,255,0.78)", "rgba(60,160,255,0.42)", "r2-pulse", "rgba(60,160,255,0.34)", "rgba(60,160,255,0.62)", "rgba(80,170,255,0.9)", "rgba(60,130,200,0.09)", "linear-gradient(90deg, #3ab0ff, #1480d8)", "#f8faff", "rgba(255,255,255,0.85)", "rgba(60,130,200,0.09)")},
+    3: {"icon": "🔥", "name": "Unexploitable", "css": generate_desktop_theme("rgba(90,18,28,0.65)", "#3a0d14 0%, #240810 58%, #0f0408 100%", "#2b0d12", "#2e1014", "#12060a", "#3a1c10 0%, #221008 60%, #0f0804 100%", "rgba(180,110,40,0.28)", "rgba(210,150,50,0.88)", "rgba(210,150,50,0.48)", "r3-pulse", "rgba(210,150,50,0.4)", "rgba(220,165,60,0.68)", "rgba(220,165,65,0.9)", "rgba(180,110,40,0.09)", "linear-gradient(90deg, #d49030, #a86018)", "linear-gradient(145deg, #f5f0e8 0%, #ede5d4 100%)", "rgba(210,175,110,0.7)", "rgba(180,110,40,0.09)")},
+    4: {"icon": "⚡", "name": "Elite", "css": generate_desktop_theme("rgba(55,20,90,0.6)", "#1e0d30 0%, #130820 58%, #07030f 100%", "#1b0b2e", "#1e1028", "#0d0614", "#2a1840 0%, #180e28 60%, #0a0812 100%", "rgba(160,130,220,0.28)", "rgba(190,160,255,0.88)", "rgba(170,130,255,0.52)", "r4-pulse", "rgba(170,130,255,0.42)", "rgba(190,150,255,0.7)", "rgba(190,165,255,0.9)", "rgba(140,110,220,0.09)", "linear-gradient(90deg, #a070ff, #7040d8)", "linear-gradient(150deg, #2a2a32 0%, #1e1e26 100%)", "rgba(200,190,230,0.3)", "rgba(140,110,220,0.09)")},
+    5: {"icon": "☢️", "name": "Solver", "css": generate_desktop_theme("rgba(60,50,10,0.5)", "#141410 0%, #0c0c09 55%, #050504 100%", "#1a1a12", "#1c1c16", "#0a0a08", "#1c1a10 0%, #111008 60%, #080806 100%", "rgba(190,158,50,0.3)", "rgba(220,188,70,0.95)", "rgba(220,188,70,0.58)", "r5-pulse", "rgba(220,188,70,0.46)", "rgba(240,205,80,0.78)", "rgba(220,188,70,0.9)", "rgba(190,158,50,0.1)", "linear-gradient(90deg, #d4a820, #a07810)", "linear-gradient(150deg, #1a1a18 0%, #111110 100%)", "rgba(210,180,70,0.38)", "rgba(190,158,50,0.1)")}
+}
+
 def show():
     st.markdown("""
-    <style>
-        .stApp { background-color: #1a1c20; color: #e9ecef; }
-        .game-area { position: relative; width: 100%; max-width: 700px; height: 440px; margin: 0 auto; background: radial-gradient(ellipse at center, #1e5e2f 0%, #0d3b1a 100%); border: 12px solid #2c1a1a; border-radius: 180px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); transition: box-shadow 0.3s, border-color 0.3s; }
-        .mastery-glow { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: inherit; pointer-events: none; z-index: 1; transition: box-shadow 0.5s ease; }
-        .crest-left { position: absolute; left: 30px; top: 50%; transform: translateY(-50%); width: 140px; height: 140px; z-index: 1; pointer-events: none; display: flex; justify-content: center; align-items: center; }
-        .crest-right { position: absolute; right: 30px; top: 50%; transform: translateY(-50%); width: 140px; height: 140px; z-index: 1; pointer-events: none; display: flex; justify-content: center; align-items: center; }
-        
-        .center-column { position: absolute; top: 16%; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; z-index: 20; }
-        .info-spot { font-size: 20px; font-weight: 900; color: rgba(255,255,255,0.3); text-transform: uppercase; line-height: 1; text-align: center; }
-        .info-src { font-size: 11px; color: #888; margin-top: -6px; margin-bottom: 2px; text-align: center; }
-        .pot-badge { background: #111; color: #ffc107; font-weight: bold; font-size: 14px; padding: 4px 16px; border-radius: 20px; border: 1px solid #ffc107; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-        .board-container { display: flex; gap: 8px; background: rgba(0,0,0,0.4); padding: 10px 18px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
-        .mastery-badge { font-size: 11px; font-weight: bold; background: rgba(0,0,0,0.6); padding: 2px 10px; border-radius: 12px; display: inline-flex; align-items: center; gap: 5px; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1); }
-        .rusty-True { filter: grayscale(100%) opacity(0.6); }
-        .mastery-bar-bg { width: 120px; height: 4px; background: #111; border-radius: 2px; overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.8); }
-        .mastery-bar-fill { height: 100%; transition: width 0.3s; }
-        .hands-left { font-size: 10px; color: #aaa; text-transform: uppercase; font-weight: bold; margin-top: -2px; }
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap');
 
-        .board-card { width: 52px; height: 74px; background: white; border-radius: 5px; position: relative; color: black; box-shadow: 0 2px 5px rgba(0,0,0,0.5); font-family: Arial, sans-serif !important; }
-        .bc-tl { position: absolute; top: 3px; left: 4px; font-weight: bold; font-size: 16px; line-height: 1; }
-        .bc-c { position: absolute; top: 55%; left: 50%; transform: translate(-50%,-50%); font-size: 28px; line-height: 1; }
+        /* ==========================================
+           НАСТРОЙКИ ОТСТУПОВ (ДЛЯ ДЕСКТОПА) ПОСТФЛОП
+           ========================================== */
+        .pf-pot-badge-desk { position: absolute; top: 22%; left: 50%; transform: translateX(-50%); z-index: 15; }
+        .pf-board-desk { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
+        .pf-mastery-desk { position: absolute; top: 66%; left: 50%; transform: translateX(-50%); z-index: 15; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;}
+        
+        .desktop-game-area { 
+            position: relative; width: 100%; max-width: 850px; height: 380px; 
+            margin: 40px auto 90px auto; 
+            border: 16px solid #1a1c20; 
+            border-radius: 200px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8), inset 0 3px 15px rgba(0,0,0,0.6); 
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; 
+        }
+        
+        .rng-hint-wrap-desk { text-align: center; color: #6c757d; font-size: 13px; font-family: 'Roboto', sans-serif; font-weight: 500; letter-spacing: 0.5px; margin-bottom: 15px; margin-top: 15px; }
+        div[data-testid="stHorizontalBlock"] { gap: 15px !important; margin-top: 10px; max-width: 850px; margin-left: auto; margin-right: auto; }
+        /* ------------------------------------------ */
 
-        .seat { position: absolute; width: 65px; height: 65px; background: #343a40; border: 2px solid #495057; border-radius: 8px; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 5; }
-        .seat-label { font-size: 11px; color: #fff; font-weight: bold; margin-top: auto; margin-bottom: 4px; }
-        .seat-active { border-color: #ffc107; background: #343a40; }
-        .seat-folded { opacity: 0.4; border-color: #212529; }
-        
-        .opp-cards-desk { position: absolute; top: -15px; display: flex; z-index: 20; }
-        .opp-card-desk { width: 22px; height: 32px; background: #fff; border-radius: 3px; border: 1px solid #777; background-image: repeating-linear-gradient(45deg, #b71c1c 0, #b71c1c 2px, #fff 2px, #fff 4px); box-shadow: 1px 1px 3px rgba(0,0,0,0.8); }
-        .opp-card-desk.right { margin-left: -8px; transform: rotate(12deg) translateY(2px); }
+        .block-container { padding-top: 2rem !important; padding-bottom: 2rem !important; max-width: 1200px !important; }
+        div[data-testid="column"] { width: 100% !important; min-width: 0 !important; max-width: 100% !important; margin-bottom: 0 !important; }
+        div[data-testid="stButton"] { width: 100% !important; }
+        div[data-testid="stButton"] button { width: 100% !important; height: 60px !important; padding: 0 !important; border-radius: 14px !important; border: none !important; transition: transform 0.1s !important; background: #343a40 !important; color: #fff !important; box-shadow: 0 5px 0 #1d2124 !important; }
+        div[data-testid="stButton"] button:active { transform: translateY(5px) !important; box-shadow: 0 0 0 transparent !important; }
+        div[data-testid="stButton"] button p { font-family: 'Roboto', sans-serif !important; font-size: 18px !important; font-weight: 900 !important; margin: 0 !important; letter-spacing: 1px !important; text-transform: uppercase !important; }
 
-        .villain-act-badge { position: absolute; background: #dc3545; color: #fff; font-weight: bold; font-size: 11px; padding: 2px 8px; border-radius: 6px; border: 1px solid #ffaaaa; box-shadow: 0 2px 5px rgba(0,0,0,0.5); z-index: 25; text-transform: uppercase; white-space: nowrap; left: 50%; transform: translateX(-50%); }
-        .act-bottom { bottom: -24px; } .act-top { top: -24px; }
+        .desktop-game-area.table-glow-correct {
+            border-color: #198754 !important;
+            box-shadow: 0 0 35px rgba(25,135,84,0.6), inset 0 0 25px rgba(25,135,84,0.4) !important;
+        }
+        .desktop-game-area.table-glow-incorrect {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 35px rgba(220,53,69,0.6), inset 0 0 25px rgba(220,53,69,0.4) !important;
+        }
 
-        .dealer-button { width: 24px; height: 24px; background: #ffc107; border-radius: 50%; color: #000; font-weight: bold; font-size: 11px; display: flex; justify-content: center; align-items: center; z-index: 15; position: absolute; border: 1px solid #bfa006; box-shadow: 1px 1px 3px rgba(0,0,0,0.7); }
-        
-        .chip-container { position: absolute; z-index: 10; display: flex; flex-direction: column; align-items: center; pointer-events: none; }
-        .poker-chip { width: 22px; height: 22px; background: #222; border: 3px dashed #d32f2f; border-radius: 50%; box-shadow: 1px 1px 2px rgba(0,0,0,0.7); }
-        .bet-txt { font-size: 12px; font-weight: bold; color: #fff; text-shadow: 1px 1px 2px #000; background: rgba(0,0,0,0.6); padding: 1px 4px; border-radius: 4px; margin-top: -5px; z-index: 20; text-transform: lowercase; }
+        .mastery-badge-desk { display: inline-flex !important; align-items: center !important; gap: 5px !important; border-radius: 20px !important; padding: 3px 12px 3px 10px !important; font-size: 12px !important; font-weight: 700 !important; letter-spacing: 0.05em !important; }
+        .mastery-bar-bg-desk { width: 80px !important; height: 3px !important; background: rgba(255,255,255,0.07) !important; border-radius: 3px !important; overflow: hidden !important; }
+        .mastery-bar-fill-desk { height: 100% !important; border-radius: 3px !important; }
+        .hands-left-desk { font-size: 11px !important; letter-spacing: 0.06em !important; }
 
-        .hero-panel { position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%); background: #212529; border: 2px solid #ffc107; border-radius: 12px; padding: 6px 18px; display: flex; gap: 8px; z-index: 30; align-items: center; }
-        .card { width: 50px; height: 70px; background: white; border-radius: 5px; position: relative; color: black; box-shadow: 0 2px 5px rgba(0,0,0,0.3); font-family: Arial, sans-serif !important; }
-        .tl { position: absolute; top: 2px; left: 4px; font-weight: bold; font-size: 16px; line-height: 1.1; }
-        .cent { position: absolute; top: 55%; left: 50%; transform: translate(-50%,-50%); font-size: 26px; line-height: 1; }
+        .seat-desk { position: absolute !important; z-index: 20 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 0 !important; width: 70px !important; height: 55px !important; background: transparent !important; border: none !important; box-shadow: none !important; }
+        .ava-desk { width: 60px !important; height: 30px !important; background: linear-gradient(180deg, #2a2d32 0%, #1c1e22 100%) !important; border-radius: 60px 60px 0 0 !important; border: 2px solid #3a3d42 !important; border-bottom: none !important; box-shadow: inset 0 2px 4px rgba(255,255,255,0.05) !important; transition: all 0.3s ease !important; }
+        .plate-desk { width: 70px !important; height: 24px !important; background: #141518 !important; border-radius: 0 0 8px 8px !important; border: 2px solid #3a3d42 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 6px !important; box-sizing: border-box !important; font-size: 12px !important; box-shadow: 0 4px 8px rgba(0,0,0,0.5) !important; transition: all 0.3s ease !important; }
+        .pos-desk { font-weight: 900 !important; color: #fff !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.5) !important; }
+        .stack-desk { font-weight: 700 !important; color: #fff !important; font-size: 11px !important; }
+
+        .seat-folded-desk { opacity: 0.85 !important; filter: grayscale(50%) !important; }
+        .seat-folded-desk .opp-cards-desk { opacity: 0.6 !important; }
         
-        .suit-red { color: #d32f2f !important; font-family: Arial, sans-serif !important; } 
-        .suit-blue { color: #0056b3 !important; font-family: Arial, sans-serif !important; } 
-        .suit-black { color: #111 !important; font-family: Arial, sans-serif !important; } 
-        .suit-green { color: #198754 !important; font-family: Arial, sans-serif !important; }
+        .opp-cards-desk { position: absolute !important; top: -20px !important; left: 50% !important; transform: translateX(-50%) !important; display: flex !important; align-items: flex-end !important; pointer-events: none; }
+        .opp-card-desk { width: 18px !important; height: 26px !important; border-radius: 4px !important; position: relative !important; background: repeating-linear-gradient(45deg, rgba(15,70,185,0.95) 0px, rgba(15,70,185,0.95) 2px, rgba(8,44,130,0.95) 2px, rgba(8,44,130,0.95) 6px) !important; border: 1px solid rgba(80,140,255,0.3) !important; box-shadow: 0 2px 5px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.06) !important; }
+        .opp-card-desk::before { content: '' !important; position: absolute !important; inset: 2px !important; border-radius: 2px !important; border: 1px solid rgba(80,140,255,0.15) !important; }
+        .opp-card-desk.right-desk { margin-left: -6px !important; transform: rotate(10deg) !important; z-index: -1 !important; }
+
+        .pot-badge-desk { background: #111; color: #ffc107; font-weight: bold; font-size: 14px; padding: 4px 14px; border-radius: 14px; border: 1.5px solid #ffc107; box-shadow: 0 2px 6px rgba(0,0,0,0.6); }
+        .board-container-desk { display: flex; gap: 6px; background: rgba(0,0,0,0.4); padding: 8px 16px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .board-card-desk { width: 50px; height: 72px; background: white; border-radius: 4px; position: relative; color: black; box-shadow: 0 2px 5px rgba(0,0,0,0.6); font-family: Arial, sans-serif !important; }
+        .bc-tl-desk { position: absolute; top: 3px; left: 4px; font-weight: 900; font-size: 16px; line-height: 1; }
+        .bc-c-desk { position: absolute; top: 55%; left: 50%; transform: translate(-50%,-50%); font-size: 28px; line-height: 1; }
         
-        .rng-desktop { position: absolute; right: -50px; top: 15px; width: 40px; height: 40px; background: #6f42c1; border: 2px solid #fff; border-radius: 50%; color: white; font-weight: bold; font-size: 16px; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.6); }
-        .info-badge { position: absolute; left: -50px; top: 15px; width: 40px; height: 40px; background: #17a2b8; border: 2px solid #fff; border-radius: 50%; color: white; font-weight: bold; font-size: 20px; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.6); text-decoration: none; transition: transform 0.2s; }
-        .info-badge:hover { transform: scale(1.1); color: white; }
+        .villain-act-badge-desk { position: absolute; background: #dc3545; color: #fff; font-weight: bold; font-size: 11px; padding: 2px 8px; border-radius: 6px; border: 1px solid #ffaaaa; box-shadow: 0 2px 5px rgba(0,0,0,0.6); z-index: 25; text-transform: uppercase; white-space: nowrap; left: 50%; transform: translateX(-50%); bottom: -20px; }
+
+        .dealer-desk { position: absolute !important; z-index: 30 !important; width: 26px !important; height: 26px !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 11px !important; font-weight: 900 !important; color: #120700 !important; background: radial-gradient(circle at 38% 30%, #ffd84a, #c88408) !important; border: 2px solid rgba(255,255,255,0.35) !important; box-shadow: 0 0 0 2px rgba(0,0,0,0.7), 0 2px 10px rgba(200,132,8,0.7), inset 0 1px 3px rgba(255,255,255,0.55) !important; }
+
+        .chip-container-desk { position: absolute !important; z-index: 22 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 4px !important; }
+        .chip-desk, .chip-3bet-desk, .chip-4bet-desk { width: 20px !important; height: 20px !important; border-radius: 50% !important; position: relative !important; background: repeating-conic-gradient(rgba(255,255,255,0.13) 0deg 18deg, transparent 18deg 36deg), radial-gradient(circle at 36% 30%, #1e3a8a, #0c1844) !important; border: 2px solid rgba(255,255,255,0.22) !important; box-shadow: 0 0 0 1.5px rgba(0,0,0,0.7), 0 2px 5px rgba(0,0,0,0.8), inset 0 1px 2px rgba(255,255,255,0.2) !important; }
+        .chip-3bet-desk { background: radial-gradient(circle at 36% 30%, #ff5722, #9e3211) !important; }
+        .chip-4bet-desk { background: repeating-conic-gradient(rgba(255,255,255,0.15) 0deg 18deg, transparent 18deg 36deg), radial-gradient(circle at 36% 30%, #68158e, #3F055B) !important; }
+        .chip-desk::before, .chip-3bet-desk::before, .chip-4bet-desk::before { content: '' !important; position: absolute !important; inset: 4px !important; border-radius: 50% !important; border: 1px solid rgba(255,255,255,0.12) !important; }
+        .chip-desk::after, .chip-3bet-desk::after, .chip-4bet-desk::after { content: '' !important; position: absolute !important; top: 2px !important; left: 2px !important; width: 8px !important; height: 5px !important; border-radius: 50% !important; background: rgba(255,255,255,0.22) !important; filter: blur(1px) !important; }
         
-        .combo-glow-5 { border-color: #0dcaf0 !important; box-shadow: 0 0 10px rgba(13, 202, 240, 0.4), 0 4px 15px rgba(0,0,0,0.8) !important; }
-        .combo-glow-10 { border-color: #ffc107 !important; box-shadow: 0 0 15px rgba(255, 193, 7, 0.5), 0 4px 15px rgba(0,0,0,0.8) !important; }
-        .combo-glow-25 { border-color: #fd7e14 !important; box-shadow: 0 0 20px rgba(253, 126, 20, 0.6), 0 4px 15px rgba(0,0,0,0.8) !important; }
-        .combo-glow-50 { border-color: #dc3545 !important; box-shadow: 0 0 30px rgba(220, 53, 69, 0.7), 0 4px 15px rgba(0,0,0,0.8) !important; }
-        .combo-glow-100 { border-color: #6f42c1 !important; box-shadow: 0 0 40px rgba(111, 66, 193, 0.8), 0 4px 15px rgba(0,0,0,0.8) !important; }
+        .bet-txt-desk { font-size: 12px !important; font-weight: 700 !important; color: rgba(255,235,190,0.9) !important; text-shadow: 0 0 6px rgba(255,195,40,0.6), 0 1px 3px rgba(0,0,0,0.98) !important; letter-spacing: 0.03em !important; white-space: nowrap !important; }
+
+        .hero-desk { position: absolute !important; bottom: -70px !important; left: 50% !important; transform: translateX(-50%) !important; z-index: 30 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 6px !important; width: 140px !important; }
+        .hero-cards-wrap-desk { display: flex !important; gap: 8px !important; position: relative !important; }
+        .hero-plate-desk { width: 100px !important; height: 22px !important; background: #141518 !important; border-radius: 6px !important; border: 2px solid #ffc107 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 8px !important; box-sizing: border-box !important; font-size: 12px !important; font-weight: bold !important; box-shadow: 0 4px 12px rgba(0,0,0,0.7) !important; transition: border-color 0.3s; }
         
-        div.stButton > button { height: 60px !important; font-size: 16px !important; font-weight: 800; border-radius: 8px; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1); background: #343a40; color: #fff; transition: all 0.2s; box-shadow: 0 4px 0 #1d2124; }
-        div.stButton > button:active { transform: translateY(4px); box-shadow: 0 0 0 transparent; }
-    </style>
+        .floating-reward-desk { position: absolute !important; top: -45px !important; left: 50% !important; transform: translateX(-50%) !important; font-size: 18px !important; font-weight: 900 !important; color: #17f07e !important; text-shadow: 0 0 15px rgba(23,240,126,0.8), 0 0 30px rgba(23,240,126,0.4) !important; white-space: nowrap !important; animation: float-reward-desk 2.2s ease-out forwards !important; pointer-events: none !important; }
+        @keyframes float-reward-desk { 0%   { opacity: 1; transform: translateX(-50%) translateY(0); } 100% { opacity: 0; transform: translateX(-50%) translateY(-30px); } }
+
+        .card-desk { width: 55px !important; height: 78px !important; border-radius: 6px !important; position: relative !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; overflow: hidden !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -8px 20px rgba(0,0,0,0.7), 0 -15px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,1) !important;}
+        .card-desk::after { content: '' !important; position: absolute !important; top: 0 !important; left: 0 !important; width: 60% !important; height: 45% !important; background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; pointer-events: none !important; border-radius: 6px 0 0 0 !important; }
+        .tl-desk { padding: 4px 0 0 5px !important; font-size: 16px !important; font-weight: 900 !important; line-height: 0.9 !important; letter-spacing: -0.04em !important; z-index: 2 !important; position: relative !important; font-family: Arial, sans-serif !important; }
+        .c-desk { position: absolute !important; top: 55% !important; left: 50% !important; transform: translate(-50%,-50%) !important; font-size: 28px !important; opacity: 1 !important; line-height: 1 !important; z-index: 2 !important; font-family: Arial, sans-serif !important; }
+        .suit-red   { color: #c00a0a !important; }
+        .suit-black { color: #0a0a0a !important; }
+        .suit-blue  { color: #0056b3 !important; }
+        .suit-green { color: #198754 !important; }
+        
+        .rng-badge-desk { position: absolute !important; top: 50% !important; right: -35px !important; transform: translateY(-50%) !important; width: 30px !important; height: 30px !important; border-radius: 50% !important; font-weight: 900 !important; font-size: 13px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 4px 8px rgba(0,0,0,0.6) !important; z-index: 40 !important; }
+        
+        /* ── Action Buttons Color Overrides (Desktop) ── */
+        .pf-btn-0 button { background: linear-gradient(180deg, #252830 0%, #16181f 100%) !important; box-shadow: 0 5px 0 #0c0d12, 0 8px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 0 0 1px rgba(255,255,255,0.06) !important; }
+        .pf-btn-0 button:active { box-shadow: 0 1px 0 #0c0d12, inset 0 1px 0 rgba(255,255,255,0.05), 0 0 25px rgba(255,255,255,0.15) !important; filter: brightness(1.5) !important; }
+        .pf-btn-0 button p { color: rgba(190,190,205,0.8) !important; }
+
+        .pf-btn-1 button { background: linear-gradient(180deg, #0c3828 0%, #071e16 100%) !important; box-shadow: 0 5px 0 #030f0b, 0 8px 25px rgba(0,180,80,0.15), inset 0 1px 0 rgba(0,230,110,0.12), inset 0 0 0 1px rgba(0,200,90,0.1) !important; }
+        .pf-btn-1 button:active { box-shadow: 0 1px 0 #030f0b, inset 0 1px 0 rgba(0,200,90,0.08), 0 0 25px rgba(0,255,100,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
+        .pf-btn-1 button p { color: rgba(50,220,130,0.92) !important; text-shadow: 0 0 15px rgba(30,200,100,0.4) !important; }
+
+        .pf-btn-2 button { background: linear-gradient(180deg, #4a0909 0%, #300505 100%) !important; box-shadow: 0 5px 0 #1a0303, 0 8px 25px rgba(180,20,20,0.25), inset 0 1px 0 rgba(255,80,80,0.14), inset 0 0 0 1px rgba(200,30,30,0.18) !important; }
+        .pf-btn-2 button:active { box-shadow: 0 1px 0 #1a0303, inset 0 1px 0 rgba(255,80,80,0.1), 0 0 25px rgba(255,50,50,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
+        .pf-btn-2 button p { color: rgba(255,90,90,0.95) !important; text-shadow: 0 0 15px rgba(220,50,50,0.5) !important; }
+
+        .pf-btn-3 button { background: linear-gradient(180deg, #30094a 0%, #160530 100%) !important; box-shadow: 0 5px 0 #0f031a, 0 8px 25px rgba(180,20,220,0.25), inset 0 1px 0 rgba(220,80,255,0.14), inset 0 0 0 1px rgba(200,30,220,0.18) !important; }
+        .pf-btn-3 button:active { box-shadow: 0 1px 0 #0f031a, inset 0 1px 0 rgba(220,80,255,0.1), 0 0 25px rgba(220,50,255,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
+        .pf-btn-3 button p { color: rgba(230,90,255,0.95) !important; text-shadow: 0 0 15px rgba(220,50,255,0.5) !important; }
+
+        </style>
     """, unsafe_allow_html=True)
 
-    pf_db = utils.load_postflop_ranges()
-    if not pf_db: st.error("База постфлопа пуста."); return
+    pf_db = custom_load_postflop_ranges()
+    if not pf_db: 
+        st.error("База пуста. Проверь файлы JSON в папке postflop_data или spots_data.")
+        return
 
     tree = {}
     for full_key in pf_db.keys():
@@ -113,13 +240,14 @@ def show():
         tree[spot][hero_pos_key][street][branch].append((board, full_key))
 
     with st.sidebar:
-        st.header("⚙️ PF Filters")
-        dv_btn = st.radio("Interface Mode", ["📱 Mobile", "💻 Desktop"], index=1)
-        if dv_btn != st.session_state.actual_view_type:
-            st.session_state.actual_view_type = dv_btn
-            st.rerun()
-            
-        st.markdown("---")
+        st.markdown("### ⚙️ View & PF Filters")
+        c_v1, c_v2 = st.columns(2)
+        with c_v1:
+            if st.button("📱 Mobile", key="mv_btn"): st.session_state.actual_view_type = "📱 Mobile"; st.rerun()
+        with c_v2:
+            if st.button("💻 Desktop", key="dv_btn"): st.session_state.actual_view_type = "💻 Desktop"; st.rerun()
+        st.markdown("<hr style='margin: 5px 0;'>", unsafe_allow_html=True)
+
         saved = utils.load_user_settings(is_postflop=True)
         
         all_spots = sorted(list(tree.keys()))
@@ -165,7 +293,7 @@ def show():
                 is_checked = (full_key in saved_boards) if "pf_spots" in saved else True
                 parts = full_key.split('|')
                 short_lbl = f"{board_name} ({parts[0].strip()} | {parts[3].strip()})"
-                if st.checkbox(short_lbl, value=is_checked, key=f"pf_chk_{full_key}"):
+                if st.checkbox(short_lbl, value=is_checked, key=f"pf_chk_d_{full_key}"):
                     sel_spots_keys.append(full_key)
         
         if st.button("🚀 Apply Filters", use_container_width=True):
@@ -180,8 +308,11 @@ def show():
 
     pool = sel_spots_keys
     if not pool:
-        st.warning("⚠️ Выбери фильтры и борды в меню слева.")
+        st.warning("⚠️ Выбери фильтры в боковом меню.")
         st.stop()
+
+    stats_data_init = safe_load_stats()
+    if 'shields' not in st.session_state: st.session_state.shields = stats_data_init.get("shields", 0)
 
     for k in ['pf_combo', 'pf_session_hands', 'pf_session_correct', 'pf_rng']:
         if k not in st.session_state: st.session_state[k] = 0
@@ -199,7 +330,7 @@ def show():
         data = pf_db[chosen_key]
         t_range = data.get("ranges", {}).get("training", "")
         poss = pf_parse_range(t_range)
-        srs = utils.load_srs_data(is_postflop=True)
+        srs = utils.load_srs_data() 
         w = [srs.get(f"{chosen_key}_{h}".replace(" ","_"), 100) for h in poss]
         
         if sum(w) == 0: w = [100]*len(poss)
@@ -208,7 +339,6 @@ def show():
 
     chosen_key = st.session_state.pf_current_spot_key
     data = pf_db[chosen_key]
-    parts = [p.strip() for p in chosen_key.split('|')]
     
     hero_pos = data.get("hero_pos", "BTN")
     villain_pos = data.get("villain_pos", "BB")
@@ -217,9 +347,11 @@ def show():
     board_raw = data.get("board_cards", [])
     pot_size = data.get("pot_size", 0)
     villain_act = data.get("villain_action", "")
-    info_link = data.get("info_link", "")
     actions = data.get("actions", ["Check"])
     ranges = data.get("ranges", {})
+    
+    table_size = data.get("table_size", 6)
+    stacks_data = data.get("stacks", {})
 
     h_val = st.session_state.pf_hand
     action_weights = {act: pf_get_weight(h_val, ranges.get(act, "")) for act in actions}
@@ -241,160 +373,273 @@ def show():
         
     c1, c2 = get_suit_color_class(s1), get_suit_color_class(s2)
 
-    stats_data = utils.load_user_stats(is_postflop=True)
-    rank_name, next_xp = utils.get_rank_info(stats_data["xp"])
+    stats_data = safe_load_stats()
+    rank_name, next_xp = utils.get_rank_info(stats_data.get("xp", 0))
     c = st.session_state.pf_combo
-    progress_pct = int((stats_data["xp"] / next_xp) * 100) if next_xp != "MAX" else 100
+    progress_pct = int((stats_data.get("xp", 0) / next_xp) * 100) if next_xp != "MAX" else 100
     
     sh = st.session_state.pf_session_hands
     scorr = st.session_state.pf_session_correct
     wr = int((scorr / sh * 100)) if sh > 0 else 0
     wr_color = '#28a745' if wr >= 90 else '#ffc107' if wr >= 80 else '#dc3545'
 
-    glow_color = '#00ff00' if c >= 1000 else '#ff00ff' if c >= 500 else '#00e5ff' if c >= 200 else '#6f42c1' if c >= 100 else '#dc3545' if c >= 50 else '#fd7e14' if c >= 25 else '#ffc107' if c >= 10 else '#0dcaf0' if c >= 5 else '#888'
-    combo_cls = f"combo-glow-{max([v for v in [5,10,25,50,100] if c >= v] + [0])}" if c >= 5 else ""
-
     try: mastery = utils.get_spot_mastery_info(stats_data.get("spot_mastery", {}).get(chosen_key, {}))
     except: mastery = {"rank": 0, "name": "Sandbox", "icon": "⚪", "color": "#6c757d", "is_rusty": False, "prog_pct": 0, "total": 0, "next": 100, "svg": ""}
 
+    m_rust = mastery.get("is_rusty", False)
+    m_pct = mastery.get("prog_pct", 0)
     m_total = mastery.get("total", 0)
     m_next = mastery.get("next", 100)
     if mastery.get("rank", 0) >= 5: hands_left_text = "MAX RANK"
     else: hands_left_text = f"Remaining: {max(0, m_next - m_total)} hands"
+
+    visual_rank = mastery.get("rank", 0)
+    if visual_rank > 5: visual_rank = 5
+
+    theme = THEMES[visual_rank]
+    m_icon = theme["icon"]
+    m_name = theme["name"]
+    st.markdown(theme["css"], unsafe_allow_html=True)
+
+    combo_cls = ""
+    if c >= 1000: combo_cls = "combo-glow-1000"
+    elif c >= 500: combo_cls = "combo-glow-500"
+    elif c >= 200: combo_cls = "combo-glow-200"
+    elif c >= 100: combo_cls = "combo-glow-100"
+    elif c >= 50: combo_cls = "combo-glow-50"
+    elif c >= 25: combo_cls = "combo-glow-25"
+    elif c >= 10: combo_cls = "combo-glow-10"
+    elif c >= 5: combo_cls = "combo-glow-5"
+
+    is_flashing_correct = st.session_state.get("pf_flash_correct", False)
+    table_status_class = ""
+    if is_flashing_correct:
+        table_status_class = "table-glow-correct"
+    elif st.session_state.pf_last_error:
+        table_status_class = "table-glow-incorrect"
+
+    tiers = [(0, 1.0), (10, 1.5), (25, 2.0), (50, 3.0), (100, 4.0), (250, 5.0), (500, 10.0)]
+    curr_mult = 1.0; next_mult = 1.5; prev_req = 0; next_req = 10
+    for i in range(len(tiers)):
+        if c >= tiers[i][0]:
+            curr_mult = tiers[i][1]
+            prev_req = tiers[i][0]
+            if i + 1 < len(tiers):
+                next_req = tiers[i+1][0]
+                next_mult = tiers[i+1][1]
+            else:
+                next_req = c 
+                next_mult = "MAX"
+                
+    if next_mult == "MAX":
+        rage_pct = 100
+        lbl_left = f"x{curr_mult}"; lbl_right = "MAX"
+    else:
+        rage_pct = int((c - prev_req) / (next_req - prev_req) * 100)
+        lbl_left = f"x{curr_mult}"; lbl_right = f"x{next_mult}"
+
+    header_cols = st.columns([1, 1, 1])
+    with header_cols[0]:
+        st.markdown(f"<div style='text-align:center; padding:10px; background:#111; border-radius:10px; border:1px solid #333;'><b>🎯 WR:</b> <span style='color:{wr_color}'>{wr}%</span> ({scorr}/{sh})</div>", unsafe_allow_html=True)
+    with header_cols[1]:
+        st.markdown(f"<div style='text-align:center; padding:10px; background:#111; border-radius:10px; border:1px solid #333;'><b>🔥 COMBO:</b> <span style='color:#ffc107'>{c}</span></div>", unsafe_allow_html=True)
+    with header_cols[2]:
+        st.markdown(f"<div style='text-align:center; padding:10px; background:#111; border-radius:10px; border:1px solid #333;'><b>🛡️ SHIELDS:</b> <span style='color:#0dcaf0'>{st.session_state.shields}</span></div>", unsafe_allow_html=True)
+
+    anim_html = ""
+    anim_reward = st.session_state.pop("anim_reward", None)
+    if anim_reward is not None:
+        if anim_reward > 0: a_color = "#00ff00"; a_text = f"+${anim_reward}"
+        elif anim_reward < 0: a_color = "#ff0000"; a_text = f"-${abs(anim_reward)}"
+        else: a_color = "#888"; a_text = "$0"
+        anim_html = f'<div class="floating-reward-desk" style="color: {a_color}">{a_text}</div>'
+        
+    shatter_html = '<div class="glass-shatter"></div>' if st.session_state.pop("shield_break_anim", False) else ""
 
     order = ["EP", "MP", "CO", "BTN", "SB", "BB"]
     try: hero_idx = order.index(hero_pos)
     except ValueError: hero_idx = 0
     rot = order[hero_idx:] + order[:hero_idx]
 
-    def get_seat_style(idx):
-        return {0: "bottom: -20px; left: 50%; transform: translateX(-50%);", 1: "bottom: 15%; left: 0%;", 2: "top: 15%; left: 0%;", 
-                3: "top: -20px; left: 50%; transform: translateX(-50%);", 4: "top: 15%; right: 0%;", 5: "bottom: 15%; right: 0%;"}.get(idx, "")
+    is_hu = (table_size == 2)
 
-    def get_btn_style(idx):
-        return {0: "bottom: 10%; left: 60%;", 1: "bottom: 25%; left: 16%;", 2: "top: 10%; left: 16%;",
-                3: "top: 10%; left: 60%;", 4: "top: 10%; right: 16%;", 5: "bottom: 25%; right: 16%;"}.get(idx, "")
+    def get_seat_style(idx):
+        return {
+            1: "top: 75%; left: -3%; transform: translateY(-50%);", 
+            2: "top: 15%; left: 5%;", 
+            3: "top: -10%; left: 50%; transform: translateX(-50%);", 
+            4: "top: 15%; right: 5%;", 
+            5: "top: 75%; right: -3%; transform: translateY(-50%);"
+        }.get(idx, "")
 
     def get_chip_style(idx):
-        return {0: "bottom: 25%; left: 50%; transform: translateX(-50%);", 1: "bottom: 22%; left: 22%;", 2: "top: 22%; left: 22%;",
-                3: "top: 25%; left: 50%; transform: translateX(-50%);", 4: "top: 22%; right: 22%;", 5: "bottom: 22%; right: 22%;"}.get(idx, "")
+        return {
+            0: "bottom: 45px; left: 50%; transform: translateX(-50%);", 
+            1: "top: 60%; left: 16%; transform: translateY(-50%);", 
+            2: "top: 25%; left: 20%;",
+            3: "top: 15%; left: 50%; transform: translateX(-50%);", 
+            4: "top: 25%; right: 20%;", 
+            5: "top: 60%; right: 16%; transform: translateY(-50%);"
+        }.get(idx, "")
+
+    def get_btn_style(idx):
+        return {
+            0: "bottom: 20px; left: 50%; margin-left: -110px; z-index: 35;", 
+            1: "top: 77%; left: 12%; transform: translateY(-50%);", 
+            2: "top: 28%; left: 12%;",
+            3: "top: 12%; left: 58%;", 
+            4: "top: 28%; right: 12%;", 
+            5: "top: 77%; right: 12%; transform: translateY(-50%);"
+        }.get(idx, "")
 
     opp_html = ""; chips_html = ""
 
-    for i in range(1, 6):
-        p = rot[i]
-        has_cards = (p in active_players)
-        cls = "seat-active" if has_cards else "seat-folded"
-        cards = '<div class="opp-cards-desk"><div class="opp-card-desk"></div><div class="opp-card-desk right"></div></div>' if has_cards else ""
-        ss = get_seat_style(i)
+    if is_hu:
+        villain_p = [p for p in active_players if p != hero_pos][0] if len(active_players) > 1 else "BB"
+        p_stack = stacks_data.get(villain_p, "---")
+        cls = "seat-active-desk"
+        cards = '<div class="opp-cards-desk"><div class="opp-card-desk"></div><div class="opp-card-desk right-desk"></div></div>'
+        ss = get_seat_style(3)
         
         v_act_html = ""
-        is_bet = villain_act and ("BET" in villain_act.upper() or "RAISE" in villain_act.upper())
+        is_bet = villain_act and ("BET" in villain_act.upper() or "RAISE" in villain_act.upper() or "ALL-IN" in villain_act.upper())
         
-        if p == villain_pos and villain_act:
+        if villain_act:
             if not is_bet:
-                pos_class = "act-bottom" if i in [2, 3, 4] else "act-top"
-                v_act_html = f'<div class="villain-act-badge {pos_class}">{villain_act}</div>'
-            
-        opp_html += f'<div class="seat {cls}" style="{ss}">{cards}<span class="seat-label">{p}</span>{v_act_html}</div>'
-
-        if p == btn_pos:
-            bs = get_btn_style(i)
-            chips_html += f'<div class="dealer-button" style="{bs}">D</div>'
-            
-        if p == villain_pos and is_bet:
-            cs = get_chip_style(i)
+                v_act_html = f'<div class="villain-act-badge-desk act-bottom-mob">{villain_act}</div>'
+                
+        opp_html += f'<div class="seat-desk {cls}" style="{ss}">{cards}<div class="ava-desk"></div><div class="plate-desk"><span class="pos-desk">{villain_p}</span><span class="stack-desk">{p_stack}</span></div>{v_act_html}</div>'
+        
+        cs = get_chip_style(3)
+        if is_bet:
             bet_amount_str = villain_act.upper().replace("BET", "").replace("RAISE", "").strip().lower()
-            bet_txt = f'<div class="bet-txt">{bet_amount_str}</div>'
-            chips_html += f'<div class="chip-container" style="{cs}"><div class="poker-chip"></div>{bet_txt}</div>'
+            bet_txt = f'<div class="bet-txt-desk">{bet_amount_str}</div>'
+            chips_html += f'<div class="chip-container-desk" style="{cs}"><div class="chip-desk"></div>{bet_txt}</div>'
+        
+        if villain_p == btn_pos:
+            bs = get_btn_style(3)
+            chips_html += f'<div class="dealer-desk" style="{bs}">D</div>'
+    else:
+        for i in range(1, 6):
+            p = rot[i]
+            p_stack = stacks_data.get(p, "---")
+            has_cards = (p in active_players)
+            cls = "seat-active-desk" if has_cards else "seat-folded-desk"
+            cards = '<div class="opp-cards-desk"><div class="opp-card-desk"></div><div class="opp-card-desk right-desk"></div></div>' if has_cards else ""
+            ss = get_seat_style(i)
+            
+            v_act_html = ""
+            is_bet = villain_act and ("BET" in villain_act.upper() or "RAISE" in villain_act.upper() or "ALL-IN" in villain_act.upper())
+            
+            if p == villain_pos and villain_act:
+                if not is_bet:
+                    v_act_html = f'<div class="villain-act-badge-desk act-bottom-mob">{villain_act}</div>'
+                
+            opp_html += f'<div class="seat-desk {cls}" style="{ss}">{cards}<div class="ava-desk"></div><div class="plate-desk"><span class="pos-desk">{p}</span><span class="stack-desk">{p_stack}</span></div>{v_act_html}</div>'
 
+            if p == btn_pos:
+                bs = get_btn_style(i)
+                chips_html += f'<div class="dealer-desk" style="{bs}">D</div>'
+                
+            if p == villain_pos and is_bet:
+                cs = get_chip_style(i)
+                bet_amount_str = villain_act.upper().replace("BET", "").replace("RAISE", "").strip().lower()
+                bet_txt = f'<div class="bet-txt-desk">{bet_amount_str}</div>'
+                chips_html += f'<div class="chip-container-desk" style="{cs}"><div class="chip-desk"></div>{bet_txt}</div>'
+
+    hero_stack = stacks_data.get(hero_pos, "---")
     if rot[0] == btn_pos:
         hero_bs = get_btn_style(0)
-        chips_html += f'<div class="dealer-button" style="{hero_bs}">D</div>'
+        chips_html += f'<div class="dealer-desk" style="{hero_bs}">D</div>'
 
-    header_html = f'<div style="background:#111; border-radius:12px; margin-bottom:20px; border:1px solid #333; max-width:700px; margin-left:auto; margin-right:auto; overflow:hidden;"><div style="height: 4px; width: 100%; background: #222;"><div style="height: 100%; width: {wr if sh > 0 else 100}%; background: {wr_color if sh > 0 else "#444"}; transition: width 0.3s;"></div></div><div style="display:flex; justify-content:space-between; align-items:center; padding:10px 20px;"><div style="flex:1;"><div style="font-size:15px; font-weight:bold; color:#ffc107;">{rank_name}</div><div style="background:#333; height:6px; border-radius:3px; margin-top:4px; width:80%;"><div style="background:#28a745; height:100%; width:{progress_pct}%; border-radius:3px;"></div></div><div style="font-size:11px; color:#aaa; margin-top:2px;">{stats_data["xp"]} / {next_xp} XP</div></div><div style="flex:1; text-align:center;"><span style="font-size:22px; font-weight:900; color:{glow_color}; text-shadow: 0 0 {10 if c>=5 else 0}px {glow_color};">🔥 {c}</span></div><div style="flex:1; text-align:right;"><div style="font-size:16px; font-weight:bold; color:#17a2b8;">📅 {stats_data.get("streak", 1)} Days</div><div style="font-size:11px; color:#aaa;">Winrate: {wr}% | Hands: {sh}</div></div></div></div>'
-    st.markdown(header_html, unsafe_allow_html=True)
-    
     board_html = ""
     for card in board_raw:
-        rank = card[:-1].upper()
+        rank_str = card[:-1].upper()
         suit = map_suit(card[-1])
         sc = get_suit_color_class(suit)
-        board_html += f'<div class="board-card"><div class="bc-tl {sc}">{rank}</div><div class="bc-c {sc}">{suit}</div></div>'
-        
-    desktop_link = info_link
-    if desktop_link and desktop_link.startswith("https://"):
-        desktop_link = "onenote:" + desktop_link
+        board_html += f'<div class="board-card-desk"><div class="bc-tl-desk {sc}">{rank_str}</div><div class="bc-c-desk {sc}">{suit}</div></div>'
 
-    link_html = f'<a href="{desktop_link}" class="info-badge" title="Open in OneNote">ℹ️</a>' if desktop_link else ""
-
-    html = f'''
-    <div class="game-area {combo_cls}">
-        <div class="crest-left">{mastery.get("svg","")}</div><div class="crest-right">{mastery.get("svg","")}</div>
-        <div class="mastery-glow" style="box-shadow: inset 0 0 35px {mastery.get("color","#888")};"></div>
-        <div class="center-column">
-            <div class="info-spot">{parts[3]}</div>
-            <div class="info-src">{parts[0]} | {parts[1]} | {parts[2]}</div>
-            <div class="pot-badge">Pot: {pot_size} bb</div>
-            <div class="board-container">{board_html}</div>
-            <div class="mastery-badge rusty-{mastery.get("is_rusty",False)}" style="color:{mastery.get("color")}; border-color:{mastery.get("color")};">{mastery.get("icon")} {mastery.get("name")}</div>
-            <div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width:{mastery.get("prog_pct",0)}%; background:{mastery.get("color")};"></div></div>
-            <div class="hands-left">{hands_left_text}</div>
-        </div>
-        {opp_html}{chips_html}
-        <div class="hero-panel">
-            {link_html}
-            <div style="display:flex;flex-direction:column;align-items:center;"><span style="color:#ffc107;font-weight:bold;font-size:12px;">HERO</span></div>
-            <div class="card"><div class="tl {c1}">{r1}<br>{s1}</div><div class="cent {c1}">{s1}</div></div>
-            <div class="card"><div class="tl {c2}">{r2}<br>{s2}</div><div class="cent {c2}">{s2}</div></div>
-            <div class="rng-desktop">{st.session_state.pf_rng}</div>
-        </div>
-    </div>
-    '''
+    html = f'<div class="desktop-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge-desk"><div class="pot-badge-desk">Pot: {pot_size} bb</div></div><div class="pf-board-desk"><div class="board-container-desk">{board_html}</div></div><div class="pf-mastery-desk"><div class="mastery-badge-desk rusty-{m_rust}">{m_icon} {m_name}</div><div class="mastery-bar-bg-desk"><div class="mastery-bar-fill-desk" style="width:{m_pct}%;"></div></div><div class="hands-left-desk">{hands_left_text}</div></div>{opp_html}{chips_html}<div class="hero-desk">{anim_html}<div class="hero-cards-wrap-desk"><div class="card-desk"><div class="tl-desk {c1}">{r1}<br>{s1}</div><div class="c-desk {c1}">{s1}</div></div><div class="card-desk"><div class="tl-desk {c2}">{r2}<br>{s2}</div><div class="c-desk {c2}">{s2}</div></div><div class="rng-badge-desk">{st.session_state.pf_rng}</div></div><div class="hero-plate-desk"><span class="pos-desk">HERO {hero_pos}</span><span class="stack-desk">{hero_stack}</span></div></div></div>'
     
     st.markdown(html, unsafe_allow_html=True)
-    st.markdown("<br>", unsafe_allow_html=True)
 
     def handle_action(action):
         corr = (correct_act == action)
         st.session_state.pf_session_hands += 1
         
         k = f"{chosen_key}_{h_val}".replace(" ","_")
-        utils.update_srs_auto(k, h_val, corr, is_postflop=True)
+        utils.update_srs_auto(k, h_val, corr)
         
-        utils.save_to_history({
+        safe_save_history({
             "Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 
             "Spot": chosen_key, "Hand": f"{h_val}", "Result": int(corr), 
             "CorrectAction": correct_act, "UserAction": action
-        }, is_postflop=True)
+        })
         
+        shield_used = False
         if corr:
             st.session_state.pf_session_correct += 1
             st.session_state.pf_combo += 1
             st.session_state.pf_last_error = False
-            st.session_state.pf_hand = None
+            st.session_state.pf_flash_correct = True
         else:
-            st.session_state.pf_combo = 0
-            st.session_state.pf_last_error = True
-            st.session_state.msg = f"❌ ОШИБКА! Правильно: {correct_act}"
+            st.session_state.pf_flash_correct = False
+            if st.session_state.shields > 0:
+                st.session_state.shields -= 1
+                st.session_state.shield_break_anim = True
+                st.session_state.pf_last_error = True
+                shield_used = True
+                st.session_state.msg = f"🛡️ ЩИТ СЛОМАН! Защита от мисклика. Правильно: {correct_act}"
+            else:
+                st.session_state.pf_combo = 0
+                st.session_state.pf_last_error = True
+                st.session_state.msg = f"❌ ОШИБКА! Правильно: {correct_act}"
             
         try:
-            alerts = utils.process_gamification(corr, st.session_state.pf_combo, st.session_state.pf_session_hands, chosen_key, is_postflop=True)
+            alerts, _ = utils.process_gamification(corr, st.session_state.pf_combo, st.session_state.pf_session_hands, chosen_key, shield_used=shield_used)
             if alerts: st.session_state.pf_toast_msgs.extend(alerts)
-        except: pass
+        except Exception: pass
+        
+        try:
+            curr_stats = safe_load_stats()
+            curr_stats["combo"] = st.session_state.pf_combo
+            curr_stats["shields"] = st.session_state.shields
+            safe_save_stats(curr_stats)
+            if hasattr(utils, "force_sync"):
+                utils.force_sync()
+        except Exception: pass
+        
         st.rerun()
 
-    if st.session_state.pf_last_error:
-        st.markdown(f'<div style="background:#dc3545; color:white; padding:12px; border-radius:12px; text-align:center; font-weight:bold; margin-bottom:15px; font-size:16px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">{st.session_state.msg}</div>', unsafe_allow_html=True)
+    if is_flashing_correct:
+        time.sleep(0.5)
+        st.session_state.pf_flash_correct = False
+        st.session_state.pf_hand = None
+        st.rerun()
+    elif st.session_state.pf_last_error:
+        st.markdown(f'<div style="background:#dc3545; color:white; padding:15px; border-radius:14px; text-align:center; font-weight:bold; margin-bottom:20px; font-size:18px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); max-width: 850px; margin-left: auto; margin-right: auto;">{st.session_state.msg}</div>', unsafe_allow_html=True)
+        st.markdown("""<style>
+        div[data-testid="stButton"] button[kind="primary"] {
+            background: linear-gradient(180deg, #1c3a55 0%, #102436 100%) !important;
+            box-shadow: 0 5px 0 #081520, 0 8px 25px rgba(30,120,200,0.2), inset 0 1px 0 rgba(60,160,255,0.12), inset 0 0 0 1px rgba(40,130,220,0.14) !important;
+            border: none !important; height: 60px !important; border-radius: 14px !important; max-width: 850px; margin: 0 auto;
+        }
+        div[data-testid="stButton"] button[kind="primary"]:active { transform: translateY(5px) !important; box-shadow: 0 1px 0 #081520, inset 0 1px 0 rgba(60,160,255,0.08) !important; }
+        div[data-testid="stButton"] button[kind="primary"] p { color: rgba(80,180,255,0.95) !important; text-shadow: 0 0 15px rgba(50,160,240,0.5) !important; font-size: 16px !important; font-weight: 900 !important; letter-spacing: 0.1em !important; text-transform: uppercase !important; }
+        </style>""", unsafe_allow_html=True)
+        
         if st.button("ПОНЯТНО, ДАЛЬШЕ", type="primary", use_container_width=True):
             st.session_state.pf_last_error = False
             st.session_state.pf_hand = None
+            st.session_state.shield_break_anim = False
             st.rerun()
     else:
+        st.markdown('<div class="rng-hint-wrap-desk">RNG 0-Freq: ACTION &nbsp;|&nbsp; Freq-100: FOLD/CHECK</div>', unsafe_allow_html=True)
+
         btn_cols = st.columns(len(actions))
         for i, act in enumerate(actions):
             with btn_cols[i]:
-                color = ACTION_COLORS[i % len(ACTION_COLORS)]
-                st.markdown(f"""<style>div[data-testid="column"]:nth-of-type({i+1}) button {{ border-top: 3px solid {color} !important; }}</style>""", unsafe_allow_html=True)
-                if st.button(act, key=f"pf_btn_{i}", use_container_width=True):
+                st.markdown(f'<div class="pf-btn-{i}">', unsafe_allow_html=True)
+                if st.button(act.upper(), key=f"pf_btn_{i}", use_container_width=True):
                     handle_action(act)
+                st.markdown('</div>', unsafe_allow_html=True)
