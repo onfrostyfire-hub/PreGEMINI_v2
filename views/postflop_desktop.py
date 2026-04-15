@@ -87,9 +87,6 @@ def generate_desktop_theme(bg_rad1, bg_rad2, shadow1, shadow2, shadow3, seat_rad
     @keyframes {anim_name}_ava {{ 0%,100% {{ box-shadow: 0 -4px 8px {pulse_shadow1}, inset 0 2px 4px rgba(255,255,255,0.1); }} 50% {{ box-shadow: 0 -4px 20px {pulse_shadow2}, inset 0 2px 4px rgba(255,255,255,0.1); }} }}
     @keyframes {anim_name}_plate {{ 0%,100% {{ box-shadow: 0 4px 8px {pulse_shadow1}; }} 50% {{ box-shadow: 0 4px 20px {pulse_shadow2}; }} }}
     
-    .mastery-badge-desk {{ background: {badge_bg} !important; border: 1px solid {seat_border} !important; color: {text_color} !important; text-shadow: 0 0 6px rgba(0,0,0,0.4) !important; }}
-    .mastery-bar-fill-desk {{ background: {bar_fill} !important; }}
-    .hands-left-desk {{ color: {text_color} !important; opacity: 0.8; }}
     .floating-reward-desk {{ color: {text_color} !important; }}
     .card-desk {{ background: {card_bg} !important; border: 1px solid {card_border} !important; }}
     .rng-badge-desk {{ color: {text_color} !important; background: {rng_bg} !important; border: 1.5px solid {seat_border} !important; }}
@@ -116,7 +113,6 @@ def show():
            ========================================== */
         .pf-pot-badge-desk { position: absolute; top: 22%; left: 50%; transform: translateX(-50%); z-index: 15; }
         .pf-board-desk { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
-        .pf-mastery-desk { position: absolute; top: 66%; left: 50%; transform: translateX(-50%); z-index: 15; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;}
         
         .desktop-game-area { 
             position: relative; width: 100%; max-width: 850px; height: 380px; 
@@ -177,11 +173,6 @@ def show():
 
         .desktop-game-area.table-glow-correct { border-color: #198754 !important; box-shadow: 0 0 35px rgba(25,135,84,0.6), inset 0 0 25px rgba(25,135,84,0.4) !important; }
         .desktop-game-area.table-glow-incorrect { border-color: #dc3545 !important; box-shadow: 0 0 35px rgba(220,53,69,0.6), inset 0 0 25px rgba(220,53,69,0.4) !important; }
-
-        .mastery-badge-desk { display: inline-flex !important; align-items: center !important; gap: 5px !important; border-radius: 20px !important; padding: 3px 12px 3px 10px !important; font-size: 12px !important; font-weight: 700 !important; letter-spacing: 0.05em !important; }
-        .mastery-bar-bg-desk { width: 80px !important; height: 3px !important; background: rgba(255,255,255,0.07) !important; border-radius: 3px !important; overflow: hidden !important; }
-        .mastery-bar-fill-desk { height: 100% !important; border-radius: 3px !important; }
-        .hands-left-desk { font-size: 11px !important; letter-spacing: 0.06em !important; }
 
         .seat-desk { position: absolute !important; z-index: 20 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 0 !important; width: 70px !important; height: 55px !important; background: transparent !important; border: none !important; box-shadow: none !important; }
         .ava-desk { width: 60px !important; height: 30px !important; background: linear-gradient(180deg, #2a2d32 0%, #1c1e22 100%) !important; border-radius: 60px 60px 0 0 !important; border: 2px solid #3a3d42 !important; border-bottom: none !important; box-shadow: inset 0 2px 4px rgba(255,255,255,0.05) !important; transition: all 0.3s ease !important; }
@@ -378,6 +369,7 @@ def show():
     board_raw = data.get("board_cards", [])
     pot_size = data.get("pot_size", 0)
     villain_act = data.get("villain_action", "")
+    hero_act = data.get("hero_action", "")
     actions = data.get("actions", ["Check"])
     ranges = data.get("ranges", {})
     
@@ -387,9 +379,12 @@ def show():
     h_val = st.session_state.pf_hand
     action_weights = {act: pf_get_weight(h_val, ranges.get(act, "")) for act in actions}
     
-    correct_act = actions[0]
+    # Сортировка экшенов по рандому (агрессия ниже 50, пассив выше 50)
+    sorted_actions = sorted(actions, key=lambda x: 1 if x.lower() in ['check', 'fold'] else 0)
+    
+    correct_act = sorted_actions[0]
     cumulative = 0
-    for act in actions:
+    for act in sorted_actions:
         if st.session_state.pf_rng < cumulative + action_weights[act]:
             correct_act = act
             break
@@ -417,19 +412,10 @@ def show():
     try: mastery = utils.get_spot_mastery_info(stats_data.get("spot_mastery", {}).get(chosen_key, {}))
     except: mastery = {"rank": 0, "name": "Sandbox", "icon": "⚪", "color": "#6c757d", "is_rusty": False, "prog_pct": 0, "total": 0, "next": 100, "svg": ""}
 
-    m_rust = mastery.get("is_rusty", False)
-    m_pct = mastery.get("prog_pct", 0)
-    m_total = mastery.get("total", 0)
-    m_next = mastery.get("next", 100)
-    if mastery.get("rank", 0) >= 5: hands_left_text = "MAX RANK"
-    else: hands_left_text = f"Remaining: {max(0, m_next - m_total)} hands"
-
     visual_rank = mastery.get("rank", 0)
     if visual_rank > 5: visual_rank = 5
 
     theme = THEMES[visual_rank]
-    m_icon = theme["icon"]
-    m_name = theme["name"]
     st.markdown(theme["css"], unsafe_allow_html=True)
 
     combo_cls = ""
@@ -608,7 +594,10 @@ def show():
         is_bet = villain_act and ("BET" in villain_act.upper() or "RAISE" in villain_act.upper() or "ALL-IN" in villain_act.upper())
         
         if villain_act:
-            if not is_bet:
+            if is_bet:
+                act_word = "RAISE" if "RAISE" in villain_act.upper() else ("ALL-IN" if "ALL-IN" in villain_act.upper() else "BET")
+                v_act_html = f'<div class="villain-act-badge-desk act-bottom-mob">{act_word}</div>'
+            else:
                 v_act_html = f'<div class="villain-act-badge-desk act-bottom-mob">{villain_act}</div>'
                 
         opp_html += f'<div class="seat-desk {cls}" style="{ss}">{cards}<div class="ava-desk"></div><div class="plate-desk"><span class="pos-desk">{villain_p}</span><span class="stack-desk">{p_stack}</span></div>{v_act_html}</div>'
@@ -635,7 +624,10 @@ def show():
             is_bet = villain_act and ("BET" in villain_act.upper() or "RAISE" in villain_act.upper() or "ALL-IN" in villain_act.upper())
             
             if p == villain_pos and villain_act:
-                if not is_bet:
+                if is_bet:
+                    act_word = "RAISE" if "RAISE" in villain_act.upper() else ("ALL-IN" if "ALL-IN" in villain_act.upper() else "BET")
+                    v_act_html = f'<div class="villain-act-badge-desk act-bottom-mob">{act_word}</div>'
+                else:
                     v_act_html = f'<div class="villain-act-badge-desk act-bottom-mob">{villain_act}</div>'
                 
             opp_html += f'<div class="seat-desk {cls}" style="{ss}">{cards}<div class="ava-desk"></div><div class="plate-desk"><span class="pos-desk">{p}</span><span class="stack-desk">{p_stack}</span></div>{v_act_html}</div>'
@@ -650,6 +642,15 @@ def show():
                 bet_txt = f'<div class="bet-txt-desk">{bet_amount_str}</div>'
                 chips_html += f'<div class="chip-container-desk" style="{cs}"><div class="chip-desk"></div>{bet_txt}</div>'
 
+    # Добавляем фишки Хиро
+    if hero_act:
+        is_hero_bet = ("BET" in hero_act.upper() or "RAISE" in hero_act.upper() or "ALL-IN" in hero_act.upper())
+        if is_hero_bet:
+            hero_cs = get_chip_style(0)
+            hero_bet_amount_str = hero_act.upper().replace("BET", "").replace("RAISE", "").strip().lower()
+            hero_bet_txt = f'<div class="bet-txt-desk">{hero_bet_amount_str}</div>'
+            chips_html += f'<div class="chip-container-desk" style="{hero_cs}"><div class="chip-desk"></div>{hero_bet_txt}</div>'
+
     hero_stack = stacks_data.get(hero_pos, "---")
     if rot[0] == btn_pos:
         hero_bs = get_btn_style(0)
@@ -662,7 +663,7 @@ def show():
         sc = get_suit_color_class(suit)
         board_html += f'<div class="board-card-desk"><div class="bc-tl-desk {sc}">{rank_str}</div><div class="bc-c-desk {sc}">{suit}</div></div>'
 
-    html = f'<div class="desktop-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge-desk"><div class="pot-badge-desk">Pot: {pot_size} bb</div></div><div class="pf-board-desk"><div class="board-container-desk">{board_html}</div></div><div class="pf-mastery-desk"><div class="mastery-badge-desk rusty-{m_rust}">{m_icon} {m_name}</div><div class="mastery-bar-bg-desk"><div class="mastery-bar-fill-desk" style="width:{m_pct}%;"></div></div><div class="hands-left-desk">{hands_left_text}</div></div>{opp_html}{chips_html}<div class="hero-desk">{anim_html}<div class="hero-cards-wrap-desk"><div class="card-desk"><div class="tl-desk {c1}">{r1}<br>{s1}</div><div class="c-desk {c1}">{s1}</div></div><div class="card-desk"><div class="tl-desk {c2}">{r2}<br>{s2}</div><div class="c-desk {c2}">{s2}</div></div><div class="rng-badge-desk">{st.session_state.pf_rng}</div></div><div class="hero-plate-desk"><span class="pos-desk">HERO {hero_pos}</span><span class="stack-desk">{hero_stack}</span></div></div></div>'
+    html = f'<div class="desktop-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge-desk"><div class="pot-badge-desk">Pot: {pot_size} bb</div></div><div class="pf-board-desk"><div class="board-container-desk">{board_html}</div></div>{opp_html}{chips_html}<div class="hero-desk">{anim_html}<div class="hero-cards-wrap-desk"><div class="card-desk"><div class="tl-desk {c1}">{r1}<br>{s1}</div><div class="c-desk {c1}">{s1}</div></div><div class="card-desk"><div class="tl-desk {c2}">{r2}<br>{s2}</div><div class="c-desk {c2}">{s2}</div></div><div class="rng-badge-desk">{st.session_state.pf_rng}</div></div><div class="hero-plate-desk"><span class="pos-desk">HERO {hero_pos}</span><span class="stack-desk">{hero_stack}</span></div></div></div>'
     
     st.markdown(html, unsafe_allow_html=True)
 
@@ -685,6 +686,21 @@ def show():
             st.session_state.pf_combo += 1
             st.session_state.pf_last_error = False
             st.session_state.pf_flash_correct = True
+            
+            c_new = st.session_state.pf_combo
+            if c_new == 100:
+                st.session_state.shields += 1
+                st.session_state.pf_toast_msgs.append("🛡️ +1 ЩИТ (100 комбо)!")
+            elif c_new == 250:
+                st.session_state.shields += 1
+                st.session_state.pf_toast_msgs.append("🛡️ +1 ЩИТ (250 комбо)!")
+            elif c_new == 500:
+                st.session_state.shields += 1
+                st.session_state.pf_toast_msgs.append("🛡️ +1 ЩИТ (500 комбо)!")
+            elif c_new == 1000:
+                st.session_state.shields += 4
+                st.session_state.pf_toast_msgs.append("🛡️ +4 ЩИТА (1000 комбо - GODLIKE)!")
+
         else:
             st.session_state.pf_flash_correct = False
             if st.session_state.shields > 0:
@@ -692,14 +708,26 @@ def show():
                 st.session_state.shield_break_anim = True
                 st.session_state.pf_last_error = True
                 shield_used = True
-                st.session_state.msg = f"🛡️ ЩИТ СЛОМАН! Защита от мисклика. Правильно: {correct_act}"
+                st.session_state.msg = f"🛡️ ЩИТ ПРОБИТ! Защита от мисклика. Правильно: {correct_act}"
             else:
                 st.session_state.pf_combo = 0
                 st.session_state.pf_last_error = True
                 st.session_state.msg = f"❌ ОШИБКА! Правильно: {correct_act}"
             
+        c_new = st.session_state.pf_combo
+        new_mult = 1.0
+        if c_new >= 500: new_mult = 10.0
+        elif c_new >= 250: new_mult = 5.0
+        elif c_new >= 100: new_mult = 4.0
+        elif c_new >= 50: new_mult = 3.0
+        elif c_new >= 25: new_mult = 2.0
+        elif c_new >= 10: new_mult = 1.5
+
+        if new_mult > curr_mult:
+            st.session_state.just_leveled_up = True
+
         try:
-            alerts, _ = utils.process_gamification(corr, st.session_state.pf_combo, st.session_state.pf_session_hands, chosen_key, shield_used=shield_used)
+            alerts, _ = utils.process_gamification(corr, st.session_state.pf_combo, st.session_state.pf_session_hands, chosen_key, shield_used=shield_used, is_postflop=True)
             if alerts: st.session_state.pf_toast_msgs.extend(alerts)
         except Exception: pass
         
@@ -731,7 +759,7 @@ def show():
         div[data-testid="stButton"] button[kind="primary"] p { color: rgba(80,180,255,0.95) !important; text-shadow: 0 0 15px rgba(50,160,240,0.5) !important; font-size: 16px !important; font-weight: 900 !important; letter-spacing: 0.1em !important; text-transform: uppercase !important; }
         </style>""", unsafe_allow_html=True)
         
-        if st.button("ПОНЯТНО, ДАЛЬШЕ", type="primary", use_container_width=True):
+        if st.button("UNDERSTOOD, NEXT", type="primary", use_container_width=True):
             st.session_state.pf_last_error = False
             st.session_state.pf_hand = None
             st.session_state.shield_break_anim = False
