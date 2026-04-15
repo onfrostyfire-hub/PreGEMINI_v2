@@ -117,7 +117,7 @@ def show():
            ========================================== */
         .pf-pot-badge { position: absolute; top: 20%; left: 50%; transform: translateX(-50%); z-index: 15; }
         .pf-board { position: absolute; top: 43%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
-        .pf-mastery { position: absolute; bottom: -45px; left: 20%; transform: translateX(-50%); z-index: 15; width: 100px; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;}
+        .pf-mastery { position: absolute; bottom: -65px; left: 13%; transform: translateX(-50%); z-index: 15; width: 100px; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;}
         
         .mobile-game-area { margin-top: 50px !important; margin-bottom: 55px !important; }
         .rng-hint-wrap { margin-top: 12px !important; margin-bottom: 8px !important; }
@@ -587,7 +587,7 @@ def show():
 
     def get_chip_style(idx):
         return {
-            0: "bottom: 38px; left: 50%; transform: translateX(-50%);", 
+            0: "bottom: 38px; left: 55%; transform: translateX(-50%);", 
             1: "top: 63%; left: 16%; transform: translateY(-50%);", 
             2: "top: 23%; left: 20%;",
             3: "top: 13%; left: 50%; transform: translateX(-50%);", 
