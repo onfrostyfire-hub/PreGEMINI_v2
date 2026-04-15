@@ -279,7 +279,6 @@ def show():
         avail_heroes = set()
         for sp in sel_spots: avail_heroes.update(tree[sp].keys())
         avail_heroes = sorted(list(avail_heroes))
-        sel_heroes = st.multiselect("2. Position(s)", avail_heroes, default=[x for x in saved.get("pf_sel_heroes", []) if x in heroes]) if 'avail_heroes' in locals() else []
         sel_heroes = st.multiselect("2. Position(s)", avail_heroes, default=[x for x in saved.get("pf_sel_heroes", []) if x in avail_heroes])
         
         avail_streets = set()
