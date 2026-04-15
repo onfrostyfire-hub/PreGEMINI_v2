@@ -55,6 +55,7 @@ def show():
                 gap: 4px !important;
                 width: 100% !important;
                 padding: 0 !important;
+                margin-bottom: 4px !important;
             }
             div[data-testid="column"] {
                 width: 50% !important;
@@ -73,6 +74,7 @@ def show():
                 gap: 4px;
                 width: 100%;
                 margin-top: 4px;
+                margin-bottom: 12px;
             }
             .custom-matrix-col {
                 flex: 1 1 50%;
@@ -141,16 +143,14 @@ def show():
         st.error("База ренджей пуста.")
         return
 
-    # 1. Стримлитовские колонки только для селекторов
+    # === ПЕРВЫЙ РЯД (A и B) ===
     col1, col2 = st.columns(2)
 
     with col1:
-        data_a = render_popover_selector(ranges_db, "A", "🅰️")
+        data_a = render_popover_selector(ranges_db, "A", "1️⃣")
     with col2:
-        data_b = render_popover_selector(ranges_db, "B", "🅱️")
+        data_b = render_popover_selector(ranges_db, "B", "2️⃣")
 
-    # 2. Рендерим матрицы в обход Стримлита. 
-    # utils.render_range_matrix выдает HTML, мы его просто пакуем в наш пуленепробиваемый контейнер.
     matrix_a_html = utils.render_range_matrix(data_a) if data_a else "<div style='color:#444;text-align:center;font-size:10px;padding:20px 0;'>Нет данных</div>"
     matrix_b_html = utils.render_range_matrix(data_b) if data_b else "<div style='color:#444;text-align:center;font-size:10px;padding:20px 0;'>Нет данных</div>"
 
@@ -158,5 +158,24 @@ def show():
     <div class="custom-matrix-row">
         <div class="custom-matrix-col">{matrix_a_html}</div>
         <div class="custom-matrix-col">{matrix_b_html}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+    # === ВТОРОЙ РЯД (C и D) ===
+    col3, col4 = st.columns(2)
+
+    with col3:
+        data_c = render_popover_selector(ranges_db, "C", "3️⃣")
+    with col4:
+        data_d = render_popover_selector(ranges_db, "D", "4️⃣")
+
+    matrix_c_html = utils.render_range_matrix(data_c) if data_c else "<div style='color:#444;text-align:center;font-size:10px;padding:20px 0;'>Нет данных</div>"
+    matrix_d_html = utils.render_range_matrix(data_d) if data_d else "<div style='color:#444;text-align:center;font-size:10px;padding:20px 0;'>Нет данных</div>"
+
+    st.markdown(f"""
+    <div class="custom-matrix-row">
+        <div class="custom-matrix-col">{matrix_c_html}</div>
+        <div class="custom-matrix-col">{matrix_d_html}</div>
     </div>
     """, unsafe_allow_html=True)
