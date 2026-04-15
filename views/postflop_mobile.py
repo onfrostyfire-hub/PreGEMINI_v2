@@ -3,6 +3,7 @@ import random
 import time
 import os
 import json
+import csv
 import inspect
 from datetime import datetime
 import poker_utils as utils
@@ -25,11 +26,17 @@ def safe_save_stats(data):
         with open("postflop_stats.json", "w") as f: json.dump(data, f)
 
 def safe_save_history(data):
-    sig = inspect.signature(utils.save_to_history)
-    if 'is_postflop' in sig.parameters:
-        utils.save_to_history(data, is_postflop=True)
-    else:
-        utils.save_to_history(data)
+    # Жестко пишем в отдельный файл, чтобы не мешать с префлопом
+    fname = "postflop_history.csv"
+    file_exists = os.path.isfile(fname)
+    try:
+        with open(fname, 'a', newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=["Date", "Spot", "Hand", "Result", "CorrectAction", "UserAction"])
+            if not file_exists:
+                writer.writeheader()
+            writer.writerow(data)
+    except Exception:
+        pass
 # --------------------------------------------------------
 
 @st.cache_data(ttl=0)
@@ -117,7 +124,7 @@ def show():
            ========================================== */
         .pf-pot-badge { position: absolute; top: 20%; left: 50%; transform: translateX(-50%); z-index: 15; }
         .pf-board { position: absolute; top: 43%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
-        .pf-mastery { position: absolute; bottom: -65px; left: 13%; transform: translateX(-50%); z-index: 15; width: 100px; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;}
+        .pf-mastery { position: absolute; bottom: -45px; left: 20%; transform: translateX(-50%); z-index: 15; width: 100px; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;}
         
         .mobile-game-area { margin-top: 50px !important; margin-bottom: 55px !important; }
         .rng-hint-wrap { margin-top: 12px !important; margin-bottom: 8px !important; }
@@ -587,7 +594,7 @@ def show():
 
     def get_chip_style(idx):
         return {
-            0: "bottom: 48px; left: 50%; transform: translateX(-50%);", 
+            0: "bottom: 38px; left: 50%; transform: translateX(-50%);", 
             1: "top: 63%; left: 16%; transform: translateY(-50%);", 
             2: "top: 23%; left: 20%;",
             3: "top: 13%; left: 50%; transform: translateX(-50%);", 
@@ -744,6 +751,24 @@ def show():
             curr_stats = safe_load_stats()
             curr_stats["combo"] = st.session_state.pf_combo
             curr_stats["shields"] = st.session_state.shields
+            
+            # --- РУЧНОЕ ОБНОВЛЕНИЕ SPOT MASTERY ДЛЯ ПОСТФЛОПА ---
+            if "spot_mastery" not in curr_stats:
+                curr_stats["spot_mastery"] = {}
+            if chosen_key not in curr_stats["spot_mastery"]:
+                curr_stats["spot_mastery"][chosen_key] = {"t": 0, "h": "", "d": ""}
+            
+            sm = curr_stats["spot_mastery"][chosen_key]
+            sm["t"] += 1
+            sm["h"] += "1" if corr else "0"
+            if len(sm["h"]) > 100: sm["h"] = sm["h"][-100:]
+            sm["d"] = datetime.now().strftime("%Y-%m-%d")
+            
+            if corr:
+                curr_stats["xp"] = curr_stats.get("xp", 0) + 10
+                
+            curr_stats["total_hands"] = curr_stats.get("total_hands", 0) + 1
+            
             safe_save_stats(curr_stats)
             if hasattr(utils, "force_sync"):
                 utils.force_sync()
