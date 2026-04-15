@@ -32,10 +32,15 @@ def get_gspread_client():
 def get_worksheets():
     client = get_gspread_client()
     sh = client.open_by_key(SPREADSHEET_ID)
-    return {
+    res = {
         "Settings": sh.worksheet("Settings"),
         "History": sh.worksheet("History")
     }
+    try:
+        res["PostflopHistory"] = sh.worksheet("PostflopHistory")
+    except:
+        pass
+    return res
 
 @st.cache_data(ttl=60)
 def load_history():
@@ -102,15 +107,23 @@ def init_cloud_data():
             st.stop()
             
         st.session_state["history_buffer"] = []
+        st.session_state["pf_history_buffer"] = []
         st.session_state["unsaved_count"] = 0
         st.session_state["settings_changed"] = False
         st.session_state["app_initialized"] = True
 
 # --- GAMIFICATION CORE ---
-def load_user_stats():
+def load_user_stats(is_postflop=False):
     init_cloud_data()
-    sets = st.session_state.get("user_settings", {})
-    stats = sets.get("stats", {})
+    if is_postflop:
+        try:
+            with open("postflop_stats.json", "r") as f: stats = json.load(f)
+        except:
+            stats = {}
+    else:
+        sets = st.session_state.get("user_settings", {})
+        stats = sets.get("stats", {})
+        
     if "xp" not in stats: stats["xp"] = 0
     if "streak" not in stats: stats["streak"] = 0
     if "last_date" not in stats: stats["last_date"] = ""
@@ -120,10 +133,13 @@ def load_user_stats():
     if "spot_mastery" not in stats: stats["spot_mastery"] = {}
     return stats
 
-def save_user_stats(stats):
-    sets = st.session_state.get("user_settings", {})
-    sets["stats"] = stats
-    save_user_settings(sets)
+def save_user_stats(stats, is_postflop=False):
+    if is_postflop:
+        with open("postflop_stats.json", "w") as f: json.dump(stats, f)
+    else:
+        sets = st.session_state.get("user_settings", {})
+        sets["stats"] = stats
+        save_user_settings(sets)
 
 def get_rank_info(xp):
     tiers = [
@@ -258,8 +274,8 @@ def get_spot_mastery_info(spot_data_dict):
         "is_rusty": is_rusty, "prog_pct": prog_pct, "total": total, "next": info["nt"], "svg": info["svg"]
     }
 
-def process_gamification(is_correct, combo, session_total_hands, spot_key=None, shield_used=False):
-    stats = load_user_stats()
+def process_gamification(is_correct, combo, session_total_hands, spot_key=None, shield_used=False, is_postflop=False):
+    stats = load_user_stats(is_postflop=is_postflop)
     now_date = datetime.now().date()
     now_date_str = now_date.strftime("%Y-%m-%d")
     alerts = []
@@ -340,7 +356,7 @@ def process_gamification(is_correct, combo, session_total_hands, spot_key=None, 
         if len(s_data["h"]) > 100: s_data["h"] = s_data["h"][-100:]
         stats["spot_mastery"][spot_key] = s_data
 
-    save_user_stats(stats)
+    save_user_stats(stats, is_postflop=is_postflop)
     return alerts, reward_val
 
 # --- ADAPTIVE SRS ALGORITHM ---
@@ -384,7 +400,7 @@ def save_user_settings(settings, is_postflop=False, **kwargs):
     st.session_state["unsaved_count"] += 1
     check_auto_sync()
 
-def save_to_history(record):
+def save_to_history(record, is_postflop=False):
     init_cloud_data()
     row = [
         str(record.get("Date", "")), 
@@ -394,7 +410,13 @@ def save_to_history(record):
         str(record.get("CorrectAction", "")),
         str(record.get("UserAction", ""))
     ]
-    st.session_state["history_buffer"].append(row)
+    if is_postflop:
+        if "pf_history_buffer" not in st.session_state: st.session_state["pf_history_buffer"] = []
+        st.session_state["pf_history_buffer"].append(row)
+    else:
+        if "history_buffer" not in st.session_state: st.session_state["history_buffer"] = []
+        st.session_state["history_buffer"].append(row)
+    
     st.session_state["unsaved_count"] += 1
     check_auto_sync()
 
@@ -416,6 +438,19 @@ def force_sync():
         except Exception as e:
             sync_success = False
             print(f"History Sync error: {e}")
+
+    if "pf_history_buffer" in st.session_state and st.session_state["pf_history_buffer"]:
+        try:
+            if "PostflopHistory" in sheets:
+                sheets["PostflopHistory"].append_rows(st.session_state["pf_history_buffer"])
+            else:
+                with open("postflop_history.csv", "a") as f:
+                    for row in st.session_state["pf_history_buffer"]:
+                        f.write(",".join(map(str, row)) + "\n")
+            st.session_state["pf_history_buffer"] = []
+        except Exception as e:
+            sync_success = False
+            print(f"PF History Sync error: {e}")
 
     if st.session_state.get("settings_changed"):
         try:
