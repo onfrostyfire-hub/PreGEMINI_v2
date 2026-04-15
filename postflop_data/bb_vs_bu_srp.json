@@ -1,12 +1,12 @@
 {
-  "BBvsBU srp | Hero IP | Flop | cbet | Kh8h2s": {
+  "BBvsBU srp | Hero IP | Flop | cbet | Kh8h2d": {
     "hero_pos": "BTN",
     "villain_pos": "BB",
     "btn_pos": "BTN",
     "active_players": ["BTN", "BB"],
     "table_size": 6,
     "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
-    "board_cards": ["Kh", "8h", "2s"],
+    "board_cards": ["Kh", "8h", "2d"],
     "pot_size": 5.5,
     "villain_action": "CHECK",
     "info_link": "https://1drv.ms/o/c/acb7650af03ef10d/IgBHiWrZbMG_Q5Y4pr2Y50AHATC3RLD61zUmeKSLCseYwtA?e=mxLiw3",
