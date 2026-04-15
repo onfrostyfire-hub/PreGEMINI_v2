@@ -5,54 +5,28 @@ import poker_utils as utils
 import json
 import os
 
+def load_postflop_keys():
+    # Безопасный парсер для получения всех постфлоп-спотов из базы
+    db = {}
+    pf_dir = 'postflop_data' if os.path.exists('postflop_data') else 'spots_data'
+    if not os.path.exists(pf_dir): return db
+    for file in os.listdir(pf_dir):
+        if file.endswith('.json'):
+            with open(os.path.join(pf_dir, file), 'r', encoding='utf-8') as f:
+                try:
+                    data = json.load(f)
+                    if "spots" in data:
+                        db.update(data["spots"])
+                    else:
+                        db.update(data)
+                except: pass
+    return db
+
 def show():
     st.markdown("## 📊 Statistics Hub")
     
-    # Стили для переключателя
-    st.markdown("""
-    <style>
-    div[data-testid="stRadio"] > div {
-        background: #141518;
-        padding: 6px;
-        border-radius: 10px;
-        border: 1px solid #3a3d42;
-        display: flex;
-        gap: 6px;
-        margin-bottom: 15px;
-    }
-    div[data-testid="stRadio"] label {
-        background: #1c1e22;
-        padding: 10px 20px;
-        border-radius: 6px;
-        cursor: pointer;
-        flex: 1;
-        text-align: center;
-        justify-content: center;
-        border: 1px solid transparent;
-        transition: all 0.2s ease;
-    }
-    div[data-testid="stRadio"] label[data-checked="true"] {
-        background: #2a2d32 !important;
-        border-color: #ffc107 !important;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.05);
-    }
-    div[data-testid="stRadio"] p {
-        font-size: 14px;
-        font-weight: 900;
-        margin: 0;
-        color: #888;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-    }
-    div[data-testid="stRadio"] label[data-checked="true"] p {
-        color: #ffc107 !important;
-        text-shadow: 0 0 10px rgba(255,193,7,0.3);
-    }
-    </style>
-    """, unsafe_allow_html=True)
-    
-    # ПЕРЕКЛЮЧАТЕЛЬ РЕЖИМОВ
-    mode = st.radio("Category", ["🔥 Preflop", "🌊 Postflop"], horizontal=True, label_visibility="collapsed")
+    # Обычный радио-переключатель. НИКАКОГО ЛОМАЮЩЕГО CSS. Твои верхние кнопки будут в безопасности.
+    mode = st.radio("Раздел:", ["🔥 Preflop", "🌊 Postflop"], horizontal=True)
     is_postflop = (mode == "🌊 Postflop")
     
     df_all = utils.load_history()
@@ -77,18 +51,11 @@ def show():
     df_all = df_all.dropna(subset=["Date"])
     df_all["Result"] = pd.to_numeric(df_all["Result"], errors='coerce').fillna(0).astype(int)
     
-    # ФИЛЬТРАЦИЯ БАЗЫ ПОД ВЫБРАННЫЙ РЕЖИМ
+    # ПРАВИЛЬНАЯ ФИЛЬТРАЦИЯ (Ищем символ "|" без багов)
     if is_postflop:
-        df = df_all[df_all["Spot"].str.contains(r'\|', regex=False, na=False)].copy()
-        ranges_db = utils.load_postflop_ranges()
-        try:
-            with open("postflop_stats.json", "r") as f: stats_dict = json.load(f)
-        except:
-            stats_dict = {"xp": 0, "combo": 0, "shields": 0, "spot_mastery": {}}
+        df = df_all[df_all["Spot"].str.contains('|', regex=False, na=False)].copy()
     else:
-        df = df_all[~df_all["Spot"].str.contains(r'\|', regex=False, na=False)].copy()
-        ranges_db = utils.load_ranges()
-        stats_dict = utils.load_user_stats()
+        df = df_all[~df_all["Spot"].str.contains('|', regex=False, na=False)].copy()
 
     if df.empty:
         st.info(f"History for {mode.split()[1]} is empty. Go train, Boss!")
@@ -112,16 +79,22 @@ def show():
     st.dataframe(all_spots[["Spot", "Errors", "Accuracy", "count"]].rename(columns={"count": "Total"}), use_container_width=True, hide_index=True)
 
     # ==========================================
-    # НОВЫЙ РАЗДЕЛ: GRIND PROGRESS (ROAD TO 5K)
+    # ОРИГИНАЛЬНЫЙ РАЗДЕЛ: GRIND PROGRESS (ROAD TO 5K)
     # ==========================================
     st.markdown("### 🚀 Road to Mastery (5k Hands)")
     
-    # 1. Достаем все возможные споты из JSON файлов (зависит от режима)
+    # 1. Достаем все возможные споты из правильной базы
     all_spots_names = set()
-    for src, sc_dict in ranges_db.items():
-        for sc, sp_dict in sc_dict.items():
-            for sp in sp_dict.keys():
-                all_spots_names.add(sp)
+    if is_postflop:
+        pf_db = load_postflop_keys()
+        for sp in pf_db.keys():
+            all_spots_names.add(sp)
+    else:
+        ranges_db = utils.load_ranges()
+        for src, sc_dict in ranges_db.items():
+            for sc, sp_dict in sc_dict.items():
+                for sp in sp_dict.keys():
+                    all_spots_names.add(sp)
                 
     # 2. Берем количество сыгранных рук из отфильтрованной истории
     spot_counts = df["Spot"].value_counts().to_dict()
@@ -129,12 +102,13 @@ def show():
     # 3. Скрещиваем базы
     merged_counts = {sp: 0 for sp in all_spots_names}
     for sp, cnt in spot_counts.items():
+        # Если спот из истории есть в базе — обновляем, если нет — добавляем
         merged_counts[sp] = cnt
         
     # 4. Сортируем по убыванию
     sorted_spots = sorted(merged_counts.items(), key=lambda x: x[1], reverse=True)
     
-    # Собираем HTML плотно, без отступов
+    # Твой оригинальный код генерации полосок прогресса
     html_out = '<div style="display:flex; flex-direction:column; gap:10px; margin-bottom: 20px;">'
     for sp, cnt in sorted_spots:
         pct = min(100, (cnt / 5000) * 100)
@@ -190,7 +164,6 @@ def show():
             new_mastery = {}
             total_correct = df_hist["Result"].sum()
             
-            # Собираем уникальные даты для подсчета стрика
             unique_dates = sorted(df_hist["Date"].dt.date.unique())
             streak = 1
             if unique_dates:
@@ -202,13 +175,11 @@ def show():
                         current_streak = 1
                 streak = current_streak
 
-            # Восстанавливаем Spot Mastery
             sp_to_full_key = {}
             if is_postflop:
-                for src, sc_dict in ranges_db.items():
-                    for sc, sp_dict in sc_dict.items():
-                        for sp in sp_dict.keys():
-                            sp_to_full_key[sp] = sp
+                # В постфлопе споты в истории и есть ключи (полные строки)
+                for sp in all_spots_names:
+                    sp_to_full_key[sp] = sp
             else:
                 for src, sc_dict in ranges_db.items():
                     for sc, sp_dict in sc_dict.items():
@@ -217,7 +188,7 @@ def show():
 
             for _, row in df_hist.iterrows():
                 sp = row["Spot"]
-                full_key = sp_to_full_key.get(sp, sp) # Fallback if spot name changed
+                full_key = sp_to_full_key.get(sp, sp)
                 
                 if full_key not in new_mastery:
                     new_mastery[full_key] = {"t": 0, "h": "", "d": ""}
@@ -228,6 +199,15 @@ def show():
                     new_mastery[full_key]["h"] = new_mastery[full_key]["h"][-100:]
                 new_mastery[full_key]["d"] = row["Date"].strftime("%Y-%m-%d")
 
+            # Безопасная загрузка статов
+            try:
+                if is_postflop:
+                    stats_dict = utils.load_user_stats(is_postflop=True)
+                else:
+                    stats_dict = utils.load_user_stats()
+            except:
+                stats_dict = {"xp": 0, "total_hands": 0, "streak": 1, "spot_mastery": {}}
+
             stats_dict["xp"] = int(total_correct * 10)
             stats_dict["total_hands"] = len(df_hist)
             stats_dict["streak"] = streak
@@ -235,8 +215,12 @@ def show():
             if unique_dates:
                 stats_dict["last_date"] = unique_dates[-1].strftime("%Y-%m-%d")
                 
+            # Безопасное сохранение статов
             if is_postflop:
-                with open("postflop_stats.json", "w") as f: json.dump(stats_dict, f)
+                try:
+                    utils.save_user_stats(stats_dict, is_postflop=True)
+                except:
+                    with open("postflop_stats.json", "w") as f: json.dump(stats_dict, f)
             else:
                 utils.save_user_stats(stats_dict)
                 
