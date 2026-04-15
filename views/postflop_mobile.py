@@ -103,7 +103,7 @@ def show():
            ========================================== */
         .pf-pot-badge { position: absolute; top: 20%; left: 50%; transform: translateX(-50%); z-index: 15; }
         .pf-board { position: absolute; top: 43%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
-        .pf-mastery { position: absolute; bottom: -45px; left: 20%; transform: translateX(-50%); z-index: 15; width: 100px; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;}
+        .pf-mastery { position: absolute; bottom: -55px; left: 13%; transform: translateX(-50%); z-index: 15; width: 100px; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;}
         
         .mobile-game-area { margin-top: 50px !important; margin-bottom: 55px !important; }
         .rng-hint-wrap { margin-top: 12px !important; margin-bottom: 8px !important; }
