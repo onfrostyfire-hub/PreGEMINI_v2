@@ -263,7 +263,7 @@ def show():
 
     pf_db = custom_load_postflop_ranges()
     if not pf_db: 
-        st.error("База пуста. Проверь файлы JSON в папке postflop_data или spots_data.")
+        st.error("Database is empty. Check JSON files in postflop_data or spots_data.")
         return
 
     tree = {}
@@ -345,7 +345,7 @@ def show():
 
     pool = sel_spots_keys
     if not pool:
-        st.warning("⚠️ Выбери фильтры.")
+        st.warning("⚠️ Please select filters.")
         st.stop()
 
     stats_data_init = safe_load_stats()
@@ -701,11 +701,11 @@ def show():
                 st.session_state.shield_break_anim = True
                 st.session_state.pf_last_error = True
                 shield_used = True
-                st.session_state.msg = f"🛡️ ЩИТ СЛОМАН! Защита от мисклика. Правильно: {correct_act}"
+                st.session_state.msg = f"🛡️ SHIELD BROKEN! Misclick protection. Correct: {correct_act}"
             else:
                 st.session_state.pf_combo = 0
                 st.session_state.pf_last_error = True
-                st.session_state.msg = f"❌ ОШИБКА! Правильно: {correct_act}"
+                st.session_state.msg = f"❌ WRONG! Correct: {correct_act}"
             
         c_new = st.session_state.pf_combo
         new_mult = 1.0
@@ -752,7 +752,7 @@ def show():
         div[data-testid="stButton"] button[kind="primary"] p { color: rgba(80,180,255,0.95) !important; text-shadow: 0 0 12px rgba(50,160,240,0.4) !important; font-size: 13px !important; font-weight: 900 !important; letter-spacing: 0.1em !important; text-transform: uppercase !important; }
         </style>""", unsafe_allow_html=True)
         
-        if st.button("ПОНЯТНО, ДАЛЬШЕ", type="primary", use_container_width=True):
+        if st.button("UNDERSTOOD, NEXT", type="primary", use_container_width=True):
             st.session_state.pf_last_error = False
             st.session_state.pf_hand = None
             st.session_state.shield_break_anim = False
