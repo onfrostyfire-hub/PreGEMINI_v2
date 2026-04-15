@@ -9,27 +9,13 @@ import poker_utils as utils
 
 # --- УМНЫЕ ОБЁРТКИ ДЛЯ НЕЗАВИСИМЫХ СТАТОВ ПОСТФЛОПА ---
 def safe_load_stats():
-    sig = inspect.signature(utils.load_user_stats)
-    if 'is_postflop' in sig.parameters:
-        return utils.load_user_stats(is_postflop=True)
-    try:
-        with open("postflop_stats.json", "r") as f: return json.load(f)
-    except:
-        return {"xp": 0, "combo": 0, "shields": 0, "spot_mastery": {}}
+    return utils.load_user_stats(is_postflop=True)
 
 def safe_save_stats(data):
-    sig = inspect.signature(utils.save_user_stats)
-    if 'is_postflop' in sig.parameters:
-        utils.save_user_stats(data, is_postflop=True)
-    else:
-        with open("postflop_stats.json", "w") as f: json.dump(data, f)
+    utils.save_user_stats(data, is_postflop=True)
 
 def safe_save_history(data):
-    sig = inspect.signature(utils.save_to_history)
-    if 'is_postflop' in sig.parameters:
-        utils.save_to_history(data, is_postflop=True)
-    else:
-        utils.save_to_history(data)
+    utils.save_to_history(data, is_postflop=True)
 # --------------------------------------------------------
 
 @st.cache_data(ttl=0)
@@ -703,8 +689,6 @@ def show():
             "Spot": chosen_key, 
             "Hand": f"{h_val}", 
             "Result": int(corr), 
-            "Correct": correct_act,
-            "Action": action,
             "CorrectAction": correct_act, 
             "UserAction": action
         })
@@ -715,6 +699,21 @@ def show():
             st.session_state.pf_combo += 1
             st.session_state.pf_last_error = False
             st.session_state.pf_flash_correct = True
+            
+            c_new = st.session_state.pf_combo
+            if c_new == 100:
+                st.session_state.shields += 1
+                st.session_state.pf_toast_msgs.append("🛡️ +1 ЩИТ (100 комбо)!")
+            elif c_new == 250:
+                st.session_state.shields += 1
+                st.session_state.pf_toast_msgs.append("🛡️ +1 ЩИТ (250 комбо)!")
+            elif c_new == 500:
+                st.session_state.shields += 1
+                st.session_state.pf_toast_msgs.append("🛡️ +1 ЩИТ (500 комбо)!")
+            elif c_new == 1000:
+                st.session_state.shields += 4
+                st.session_state.pf_toast_msgs.append("🛡️ +4 ЩИТА (1000 комбо - GODLIKE)!")
+
         else:
             st.session_state.pf_flash_correct = False
             if st.session_state.shields > 0:
@@ -722,11 +721,11 @@ def show():
                 st.session_state.shield_break_anim = True
                 st.session_state.pf_last_error = True
                 shield_used = True
-                st.session_state.msg = f"🛡️ SHIELD BROKEN! Misclick protection. Correct: {correct_act}"
+                st.session_state.msg = f"🛡️ ЩИТ ПРОБИТ! Защита от мисклика. Правильно: {correct_act}"
             else:
                 st.session_state.pf_combo = 0
                 st.session_state.pf_last_error = True
-                st.session_state.msg = f"❌ WRONG! Correct: {correct_act}"
+                st.session_state.msg = f"❌ ОШИБКА! Правильно: {correct_act}"
             
         c_new = st.session_state.pf_combo
         new_mult = 1.0
@@ -741,7 +740,7 @@ def show():
             st.session_state.just_leveled_up = True
 
         try:
-            alerts, _ = utils.process_gamification(corr, st.session_state.pf_combo, st.session_state.pf_session_hands, chosen_key, shield_used=shield_used)
+            alerts, _ = utils.process_gamification(corr, st.session_state.pf_combo, st.session_state.pf_session_hands, chosen_key, shield_used=shield_used, is_postflop=True)
             if alerts: st.session_state.pf_toast_msgs.extend(alerts)
         except Exception: pass
         
