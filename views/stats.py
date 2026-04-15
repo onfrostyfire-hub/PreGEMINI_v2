@@ -6,7 +6,6 @@ import json
 import os
 
 def load_postflop_keys():
-    # Безопасный парсер для получения всех постфлоп-спотов из базы
     db = {}
     pf_dir = 'postflop_data' if os.path.exists('postflop_data') else 'spots_data'
     if not os.path.exists(pf_dir): return db
@@ -22,43 +21,98 @@ def load_postflop_keys():
                 except: pass
     return db
 
+@st.cache_data(ttl=60)
+def fetch_history(is_postflop):
+    sheets = utils.get_worksheets()
+    if is_postflop:
+        df_pf = pd.DataFrame(columns=["Date", "Spot", "Hand", "Result", "CorrectAction", "UserAction"])
+        if "PostflopHistory" in sheets:
+            try:
+                vals = sheets["PostflopHistory"].get_all_values()
+                if vals and len(vals) > 1:
+                    headers = vals[0]
+                    if "UserAction" not in headers:
+                        headers.append("UserAction")
+                        for r in vals[1:]: r.append("UNKNOWN")
+                    df_pf = pd.DataFrame(vals[1:], columns=headers)
+            except: pass
+        elif os.path.exists("postflop_history.csv"):
+            try:
+                df_pf = pd.read_csv("postflop_history.csv", header=None)
+                if df_pf.iloc[0, 0] == "Date":
+                    df_pf.columns = df_pf.iloc[0]
+                    df_pf = df_pf[1:]
+                else:
+                    df_pf.columns = ["Date", "Spot", "Hand", "Result", "CorrectAction", "UserAction"]
+            except: pass
+        return df_pf
+    else:
+        df_pr = utils.load_history()
+        if df_pr.empty: return df_pr
+        return df_pr[~df_pr["Spot"].astype(str).str.contains('|', regex=False, na=False)].copy()
+
+def custom_delete_history(days=None):
+    utils.delete_history(days)
+    try:
+        sheets = utils.get_worksheets()
+        headers = ["Date", "Spot", "Hand", "Result", "CorrectAction", "UserAction"]
+        if "PostflopHistory" in sheets:
+            if days is None:
+                sheets["PostflopHistory"].clear()
+                sheets["PostflopHistory"].append_row(headers)
+            else:
+                vals = sheets["PostflopHistory"].get_all_values()
+                if vals and len(vals) > 1:
+                    df = pd.DataFrame(vals[1:], columns=vals[0])
+                    df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
+                    cutoff = datetime.now() - timedelta(days=days)
+                    df_new = df[df["Date"] >= cutoff]
+                    sheets["PostflopHistory"].clear()
+                    rows = [headers] + df_new.astype(str).values.tolist()
+                    sheets["PostflopHistory"].update(values=rows, range_name="A1")
+        
+        if os.path.exists("postflop_history.csv"):
+            if days is None:
+                os.remove("postflop_history.csv")
+            else:
+                df = pd.read_csv("postflop_history.csv", names=headers)
+                if df.iloc[0]["Date"] == "Date": df = df[1:]
+                df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
+                cutoff = datetime.now() - timedelta(days=days)
+                df_new = df[df["Date"] >= cutoff]
+                df_new.to_csv("postflop_history.csv", index=False, header=True)
+    except: pass
+    fetch_history.clear()
+
 def show():
     st.markdown("## 📊 Statistics Hub")
     
-    # Обычный радио-переключатель. НИКАКОГО ЛОМАЮЩЕГО CSS. Твои верхние кнопки будут в безопасности.
     mode = st.radio("Раздел:", ["🔥 Preflop", "🌊 Postflop"], horizontal=True)
     is_postflop = (mode == "🌊 Postflop")
     
-    df_all = utils.load_history()
+    df = fetch_history(is_postflop)
     
-    if df_all.empty or "Date" not in df_all.columns or "Result" not in df_all.columns:
-        st.info("History is empty. Go train, Boss!")
+    if df.empty or "Date" not in df.columns or "Result" not in df.columns:
+        st.info(f"History for {mode.split()[1]} is empty. Go train, Начальник.")
         return
 
-    # Подмена старых названий спотов на новые (на лету, без насилия над базой данных)
-    rename_map = {
-        "BUvsCO": "3bet BUvsCO",
-        "SBvsCO": "3bet SBvsCO",
-        "SBvsBU": "3bet SBvsBU",
-        "BBvsCO": "3bet BBvsCO",
-        "BBvsBU": "3bet BBvsBU",
-        "BBvsSB": "3bet BBvsSB"
-    }
-    df_all["Spot"] = df_all["Spot"].replace(rename_map)
+    if not is_postflop:
+        rename_map = {
+            "BUvsCO": "3bet BUvsCO",
+            "SBvsCO": "3bet SBvsCO",
+            "SBvsBU": "3bet SBvsBU",
+            "BBvsCO": "3bet BBvsCO",
+            "BBvsBU": "3bet BBvsBU",
+            "BBvsSB": "3bet BBvsSB"
+        }
+        df["Spot"] = df["Spot"].replace(rename_map)
 
-    # Очистка и форматирование
-    df_all["Date"] = pd.to_datetime(df_all["Date"], errors='coerce')
-    df_all = df_all.dropna(subset=["Date"])
-    df_all["Result"] = pd.to_numeric(df_all["Result"], errors='coerce').fillna(0).astype(int)
-    
-    # ПРАВИЛЬНАЯ ФИЛЬТРАЦИЯ (Ищем символ "|" без багов)
-    if is_postflop:
-        df = df_all[df_all["Spot"].str.contains('|', regex=False, na=False)].copy()
-    else:
-        df = df_all[~df_all["Spot"].str.contains('|', regex=False, na=False)].copy()
+    df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
+    df = df.dropna(subset=["Date"])
+    df["Result"] = pd.to_numeric(df["Result"], errors='coerce').fillna(0).astype(int)
 
     if df.empty:
-        st.info(f"History for {mode.split()[1]} is empty. Go train, Boss!")
+        st.info(f"History for {mode.split()[1]} is empty. Go train, Начальник.")
         return
 
     st.markdown(f"### 📈 Performance ({mode.split()[1]})")
@@ -78,12 +132,8 @@ def show():
     all_spots = stats.sort_values(by="count", ascending=False)
     st.dataframe(all_spots[["Spot", "Errors", "Accuracy", "count"]].rename(columns={"count": "Total"}), use_container_width=True, hide_index=True)
 
-    # ==========================================
-    # ОРИГИНАЛЬНЫЙ РАЗДЕЛ: GRIND PROGRESS (ROAD TO 5K)
-    # ==========================================
     st.markdown("### 🚀 Road to Mastery (5k Hands)")
     
-    # 1. Достаем все возможные споты из правильной базы
     all_spots_names = set()
     if is_postflop:
         pf_db = load_postflop_keys()
@@ -96,19 +146,14 @@ def show():
                 for sp in sp_dict.keys():
                     all_spots_names.add(sp)
                 
-    # 2. Берем количество сыгранных рук из отфильтрованной истории
     spot_counts = df["Spot"].value_counts().to_dict()
     
-    # 3. Скрещиваем базы
     merged_counts = {sp: 0 for sp in all_spots_names}
     for sp, cnt in spot_counts.items():
-        # Если спот из истории есть в базе — обновляем, если нет — добавляем
         merged_counts[sp] = cnt
         
-    # 4. Сортируем по убыванию
     sorted_spots = sorted(merged_counts.items(), key=lambda x: x[1], reverse=True)
     
-    # Твой оригинальный код генерации полосок прогресса
     html_out = '<div style="display:flex; flex-direction:column; gap:10px; margin-bottom: 20px;">'
     for sp, cnt in sorted_spots:
         pct = min(100, (cnt / 5000) * 100)
@@ -143,7 +188,6 @@ def show():
         
     html_out += '</div>'
     st.markdown(html_out, unsafe_allow_html=True)
-    # ==========================================
 
     with st.expander("📜 Raw History Log (click to expand)"):
         d = df.copy()
@@ -177,10 +221,10 @@ def show():
 
             sp_to_full_key = {}
             if is_postflop:
-                # В постфлопе споты в истории и есть ключи (полные строки)
                 for sp in all_spots_names:
                     sp_to_full_key[sp] = sp
             else:
+                ranges_db = utils.load_ranges()
                 for src, sc_dict in ranges_db.items():
                     for sc, sp_dict in sc_dict.items():
                         for sp in sp_dict.keys():
@@ -199,7 +243,6 @@ def show():
                     new_mastery[full_key]["h"] = new_mastery[full_key]["h"][-100:]
                 new_mastery[full_key]["d"] = row["Date"].strftime("%Y-%m-%d")
 
-            # Безопасная загрузка статов
             try:
                 if is_postflop:
                     stats_dict = utils.load_user_stats(is_postflop=True)
@@ -215,7 +258,6 @@ def show():
             if unique_dates:
                 stats_dict["last_date"] = unique_dates[-1].strftime("%Y-%m-%d")
                 
-            # Безопасное сохранение статов
             if is_postflop:
                 try:
                     utils.save_user_stats(stats_dict, is_postflop=True)
@@ -232,10 +274,10 @@ def show():
         st.warning("⚠️ Warning: Clears ALL history globally (Preflop & Postflop).")
         d1, d2, d3, d4 = st.columns(4)
         if d1.button("Delete: 24 Hours", use_container_width=True):
-            utils.delete_history(days=1); st.success("Done!"); st.rerun()
+            custom_delete_history(days=1); st.success("Done!"); st.rerun()
         if d2.button("Delete: 7 Days", use_container_width=True):
-            utils.delete_history(days=7); st.success("Done!"); st.rerun()
+            custom_delete_history(days=7); st.success("Done!"); st.rerun()
         if d3.button("Delete: 30 Days", use_container_width=True):
-            utils.delete_history(days=30); st.success("Done!"); st.rerun()
+            custom_delete_history(days=30); st.success("Done!"); st.rerun()
         if d4.button("NUKE ALL HISTORY", use_container_width=True):
-            utils.delete_history(); st.success("Done!"); st.rerun()
+            custom_delete_history(); st.success("Done!"); st.rerun()
