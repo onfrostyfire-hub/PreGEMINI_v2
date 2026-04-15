@@ -390,7 +390,7 @@ def show():
     table_size = data.get("table_size", 6)
     stacks_data = data.get("stacks", {})
 
-   h_val = st.session_state.pf_hand
+    h_val = st.session_state.pf_hand
     action_weights = {act: pf_get_weight(h_val, ranges.get(act, "")) for act in actions}
     
     # Принудительно сортируем: агрессия (Bet/Raise) идет первой (0-Freq), пассив (Check/Fold) летит в конец (Freq-100)
