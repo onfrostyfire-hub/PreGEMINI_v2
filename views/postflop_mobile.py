@@ -117,7 +117,7 @@ def show():
            ========================================== */
         .pf-pot-badge { position: absolute; top: 20%; left: 50%; transform: translateX(-50%); z-index: 15; }
         .pf-board { position: absolute; top: 43%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
-        .pf-mastery { position: absolute; top: 61%; left: 50%; transform: translateX(-50%); z-index: 15; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;}
+        .pf-mastery { position: absolute; bottom: -45px; left: 20%; transform: translateX(-50%); z-index: 15; width: 100px; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;}
         
         .mobile-game-area { margin-top: 50px !important; margin-bottom: 55px !important; }
         .rng-hint-wrap { margin-top: 12px !important; margin-bottom: 8px !important; }
@@ -151,10 +151,10 @@ def show():
             box-shadow: 0 0 25px rgba(220,53,69,0.6), inset 0 0 15px rgba(220,53,69,0.4) !important;
         }
 
-        .mastery-badge { display: inline-flex !important; align-items: center !important; gap: 4px !important; border-radius: 20px !important; padding: 2px 9px 2px 7px !important; font-size: 9.5px !important; font-weight: 700 !important; letter-spacing: 0.05em !important; }
+        .mastery-badge { display: inline-flex !important; align-items: center !important; gap: 4px !important; border-radius: 20px !important; padding: 2px 9px 2px 7px !important; font-size: 9.5px !important; font-weight: 700 !important; letter-spacing: 0.05em !important; white-space: nowrap; }
         .mastery-bar-bg { width: 60px !important; height: 2px !important; background: rgba(255,255,255,0.07) !important; border-radius: 2px !important; overflow: hidden !important; }
         .mastery-bar-fill { height: 100% !important; border-radius: 2px !important; }
-        .hands-left-mob { font-size: 9px !important; letter-spacing: 0.06em !important; }
+        .hands-left-mob { font-size: 8.5px !important; letter-spacing: 0.06em !important; white-space: nowrap; text-align: center; }
 
         .seat { position: absolute !important; z-index: 20 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 0 !important; width: 56px !important; height: 46px !important; background: transparent !important; border: none !important; box-shadow: none !important; }
         .ava { width: 50px !important; height: 25px !important; background: linear-gradient(180deg, #2a2d32 0%, #1c1e22 100%) !important; border-radius: 50px 50px 0 0 !important; border: 1.5px solid #3a3d42 !important; border-bottom: none !important; box-shadow: inset 0 2px 4px rgba(255,255,255,0.05) !important; transition: all 0.3s ease !important; }
@@ -384,6 +384,7 @@ def show():
     board_raw = data.get("board_cards", [])
     pot_size = data.get("pot_size", 0)
     villain_act = data.get("villain_action", "")
+    hero_act = data.get("hero_action", "")
     actions = data.get("actions", ["Check"])
     ranges = data.get("ranges", {})
     
@@ -617,7 +618,10 @@ def show():
         is_bet = villain_act and ("BET" in villain_act.upper() or "RAISE" in villain_act.upper() or "ALL-IN" in villain_act.upper())
         
         if villain_act:
-            if not is_bet:
+            if is_bet:
+                act_word = "RAISE" if "RAISE" in villain_act.upper() else ("ALL-IN" if "ALL-IN" in villain_act.upper() else "BET")
+                v_act_html = f'<div class="villain-act-badge-mob act-bottom-mob">{act_word}</div>'
+            else:
                 v_act_html = f'<div class="villain-act-badge-mob act-bottom-mob">{villain_act}</div>'
                 
         opp_html += f'<div class="seat {cls}" style="{ss}">{cards}<div class="ava"></div><div class="plate"><span class="pos">{villain_p}</span><span class="stack">{p_stack}</span></div>{v_act_html}</div>'
@@ -644,7 +648,10 @@ def show():
             is_bet = villain_act and ("BET" in villain_act.upper() or "RAISE" in villain_act.upper() or "ALL-IN" in villain_act.upper())
             
             if p == villain_pos and villain_act:
-                if not is_bet:
+                if is_bet:
+                    act_word = "RAISE" if "RAISE" in villain_act.upper() else ("ALL-IN" if "ALL-IN" in villain_act.upper() else "BET")
+                    v_act_html = f'<div class="villain-act-badge-mob act-bottom-mob">{act_word}</div>'
+                else:
                     v_act_html = f'<div class="villain-act-badge-mob act-bottom-mob">{villain_act}</div>'
                 
             opp_html += f'<div class="seat {cls}" style="{ss}">{cards}<div class="ava"></div><div class="plate"><span class="pos">{p}</span><span class="stack">{p_stack}</span></div>{v_act_html}</div>'
@@ -658,6 +665,15 @@ def show():
                 bet_amount_str = villain_act.upper().replace("BET", "").replace("RAISE", "").strip().lower()
                 bet_txt = f'<div class="bet-txt">{bet_amount_str}</div>'
                 chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-mob"></div>{bet_txt}</div>'
+
+    # Добавляем фишки Хиро, если мы ставили
+    if hero_act:
+        is_hero_bet = ("BET" in hero_act.upper() or "RAISE" in hero_act.upper() or "ALL-IN" in hero_act.upper())
+        if is_hero_bet:
+            hero_cs = get_chip_style(0)
+            hero_bet_amount_str = hero_act.upper().replace("BET", "").replace("RAISE", "").strip().lower()
+            hero_bet_txt = f'<div class="bet-txt">{hero_bet_amount_str}</div>'
+            chips_html += f'<div class="chip-container" style="{hero_cs}"><div class="chip-mob"></div>{hero_bet_txt}</div>'
 
     hero_stack = stacks_data.get(hero_pos, "---")
     if rot[0] == btn_pos:
