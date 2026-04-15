@@ -29,7 +29,7 @@
     "villain_action": "RAISE 5.4bb",
     "hero_action": "BET 1.7bb",
     "info_link": "https://1drv.ms/o/c/acb7650af03ef10d/IgBHiWrZbMG_Q5Y4pr2Y50AHATC3RLD61zUmeKSLCseYwtA?e=mxLiw3",
-    "actions": ["Call", "Fold"],
+    "actions": ["Fold", "Call"],
     "ranges": {
       "Call": "AhJs, AhJc, AhJd, AsJh, AcJh, AdJh, AhTs, AhTc, AhTd, AsTh, AcTh, AdTh, Ah9s, Ah9c, Ah9d, As9h, Ac9h, Ad9h, QhJs, QhJc, QhJd, QsJh, QcJh, QdJh, QhTs, QhTc, QhTd, QsTh, QcTh, QdTh, JhTs, JhTc, JhTd, JsTh, JcTh, JdTh, 5d4d, 6d5d, 7d6d, 9d7d, Td9d, Jd9d, JdTd, QdJd, QdTd, Ad9d, AdTd, Ad4d, Ad3d, Ad5d, Ad6d, AsQs, AcQc, AdQd, AsQc, AcQd, AdQs, 3s3c, 3s3d, 3c3d, 4s4c, 4s4d, 4c4d, 5s5c, 5s5d, 5c5d, 9s9c, 9s9d, 9c9d, 8s6s, 8c6c, 8d6d",
       "Fold": "AsJc, AcJd, AdJs, AsTc, AcTd, AdTs, As9c, Ac9d, Ad9s, QsJc, QcJd, QdJs, QsTc, QcTd, QdTs, Qs9c, Qc9d, Qd9s, JsTc, JcTd, JdTs, Ah7s, Ah7c, Ah7d, As7c, Ac7d, Ad7s, Ah6s, Ah6c, Ah6d, As6c, Ac6d, Ad6s, Ah5s, Ah5c, Ah5d, As5c, Ac5d, Ad5s, Ah4s, Ah4c, Ah4d, As4c, Ac4d, Ad4s, Qh9s, Qh9c, Qh9d, Jh9s, Jh9c, Jh9d, Js9c, Jc9d, Jd9s, AsJs, AcJc, AsTs, AcTc, As9s, Ac9c, As7s, Ac7c, As6s, Ac6c, As5s, Ac5c, As4s, Ac4c, As3s, Ac3c, QsJs, QcJc, QsTs, QcTc, Qs9s, Qc9c, JsTs, JcTc, Js9s, Jc9c, Ts9s, Tc9c, Qs7s, Qc7c",
