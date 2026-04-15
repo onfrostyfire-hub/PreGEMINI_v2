@@ -390,12 +390,15 @@ def show():
     table_size = data.get("table_size", 6)
     stacks_data = data.get("stacks", {})
 
-    h_val = st.session_state.pf_hand
+   h_val = st.session_state.pf_hand
     action_weights = {act: pf_get_weight(h_val, ranges.get(act, "")) for act in actions}
     
-    correct_act = actions[0]
+    # Принудительно сортируем: агрессия (Bet/Raise) идет первой (0-Freq), пассив (Check/Fold) летит в конец (Freq-100)
+    sorted_actions = sorted(actions, key=lambda x: 1 if x.lower() in ['check', 'fold'] else 0)
+    
+    correct_act = sorted_actions[0]
     cumulative = 0
-    for act in actions:
+    for act in sorted_actions:
         if st.session_state.pf_rng < cumulative + action_weights[act]:
             correct_act = act
             break
