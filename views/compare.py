@@ -40,14 +40,14 @@ def render_popover_selector(ranges_db, suffix, emoji):
 def show():
     st.markdown("""
         <style>
-            /* Убираем отступы контейнера страницы */
+            /* Убираем лишние отступы экрана */
             .block-container { 
                 padding: 1rem 0.2rem 5rem 0.2rem !important; 
                 max-width: 100% !important; 
                 overflow-x: hidden !important; 
             }
             
-            /* ЖЕСТКИЙ ФЛЕКСБОКС ДЛЯ МОБИЛКИ: две колонки ровно по 50% */
+            /* Жесткий фикс для кнопок-селекторов Стримлита */
             div[data-testid="stHorizontalBlock"] {
                 display: flex !important;
                 flex-direction: row !important;
@@ -63,50 +63,60 @@ def show():
                 padding: 0 !important;
             }
             
-            /* Коробка вокруг матрицы */
-            .matrix-box { 
-                border: 1px solid #333; 
-                border-radius: 4px; 
-                padding: 1px; 
-                background: #0a0a0c; 
-                margin-top: 2px; 
+            /* --- СЫРОЙ HTML КОНТЕЙНЕР ДЛЯ МАТРИЦ (В ОБХОД СТРИМЛИТА) --- */
+            .custom-matrix-row {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 4px;
                 width: 100%;
-                overflow: hidden; 
+                margin-top: 4px;
+            }
+            .custom-matrix-col {
+                flex: 1 1 50%;
+                min-width: 0;
+                width: 50%;
+                background: #0a0a0c;
+                border: 1px solid #333;
+                border-radius: 4px;
+                padding: 1px;
                 box-shadow: 0 2px 6px rgba(0,0,0,0.6);
             }
             
-            /* ЛОМАЕМ СТРУКТУРУ РЕНДЕРА МАТРИЦЫ ИЗ poker_utils.py */
-            /* 1. Убираем зазоры (gap) между картами, чтобы сэкономить место */
-            .matrix-box > div:first-child {
+            /* Ломаем и переписываем стили, которые генерирует poker_utils.py */
+            .custom-matrix-col > div:first-child {
                 gap: 0px !important; 
                 padding: 0px !important;
                 border: none !important;
             }
-            /* 2. Жестко ужимаем ячейки и шрифт внутри них */
-            .matrix-box div[title] { 
+            .custom-matrix-col div[title] { 
                 font-size: 5.5px !important; 
                 font-weight: 800 !important; 
                 letter-spacing: -0.5px !important;
                 min-width: 0 !important;
                 min-height: 0 !important;
                 overflow: hidden !important;
-                box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.3) !important; /* Визуальный разделитель вместо gap */
+                box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.4) !important; /* Разделитель вместо отступов */
             }
             
-            /* Ужимаем плашки статистики под матрицей (Raise/Call/Fold) */
-            .matrix-box > div:last-child {
+            /* Ужимаем статистику под матрицей */
+            .custom-matrix-col > div:last-child {
                 gap: 2px !important;
                 margin-top: 4px !important;
+                padding-bottom: 2px !important;
+                justify-content: center !important;
             }
-            .matrix-box > div:last-child > div { 
-                font-size: 7px !important; 
-                padding: 2px 3px !important; 
-                border-radius: 3px !important;
+            .custom-matrix-col > div:last-child > div { 
+                font-size: 6px !important; 
+                padding: 1px 3px !important; 
+                border-radius: 2px !important;
                 letter-spacing: -0.2px !important;
                 white-space: nowrap !important;
             }
             
-            /* Микро-кнопки поповеров настроек */
+            /* Микро-кнопки поповеров */
             div[data-testid="stPopover"] {
                 margin-top: -10px !important;
             }
@@ -131,18 +141,22 @@ def show():
         st.error("База ренджей пуста.")
         return
 
+    # 1. Стримлитовские колонки только для селекторов
     col1, col2 = st.columns(2)
 
     with col1:
         data_a = render_popover_selector(ranges_db, "A", "🅰️")
-        if data_a:
-            st.markdown('<div class="matrix-box">', unsafe_allow_html=True)
-            st.markdown(utils.render_range_matrix(data_a), unsafe_allow_html=True)
-            st.markdown('</div>', unsafe_allow_html=True)
-
     with col2:
         data_b = render_popover_selector(ranges_db, "B", "🅱️")
-        if data_b:
-            st.markdown('<div class="matrix-box">', unsafe_allow_html=True)
-            st.markdown(utils.render_range_matrix(data_b), unsafe_allow_html=True)
-            st.markdown('</div>', unsafe_allow_html=True)
+
+    # 2. Рендерим матрицы в обход Стримлита. 
+    # utils.render_range_matrix выдает HTML, мы его просто пакуем в наш пуленепробиваемый контейнер.
+    matrix_a_html = utils.render_range_matrix(data_a) if data_a else "<div style='color:#444;text-align:center;font-size:10px;padding:20px 0;'>Нет данных</div>"
+    matrix_b_html = utils.render_range_matrix(data_b) if data_b else "<div style='color:#444;text-align:center;font-size:10px;padding:20px 0;'>Нет данных</div>"
+
+    st.markdown(f"""
+    <div class="custom-matrix-row">
+        <div class="custom-matrix-col">{matrix_a_html}</div>
+        <div class="custom-matrix-col">{matrix_b_html}</div>
+    </div>
+    """, unsafe_allow_html=True)
