@@ -15,12 +15,12 @@ def render_popover_selector(ranges_db, suffix, emoji):
     curr_sc = st.session_state.get(k_sc)
     curr_sp = st.session_state.get(k_sp)
 
-    # Заголовок выбранного ренджа (максимально плотный)
+    # Заголовок выбранного ренджа (максимально плотный, убраны все лишние line-height)
     if curr_sc and curr_sp:
         short_sc = curr_sc.replace("Def vs 3bet", "Def3B").replace("Open Raise", "OR").replace("BB def vs PFR", "BB vs PFR")
-        st.markdown(f"<div class='range-header'>{emoji} {short_sc}</div><div class='range-subheader'>{curr_sp}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='line-height:1; margin-bottom:2px; text-align:center;'><div style='font-weight:900;font-size:10px;color:#ffc107;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>{emoji} {short_sc}</div><div style='font-size:8.5px;color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;'>{curr_sp}</div></div>", unsafe_allow_html=True)
     else:
-        st.markdown(f"<div class='range-header'>{emoji} Пусто</div><div class='range-subheader'>...</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='line-height:1; margin-bottom:2px; text-align:center;'><div style='font-weight:900;font-size:10px;color:#666;font-style:italic;'>{emoji} Пусто</div><div style='font-size:8.5px;color:#444;margin-top:1px;'>...</div></div>", unsafe_allow_html=True)
 
     # Микро-кнопка фильтра
     with st.popover("⚙️ ФИЛЬТР", use_container_width=True):
@@ -42,9 +42,17 @@ def show():
         <style>
             /* Максимально срезаем отступы контейнера страницы */
             .block-container { 
-                padding: 0.5rem 0.2rem 2rem 0.2rem !important; 
+                padding: 0.2rem 0.2rem 1rem 0.2rem !important; 
                 max-width: 100% !important; 
                 overflow-x: hidden !important; 
+            }
+            
+            /* ЖЕСТКИЙ ФИКС СТРИМЛИТА ДЛЯ ФИЛЬТРОВ: убиваем скрытые зазоры между текстом и кнопкой */
+            div[data-testid="column"] > div[data-testid="stVerticalBlock"] {
+                gap: 0px !important;
+            }
+            div[data-testid="column"] .element-container {
+                margin-bottom: 0px !important;
             }
             
             /* Жесткая сетка для мобилки: 2 колонки ровно по 50% */
@@ -55,41 +63,17 @@ def show():
                 gap: 4px !important;
                 width: 100% !important;
                 padding: 0 !important;
-                margin-bottom: 2px !important;
+                margin-bottom: 2px !important; /* Отступ от кнопок до матрицы */
             }
             div[data-testid="column"] {
                 width: 50% !important;
                 flex: 1 1 calc(50% - 2px) !important;
                 min-width: 0 !important;
-                padding: 2px !important; /* Уменьшен внутренний отступ коробки */
+                padding: 2px 2px 0px 2px !important; /* Убран нижний отступ коробки фильтра */
                 background: #0a0a0c;
                 border: 1px solid #333;
                 border-radius: 6px;
                 box-shadow: 0 2px 6px rgba(0,0,0,0.6);
-            }
-            
-            /* --- СТИЛИЗАЦИЯ ФИЛЬТРОВ И ЗАГОЛОВКОВ --- */
-            .range-header {
-                font-size: 9.5px;
-                font-weight: 900;
-                color: #ffc107;
-                line-height: 1;
-                margin-bottom: 0px;
-                text-align: center;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            .range-subheader {
-                font-size: 7.5px;
-                color: #aaa;
-                font-weight: bold;
-                line-height: 1;
-                text-align: center;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                margin-bottom: 2px;
             }
             
             /* Сжимаем кнопку фильтра (popover) до предела */
@@ -113,7 +97,7 @@ def show():
                 margin: 0 !important;
             }
             
-            /* --- СЫРОЙ HTML КОНТЕЙНЕР ДЛЯ МАТРИЦ --- */
+            /* --- СЫРОЙ HTML КОНТЕЙНЕР ДЛЯ МАТРИЦ (ТВОЙ КОД, НЕ ТРОНУТ) --- */
             .custom-matrix-row {
                 display: flex;
                 flex-direction: row;
@@ -123,7 +107,7 @@ def show():
                 gap: 4px;
                 width: 100%;
                 margin-top: 2px;
-                margin-bottom: 8px; /* Отступ между первым и вторым рядом */
+                margin-bottom: 6px; /* Отступ между первым и вторым рядом */
             }
             .custom-matrix-col {
                 flex: 1 1 50%;
@@ -136,7 +120,7 @@ def show():
                 box-shadow: 0 2px 6px rgba(0,0,0,0.6);
             }
             
-            /* --- СТИЛИ МАТРИЦЫ (НЕ ТРОГАЕМ РАЗМЕРЫ) --- */
+            /* --- СТИЛИ МАТРИЦЫ (ТВОЙ КОД, НЕ ТРОНУТ) --- */
             .custom-matrix-col > div:first-child {
                 gap: 0px !important; 
                 padding: 0px !important;
@@ -179,7 +163,7 @@ def show():
         </style>
     """, unsafe_allow_html=True)
 
-    st.markdown("<h4 style='margin-bottom:6px; margin-top:-18px; text-align:center; color:#fff; text-transform:uppercase; font-weight:900; font-size: 13px; letter-spacing:1px;'>🔬 Range Lab</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='margin-bottom:4px; margin-top:-10px; text-align:center; color:#fff; text-transform:uppercase; font-weight:900; font-size: 13px; letter-spacing:1px;'>🔬 Range Lab</h4>", unsafe_allow_html=True)
 
     ranges_db = utils.load_ranges()
     if not ranges_db: 
