@@ -587,7 +587,7 @@ def show():
 
     def get_chip_style(idx):
         return {
-            0: "bottom: 38px; left: 55%; transform: translateX(-50%);", 
+            0: "bottom: 48px; left: 50%; transform: translateX(-50%);", 
             1: "top: 63%; left: 16%; transform: translateY(-50%);", 
             2: "top: 23%; left: 20%;",
             3: "top: 13%; left: 50%; transform: translateX(-50%);", 
