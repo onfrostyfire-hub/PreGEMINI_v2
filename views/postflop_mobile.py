@@ -3,7 +3,6 @@ import random
 import time
 import os
 import json
-import csv
 import inspect
 from datetime import datetime
 import poker_utils as utils
@@ -26,17 +25,11 @@ def safe_save_stats(data):
         with open("postflop_stats.json", "w") as f: json.dump(data, f)
 
 def safe_save_history(data):
-    # Жестко пишем в отдельный файл, чтобы не мешать с префлопом
-    fname = "postflop_history.csv"
-    file_exists = os.path.isfile(fname)
-    try:
-        with open(fname, 'a', newline='', encoding='utf-8') as f:
-            writer = csv.DictWriter(f, fieldnames=["Date", "Spot", "Hand", "Result", "CorrectAction", "UserAction"])
-            if not file_exists:
-                writer.writeheader()
-            writer.writerow(data)
-    except Exception:
-        pass
+    sig = inspect.signature(utils.save_to_history)
+    if 'is_postflop' in sig.parameters:
+        utils.save_to_history(data, is_postflop=True)
+    else:
+        utils.save_to_history(data)
 # --------------------------------------------------------
 
 @st.cache_data(ttl=0)
@@ -707,8 +700,13 @@ def show():
         
         safe_save_history({
             "Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 
-            "Spot": chosen_key, "Hand": f"{h_val}", "Result": int(corr), 
-            "CorrectAction": correct_act, "UserAction": action
+            "Spot": chosen_key, 
+            "Hand": f"{h_val}", 
+            "Result": int(corr), 
+            "Correct": correct_act,
+            "Action": action,
+            "CorrectAction": correct_act, 
+            "UserAction": action
         })
         
         shield_used = False
@@ -751,24 +749,6 @@ def show():
             curr_stats = safe_load_stats()
             curr_stats["combo"] = st.session_state.pf_combo
             curr_stats["shields"] = st.session_state.shields
-            
-            # --- РУЧНОЕ ОБНОВЛЕНИЕ SPOT MASTERY ДЛЯ ПОСТФЛОПА ---
-            if "spot_mastery" not in curr_stats:
-                curr_stats["spot_mastery"] = {}
-            if chosen_key not in curr_stats["spot_mastery"]:
-                curr_stats["spot_mastery"][chosen_key] = {"t": 0, "h": "", "d": ""}
-            
-            sm = curr_stats["spot_mastery"][chosen_key]
-            sm["t"] += 1
-            sm["h"] += "1" if corr else "0"
-            if len(sm["h"]) > 100: sm["h"] = sm["h"][-100:]
-            sm["d"] = datetime.now().strftime("%Y-%m-%d")
-            
-            if corr:
-                curr_stats["xp"] = curr_stats.get("xp", 0) + 10
-                
-            curr_stats["total_hands"] = curr_stats.get("total_hands", 0) + 1
-            
             safe_save_stats(curr_stats)
             if hasattr(utils, "force_sync"):
                 utils.force_sync()
