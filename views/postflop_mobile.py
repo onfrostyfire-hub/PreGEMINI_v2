@@ -103,7 +103,7 @@ def show():
            ========================================== */
         .pf-pot-badge { position: absolute; top: 20%; left: 50%; transform: translateX(-50%); z-index: 15; }
         .pf-board { position: absolute; top: 43%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
-        .pf-mastery { position: absolute; bottom: -55px; left: 13%; transform: translateX(-50%); z-index: 15; width: 100px; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;}
+        .pf-mastery { position: absolute; bottom: -45px; left: 20%; transform: translateX(-50%); z-index: 15; width: 100px; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;}
         
         .mobile-game-area { margin-top: 50px !important; margin-bottom: 55px !important; }
         .rng-hint-wrap { margin-top: 12px !important; margin-bottom: 8px !important; }
@@ -279,6 +279,7 @@ def show():
         avail_heroes = set()
         for sp in sel_spots: avail_heroes.update(tree[sp].keys())
         avail_heroes = sorted(list(avail_heroes))
+        sel_heroes = st.multiselect("2. Position(s)", avail_heroes, default=[x for x in saved.get("pf_sel_heroes", []) if x in heroes]) if 'avail_heroes' in locals() else []
         sel_heroes = st.multiselect("2. Position(s)", avail_heroes, default=[x for x in saved.get("pf_sel_heroes", []) if x in avail_heroes])
         
         avail_streets = set()
@@ -335,8 +336,8 @@ def show():
         st.stop()
 
     stats_data_init = safe_load_stats()
-    if 'shields' not in st.session_state: 
-        st.session_state.shields = stats_data_init.get("shields", 0)
+    if 'pf_shields' not in st.session_state: 
+        st.session_state.pf_shields = stats_data_init.get("shields", 0)
     if 'pf_combo' not in st.session_state: 
         st.session_state.pf_combo = stats_data_init.get("combo", 0)
 
@@ -384,7 +385,6 @@ def show():
     h_val = st.session_state.pf_hand
     action_weights = {act: pf_get_weight(h_val, ranges.get(act, "")) for act in actions}
     
-    # Принудительно сортируем: агрессия (Bet/Raise) идет первой (0-Freq), пассив (Check/Fold) летит в конец (Freq-100)
     sorted_actions = sorted(actions, key=lambda x: 1 if x.lower() in ['check', 'fold'] else 0)
     
     correct_act = sorted_actions[0]
@@ -470,7 +470,7 @@ def show():
         lbl_left = f"x{curr_mult}"; lbl_right = f"x{next_mult}"
 
     is_pulsing = "rage-pulse" if rage_pct >= 95 and next_mult != "MAX" else ""
-    is_flashing = "rage-flash" if st.session_state.pop("just_leveled_up", False) else ""
+    is_flashing = "rage-flash" if st.session_state.pop("pf_just_leveled_up", False) else ""
     
     if curr_mult == 1.0: grad = "linear-gradient(90deg, #17a2b8, #0dcaf0)"
     elif curr_mult == 1.5: grad = "linear-gradient(90deg, #0dcaf0, #28a745)"
@@ -482,7 +482,7 @@ def show():
 
     shield_display = (
         f'<span style="'
-        f'display:{"inline-flex" if st.session_state.shields > 0 else "none"};'
+        f'display:{"inline-flex" if st.session_state.pf_shields > 0 else "none"};'
         f'align-items:center;gap:2px;'
         f'font-size:10px;font-weight:700;letter-spacing:0.04em;'
         f'padding:1px 6px 1px 5px;margin-left:4px;'
@@ -491,7 +491,7 @@ def show():
         f'border-radius:8px;'
         f'color:rgba(13,202,240,0.92);'
         f'box-shadow:0 0 8px rgba(13,202,240,0.12);'
-        f'">🛡️{st.session_state.shields}</span>'
+        f'">🛡️{st.session_state.pf_shields}</span>'
     )
 
     combo_badge = (
@@ -547,14 +547,14 @@ def show():
 """
 
     anim_html = ""
-    anim_reward = st.session_state.pop("anim_reward", None)
+    anim_reward = st.session_state.pop("pf_anim_reward", None)
     if anim_reward is not None:
         if anim_reward > 0: a_color = "#00ff00"; a_text = f"+${anim_reward}"
         elif anim_reward < 0: a_color = "#ff0000"; a_text = f"-${abs(anim_reward)}"
         else: a_color = "#888"; a_text = "$0"
         anim_html = f'<div class="floating-reward" style="color: {a_color}">{a_text}</div>'
         
-    shatter_html = '<div class="glass-shatter"></div>' if st.session_state.pop("shield_break_anim", False) else ""
+    shatter_html = '<div class="glass-shatter"></div>' if st.session_state.pop("pf_shield_break_anim", False) else ""
 
     st.markdown(header_html, unsafe_allow_html=True)
     st.markdown(rage_bar_html, unsafe_allow_html=True)
@@ -656,7 +656,6 @@ def show():
                 bet_txt = f'<div class="bet-txt">{bet_amount_str}</div>'
                 chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-mob"></div>{bet_txt}</div>'
 
-    # Добавляем фишки Хиро, если мы ставили
     if hero_act:
         is_hero_bet = ("BET" in hero_act.upper() or "RAISE" in hero_act.upper() or "ALL-IN" in hero_act.upper())
         if is_hero_bet:
@@ -706,30 +705,30 @@ def show():
             
             c_new = st.session_state.pf_combo
             if c_new == 100:
-                st.session_state.shields += 1
+                st.session_state.pf_shields += 1
                 st.session_state.pf_toast_msgs.append("🛡️ +1 ЩИТ (100 комбо)!")
             elif c_new == 250:
-                st.session_state.shields += 1
+                st.session_state.pf_shields += 1
                 st.session_state.pf_toast_msgs.append("🛡️ +1 ЩИТ (250 комбо)!")
             elif c_new == 500:
-                st.session_state.shields += 1
+                st.session_state.pf_shields += 1
                 st.session_state.pf_toast_msgs.append("🛡️ +1 ЩИТ (500 комбо)!")
             elif c_new == 1000:
-                st.session_state.shields += 4
+                st.session_state.pf_shields += 4
                 st.session_state.pf_toast_msgs.append("🛡️ +4 ЩИТА (1000 комбо - GODLIKE)!")
 
         else:
             st.session_state.pf_flash_correct = False
-            if st.session_state.shields > 0:
-                st.session_state.shields -= 1
-                st.session_state.shield_break_anim = True
+            if st.session_state.pf_shields > 0:
+                st.session_state.pf_shields -= 1
+                st.session_state.pf_shield_break_anim = True
                 st.session_state.pf_last_error = True
                 shield_used = True
-                st.session_state.msg = f"🛡️ ЩИТ ПРОБИТ! Защита от мисклика. Правильно: {correct_act}"
+                st.session_state.pf_msg = f"🛡️ ЩИТ ПРОБИТ! Защита от мисклика. Правильно: {correct_act}"
             else:
                 st.session_state.pf_combo = 0
                 st.session_state.pf_last_error = True
-                st.session_state.msg = f"❌ ОШИБКА! Правильно: {correct_act}"
+                st.session_state.pf_msg = f"❌ ОШИБКА! Правильно: {correct_act}"
             
         c_new = st.session_state.pf_combo
         new_mult = 1.0
@@ -741,7 +740,7 @@ def show():
         elif c_new >= 10: new_mult = 1.5
 
         if new_mult > curr_mult:
-            st.session_state.just_leveled_up = True
+            st.session_state.pf_just_leveled_up = True
 
         try:
             alerts, _ = utils.process_gamification(corr, st.session_state.pf_combo, st.session_state.pf_session_hands, chosen_key, shield_used=shield_used, is_postflop=True)
@@ -751,7 +750,7 @@ def show():
         try:
             curr_stats = safe_load_stats()
             curr_stats["combo"] = st.session_state.pf_combo
-            curr_stats["shields"] = st.session_state.shields
+            curr_stats["shields"] = st.session_state.pf_shields
             safe_save_stats(curr_stats)
             if hasattr(utils, "force_sync"):
                 utils.force_sync()
@@ -765,7 +764,7 @@ def show():
         st.session_state.pf_hand = None
         st.rerun()
     elif st.session_state.pf_last_error:
-        st.markdown(f'<div style="background:#dc3545; color:white; padding:12px; border-radius:12px; text-align:center; font-weight:bold; margin-bottom:15px; font-size:16px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">{st.session_state.msg}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="background:#dc3545; color:white; padding:12px; border-radius:12px; text-align:center; font-weight:bold; margin-bottom:15px; font-size:16px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">{st.session_state.pf_msg}</div>', unsafe_allow_html=True)
         st.markdown("""<style>
         div[data-testid="stButton"] button[kind="primary"] {
             background: linear-gradient(180deg, #1c3a55 0%, #102436 100%) !important;
@@ -779,7 +778,7 @@ def show():
         if st.button("UNDERSTOOD, NEXT", type="primary", use_container_width=True):
             st.session_state.pf_last_error = False
             st.session_state.pf_hand = None
-            st.session_state.shield_break_anim = False
+            st.session_state.pf_shield_break_anim = False
             st.rerun()
     else:
         st.markdown('<div class="rng-hint-wrap">RNG 0-Freq: ACTION &nbsp;|&nbsp; Freq-100: FOLD/CHECK</div>', unsafe_allow_html=True)
