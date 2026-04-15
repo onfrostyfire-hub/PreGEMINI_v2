@@ -103,7 +103,7 @@ def show():
            ========================================== */
         .pf-pot-badge { position: absolute; top: 20%; left: 50%; transform: translateX(-50%); z-index: 15; }
         .pf-board { position: absolute; top: 43%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
-        .pf-mastery { position: absolute; bottom: -55px; left: 13%; transform: translateX(-50%); z-index: 15; width: 100px; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;}
+        .pf-mastery { position: absolute; bottom: -45px; left: 20%; transform: translateX(-50%); z-index: 15; width: 100px; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;}
         
         .mobile-game-area { margin-top: 50px !important; margin-bottom: 55px !important; }
         .rng-hint-wrap { margin-top: 12px !important; margin-bottom: 8px !important; }
@@ -335,10 +335,14 @@ def show():
         st.stop()
 
     stats_data_init = safe_load_stats()
-    if 'shields' not in st.session_state: st.session_state.shields = stats_data_init.get("shields", 0)
+    if 'shields' not in st.session_state: 
+        st.session_state.shields = stats_data_init.get("shields", 0)
+    if 'pf_combo' not in st.session_state: 
+        st.session_state.pf_combo = stats_data_init.get("combo", 0)
 
-    for k in ['pf_combo', 'pf_session_hands', 'pf_session_correct', 'pf_rng']:
+    for k in ['pf_session_hands', 'pf_session_correct', 'pf_rng']:
         if k not in st.session_state: st.session_state[k] = 0
+        
     if 'pf_toast_msgs' not in st.session_state: st.session_state.pf_toast_msgs = []
     if st.session_state.pf_toast_msgs:
         for msg in st.session_state.pf_toast_msgs: st.toast(msg, icon="🔥" if "Combo" in msg else "🎯")
