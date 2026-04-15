@@ -16,15 +16,14 @@ def render_popover_selector(ranges_db, suffix, emoji):
     curr_sp = st.session_state.get(k_sp)
 
     if curr_sp and curr_sc:
-        # Сокращаем длинные названия для экономии места
         short_sc = curr_sc.replace("Def vs 3bet", "Def3B").replace("Open Raise", "OR").replace("BB def vs PFR", "BB vs PFR")
-        display_text = f"<div style='font-weight:900;font-size:11px;color:#ffc107;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>{emoji} {short_sc}</div><div style='font-size:10px;color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>{curr_sp}</div>"
+        display_text = f"<div style='font-weight:900;font-size:10px;color:#ffc107;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>{emoji} {short_sc}</div><div style='font-size:9px;color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;'>{curr_sp}</div>"
     else:
-        display_text = f"<div style='color:#666;font-style:italic;font-size:11px;font-weight:bold;'>{emoji} Выбрать...</div>"
+        display_text = f"<div style='color:#666;font-style:italic;font-size:10px;font-weight:bold;'>{emoji} Выбрать...</div>"
 
     st.markdown(display_text, unsafe_allow_html=True)
 
-    with st.popover("⚙️ Настроить", use_container_width=True):
+    with st.popover("⚙️", use_container_width=True):
         opts_sc = sorted(list(sc_map.keys()))
         idx_sc = opts_sc.index(curr_sc) if curr_sc in opts_sc else 0
         sc = st.selectbox("Сценарий", opts_sc, key=k_sc, index=idx_sc) if opts_sc else None
@@ -41,39 +40,91 @@ def render_popover_selector(ranges_db, suffix, emoji):
 def show():
     st.markdown("""
         <style>
-            /* Сжимаем боковые отступы экрана, чтобы выжать максимум ширины */
-            .block-container { padding-top: 1.5rem !important; padding-bottom: 5rem !important; padding-left: 0.3rem !important; padding-right: 0.3rem !important; max-width: 100% !important; }
+            /* Убираем отступы контейнера страницы */
+            .block-container { 
+                padding: 1rem 0.2rem 5rem 0.2rem !important; 
+                max-width: 100% !important; 
+                overflow-x: hidden !important; 
+            }
             
-            /* ЛОМАЕМ СТРИМЛИТ: Жестко заставляем колонки стоять в ряд на мобилках */
+            /* ЖЕСТКИЙ ФЛЕКСБОКС ДЛЯ МОБИЛКИ: две колонки ровно по 50% */
             div[data-testid="stHorizontalBlock"] {
                 display: flex !important;
                 flex-direction: row !important;
                 flex-wrap: nowrap !important;
-                gap: 6px !important;
+                gap: 4px !important;
+                width: 100% !important;
+                padding: 0 !important;
             }
             div[data-testid="column"] {
                 width: 50% !important;
-                flex: 1 1 calc(50% - 3px) !important;
+                flex: 1 1 50% !important;
                 min-width: 0 !important;
-                margin-bottom: 10px !important;
+                padding: 0 !important;
             }
             
-            /* Дизайн коробок с матрицами */
-            .matrix-box { border: 1px solid #333; border-radius: 6px; padding: 2px; background: #111; margin-top: 4px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.5); }
+            /* Коробка вокруг матрицы */
+            .matrix-box { 
+                border: 1px solid #333; 
+                border-radius: 4px; 
+                padding: 1px; 
+                background: #0a0a0c; 
+                margin-top: 2px; 
+                width: 100%;
+                overflow: hidden; 
+                box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+            }
             
-            /* Ужимаем шрифты до микроскопических, чтобы влезли в 50% ширины айфона */
-            .matrix-box div[title] { font-size: 6px !important; font-weight: bold !important; line-height: 1 !important; }
+            /* ЛОМАЕМ СТРУКТУРУ РЕНДЕРА МАТРИЦЫ ИЗ poker_utils.py */
+            /* 1. Убираем зазоры (gap) между картами, чтобы сэкономить место */
+            .matrix-box > div:first-child {
+                gap: 0px !important; 
+                padding: 0px !important;
+                border: none !important;
+            }
+            /* 2. Жестко ужимаем ячейки и шрифт внутри них */
+            .matrix-box div[title] { 
+                font-size: 5.5px !important; 
+                font-weight: 800 !important; 
+                letter-spacing: -0.5px !important;
+                min-width: 0 !important;
+                min-height: 0 !important;
+                overflow: hidden !important;
+                box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.3) !important; /* Визуальный разделитель вместо gap */
+            }
             
-            /* Сжимаем статистику под матрицей */
-            .matrix-box > div > div:last-child > div { font-size: 8px !important; padding: 2px 4px !important; border-radius: 4px !important; }
+            /* Ужимаем плашки статистики под матрицей (Raise/Call/Fold) */
+            .matrix-box > div:last-child {
+                gap: 2px !important;
+                margin-top: 4px !important;
+            }
+            .matrix-box > div:last-child > div { 
+                font-size: 7px !important; 
+                padding: 2px 3px !important; 
+                border-radius: 3px !important;
+                letter-spacing: -0.2px !important;
+                white-space: nowrap !important;
+            }
             
-            /* Компактные кнопки поповеров */
-            div[data-testid="stPopover"] button { padding: 2px 4px !important; font-size: 10px !important; height: 28px !important; min-height: 28px !important; background: #1c1e22 !important; border-color: #3a3d42 !important; }
-            div[data-testid="stPopover"] button p { font-size: 11px !important; font-weight: 700 !important; color: #ccc !important; }
+            /* Микро-кнопки поповеров настроек */
+            div[data-testid="stPopover"] {
+                margin-top: -10px !important;
+            }
+            div[data-testid="stPopover"] button { 
+                padding: 0px !important; 
+                height: 22px !important; 
+                min-height: 22px !important; 
+                background: #1c1e22 !important; 
+                border-color: #3a3d42 !important; 
+            }
+            div[data-testid="stPopover"] button p { 
+                font-size: 10px !important; 
+                line-height: 1 !important;
+            }
         </style>
     """, unsafe_allow_html=True)
 
-    st.markdown("<h4 style='margin-bottom:10px; color:#fff; text-transform:uppercase; font-weight:900; letter-spacing:1px;'>🔬 Range Lab</h4>", unsafe_allow_html=True)
+    st.markdown("<h4 style='margin-bottom:5px; margin-top:-10px; text-align:center; color:#fff; text-transform:uppercase; font-weight:900; font-size: 14px; letter-spacing:1px;'>🔬 Range Lab</h4>", unsafe_allow_html=True)
 
     ranges_db = utils.load_ranges()
     if not ranges_db: 
