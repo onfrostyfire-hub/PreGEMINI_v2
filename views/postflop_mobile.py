@@ -5,14 +5,26 @@ import os
 import json
 import inspect
 from datetime import datetime
+import pandas as pd
 import poker_utils as utils
 
-# --- УМНЫЕ ОБЁРТКИ ДЛЯ НЕЗАВИСИМЫХ СТАТОВ ПОСТФЛОПА ---
+# --- ЖЕЛЕЗНЫЕ ОБЁРТКИ (Теперь через Google Sheets) ---
 def safe_load_stats():
-    return utils.load_user_stats(is_postflop=True)
+    settings = utils.load_user_settings(is_postflop=True)
+    stats = settings.get("stats", {})
+    if "xp" not in stats: stats["xp"] = 0
+    if "combo" not in stats: stats["combo"] = 0
+    if "shields" not in stats: stats["shields"] = 0
+    if "spot_mastery" not in stats: stats["spot_mastery"] = {}
+    if "streak" not in stats: stats["streak"] = 0
+    if "total_hands" not in stats: stats["total_hands"] = 0
+    if "max_combo" not in stats: stats["max_combo"] = 0
+    return stats
 
 def safe_save_stats(data):
-    utils.save_user_stats(data, is_postflop=True)
+    settings = utils.load_user_settings(is_postflop=True)
+    settings["stats"] = data
+    utils.save_user_settings(settings, is_postflop=True)
 
 def safe_save_history(data):
     utils.save_to_history(data, is_postflop=True)
@@ -335,6 +347,40 @@ def show():
         st.stop()
 
     stats_data_init = safe_load_stats()
+    
+    # === БЛОК АВТОМАТИЧЕСКОГО ВОССТАНОВЛЕНИЯ ИЗ GOOGLE ===
+    if not stats_data_init.get("spot_mastery"):
+        try:
+            sheets = utils.get_worksheets()
+            if "PostflopHistory" in sheets:
+                vals = sheets["PostflopHistory"].get_all_values()
+                if vals and len(vals) > 1:
+                    headers = vals[0]
+                    df_pf = pd.DataFrame(vals[1:], columns=headers)
+                    df_pf["Date"] = pd.to_datetime(df_pf["Date"], errors='coerce')
+                    df_pf = df_pf.dropna(subset=["Date"]).sort_values("Date")
+                    
+                    new_mastery = {}
+                    total_corr = 0
+                    for _, row in df_pf.iterrows():
+                        sp = str(row.get("Spot", ""))
+                        res = 1 if str(row.get("Result", "0")) == "1" else 0
+                        total_corr += res
+                        d_str = row["Date"].strftime("%Y-%m-%d")
+                        if sp not in new_mastery: new_mastery[sp] = {"t": 0, "h": "", "d": ""}
+                        new_mastery[sp]["t"] += 1
+                        new_mastery[sp]["h"] += "1" if res else "0"
+                        if len(new_mastery[sp]["h"]) > 100: new_mastery[sp]["h"] = new_mastery[sp]["h"][-100:]
+                        new_mastery[sp]["d"] = d_str
+                        
+                    stats_data_init["spot_mastery"] = new_mastery
+                    stats_data_init["xp"] = total_corr * 10
+                    stats_data_init["total_hands"] = len(df_pf)
+                    safe_save_stats(stats_data_init)
+                    if hasattr(utils, "force_sync"): utils.force_sync()
+        except Exception:
+            pass
+
     if 'pf_shields' not in st.session_state: 
         st.session_state.pf_shields = stats_data_init.get("shields", 0)
     if 'pf_combo' not in st.session_state: 
@@ -741,20 +787,67 @@ def show():
         if new_mult > curr_mult:
             st.session_state.pf_just_leveled_up = True
 
-        try:
-            alerts, _ = utils.process_gamification(corr, st.session_state.pf_combo, st.session_state.pf_session_hands, chosen_key, shield_used=shield_used, is_postflop=True)
-            if alerts: st.session_state.pf_toast_msgs.extend(alerts)
-        except Exception: pass
+        # РУЧНАЯ ГЕЙМИФИКАЦИЯ И СОХРАНЕНИЕ В GOOGLE SHEETS
+        curr_stats = safe_load_stats()
+        curr_stats["combo"] = st.session_state.pf_combo
+        curr_stats["shields"] = st.session_state.pf_shields
+        curr_stats["total_hands"] = curr_stats.get("total_hands", 0) + 1
         
-        try:
-            curr_stats = safe_load_stats()
-            curr_stats["combo"] = st.session_state.pf_combo
-            curr_stats["shields"] = st.session_state.pf_shields
-            safe_save_stats(curr_stats)
-            if hasattr(utils, "force_sync"):
-                utils.force_sync()
-        except Exception: pass
+        now_date_str = datetime.now().strftime("%Y-%m-%d")
         
+        last_date = curr_stats.get("last_date", "")
+        if last_date:
+            try:
+                delta = (datetime.now().date() - datetime.strptime(last_date, "%Y-%m-%d").date()).days
+                if delta == 1: curr_stats["streak"] = curr_stats.get("streak", 1) + 1
+                elif delta > 1: curr_stats["streak"] = 1
+            except: curr_stats["streak"] = 1
+        else: curr_stats["streak"] = 1
+        curr_stats["last_date"] = now_date_str
+        
+        if "spot_mastery" not in curr_stats: curr_stats["spot_mastery"] = {}
+        sp_data = curr_stats["spot_mastery"].get(chosen_key, {"t": 0, "h": "", "d": ""})
+        if not isinstance(sp_data, dict): sp_data = {"t": 0, "h": "", "d": ""}
+        sp_data["t"] += 1
+        sp_data["h"] += "1" if corr else "0"
+        sp_data["d"] = now_date_str
+        if len(sp_data["h"]) > 100: sp_data["h"] = sp_data["h"][-100:]
+        curr_stats["spot_mastery"][chosen_key] = sp_data
+        
+        if curr_stats.get("dailies", {}).get("date") != now_date_str:
+            try: curr_stats["dailies"] = {"date": now_date_str, "quests": utils.generate_dailies()}
+            except: pass
+            
+        if "dailies" in curr_stats and "quests" in curr_stats["dailies"]:
+            for q in curr_stats["dailies"]["quests"]:
+                if not q.get("done", False):
+                    if q["id"] == "play": q["progress"] += 1
+                    elif q["id"] == "correct" and corr: q["progress"] += 1
+                    elif q["id"] == "combo" and c_new > q["progress"]: q["progress"] = c_new
+                    
+                    if q["progress"] >= q["target"]:
+                        q["progress"] = q["target"]
+                        q["done"] = True
+                        curr_stats["xp"] = curr_stats.get("xp", 0) + q.get("xp", 0)
+                        st.session_state.pf_toast_msgs.append(f"🎯 Daily: {q['desc']} (+${q['xp']})")
+        
+        reward_val = 0
+        if not shield_used:
+            if corr: reward_val = int(10 * curr_mult)
+            else:
+                if visual_rank == 1: reward_val = -int(10 * curr_mult)
+                elif visual_rank > 1: reward_val = -int(20 * curr_mult)
+        
+        curr_stats["xp"] = curr_stats.get("xp", 0) + reward_val
+        if curr_stats["xp"] < 0: curr_stats["xp"] = 0
+        
+        if c_new > curr_stats.get("max_combo", 0):
+            curr_stats["max_combo"] = c_new
+            
+        safe_save_stats(curr_stats)
+        if hasattr(utils, "force_sync"):
+            utils.force_sync()
+            
         st.rerun()
 
     if is_flashing_correct:
