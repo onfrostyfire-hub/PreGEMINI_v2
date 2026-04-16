@@ -1,3 +1,4 @@
+
 import streamlit as st
 import poker_utils as utils
 
@@ -38,7 +39,7 @@ def render_header(sc, sp, emoji):
 def show():
     st.markdown("""
         <style>
-            /* ТВОЙ КОД: Убираем лишние отступы экрана */
+            /* Убираем лишние отступы экрана */
             .block-container { 
                 padding: 1rem 0.2rem 5rem 0.2rem !important; 
                 max-width: 100% !important; 
@@ -70,29 +71,37 @@ def show():
                 margin-bottom: 2px;
             }
             
-            /* ТВОЙ КОД: СЫРОЙ HTML КОНТЕЙНЕР ДЛЯ МАТРИЦ (В ОБХОД СТРИМЛИТА) */
+            /* СЫРОЙ HTML КОНТЕЙНЕР ДЛЯ МАТРИЦ */
             .custom-matrix-row {
                 display: flex;
                 flex-direction: row;
                 flex-wrap: nowrap;
                 justify-content: space-between;
-                align-items: flex-start;
+                align-items: stretch;
                 gap: 4px;
                 width: 100%;
                 margin-top: 4px;
             }
-            .custom-matrix-col {
+            .custom-matrix-label {
                 flex: 1 1 50%;
                 min-width: 0;
-                width: 50%;
+                width: calc(50% - 2px);
+                display: block;
+                margin: 0;
+                cursor: pointer;
+                -webkit-tap-highlight-color: transparent;
+            }
+            .custom-matrix-col {
+                height: 100%;
                 background: #0a0a0c;
                 border: 1px solid #333;
                 border-radius: 4px;
                 padding: 1px;
                 box-shadow: 0 2px 6px rgba(0,0,0,0.6);
+                transition: all 0.2s ease-in-out;
             }
             
-            /* ТВОЙ КОД: Ломаем и переписываем стили, которые генерирует poker_utils.py */
+            /* Переписываем стили, которые генерирует poker_utils.py */
             .custom-matrix-col > div:first-child {
                 gap: 0px !important; 
                 padding: 0px !important;
@@ -108,7 +117,7 @@ def show():
                 box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.4) !important;
             }
             
-            /* ТВОЙ КОД: Ужимаем статистику под матрицей */
+            /* Ужимаем статистику под матрицей */
             .custom-matrix-col > div:last-child {
                 gap: 2px !important;
                 margin-top: 4px !important;
@@ -121,6 +130,52 @@ def show():
                 border-radius: 2px !important;
                 letter-spacing: -0.2px !important;
                 white-space: nowrap !important;
+            }
+
+            /* --- ЧИСТЫЙ CSS ЗУМ (FULLSCREEN) БЕЗ JS --- */
+            .expand-btn { display: none; }
+            .expand-btn:checked + .custom-matrix-col {
+                position: fixed;
+                top: 0; left: 0; right: 0; bottom: 0;
+                z-index: 99999;
+                background: #0a0a0c;
+                padding: 15px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 100vw;
+                height: 100vh;
+            }
+            
+            /* Стилизация внутри раскрытой матрицы */
+            .expand-btn:checked + .custom-matrix-col > div[style*="display:grid"] {
+                width: 100%;
+                max-width: 500px;
+            }
+            .expand-btn:checked + .custom-matrix-col .range-header {
+                font-size: 18px !important;
+                padding-bottom: 4px;
+                color: #ffc107;
+            }
+            .expand-btn:checked + .custom-matrix-col .range-subheader {
+                font-size: 14px !important;
+                margin-bottom: 12px;
+            }
+            .expand-btn:checked + .custom-matrix-col div[title] {
+                font-size: 11px !important;
+                line-height: 1.1 !important;
+            }
+            .expand-btn:checked + .custom-matrix-col div[title] > div:first-child {
+                font-size: 13px !important;
+            }
+            .expand-btn:checked + .custom-matrix-col > div:last-child {
+                margin-top: 15px !important;
+                gap: 10px !important;
+            }
+            .expand-btn:checked + .custom-matrix-col > div:last-child > div {
+                font-size: 12px !important;
+                padding: 4px 8px !important;
             }
             
             /* Заглушка, если рендж не выбран */
@@ -151,7 +206,7 @@ def show():
         sc_c, sp_c, data_c = get_spot_data_for_tab(ranges_db, "C", tab3)
         sc_d, sp_d, data_d = get_spot_data_for_tab(ranges_db, "D", tab4)
 
-    # --- ВЫВОД МАТРИЦ (Без виджетов Стримлита) ---
+    # --- ВЫВОД МАТРИЦ ---
     
     # ПЕРВЫЙ РЯД
     header_a = render_header(sc_a, sp_a, "1️⃣")
@@ -162,8 +217,14 @@ def show():
 
     st.markdown(f"""
     <div class="custom-matrix-row">
-        <div class="custom-matrix-col">{header_a}{matrix_a_html}</div>
-        <div class="custom-matrix-col">{header_b}{matrix_b_html}</div>
+        <label class="custom-matrix-label">
+            <input type="checkbox" class="expand-btn">
+            <div class="custom-matrix-col">{header_a}{matrix_a_html}</div>
+        </label>
+        <label class="custom-matrix-label">
+            <input type="checkbox" class="expand-btn">
+            <div class="custom-matrix-col">{header_b}{matrix_b_html}</div>
+        </label>
     </div>
     """, unsafe_allow_html=True)
 
@@ -176,7 +237,13 @@ def show():
 
     st.markdown(f"""
     <div class="custom-matrix-row">
-        <div class="custom-matrix-col">{header_c}{matrix_c_html}</div>
-        <div class="custom-matrix-col">{header_d}{matrix_d_html}</div>
+        <label class="custom-matrix-label">
+            <input type="checkbox" class="expand-btn">
+            <div class="custom-matrix-col">{header_c}{matrix_c_html}</div>
+        </label>
+        <label class="custom-matrix-label">
+            <input type="checkbox" class="expand-btn">
+            <div class="custom-matrix-col">{header_d}{matrix_d_html}</div>
+        </label>
     </div>
     """, unsafe_allow_html=True)
