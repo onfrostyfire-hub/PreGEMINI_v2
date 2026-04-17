@@ -1,5 +1,5 @@
 import streamlit as st
-from views import mobile, desktop, compare, stats
+from views import mobile, desktop, compare, stats_mobile, stats_desktop
 from views import postflop_desktop, postflop_mobile
 
 st.set_page_config(page_title="Poker Trainer", layout="wide", initial_sidebar_state="collapsed")
@@ -65,7 +65,6 @@ def main():
     if "actual_view_type" not in st.session_state:
         st.session_state.actual_view_type = "📱 Mobile" if detect_mobile() else "💻 Desktop"
         
-    # ЗАЩИТА ОТ КЭША: Если в памяти лежит старое название с эмодзи, сбрасываем на Preflop
     if "actual_app_mode" not in st.session_state or st.session_state.actual_app_mode not in ["Preflop", "Postflop", "Ranges", "Stats"]:
         st.session_state.actual_app_mode = "Preflop"
 
@@ -81,11 +80,13 @@ def main():
         st.session_state.actual_app_mode = nav_mode
         st.rerun()
 
-    # ОБНОВЛЕННАЯ ЛОГИКА (без эмодзи)
     if st.session_state.actual_app_mode == "Ranges":
         compare.show()
     elif st.session_state.actual_app_mode == "Stats":
-        stats.show()
+        if st.session_state.actual_view_type == "📱 Mobile":
+            stats_mobile.show()
+        else:
+            stats_desktop.show()
     elif st.session_state.actual_app_mode == "Postflop":
         if st.session_state.actual_view_type == "📱 Mobile":
             postflop_mobile.show()
