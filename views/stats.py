@@ -89,9 +89,8 @@ def start_training(selected_spots, is_postflop):
         st.warning("Select spots first, Boss.")
         return
 
-    # Жесткий сброс кэша виджетов Стримлита
     for k in list(st.session_state.keys()):
-        if k.startswith("pf_ms_") or k.startswith("pf_chk_") or k.startswith("pr_ms_") or k.startswith("sel_"):
+        if k.startswith("chk_") or k.startswith("pf_chk_") or k.startswith("sel_") or k.startswith("pf_sel_"):
             del st.session_state[k]
 
     if is_postflop:
@@ -145,35 +144,41 @@ def start_training(selected_spots, is_postflop):
 def show():
     st.markdown("""
         <style>
-        /* Сброс лишних отступов у чекбоксов */
-        div[data-testid="stCheckbox"] { margin: 0 !important; padding: 0 !important; }
+        .mastery-name {
+            color: #e9ecef; font-weight: 800; font-size: 14px;
+            text-transform: uppercase; white-space: nowrap;
+            overflow: hidden; text-overflow: ellipsis;
+            margin-top: 4px;
+        }
+        .mastery-bar-row {
+            display: flex; align-items: center; gap: 12px;
+            margin-top: -8px; margin-bottom: 16px;
+        }
+        .mastery-bar-container {
+            flex: 1; background: rgba(0,0,0,0.5); height: 6px;
+            border-radius: 3px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.8);
+        }
+        .mastery-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease-out; }
+        .mastery-stats {
+            color: #fff; font-weight: 900; font-size: 13px; text-align: right;
+            font-variant-numeric: tabular-nums; min-width: 60px;
+        }
+        .mastery-stats span { color: #6c757d; font-size: 10px; font-weight: 700; }
         
-        /* Жесткая стилизация иконки мишени (2-я колонка) */
-        div[data-testid="column"]:nth-child(2) div[data-testid="stButton"] button {
-            width: 34px !important;
-            height: 34px !important;
-            min-height: 34px !important;
-            padding: 0 !important;
-            border-radius: 8px !important;
-            background: #1e2126 !important;
-            border: 1px solid #3a3d42 !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.5) !important;
+        div[data-testid="stCheckbox"] { margin-top: 4px !important; padding: 0 !important; display: flex; align-items: center; justify-content: center; }
+        div[data-testid="stButton"] button {
+            padding: 0 !important; height: 32px !important; min-height: 0 !important;
+            background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(255,255,255,0.1) !important; font-size: 14px !important;
+            border-radius: 8px !important; transition: all 0.2s ease;
         }
-        div[data-testid="column"]:nth-child(2) div[data-testid="stButton"] button:hover {
-            border-color: #ffc107 !important; background: #2a2d34 !important;
-        }
-        div[data-testid="column"]:nth-child(2) div[data-testid="stButton"] button p {
-            font-size: 16px !important; margin: 0 !important;
-        }
-
-        /* Кнопка TRAIN SELECTED */
+        div[data-testid="stButton"] button:hover { border-color: #ffc107 !important; background: rgba(255,193,7,0.1) !important; }
+        
         div[data-testid="stButton"] button[kind="primary"] {
             height: 44px !important; background: linear-gradient(180deg, #1c3a55 0%, #102436 100%) !important;
             border: none !important; font-weight: 900 !important; letter-spacing: 1px !important;
         }
+        
+        .element-container:has(.mastery-bar-row) { margin-bottom: 5px; }
         </style>
     """, unsafe_allow_html=True)
 
@@ -255,28 +260,28 @@ def show():
         elif cnt < 5000: color, glow = "#dc3545", "rgba(253, 126, 20, 0.6)"
         else: color, glow = "#ffc107", "rgba(255, 193, 7, 0.8)"
 
-        cols = st.columns([0.08, 0.12, 0.8], vertical_alignment="center")
+        disp_name = rename_map.get(sp, sp) if not is_postflop else sp
+
+        cols = st.columns([0.1, 0.12, 0.78], vertical_alignment="center")
         
         with cols[0]:
             st.checkbox("", key=f"sel_{sp}", label_visibility="collapsed")
         
         with cols[1]:
-            if st.button("🎯", key=f"go_{sp}", help=f"Train {sp}"):
+            if st.button("🎯", key=f"go_{sp}", help=f"Train {sp}", use_container_width=True):
                 start_training([sp], is_postflop)
         
         with cols[2]:
-            disp_name = rename_map.get(sp, sp) if not is_postflop else sp
-            st.markdown(f"""
-            <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:4px; margin-top:4px;">
-                <div style="color:#e9ecef; font-weight:800; font-size:12px; text-transform:uppercase;">{disp_name}</div>
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <div style="flex:1; background:rgba(0,0,0,0.6); height:10px; border-radius:5px; box-shadow:inset 0 1px 3px rgba(0,0,0,0.8);">
-                        <div style="width:{pct}%; height:100%; background:{color}; box-shadow:0 0 10px {glow}; border-radius:5px;"></div>
-                    </div>
-                    <div style="color:#fff; font-size:12px; font-weight:900; font-variant-numeric:tabular-nums; line-height:1;">{cnt} <span style="color:#6c757d; font-size:10px;">/ 5000</span></div>
+            st.markdown(f"<div class='mastery-name' title='{sp}'>{disp_name}</div>", unsafe_allow_html=True)
+            
+        st.markdown(f"""
+            <div class='mastery-bar-row'>
+                <div class='mastery-bar-container'>
+                    <div class='mastery-bar-fill' style='width:{pct}%; background:{color}; box-shadow:0 0 10px {glow};'></div>
                 </div>
+                <div class='mastery-stats'>{cnt} <span>/ 5000</span></div>
             </div>
-            """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
 
     st.divider()
     with st.expander("📜 Raw History Log"):
@@ -314,9 +319,9 @@ def show():
 
     st.markdown("### 🗑️ Danger Zone")
     with st.expander("Clear History", expanded=False):
-        st.warning("⚠️ Warning: Clears ALL history globally.")
+        st.warning("⚠️ Warning: Clears ALL history globally (Preflop & Postflop).")
         d1, d2, d3, d4 = st.columns(4)
-        if d1.button("Delete: 24h", use_container_width=True): custom_delete_history(days=1); st.rerun()
-        if d2.button("Delete: 7d", use_container_width=True): custom_delete_history(days=7); st.rerun()
-        if d3.button("Delete: 30d", use_container_width=True): custom_delete_history(days=30); st.rerun()
+        if d1.button("Delete: 24 Hours", use_container_width=True): custom_delete_history(days=1); st.rerun()
+        if d2.button("Delete: 7 Days", use_container_width=True): custom_delete_history(days=7); st.rerun()
+        if d3.button("Delete: 30 Days", use_container_width=True): custom_delete_history(days=30); st.rerun()
         if d4.button("NUKE ALL", use_container_width=True): custom_delete_history(); st.rerun()
