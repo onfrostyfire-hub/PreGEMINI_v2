@@ -2,7 +2,7 @@
   "source": "Jayser",
   "scenario": "Open 4bet",
   "spots": {
-    "BB open 4bet vs SB": {
+    "O4BET @ BB open 4bet vs SB": {
       "setup": {
         "hero_pos": "BB",
         "villain_pos": "SB",
@@ -21,7 +21,7 @@
         "training": "AA,KK,QQ,JJ,TT,99,88,AK,AQ,AJ,ATs,A5s,A4s,KQ,KJs,KTs,QJs,QTs,JTs,T9s"
       }
     },
-    "BU def vs BB open 4bet": {
+    "O4BET @ BU def vs BB open 4bet": {
       "setup": {
         "hero_pos": "BTN",
         "villain_pos": "BB",
@@ -40,7 +40,7 @@
         "training": "AA,KK,QQ,JJ,TT,99,AK,AQ,AJs,KQs"
       }
     },
-    "SB def vs BB open 4bet": {
+    "O4BET @ SB def vs BB open 4bet": {
       "setup": {
         "hero_pos": "SB",
         "villain_pos": "BB",
@@ -59,7 +59,7 @@
         "training": "AA,KK,QQ,JJ,TT,99,88,77,66,AK,AQ,AJs,ATs,A5s,A4s,KQs,KJs,KTs,QJs,QTs,JTs,T9s,98s,87s,76s,65s"
       }
     },
-    "BB call 5bet ph from SB": {
+    "O4BET @ BB call 5bet ph from SB": {
       "setup": {
         "hero_pos": "BB",
         "villain_pos": "SB",
