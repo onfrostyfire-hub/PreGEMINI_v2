@@ -146,38 +146,51 @@ def show():
 
         .spot-row-marker-mob { display: none; }
         
+        /* ЖЕСТКАЯ БЛОКИРОВКА ПЕРЕНОСОВ ДЛЯ МОБИЛОК */
         div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) {
             display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important;
-            align-items: center !important; background: #16181c !important; padding: 8px 10px !important;
-            border-radius: 12px !important; border: 1px solid #2d3139 !important; margin-bottom: 8px !important;
-            gap: 6px !important; width: 100% !important; overflow: hidden !important; box-sizing: border-box !important;
-            grid-template-columns: none !important;
+            align-items: center !important; background: #16181c !important; padding: 6px 8px !important;
+            border-radius: 10px !important; border: 1px solid #2d3139 !important; margin-bottom: 6px !important;
+            gap: 6px !important; width: 100% !important; box-sizing: border-box !important; overflow: hidden !important;
         }
         
         div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"] {
             width: auto !important; min-width: 0 !important; margin: 0 !important; padding: 0 !important; flex: none !important;
         }
         
-        /* ЖЕСТКИЕ ГАБАРИТЫ ДЛЯ МОБИЛЫ */
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(1) { flex: 0 0 24px !important; display: flex; justify-content: center; }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(2) { flex: 0 0 28px !important; }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(3) { flex: 1 1 auto !important; overflow: hidden !important; min-width: 0 !important; }
+        /* 1 - ЧЕКБОКС (строго 26px) */
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(1) { 
+            width: 26px !important; flex: 0 0 26px !important; display: flex; justify-content: center; align-items: center; 
+        }
+        /* 2 - МИШЕНЬ (строго 28px) */
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(2) { 
+            width: 28px !important; flex: 0 0 28px !important; 
+        }
+        /* 3 - ОСТАЛЬНОЕ (Тянется и сжимается, занимает всё оставшееся место) */
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(3) { 
+            flex: 1 1 auto !important; width: calc(100% - 60px) !important; overflow: hidden !important; 
+        }
 
+        /* Кнопка-мишень */
         div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) div[data-testid="stButton"] button {
             width: 28px !important; height: 28px !important; min-height: 28px !important; padding: 0 !important;
             border-radius: 6px !important; font-size: 14px !important; line-height: 1 !important;
-            background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(255,255,255,0.15) !important;
+            background: transparent !important; border: 1px solid rgba(255,255,255,0.15) !important;
             display: flex; justify-content: center; align-items: center;
         }
         div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) div[data-testid="stButton"] button:hover {
             border-color: #ffc107 !important; background: rgba(255,193,7,0.1) !important;
         }
         
+        /* Чекбокс: убиваем все родные отступы Стримлита */
         div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) div[data-testid="stCheckbox"] {
-            margin: 0 !important; padding: 0 !important; display: flex; align-items: center; justify-content: center;
+            margin: 0 !important; padding: 0 !important; min-height: 0 !important;
         }
         div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) div[data-testid="stCheckbox"] label {
             padding: 0 !important; min-height: 0 !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) div[data-testid="stCheckbox"] p {
+            display: none !important;
         }
         </style>
     """, unsafe_allow_html=True)
@@ -189,7 +202,6 @@ def show():
     
     df = fetch_history(is_postflop)
     
-    # ЖЕСТКАЯ ПОДМЕНА ИМЕН: Старые хвосты из истории переводим в формат JSON
     rename_map = {
         "BUvsCO": "3bet BUvsCO", "SBvsCO": "3bet SBvsCO", "SBvsBU": "3bet SBvsBU",
         "BBvsCO": "3bet BBvsCO", "BBvsBU": "3bet BBvsBU", "BBvsSB": "3bet BBvsSB",
@@ -251,7 +263,7 @@ def show():
         
     sorted_spots = sorted(merged_counts.items(), key=lambda x: x[1], reverse=True)
 
-    col_btn, col_info = st.columns([1, 1])
+    col_btn, _ = st.columns([1, 1])
     with col_btn:
         if st.button("🚀 TRAIN SELECTED", use_container_width=True, type="primary"):
             selected = [sp for sp in all_spots_names if st.session_state.get(f"sel_{sp}", False)]
@@ -262,7 +274,7 @@ def show():
         "BBvsCO": "3bet BBvsCO", "BBvsBU": "3bet BBvsBU", "BBvsSB": "3bet BBvsSB"
     }
 
-    # ОТРИСОВКА В ОДНУ ЛИНИЮ (Ультра-компактно для мобилы)
+    # ОТРИСОВКА (3 колонки: Чекбокс -> Кнопка -> HTML Блок)
     for sp, cnt in sorted_spots:
         pct = min(100, (cnt / 5000) * 100)
         
@@ -284,10 +296,10 @@ def show():
             if st.button("🎯", key=f"go_{sp}"): start_training([sp], is_postflop)
         with c3:
             html_out = f'''
-            <div style="display:flex; align-items:center; gap:6px; width:100%; box-sizing:border-box; overflow:hidden;">
-                <div style="flex:1 1 auto; min-width:0; color:#e9ecef; font-weight:800; font-size:11px; letter-spacing:0.02em; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="{sp}">{disp_name}</div>
+            <div style="display:flex; align-items:center; gap:8px; width:100%; box-sizing:border-box;">
+                <div style="flex:1 1 35%; min-width:0; color:#e9ecef; font-weight:800; font-size:11px; letter-spacing:0.02em; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="{sp}">{disp_name}</div>
                 <div style="flex:0 0 auto; color:#fff; font-weight:900; font-size:12px; text-align:right; font-variant-numeric:tabular-nums;">{cnt}</div>
-                <div style="flex:0 0 45px; background:rgba(0,0,0,0.6); height:6px; border-radius:3px; box-shadow:inset 0 1px 3px rgba(0,0,0,0.8); position:relative; overflow:hidden;">
+                <div style="flex:1 1 45%; background:rgba(0,0,0,0.6); height:6px; border-radius:3px; box-shadow:inset 0 1px 3px rgba(0,0,0,0.8); position:relative; overflow:hidden;">
                     <div style="width:{pct}%; height:100%; background:{grad}; border-radius:3px; box-shadow:0 0 10px {glow}; transition:width 0.5s ease-out;"></div>
                 </div>
                 <div style="flex:0 0 auto; color:#6c757d; font-weight:700; font-size:10px;">5k</div>
