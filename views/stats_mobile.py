@@ -146,29 +146,30 @@ def show():
 
         .spot-row-marker-mob { display: none; }
         
-        /* ЖЕСТКАЯ БЛОКИРОВКА ПЕРЕНОСОВ ДЛЯ МОБИЛОК */
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) {
-            display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important;
-            align-items: center !important; background: #16181c !important; padding: 6px 8px !important;
-            border-radius: 10px !important; border: 1px solid #2d3139 !important; margin-bottom: 6px !important;
-            gap: 6px !important; width: 100% !important; box-sizing: border-box !important; overflow: hidden !important;
-        }
-        
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"] {
-            width: auto !important; min-width: 0 !important; margin: 0 !important; padding: 0 !important; flex: none !important;
-        }
-        
-        /* 1 - ЧЕКБОКС (строго 26px) */
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(1) { 
-            width: 26px !important; flex: 0 0 26px !important; display: flex; justify-content: center; align-items: center; 
-        }
-        /* 2 - МИШЕНЬ (строго 28px) */
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(2) { 
-            width: 28px !important; flex: 0 0 28px !important; 
-        }
-        /* 3 - ОСТАЛЬНОЕ (Тянется и сжимается, занимает всё оставшееся место) */
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(3) { 
-            flex: 1 1 auto !important; width: calc(100% - 60px) !important; overflow: hidden !important; 
+        /* ЖЕСТКАЯ БЛОКИРОВКА ПЕРЕНОСОВ И СКРОЛЛА */
+        @media (max-width: 1024px) {
+            div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) {
+                display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important;
+                align-items: center !important; width: 100% !important; max-width: 100vw !important;
+                gap: 4px !important; margin-bottom: 8px !important;
+            }
+            
+            div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"] {
+                min-width: 0 !important; width: auto !important; flex: none !important; padding: 0 !important; margin: 0 !important;
+            }
+            
+            /* ЧЕКБОКС */
+            div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(1) { 
+                flex: 0 0 24px !important; width: 24px !important; display: flex; justify-content: center; align-items: center; 
+            }
+            /* МИШЕНЬ */
+            div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(2) { 
+                flex: 0 0 28px !important; width: 28px !important; 
+            }
+            /* КАРТОЧКА СПОТА (Эластичная) */
+            div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(3) { 
+                flex: 1 1 auto !important; width: calc(100% - 56px) !important;
+            }
         }
 
         /* Кнопка-мишень */
@@ -182,15 +183,15 @@ def show():
             border-color: #ffc107 !important; background: rgba(255,193,7,0.1) !important;
         }
         
-        /* Чекбокс: убиваем все родные отступы Стримлита */
+        /* Чекбокс: убиваем отступы */
         div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) div[data-testid="stCheckbox"] {
-            margin: 0 !important; padding: 0 !important; min-height: 0 !important;
+            margin: 0 !important; padding: 0 !important; min-height: 0 !important; display: flex; justify-content: center;
         }
         div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) div[data-testid="stCheckbox"] label {
             padding: 0 !important; min-height: 0 !important;
         }
         div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) div[data-testid="stCheckbox"] p {
-            display: none !important;
+            display: none !important; 
         }
         </style>
     """, unsafe_allow_html=True)
@@ -274,7 +275,6 @@ def show():
         "BBvsCO": "3bet BBvsCO", "BBvsBU": "3bet BBvsBU", "BBvsSB": "3bet BBvsSB"
     }
 
-    # ОТРИСОВКА (3 колонки: Чекбокс -> Кнопка -> HTML Блок)
     for sp, cnt in sorted_spots:
         pct = min(100, (cnt / 5000) * 100)
         
@@ -287,7 +287,7 @@ def show():
 
         disp_name = display_rename_map.get(sp, sp) if not is_postflop else sp
 
-        c1, c2, c3 = st.columns(3, vertical_alignment="center")
+        c1, c2, c3 = st.columns([0.1, 0.1, 0.8], vertical_alignment="center")
         
         with c1:
             st.markdown("<div class='spot-row-marker-mob'></div>", unsafe_allow_html=True)
@@ -296,10 +296,10 @@ def show():
             if st.button("🎯", key=f"go_{sp}"): start_training([sp], is_postflop)
         with c3:
             html_out = f'''
-            <div style="display:flex; align-items:center; gap:8px; width:100%; box-sizing:border-box;">
-                <div style="flex:1 1 35%; min-width:0; color:#e9ecef; font-weight:800; font-size:11px; letter-spacing:0.02em; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="{sp}">{disp_name}</div>
-                <div style="flex:0 0 auto; color:#fff; font-weight:900; font-size:12px; text-align:right; font-variant-numeric:tabular-nums;">{cnt}</div>
-                <div style="flex:1 1 45%; background:rgba(0,0,0,0.6); height:6px; border-radius:3px; box-shadow:inset 0 1px 3px rgba(0,0,0,0.8); position:relative; overflow:hidden;">
+            <div style="display:flex; align-items:center; gap:8px; background:#16181c; padding:8px 12px; border-radius:10px; border:1px solid #2d3139; box-shadow:0 2px 4px rgba(0,0,0,0.2); width:100%; box-sizing:border-box;">
+                <div style="flex:1 1 auto; min-width:0; color:#e9ecef; font-weight:800; font-size:11px; letter-spacing:0.02em; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="{sp}">{disp_name}</div>
+                <div style="flex:0 0 auto; color:#fff; font-weight:900; font-size:13px; text-align:right; font-variant-numeric:tabular-nums;">{cnt}</div>
+                <div style="flex:1 1 30px; background:rgba(0,0,0,0.6); height:6px; border-radius:3px; box-shadow:inset 0 1px 3px rgba(0,0,0,0.8); position:relative; overflow:hidden;">
                     <div style="width:{pct}%; height:100%; background:{grad}; border-radius:3px; box-shadow:0 0 10px {glow}; transition:width 0.5s ease-out;"></div>
                 </div>
                 <div style="flex:0 0 auto; color:#6c757d; font-weight:700; font-size:10px;">5k</div>
