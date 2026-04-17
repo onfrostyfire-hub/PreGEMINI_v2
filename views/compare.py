@@ -1,4 +1,3 @@
-
 import streamlit as st
 import poker_utils as utils
 
@@ -138,44 +137,55 @@ def show():
                 position: fixed;
                 top: 0; left: 0; right: 0; bottom: 0;
                 z-index: 99999;
-                background: #0a0a0c;
-                padding: 15px;
+                background: rgba(10, 10, 12, 0.98);
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+                padding: 10px;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
                 width: 100vw;
                 height: 100vh;
+                border: none;
+                border-radius: 0;
             }
             
-            /* Стилизация внутри раскрытой матрицы */
+            /* Стилизация внутри раскрытой матрицы на весь экран */
             .expand-btn:checked + .custom-matrix-col > div[style*="display:grid"] {
-                width: 100%;
-                max-width: 500px;
+                width: 96vmin; /* Выжимаем максимум из доступного экрана */
+                max-width: 900px;
+                margin: 0 auto;
             }
             .expand-btn:checked + .custom-matrix-col .range-header {
-                font-size: 18px !important;
-                padding-bottom: 4px;
+                font-size: 24px !important;
+                padding-bottom: 8px;
                 color: #ffc107;
             }
             .expand-btn:checked + .custom-matrix-col .range-subheader {
-                font-size: 14px !important;
-                margin-bottom: 12px;
+                font-size: 16px !important;
+                margin-bottom: 16px;
+                color: #ddd;
             }
             .expand-btn:checked + .custom-matrix-col div[title] {
-                font-size: 11px !important;
-                line-height: 1.1 !important;
+                font-size: 16px !important; /* Крупный шрифт ячеек */
+                line-height: 1 !important;
             }
             .expand-btn:checked + .custom-matrix-col div[title] > div:first-child {
-                font-size: 13px !important;
+                font-size: 16px !important;
+            }
+            .expand-btn:checked + .custom-matrix-col div[title] > div:nth-child(2) {
+                font-size: 12px !important;
             }
             .expand-btn:checked + .custom-matrix-col > div:last-child {
-                margin-top: 15px !important;
-                gap: 10px !important;
+                margin-top: 20px !important;
+                gap: 12px !important;
+                flex-wrap: wrap !important;
             }
             .expand-btn:checked + .custom-matrix-col > div:last-child > div {
-                font-size: 12px !important;
-                padding: 4px 8px !important;
+                font-size: 14px !important;
+                padding: 6px 12px !important;
+                border-radius: 6px !important;
             }
             
             /* Заглушка, если рендж не выбран */
@@ -186,6 +196,11 @@ def show():
                 padding: 30px 0; 
                 border: 1px dashed #333; 
                 border-radius: 4px;
+            }
+            .expand-btn:checked + .custom-matrix-col .empty-matrix {
+                font-size: 20px;
+                padding: 100px 0;
+                width: 80vmin;
             }
         </style>
     """, unsafe_allow_html=True)
