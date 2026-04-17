@@ -298,11 +298,7 @@ def show():
         with c4:
             st.markdown(f"<div class='mastery-count'>{cnt}</div>", unsafe_allow_html=True)
         with c5:
-            st.markdown(f"""
-                <div class='mastery-bar-container'>
-                    <div class='mastery-bar-fill' style='width:{pct}%; background:{grad}; box-shadow:0 0 10px {glow};'></div>
-                </div>
-            """, unsafe_allow_html=True)
+            st.markdown(f"<div class='mastery-bar-container'><div class='mastery-bar-fill' style='width:{pct}%; background:{grad}; box-shadow:0 0 10px {glow};'></div></div>", unsafe_allow_html=True)
         with c6:
             st.markdown("<div class='mastery-max'>5000</div>", unsafe_allow_html=True)
 
