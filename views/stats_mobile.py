@@ -138,73 +138,66 @@ def start_training(selected_spots, is_postflop):
 def show():
     st.markdown("""
         <style>
-        div[data-testid="stButton"] button[kind="primary"] {
-            height: 44px !important; background: linear-gradient(180deg, #1c3a55 0%, #102436 100%) !important;
-            border: none !important; font-weight: 900 !important; letter-spacing: 1px !important; color: #fff !important;
-            border-radius: 10px !important;
+        /* ГЛОБАЛЬНЫЙ ХАК ПРОТИВ СЛОМА КОЛОНОК НА МОБИЛЕ */
+        div[data-testid="stHorizontalBlock"] {
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            align-items: center !important;
+            width: 100% !important;
+            overflow: hidden !important;
+            gap: 4px !important;
+        }
+        div[data-testid="column"], div[data-testid="stColumn"] {
+            min-width: 0 !important;
+            padding-left: 2px !important;
+            padding-right: 2px !important;
+        }
+        
+        /* КНОПКА МИШЕНИ */
+        .target-btn div[data-testid="stButton"] button {
+            width: 32px !important;
+            height: 32px !important;
+            min-height: 32px !important;
+            padding: 0 !important;
+            border-radius: 8px !important;
+            background: transparent !important;
+            border: 1px solid rgba(255,255,255,0.2) !important;
+            font-size: 15px !important;
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            margin: 0 auto !important;
+        }
+        .target-btn div[data-testid="stButton"] button:hover, 
+        .target-btn div[data-testid="stButton"] button:active {
+            border-color: #ffc107 !important;
+            background: rgba(255,193,7,0.1) !important;
         }
 
-        .spot-row-marker-mob { display: none !important; }
-
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) {
-            display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important;
-            align-items: center !important; width: 100% !important; max-width: 100% !important;
-            box-sizing: border-box !important; overflow: hidden !important; gap: 4px !important;
-            padding: 0 !important; margin: 0 0 6px 0 !important;
+        /* ЧЕКБОКС */
+        .hide-checkbox-label div[data-testid="stCheckbox"] {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
         }
-
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div,
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div > div,
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div > div > div {
-            padding: 0 !important; margin: 0 !important; gap: 0 !important; min-height: 0 !important; box-sizing: border-box !important;
+        .hide-checkbox-label div[data-testid="stCheckbox"] label {
+            padding: 0 !important;
+            min-height: 0 !important;
         }
-
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) .element-container {
-            margin-bottom: 0 !important; padding: 0 !important; width: 100% !important;
-        }
-
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) div[data-testid="stButton"] {
-            padding: 0 !important; margin: 0 !important; width: 100% !important;
-        }
-
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(1) {
-            flex: 0 0 26px !important; width: 26px !important; min-width: 26px !important; max-width: 26px !important;
-            overflow: hidden !important; display: flex !important; align-items: center !important; justify-content: center !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(1) div[data-testid="stCheckbox"] {
-            display: flex !important; justify-content: center !important; align-items: center !important;
-            width: 26px !important; padding: 0 !important; margin: 0 !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(1) label {
-            padding: 0 !important; min-height: 0 !important; gap: 0 !important; margin: 0 !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(1) p,
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(1) span.st-emotion-cache-1gulkj5 {
+        .hide-checkbox-label div[data-testid="stCheckbox"] p {
             display: none !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(2) {
-            flex: 0 0 30px !important; width: 30px !important; min-width: 30px !important; max-width: 30px !important;
-            overflow: hidden !important; display: flex !important; align-items: center !important; justify-content: center !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(2) button {
-            width: 28px !important; height: 28px !important; min-width: 0 !important; min-height: 28px !important; padding: 0 !important;
-            font-size: 15px !important; line-height: 1 !important; border-radius: 7px !important; background: transparent !important;
-            border: 1px solid rgba(255,255,255,0.14) !important; display: flex !important; align-items: center !important; justify-content: center !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(2) button:hover {
-            border-color: #ffc107 !important; background: rgba(255,193,7,0.12) !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(2) button p {
-            font-size: 15px !important; margin: 0 !important; line-height: 1 !important;
-        }
-
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(3) {
-            flex: 1 1 0 !important; min-width: 0 !important; max-width: calc(100% - 64px) !important; overflow: hidden !important; width: 0 !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(3) .stMarkdown,
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(3) div {
-            width: 100% !important; min-width: 0 !important; max-width: 100% !important;
+        /* КНОПКА TRAIN SELECTED */
+        .train-btn div[data-testid="stButton"] button {
+            height: 44px !important;
+            background: linear-gradient(180deg, #1c3a55 0%, #102436 100%) !important;
+            border: none !important;
+            font-weight: 900 !important;
+            letter-spacing: 1px !important;
+            color: #fff !important;
+            border-radius: 10px !important;
+            width: 100% !important;
         }
         </style>
     """, unsafe_allow_html=True)
@@ -216,9 +209,8 @@ def show():
     
     df = fetch_history(is_postflop)
     
-    rename_map = {
-        "BUvsCO": "3bet BUvsCO", "SBvsCO": "3bet SBvsCO", "SBvsBU": "3bet SBvsBU",
-        "BBvsCO": "3bet BBvsCO", "BBvsBU": "3bet BBvsBU", "BBvsSB": "3bet BBvsSB",
+    # 1. ЖЁСТКАЯ ПОДМЕНА ИСТОРИИ (Связываем старые логи с новыми HU ключами JSON)
+    hu_migration_map = {
         "SB pfr": "HU @ SB pfr",
         "BB def vs PFR": "HU @ BB def vs PFR",
         "SB def vs 3bet BB": "HU @ SB def vs 3bet",
@@ -227,12 +219,12 @@ def show():
     }
 
     if not df.empty and "Spot" in df.columns:
-        df["Spot"] = df["Spot"].replace(rename_map)
+        df["Spot"] = df["Spot"].replace(hu_migration_map)
 
     if df.empty or "Date" not in df.columns or "Result" not in df.columns:
         st.info(f"History for {mode.split()[1]} is empty. Go train, Boss.")
         return
-    
+        
     df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
     df = df.dropna(subset=["Date"])
     df["Result"] = pd.to_numeric(df["Result"], errors='coerce').fillna(0).astype(int)
@@ -252,7 +244,17 @@ def show():
     stats["Errors"] = stats["count"] - stats["sum"]
     stats["Accuracy"] = (stats["mean"] * 100).astype(int).astype(str) + "%"
     
-    all_spots_sorted = stats.sort_values(by="count", ascending=False)
+    # 2. ВИЗУАЛЬНАЯ ПОДМЕНА ИМЕН (Только для экрана)
+    display_rename_map = {
+        "BUvsCO": "3bet BUvsCO", "SBvsCO": "3bet SBvsCO", "SBvsBU": "3bet SBvsBU",
+        "BBvsCO": "3bet BBvsCO", "BBvsBU": "3bet BBvsBU", "BBvsSB": "3bet BBvsSB"
+    }
+
+    display_df = stats.copy()
+    if not is_postflop:
+        display_df["Spot"] = display_df["Spot"].replace(display_rename_map)
+        
+    all_spots_sorted = display_df.sort_values(by="count", ascending=False)
     st.dataframe(all_spots_sorted[["Spot", "Errors", "Accuracy", "count"]].rename(columns={"count": "Total"}), use_container_width=True, hide_index=True)
 
     st.divider()
@@ -279,46 +281,49 @@ def show():
 
     col_btn, _ = st.columns([1, 1])
     with col_btn:
-        if st.button("🚀 TRAIN SELECTED", use_container_width=True, type="primary"):
+        st.markdown('<div class="train-btn">', unsafe_allow_html=True)
+        if st.button("🚀 TRAIN SELECTED", use_container_width=True):
             selected = [sp for sp in all_spots_names if st.session_state.get(f"sel_{sp}", False)]
             start_training(selected, is_postflop)
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    display_rename_map = {
-        "BUvsCO": "3bet BUvsCO", "SBvsCO": "3bet SBvsCO", "SBvsBU": "3bet SBvsBU",
-        "BBvsCO": "3bet BBvsCO", "BBvsBU": "3bet BBvsBU", "BBvsSB": "3bet BBvsSB"
-    }
-
+    # 3. ОТРИСОВКА СТРОК (Строго в линию)
     for sp, cnt in sorted_spots:
         pct = min(100, (cnt / 5000) * 100)
         
-        if cnt < 100:   grad, glow = "linear-gradient(90deg,#6c757d,#495057)",   "rgba(108,117,125,0.3)"
-        elif cnt < 500:  grad, glow = "linear-gradient(90deg,#198754,#20c997)",   "rgba(32,201,151,0.4)"
-        elif cnt < 1500: grad, glow = "linear-gradient(90deg,#0dcaf0,#0d6efd)",   "rgba(13,202,240,0.5)"
-        elif cnt < 3000: grad, glow = "linear-gradient(90deg,#6f42c1,#d63384)",   "rgba(214,51,132,0.5)"
-        elif cnt < 5000: grad, glow = "linear-gradient(90deg,#dc3545,#fd7e14)",   "rgba(253,126,20,0.6)"
-        else:            grad, glow = "linear-gradient(90deg,#ffc107,#ffef96)",   "rgba(255,193,7,0.8)"
+        if cnt < 100: grad, glow = "linear-gradient(90deg, #6c757d, #495057)", "rgba(108, 117, 125, 0.3)"
+        elif cnt < 500: grad, glow = "linear-gradient(90deg, #198754, #20c997)", "rgba(32, 201, 151, 0.4)"
+        elif cnt < 1500: grad, glow = "linear-gradient(90deg, #0dcaf0, #0d6efd)", "rgba(13, 202, 240, 0.5)"
+        elif cnt < 3000: grad, glow = "linear-gradient(90deg, #6f42c1, #d63384)", "rgba(214, 51, 132, 0.5)"
+        elif cnt < 5000: grad, glow = "linear-gradient(90deg, #dc3545, #fd7e14)", "rgba(253, 126, 20, 0.6)"
+        else: grad, glow = "linear-gradient(90deg, #ffc107, #ffef96)", "rgba(255, 193, 7, 0.8)"
 
         disp_name = display_rename_map.get(sp, sp) if not is_postflop else sp
 
-        c1, c2, c3 = st.columns([1, 1, 8], vertical_alignment="center")
-
+        c1, c2, c3 = st.columns([0.1, 0.12, 0.78], vertical_alignment="center")
+        
         with c1:
-            st.markdown("<div class='spot-row-marker-mob'></div>", unsafe_allow_html=True)
-            st.checkbox("", key=f"sel_{sp}", label_visibility="collapsed")
-
+            st.markdown('<div class="hide-checkbox-label">', unsafe_allow_html=True)
+            st.checkbox(" ", key=f"sel_{sp}")
+            st.markdown('</div>', unsafe_allow_html=True)
+            
         with c2:
+            st.markdown('<div class="target-btn">', unsafe_allow_html=True)
             if st.button("🎯", key=f"go_{sp}"):
                 start_training([sp], is_postflop)
-
+            st.markdown('</div>', unsafe_allow_html=True)
+            
         with c3:
-            html_out = f"""<div style="display:flex; align-items:center; gap:6px; background:#16181c; padding:6px 10px; border-radius:10px; border:1px solid #2d3139; box-shadow:0 2px 4px rgba(0,0,0,0.2); width:100%; box-sizing:border-box; overflow:hidden;">
-<div style="flex:1 1 0; min-width:0; color:#e9ecef; font-weight:800; font-size:11px; letter-spacing:0.02em; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="{sp}">{disp_name}</div>
-<div style="flex:0 0 auto; color:#fff; font-weight:900; font-size:12px; font-variant-numeric:tabular-nums; white-space:nowrap;">{cnt}</div>
-<div style="flex:2 1 0; min-width:20px; max-width:80px; background:rgba(0,0,0,0.55); height:5px; border-radius:3px; box-shadow:inset 0 1px 3px rgba(0,0,0,0.8); position:relative; overflow:hidden;">
-<div style="width:{pct:.1f}%; height:100%; background:{grad}; border-radius:3px; box-shadow:0 0 8px {glow}; transition:width 0.5s ease-out;"></div>
-</div>
-<div style="flex:0 0 auto; color:#6c757d; font-weight:700; font-size:9px; white-space:nowrap;">5k</div>
-</div>"""
+            html_out = f'''
+            <div style="display:flex; align-items:center; gap:8px; background:#16181c; padding:8px 12px; border-radius:10px; border:1px solid #2d3139; box-shadow:0 2px 4px rgba(0,0,0,0.2); width:100%; box-sizing:border-box;">
+                <div style="flex:1 1 35%; min-width:0; color:#e9ecef; font-weight:800; font-size:11px; letter-spacing:0.02em; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="{sp}">{disp_name}</div>
+                <div style="flex:0 0 auto; color:#fff; font-weight:900; font-size:13px; text-align:right; font-variant-numeric:tabular-nums;">{cnt}</div>
+                <div style="flex:1 1 45%; background:rgba(0,0,0,0.6); height:6px; border-radius:3px; box-shadow:inset 0 1px 3px rgba(0,0,0,0.8); position:relative; overflow:hidden;">
+                    <div style="width:{pct}%; height:100%; background:{grad}; border-radius:3px; box-shadow:0 0 10px {glow}; transition:width 0.5s ease-out;"></div>
+                </div>
+                <div style="flex:0 0 auto; color:#6c757d; font-weight:700; font-size:10px;">5k</div>
+            </div>
+            '''
             st.markdown(html_out, unsafe_allow_html=True)
 
     st.divider()
