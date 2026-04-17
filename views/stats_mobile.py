@@ -314,16 +314,7 @@ def show():
             st.markdown('</div>', unsafe_allow_html=True)
             
         with c3:
-            html_out = f'''
-            <div style="display:flex; align-items:center; gap:8px; background:#16181c; padding:8px 12px; border-radius:10px; border:1px solid #2d3139; box-shadow:0 2px 4px rgba(0,0,0,0.2); width:100%; box-sizing:border-box;">
-                <div style="flex:1 1 35%; min-width:0; color:#e9ecef; font-weight:800; font-size:11px; letter-spacing:0.02em; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="{sp}">{disp_name}</div>
-                <div style="flex:0 0 auto; color:#fff; font-weight:900; font-size:13px; text-align:right; font-variant-numeric:tabular-nums;">{cnt}</div>
-                <div style="flex:1 1 45%; background:rgba(0,0,0,0.6); height:6px; border-radius:3px; box-shadow:inset 0 1px 3px rgba(0,0,0,0.8); position:relative; overflow:hidden;">
-                    <div style="width:{pct}%; height:100%; background:{grad}; border-radius:3px; box-shadow:0 0 10px {glow}; transition:width 0.5s ease-out;"></div>
-                </div>
-                <div style="flex:0 0 auto; color:#6c757d; font-weight:700; font-size:10px;">5k</div>
-            </div>
-            '''
+            html_out = f"<div style='display:flex; align-items:center; gap:8px; background:#16181c; padding:8px 12px; border-radius:10px; border:1px solid #2d3139; box-shadow:0 2px 4px rgba(0,0,0,0.2); width:100%; box-sizing:border-box;'><div style='flex:1 1 35%; min-width:0; color:#e9ecef; font-weight:800; font-size:11px; letter-spacing:0.02em; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;' title='{sp}'>{disp_name}</div><div style='flex:0 0 auto; color:#fff; font-weight:900; font-size:13px; text-align:right; font-variant-numeric:tabular-nums;'>{cnt}</div><div style='flex:1 1 45%; background:rgba(0,0,0,0.6); height:6px; border-radius:3px; box-shadow:inset 0 1px 3px rgba(0,0,0,0.8); position:relative; overflow:hidden;'><div style='width:{pct}%; height:100%; background:{grad}; border-radius:3px; box-shadow:0 0 10px {glow}; transition:width 0.5s ease-out;'></div></div><div style='flex:0 0 auto; color:#6c757d; font-weight:700; font-size:10px;'>5k</div></div>"
             st.markdown(html_out, unsafe_allow_html=True)
 
     st.divider()
