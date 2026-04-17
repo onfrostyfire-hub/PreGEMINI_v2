@@ -144,54 +144,138 @@ def show():
             border-radius: 10px !important;
         }
 
-        .spot-row-marker-mob { display: none; }
-        
-        /* ЖЕСТКАЯ БЛОКИРОВКА ПЕРЕНОСОВ И СКРОЛЛА */
-        @media (max-width: 1024px) {
-            div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) {
-                display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important;
-                align-items: center !important; width: 100% !important; max-width: 100vw !important;
-                gap: 4px !important; margin-bottom: 8px !important;
-            }
-            
-            div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"] {
-                min-width: 0 !important; width: auto !important; flex: none !important; padding: 0 !important; margin: 0 !important;
-            }
-            
-            /* ЧЕКБОКС */
-            div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(1) { 
-                flex: 0 0 24px !important; width: 24px !important; display: flex; justify-content: center; align-items: center; 
-            }
-            /* МИШЕНЬ */
-            div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(2) { 
-                flex: 0 0 28px !important; width: 28px !important; 
-            }
-            /* КАРТОЧКА СПОТА (Эластичная) */
-            div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(3) { 
-                flex: 1 1 auto !important; width: calc(100% - 56px) !important;
-            }
+        /* ═══════════════════════════════════════════════════════════
+           SPOT ROW MOBILE FIX — полный ядерный вариант
+           Маркер скрываем, на stHorizontalBlock его содержащий
+           вешаем все нужные стили через :has()
+           ═══════════════════════════════════════════════════════════ */
+        .spot-row-marker-mob { display: none !important; }
+
+        /* ── ШАГИ 1-2: принудительная горизонталь БЕЗ медиа-запроса ── */
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) {
+            display:         flex          !important;
+            flex-direction:  row           !important;
+            flex-wrap:       nowrap        !important;
+            align-items:     center        !important;
+            width:           100%          !important;
+            max-width:       100%          !important;
+            box-sizing:      border-box    !important;
+            overflow:        hidden        !important;
+            gap:             4px           !important;
+            padding:         0             !important;
+            margin:          0 0 6px 0     !important;
         }
 
-        /* Кнопка-мишень */
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) div[data-testid="stButton"] button {
-            width: 28px !important; height: 28px !important; min-height: 28px !important; padding: 0 !important;
-            border-radius: 6px !important; font-size: 14px !important; line-height: 1 !important;
-            background: transparent !important; border: 1px solid rgba(255,255,255,0.15) !important;
-            display: flex; justify-content: center; align-items: center;
+        /* ── ШАГИ 3-4: зачищаем ВСЕ вложенные обёртки от паддингов ──
+           Попадает: промежуточный div, stColumn/column,
+           stVerticalBlock, .element-container, stCheckbox, stButton  */
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div,
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div > div,
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div > div > div {
+            padding:    0 !important;
+            margin:     0 !important;
+            gap:        0 !important;
+            min-height: 0 !important;
+            box-sizing: border-box !important;
         }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) div[data-testid="stButton"] button:hover {
-            border-color: #ffc107 !important; background: rgba(255,193,7,0.1) !important;
+
+        /* element-container внутри spot rows — убиваем margin-bottom
+           (глобальный CSS ставит его в 1rem)                          */
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) .element-container {
+            margin-bottom: 0 !important;
+            padding:       0 !important;
+            width:         100% !important;
         }
-        
-        /* Чекбокс: убиваем отступы */
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) div[data-testid="stCheckbox"] {
-            margin: 0 !important; padding: 0 !important; min-height: 0 !important; display: flex; justify-content: center;
+
+        /* stButton внутри spot rows — сбрасываем padding-bottom:15px
+           который задан глобальным CSS в show() основного модуля      */
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) div[data-testid="stButton"] {
+            padding:    0 !important;
+            margin:     0 !important;
+            width:      100% !important;
         }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) div[data-testid="stCheckbox"] label {
-            padding: 0 !important; min-height: 0 !important;
+
+        /* ── КОЛОНКА 1: ЧЕКБОКС — 26px жёстко ──
+           Нужно покрыть оба имени testid: "column" (старый) и "stColumn" (новый) */
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(1) {
+            flex:      0 0 26px !important;
+            width:     26px     !important;
+            min-width: 26px     !important;
+            max-width: 26px     !important;
+            overflow:  hidden   !important;
+            display:   flex     !important;
+            align-items:     center !important;
+            justify-content: center !important;
         }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) div[data-testid="stCheckbox"] p {
-            display: none !important; 
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(1) div[data-testid="stCheckbox"] {
+            display:         flex   !important;
+            justify-content: center !important;
+            align-items:     center !important;
+            width:           26px   !important;
+            padding:         0      !important;
+            margin:          0      !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(1) label {
+            padding:    0 !important;
+            min-height: 0 !important;
+            gap:        0 !important;
+            margin:     0 !important;
+        }
+        /* Скрываем текст-лейбл у чекбокса (он пустой, но занимает место) */
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(1) p,
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(1) span.st-emotion-cache-1gulkj5 {
+            display: none !important;
+        }
+
+        /* ── КОЛОНКА 2: КНОПКА-МИШЕНЬ — 30px жёстко ── */
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(2) {
+            flex:      0 0 30px !important;
+            width:     30px     !important;
+            min-width: 30px     !important;
+            max-width: 30px     !important;
+            overflow:  hidden   !important;
+            display:   flex     !important;
+            align-items:     center !important;
+            justify-content: center !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(2) button {
+            width:         28px        !important;
+            height:        28px        !important;
+            min-width:     0           !important;
+            min-height:    28px        !important;
+            padding:       0           !important;
+            font-size:     15px        !important;
+            line-height:   1           !important;
+            border-radius: 7px         !important;
+            background:    transparent !important;
+            border:        1px solid rgba(255,255,255,0.14) !important;
+            display:       flex        !important;
+            align-items:   center      !important;
+            justify-content: center    !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(2) button:hover {
+            border-color: #ffc107                 !important;
+            background:   rgba(255,193,7,0.12)    !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(2) button p {
+            font-size:   15px !important;
+            margin:      0    !important;
+            line-height: 1    !important;
+        }
+
+        /* ── КОЛОНКА 3: КАРТОЧКА — всё оставшееся пространство ── */
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(3) {
+            flex:      1 1 0  !important;   /* 0 — ключевой момент, без min-content */
+            min-width: 0      !important;
+            max-width: calc(100% - 64px) !important;
+            overflow:  hidden !important;
+            width:     0      !important;   /* сбрасываем любой inline width от Streamlit */
+        }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(3) .stMarkdown,
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div:nth-child(3) div {
+            width:     100% !important;
+            min-width: 0    !important;
+            max-width: 100% !important;
         }
         </style>
     """, unsafe_allow_html=True)
@@ -275,37 +359,110 @@ def show():
         "BBvsCO": "3bet BBvsCO", "BBvsBU": "3bet BBvsBU", "BBvsSB": "3bet BBvsSB"
     }
 
+    # ─────────────────────────────────────────────────────────────
+    #  ROAD TO MASTERY — строки спотов
+    #  Структура: [чекбокс 26px] [кнопка 30px] [карточка flex:1]
+    #
+    #  Ключевые решения:
+    #  1. st.columns([1, 1, 8]) — пропорции только для Streamlit-рендера,
+    #     РЕАЛЬНЫЕ ширины задаёт CSS через :has(.spot-row-marker-mob)
+    #  2. Маркер .spot-row-marker-mob кладём в колонку 1 (рядом с чекбоксом),
+    #     он скрыт (display:none), но :has() его видит и стилизует весь ряд
+    #  3. Карточка — чистый HTML, text-overflow:ellipsis на названии спота
+    # ─────────────────────────────────────────────────────────────
     for sp, cnt in sorted_spots:
         pct = min(100, (cnt / 5000) * 100)
         
-        if cnt < 100: grad, glow = "linear-gradient(90deg, #6c757d, #495057)", "rgba(108, 117, 125, 0.3)"
-        elif cnt < 500: grad, glow = "linear-gradient(90deg, #198754, #20c997)", "rgba(32, 201, 151, 0.4)"
-        elif cnt < 1500: grad, glow = "linear-gradient(90deg, #0dcaf0, #0d6efd)", "rgba(13, 202, 240, 0.5)"
-        elif cnt < 3000: grad, glow = "linear-gradient(90deg, #6f42c1, #d63384)", "rgba(214, 51, 132, 0.5)"
-        elif cnt < 5000: grad, glow = "linear-gradient(90deg, #dc3545, #fd7e14)", "rgba(253, 126, 20, 0.6)"
-        else: grad, glow = "linear-gradient(90deg, #ffc107, #ffef96)", "rgba(255, 193, 7, 0.8)"
+        if cnt < 100:   grad, glow = "linear-gradient(90deg,#6c757d,#495057)",   "rgba(108,117,125,0.3)"
+        elif cnt < 500:  grad, glow = "linear-gradient(90deg,#198754,#20c997)",   "rgba(32,201,151,0.4)"
+        elif cnt < 1500: grad, glow = "linear-gradient(90deg,#0dcaf0,#0d6efd)",   "rgba(13,202,240,0.5)"
+        elif cnt < 3000: grad, glow = "linear-gradient(90deg,#6f42c1,#d63384)",   "rgba(214,51,132,0.5)"
+        elif cnt < 5000: grad, glow = "linear-gradient(90deg,#dc3545,#fd7e14)",   "rgba(253,126,20,0.6)"
+        else:            grad, glow = "linear-gradient(90deg,#ffc107,#ffef96)",   "rgba(255,193,7,0.8)"
 
         disp_name = display_rename_map.get(sp, sp) if not is_postflop else sp
 
-        c1, c2, c3 = st.columns([0.1, 0.1, 0.8], vertical_alignment="center")
-        
+        # Колонки: [чекбокс, кнопка, карточка]
+        # ratio [1,1,8] — просто подсказка для Streamlit, CSS переопределяет
+        c1, c2, c3 = st.columns([1, 1, 8], vertical_alignment="center")
+
         with c1:
+            # Маркер ДЛЯ :has() — должен быть где-то внутри stHorizontalBlock
             st.markdown("<div class='spot-row-marker-mob'></div>", unsafe_allow_html=True)
             st.checkbox("", key=f"sel_{sp}", label_visibility="collapsed")
+
         with c2:
-            if st.button("🎯", key=f"go_{sp}"): start_training([sp], is_postflop)
+            if st.button("🎯", key=f"go_{sp}"):
+                start_training([sp], is_postflop)
+
         with c3:
-            html_out = f'''
-            <div style="display:flex; align-items:center; gap:8px; background:#16181c; padding:8px 12px; border-radius:10px; border:1px solid #2d3139; box-shadow:0 2px 4px rgba(0,0,0,0.2); width:100%; box-sizing:border-box;">
-                <div style="flex:1 1 auto; min-width:0; color:#e9ecef; font-weight:800; font-size:11px; letter-spacing:0.02em; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="{sp}">{disp_name}</div>
-                <div style="flex:0 0 auto; color:#fff; font-weight:900; font-size:13px; text-align:right; font-variant-numeric:tabular-nums;">{cnt}</div>
-                <div style="flex:1 1 30px; background:rgba(0,0,0,0.6); height:6px; border-radius:3px; box-shadow:inset 0 1px 3px rgba(0,0,0,0.8); position:relative; overflow:hidden;">
-                    <div style="width:{pct}%; height:100%; background:{grad}; border-radius:3px; box-shadow:0 0 10px {glow}; transition:width 0.5s ease-out;"></div>
-                </div>
-                <div style="flex:0 0 auto; color:#6c757d; font-weight:700; font-size:10px;">5k</div>
-            </div>
-            '''
-            st.markdown(html_out, unsafe_allow_html=True)
+            # Вся карточка — чистый HTML.
+            # overflow:hidden + text-overflow:ellipsis на названии
+            # flex:1 на прогресс-баре — тянется под оставшееся место
+            st.markdown(
+                f'''<div style="
+                        display:flex;
+                        align-items:center;
+                        gap:6px;
+                        background:#16181c;
+                        padding:6px 10px;
+                        border-radius:10px;
+                        border:1px solid #2d3139;
+                        box-shadow:0 2px 4px rgba(0,0,0,0.2);
+                        width:100%;
+                        box-sizing:border-box;
+                        overflow:hidden;
+                    ">
+                    <div style="
+                        flex:1 1 0;
+                        min-width:0;
+                        color:#e9ecef;
+                        font-weight:800;
+                        font-size:11px;
+                        letter-spacing:0.02em;
+                        text-transform:uppercase;
+                        overflow:hidden;
+                        text-overflow:ellipsis;
+                        white-space:nowrap;
+                    " title="{sp}">{disp_name}</div>
+                    <div style="
+                        flex:0 0 auto;
+                        color:#fff;
+                        font-weight:900;
+                        font-size:12px;
+                        font-variant-numeric:tabular-nums;
+                        white-space:nowrap;
+                    ">{cnt}</div>
+                    <div style="
+                        flex:2 1 0;
+                        min-width:20px;
+                        max-width:80px;
+                        background:rgba(0,0,0,0.55);
+                        height:5px;
+                        border-radius:3px;
+                        box-shadow:inset 0 1px 3px rgba(0,0,0,0.8);
+                        position:relative;
+                        overflow:hidden;
+                    ">
+                        <div style="
+                            width:{pct}%;
+                            height:100%;
+                            background:{grad};
+                            border-radius:3px;
+                            box-shadow:0 0 8px {glow};
+                            transition:width 0.5s ease-out;
+                        "></div>
+                    </div>
+                    <div style="
+                        flex:0 0 auto;
+                        color:#6c757d;
+                        font-weight:700;
+                        font-size:9px;
+                        white-space:nowrap;
+                    ">5k</div>
+                </div>''',
+                unsafe_allow_html=True
+            )
 
     st.divider()
     with st.expander("📜 Raw History Log"):
