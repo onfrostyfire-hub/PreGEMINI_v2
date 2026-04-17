@@ -253,6 +253,30 @@ def show():
         st.markdown("<hr style='margin: 5px 0;'>", unsafe_allow_html=True)
 
         saved = utils.load_user_settings()
+        
+        # --- СИНХРОНИЗАЦИЯ ФИЛЬТРОВ ИЗ СТАТИСТИКИ ---
+        if "selected_spots" in saved:
+            incoming_spots = saved.pop("selected_spots")
+            incoming_scenarios = saved.pop("selected_scenarios", [])
+            saved.pop("selected_sources", None)
+            
+            full_keys = []
+            for sc in incoming_scenarios:
+                if sc in scenario_map:
+                    for sp_name, sp_key in scenario_map[sc]:
+                        if sp_name in incoming_spots:
+                            full_keys.append(sp_key)
+            
+            saved["scenarios"] = incoming_scenarios
+            saved["spots"] = full_keys
+            
+            for k in list(st.session_state.keys()):
+                if k.startswith("m_chk_"):
+                    del st.session_state[k]
+                    
+            utils.save_user_settings(saved)
+        # ------------------------------------------
+
         sel_sc = st.multiselect("Scenario", all_scenarios, default=[s for s in saved.get("scenarios", []) if s in all_scenarios])
         
         sel_spots_keys = []
@@ -331,7 +355,6 @@ def show():
     table_size = setup.get("table_size", 6)
     stacks_data = setup.get("stacks", {})
     
-    # ПАРСИМ КАСТОМНЫЙ ТЕКСТ КНОПКИ (ЕСЛИ ЕСТЬ)
     btn_raise_text = setup.get("btn_raise_text", "RAISE").upper()
 
     is_defense = bool(villain_pos is not None or "call" in r_data or "Call" in r_data)
