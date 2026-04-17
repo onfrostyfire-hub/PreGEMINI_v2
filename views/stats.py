@@ -49,7 +49,6 @@ def fetch_history(is_postflop):
     else:
         df_pr = utils.load_history()
         if df_pr.empty: return df_pr
-        # Фильтруем префлоп от постфлоп раздач по наличию пайпа, если вдруг они смешались
         return df_pr[~df_pr["Spot"].astype(str).str.contains('|', regex=False, na=False)].copy()
 
 def custom_delete_history(days=None):
@@ -87,20 +86,21 @@ def custom_delete_history(days=None):
 
 def start_training(selected_spots, is_postflop):
     if not selected_spots:
-        st.warning("Сначала выбери споты, Начальник.")
+        st.warning("Select spots first, Boss.")
         return
+
+    for k in list(st.session_state.keys()):
+        if k.startswith("chk_") or k.startswith("pf_chk_") or k.startswith("sel_") or k.startswith("pf_sel_"):
+            del st.session_state[k]
 
     if is_postflop:
         settings = utils.load_user_settings(is_postflop=True)
         
-        pf_spots = set()
-        pf_heroes = set()
-        pf_streets = set()
-        pf_branches = set()
+        pf_spots, pf_heroes, pf_streets, pf_branches = set(), set(), set(), set()
         
         for key in selected_spots:
             parts = [p.strip() for p in key.split('|')]
-            if len(parts) == 5:
+            if len(parts) >= 4:
                 pf_spots.add(parts[0])
                 pf_heroes.add(parts[1])
                 pf_streets.add(parts[2])
@@ -120,8 +120,7 @@ def start_training(selected_spots, is_postflop):
         settings = utils.load_user_settings(is_postflop=False)
         ranges_db = utils.load_ranges()
         
-        sel_src = set()
-        sel_sc = set()
+        sel_src, sel_sc = set(), set()
         
         for sp in selected_spots:
             for src, sc_dict in ranges_db.items():
@@ -145,68 +144,48 @@ def start_training(selected_spots, is_postflop):
 def show():
     st.markdown("""
         <style>
-        .mastery-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #16181c;
-            padding: 8px 12px;
-            border-radius: 10px;
-            border: 1px solid #2d3139;
-            margin-bottom: 8px;
-        }
         .mastery-name {
-            flex: 0 0 140px;
-            color: #e9ecef;
-            font-weight: 800;
-            font-size: 11px;
-            text-transform: uppercase;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            color: #e9ecef; font-weight: 800; font-size: 12px;
+            text-transform: uppercase; white-space: nowrap;
+            overflow: hidden; text-overflow: ellipsis;
         }
         .mastery-count {
-            flex: 0 0 40px;
-            color: #fff;
-            font-weight: 900;
-            font-size: 13px;
-            text-align: right;
+            color: #fff; font-weight: 900; font-size: 14px; text-align: right;
+            font-variant-numeric: tabular-nums;
         }
         .mastery-bar-container {
-            flex: 1;
-            background: rgba(0,0,0,0.6);
-            height: 10px;
-            border-radius: 5px;
-            position: relative;
-            overflow: hidden;
+            width: 100%; background: rgba(0,0,0,0.6); height: 8px;
+            border-radius: 4px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.8);
+            margin-top: 2px;
         }
-        .mastery-bar-fill {
-            height: 100%;
-            border-radius: 5px;
-            transition: width 0.5s ease-out;
+        .mastery-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease-out; }
+        .mastery-max { color: #6c757d; font-size: 11px; font-weight: 700; text-align: right; }
+        
+        div[data-testid="stCheckbox"] { margin: 0 !important; padding: 0 !important; }
+        div[data-testid="stButton"] button {
+            padding: 0 !important; height: 32px !important; min-height: 0 !important;
+            background: transparent !important; border: 1px solid #444 !important; font-size: 14px !important;
         }
-        /* Стили кнопок Стримлита внутри контейнеров */
-        div[data-testid="column"] button {
-            padding: 2px 5px !important;
-            height: auto !important;
-            min-height: 0 !important;
-            font-size: 10px !important;
+        div[data-testid="stButton"] button:hover { border-color: #ffc107 !important; }
+        
+        div[data-testid="stButton"] button[kind="primary"] {
+            height: 44px !important; background: linear-gradient(180deg, #1c3a55 0%, #102436 100%) !important;
+            border: none !important; font-weight: 900 !important; letter-spacing: 1px !important;
         }
         </style>
     """, unsafe_allow_html=True)
 
     st.markdown("## 📊 Statistics Hub")
     
-    mode = st.radio("Раздел:", ["🔥 Preflop", "🌊 Postflop"], horizontal=True)
+    mode = st.radio("Section:", ["🔥 Preflop", "🌊 Postflop"], horizontal=True, label_visibility="collapsed")
     is_postflop = (mode == "🌊 Postflop")
     
     df = fetch_history(is_postflop)
     
     if df.empty or "Date" not in df.columns or "Result" not in df.columns:
-        st.info(f"History for {mode.split()[1]} is empty. Go train, Начальник.")
+        st.info(f"History for {mode.split()[1]} is empty. Go train, Boss.")
         return
 
-    # Карта для красивого отображения имен в стате (не для фильтров!)
     rename_map = {
         "BUvsCO": "3bet BUvsCO", "SBvsCO": "3bet SBvsCO", "SBvsBU": "3bet SBvsBU",
         "BBvsCO": "3bet BBvsCO", "BBvsBU": "3bet BBvsBU", "BBvsSB": "3bet BBvsSB"
@@ -240,7 +219,7 @@ def show():
 
     st.divider()
     st.markdown("### 🚀 Road to Mastery (5k Hands)")
-    st.caption("Выбери споты галочками и нажми Train, либо нажми 🎯 для одиночного запуска.")
+    st.caption("Check spots and click TRAIN SELECTED, or hit 🎯 for quick launch.")
 
     all_spots_names = set()
     if is_postflop:
@@ -258,20 +237,15 @@ def show():
         
     sorted_spots = sorted(merged_counts.items(), key=lambda x: x[1], reverse=True)
 
-    # --- ПАНЕЛЬ МУЛЬТИВЫБОРА ---
-    if 'selected_to_train' not in st.session_state: st.session_state.selected_to_train = []
-    
     col_btn, col_info = st.columns([1, 2])
     with col_btn:
         if st.button("🚀 TRAIN SELECTED", use_container_width=True, type="primary"):
-            start_training(st.session_state.selected_to_train, is_postflop)
+            selected = [sp for sp in all_spots_names if st.session_state.get(f"sel_{sp}", False)]
+            start_training(selected, is_postflop)
 
-    # --- СПИСОК МАСТЕРСТВА ---
-    temp_selected = []
     for sp, cnt in sorted_spots:
         pct = min(100, (cnt / 5000) * 100)
         
-        # Определяем цвет градиента
         if cnt < 100: color, glow = "#6c757d", "rgba(108, 117, 125, 0.3)"
         elif cnt < 500: color, glow = "#198754", "rgba(32, 201, 151, 0.4)"
         elif cnt < 1500: color, glow = "#0dcaf0", "rgba(13, 202, 240, 0.5)"
@@ -279,14 +253,13 @@ def show():
         elif cnt < 5000: color, glow = "#dc3545", "rgba(253, 126, 20, 0.6)"
         else: color, glow = "#ffc107", "rgba(255, 193, 7, 0.8)"
 
-        cols = st.columns([0.1, 0.15, 0.4, 0.1, 0.4, 0.1])
+        cols = st.columns([0.05, 0.08, 0.37, 0.1, 0.3, 0.1], gap="small", vertical_alignment="center")
         
         with cols[0]:
-            if st.checkbox("", key=f"sel_{sp}", label_visibility="collapsed"):
-                temp_selected.append(sp)
+            st.checkbox("", key=f"sel_{sp}", label_visibility="collapsed")
         
         with cols[1]:
-            if st.button("🎯", key=f"go_{sp}", help=f"Train {sp} only"):
+            if st.button("🎯", key=f"go_{sp}", help=f"Train {sp}", use_container_width=True):
                 start_training([sp], is_postflop)
         
         with cols[2]:
@@ -304,9 +277,7 @@ def show():
             """, unsafe_allow_html=True)
             
         with cols[5]:
-            st.markdown("<div style='color:#6c757d; font-size:11px; font-weight:700;'>5000</div>", unsafe_allow_html=True)
-
-    st.session_state.selected_to_train = temp_selected
+            st.markdown("<div class='mastery-max'>5000</div>", unsafe_allow_html=True)
 
     st.divider()
     with st.expander("📜 Raw History Log"):
@@ -319,6 +290,7 @@ def show():
 
     st.markdown("### 🚑 Data Recovery")
     with st.expander(f"Recover Spot Mastery from History", expanded=False):
+        st.markdown("If your progress got reset, this will recalculate your experience, streak, and Spot Mastery from raw history.")
         if st.button("🔧 RECOVER SPOT MASTERY", use_container_width=True):
             df_hist = df.copy().sort_values("Date")
             new_mastery = {}
@@ -338,14 +310,14 @@ def show():
             stats_dict["spot_mastery"] = new_mastery
             
             utils.save_user_stats(stats_dict, is_postflop=is_postflop)
-            st.success("✅ Recovery complete!")
+            st.success("✅ Recovery complete! Refresh the page.")
             st.rerun()
 
     st.markdown("### 🗑️ Danger Zone")
     with st.expander("Clear History", expanded=False):
-        st.warning("⚠️ Warning: Clears ALL history globally.")
+        st.warning("⚠️ Warning: Clears ALL history globally (Preflop & Postflop).")
         d1, d2, d3, d4 = st.columns(4)
-        if d1.button("Delete: 24h", use_container_width=True): custom_delete_history(days=1); st.rerun()
-        if d2.button("Delete: 7d", use_container_width=True): custom_delete_history(days=7); st.rerun()
-        if d3.button("Delete: 30d", use_container_width=True): custom_delete_history(days=30); st.rerun()
+        if d1.button("Delete: 24 Hours", use_container_width=True): custom_delete_history(days=1); st.rerun()
+        if d2.button("Delete: 7 Days", use_container_width=True): custom_delete_history(days=7); st.rerun()
+        if d3.button("Delete: 30 Days", use_container_width=True): custom_delete_history(days=30); st.rerun()
         if d4.button("NUKE ALL", use_container_width=True): custom_delete_history(); st.rerun()
