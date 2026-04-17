@@ -92,18 +92,52 @@ def start_training(selected_spots, is_postflop):
 
     if is_postflop:
         settings = utils.load_user_settings(is_postflop=True)
-        # Для постфлопа в фильтр пишем полные ключи
+        
+        pf_spots = set()
+        pf_heroes = set()
+        pf_streets = set()
+        pf_branches = set()
+        
+        for key in selected_spots:
+            parts = [p.strip() for p in key.split('|')]
+            if len(parts) == 5:
+                pf_spots.add(parts[0])
+                pf_heroes.add(parts[1])
+                pf_streets.add(parts[2])
+                pf_branches.add(parts[3])
+                
+        settings["pf_sel_spots"] = list(pf_spots)
+        settings["pf_sel_heroes"] = list(pf_heroes)
+        settings["pf_sel_streets"] = list(pf_streets)
+        settings["pf_sel_branches"] = list(pf_branches)
         settings["pf_spots"] = selected_spots
+        
         utils.save_user_settings(settings, is_postflop=True)
         st.session_state.actual_app_mode = "Postflop"
         st.session_state.pf_hand = None
+        st.session_state.pf_current_spot_key = None
     else:
         settings = utils.load_user_settings(is_postflop=False)
-        # Для префлопа в фильтр пишем названия спотов
+        ranges_db = utils.load_ranges()
+        
+        sel_src = set()
+        sel_sc = set()
+        
+        for sp in selected_spots:
+            for src, sc_dict in ranges_db.items():
+                for sc, sp_dict in sc_dict.items():
+                    if sp in sp_dict:
+                        sel_src.add(src)
+                        sel_sc.add(sc)
+                        
+        settings["selected_sources"] = list(sel_src)
+        settings["selected_scenarios"] = list(sel_sc)
         settings["selected_spots"] = selected_spots
+        
         utils.save_user_settings(settings, is_postflop=False)
         st.session_state.actual_app_mode = "Preflop"
         st.session_state.hand = None
+        st.session_state.current_spot = None
 
     if hasattr(utils, "force_sync"): utils.force_sync()
     st.rerun()
