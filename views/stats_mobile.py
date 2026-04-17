@@ -96,6 +96,7 @@ def start_training(selected_spots, is_postflop):
     if is_postflop:
         settings = utils.load_user_settings(is_postflop=True)
         pf_spots, pf_heroes, pf_streets, pf_branches = set(), set(), set(), set()
+        
         for key in selected_spots:
             parts = [p.strip() for p in key.split('|')]
             if len(parts) >= 4:
@@ -109,6 +110,7 @@ def start_training(selected_spots, is_postflop):
         settings["pf_sel_streets"] = list(pf_streets)
         settings["pf_sel_branches"] = list(pf_branches)
         settings["pf_spots"] = selected_spots
+        
         utils.save_user_settings(settings, is_postflop=True)
         st.session_state.actual_app_mode = "Postflop"
         st.session_state.pf_hand = None
@@ -116,6 +118,7 @@ def start_training(selected_spots, is_postflop):
     else:
         settings = utils.load_user_settings(is_postflop=False)
         ranges_db = utils.load_ranges()
+        
         sel_src, sel_sc = set(), set()
         for sp in selected_spots:
             for src, sc_dict in ranges_db.items():
@@ -127,6 +130,7 @@ def start_training(selected_spots, is_postflop):
         settings["selected_sources"] = list(sel_src)
         settings["selected_scenarios"] = list(sel_sc)
         settings["selected_spots"] = selected_spots
+        
         utils.save_user_settings(settings, is_postflop=False)
         st.session_state.actual_app_mode = "Preflop"
         st.session_state.hand = None
@@ -140,53 +144,62 @@ def show():
         <style>
         div[data-testid="stButton"] button[kind="primary"] {
             height: 44px !important; background: linear-gradient(180deg, #1c3a55 0%, #102436 100%) !important;
-            border: none !important; font-weight: 900 !important; letter-spacing: 1px !important;
+            border: none !important; font-weight: 900 !important; letter-spacing: 1px !important; color: #fff !important;
+            border-radius: 10px !important;
+        }
+
+        .spot-row-marker-mob { display: none; }
+        
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) {
+            display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important;
+            align-items: center !important; background: #16181c !important; padding: 6px 8px !important;
+            border-radius: 10px !important; border: 1px solid #2d3139 !important; margin-bottom: 6px !important;
+            gap: 4px !important; width: 100% !important; grid-template-columns: none !important;
         }
         
-        .spot-row-marker { display: none; }
-        
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker) {
-            display: flex !important;
-            flex-wrap: wrap !important;
-            align-items: center !important;
-            background: #16181c !important;
-            padding: 10px 12px !important;
-            border-radius: 12px !important;
-            border: 1px solid #2d3139 !important;
-            margin-bottom: 10px !important;
-            gap: 6px !important;
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"] {
+            width: auto !important; min-width: 0 !important; margin: 0 !important; padding: 0 !important; flex: none !important;
         }
         
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker) > div[data-testid="column"] {
-            width: auto !important; min-width: 0 !important; flex: none !important; padding: 0 !important;
-        }
-        
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker) > div[data-testid="column"]:nth-child(1) { flex: 0 0 28px !important; display: flex; justify-content: center; }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker) > div[data-testid="column"]:nth-child(2) { flex: 0 0 32px !important; }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker) > div[data-testid="column"]:nth-child(3) { flex: 1 1 calc(100% - 70px) !important; overflow: hidden; }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker) > div[data-testid="column"]:nth-child(4) { flex: 1 1 100% !important; margin-top: 8px !important; }
-        
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker) div[data-testid="stButton"] button {
-            width: 32px !important; height: 32px !important; min-height: 32px !important; padding: 0 !important;
-            border-radius: 8px !important; font-size: 16px !important; line-height: 1 !important;
-            background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(255,255,255,0.15) !important;
+        /* ЖЕСТКИЕ ГАБАРИТЫ ДЛЯ МОБИЛЫ (Итого ~140px фикс, остальное под название) */
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(1) { flex: 0 0 24px !important; display: flex; justify-content: center; }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(2) { flex: 0 0 28px !important; }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(3) { flex: 1 1 50px !important; overflow: hidden; }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(4) { flex: 0 0 24px !important; text-align: right; }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(5) { flex: 0 0 45px !important; }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(6) { flex: 0 0 16px !important; text-align: right; }
+
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) div[data-testid="stButton"] button {
+            width: 26px !important; height: 26px !important; min-height: 26px !important; padding: 0 !important;
+            border-radius: 6px !important; font-size: 13px !important; line-height: 1 !important;
+            background: transparent !important; border: 1px solid rgba(255,255,255,0.15) !important;
             display: flex; justify-content: center; align-items: center;
         }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker) div[data-testid="stButton"] button:hover {
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) div[data-testid="stButton"] button:hover {
             border-color: #ffc107 !important; background: rgba(255,193,7,0.1) !important;
         }
         
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker) div[data-testid="stCheckbox"] {
-            margin: 0 !important; padding: 0 !important;
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) div[data-testid="stCheckbox"] {
+            margin: 0 !important; padding: 0 !important; display: flex; align-items: center; justify-content: center;
         }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker) div[data-testid="stCheckbox"] label {
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) div[data-testid="stCheckbox"] label {
             padding: 0 !important; min-height: 0 !important;
         }
 
-        .mastery-name-mob {
-            color: #e9ecef; font-weight: 800; font-size: 13px; line-height: 1.2;
-            text-transform: uppercase; white-space: normal; word-wrap: break-word; margin: 0;
+        .mastery-name {
+            color: #e9ecef; font-weight: 800; font-size: 10px; text-transform: uppercase;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; margin: 0;
         }
+        .mastery-count {
+            color: #fff; font-weight: 900; font-size: 11px; font-variant-numeric: tabular-nums; line-height: 1.2; margin: 0;
+        }
+        .mastery-max {
+            color: #6c757d; font-size: 9px; font-weight: 700; line-height: 1.2; margin: 0;
+        }
+        .mastery-bar-container {
+            width: 100%; background: rgba(0,0,0,0.6); height: 5px; border-radius: 3px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.8); margin-top: 1px;
+        }
+        .mastery-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease-out; }
         </style>
     """, unsafe_allow_html=True)
 
@@ -197,6 +210,7 @@ def show():
     
     df = fetch_history(is_postflop)
     
+    # ЖЕСТКАЯ ПОДМЕНА ИМЕН: Старые хвосты из истории переводим в формат JSON
     rename_map = {
         "BUvsCO": "3bet BUvsCO", "SBvsCO": "3bet SBvsCO", "SBvsBU": "3bet SBvsBU",
         "BBvsCO": "3bet BBvsCO", "BBvsBU": "3bet BBvsBU", "BBvsSB": "3bet BBvsSB",
@@ -240,6 +254,7 @@ def show():
     st.markdown("### 🚀 Road to Mastery (5k Hands)")
     st.caption("Check spots and click TRAIN SELECTED, or hit 🎯 for quick launch.")
 
+    # ВЫТАСКИВАЕМ РЕАЛЬНЫЕ СПОТЫ ИЗ ФАЙЛОВ JSON
     all_spots_names = set()
     if is_postflop:
         pf_db = load_postflop_keys()
@@ -251,17 +266,22 @@ def show():
                 for sp in sp_dict.keys(): all_spots_names.add(sp)
                 
     spot_counts = df["Spot"].value_counts().to_dict()
+    
+    # СКРЕЩИВАЕМ (Показываем только то, что есть в JSON)
     merged_counts = {sp: 0 for sp in all_spots_names}
-    for sp, cnt in spot_counts.items(): merged_counts[sp] = cnt
+    for sp, cnt in spot_counts.items():
+        if sp in merged_counts:
+            merged_counts[sp] = cnt
         
     sorted_spots = sorted(merged_counts.items(), key=lambda x: x[1], reverse=True)
 
-    col_btn, col_info = st.columns([1, 1])
+    col_btn, _ = st.columns([1, 1])
     with col_btn:
         if st.button("🚀 TRAIN SELECTED", use_container_width=True, type="primary"):
             selected = [sp for sp in all_spots_names if st.session_state.get(f"sel_{sp}", False)]
             start_training(selected, is_postflop)
 
+    # ОТРИСОВКА В ОДНУ ЛИНИЮ
     for sp, cnt in sorted_spots:
         pct = min(100, (cnt / 5000) * 100)
         
@@ -272,26 +292,25 @@ def show():
         elif cnt < 5000: grad, glow = "linear-gradient(90deg, #dc3545, #fd7e14)", "rgba(253, 126, 20, 0.6)"
         else: grad, glow = "linear-gradient(90deg, #ffc107, #ffef96)", "rgba(255, 193, 7, 0.8)"
 
-        c1, c2, c3, c4 = st.columns(4, vertical_alignment="center")
+        c1, c2, c3, c4, c5, c6 = st.columns(6, vertical_alignment="center")
         
         with c1:
-            st.markdown("<div class='spot-row-marker'></div>", unsafe_allow_html=True)
+            st.markdown("<div class='spot-row-marker-mob'></div>", unsafe_allow_html=True)
             st.checkbox("", key=f"sel_{sp}", label_visibility="collapsed")
         with c2:
-            if st.button("🎯", key=f"go_{sp}", help=f"Train {sp}"): start_training([sp], is_postflop)
+            if st.button("🎯", key=f"go_{sp}"): start_training([sp], is_postflop)
         with c3:
-            st.markdown(f"<div class='mastery-name-mob' title='{sp}'>{sp}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='mastery-name' title='{sp}'>{sp}</div>", unsafe_allow_html=True)
         with c4:
-            html_out = f'''
-            <div style="display:flex; align-items:center; gap:10px; width:100%;">
-                <div style="flex:0 0 auto; color:#fff; font-weight:900; font-size:14px; min-width:35px; text-align:right;">{cnt}</div>
-                <div style="flex:1; background:rgba(0,0,0,0.6); height:8px; border-radius:4px; box-shadow:inset 0 1px 3px rgba(0,0,0,0.8); position:relative; overflow:hidden;">
-                    <div style="width:{pct}%; height:100%; background:{grad}; border-radius:4px; box-shadow:0 0 10px {glow}; transition:width 0.5s ease-out;"></div>
+            st.markdown(f"<div class='mastery-count'>{cnt}</div>", unsafe_allow_html=True)
+        with c5:
+            st.markdown(f"""
+                <div class='mastery-bar-container'>
+                    <div class='mastery-bar-fill' style='width:{pct}%; background:{grad}; box-shadow:0 0 10px {glow};'></div>
                 </div>
-                <div style="flex:0 0 auto; color:#6c757d; font-weight:700; font-size:12px;">5k</div>
-            </div>
-            '''
-            st.markdown(html_out, unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
+        with c6:
+            st.markdown("<div class='mastery-max'>5k</div>", unsafe_allow_html=True)
 
     st.divider()
     with st.expander("📜 Raw History Log"):
@@ -303,7 +322,7 @@ def show():
         st.dataframe(d[cols_to_show], use_container_width=True, hide_index=True)
 
     st.markdown("### 🚑 Data Recovery")
-    with st.expander(f"Recover Spot Mastery from History", expanded=False):
+    with st.expander("Recover Spot Mastery from History", expanded=False):
         st.markdown("If your progress got reset, this will recalculate your experience, streak, and Spot Mastery from raw history.")
         if st.button("🔧 RECOVER SPOT MASTERY", use_container_width=True):
             df_hist = df.copy().sort_values("Date")
