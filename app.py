@@ -1,5 +1,5 @@
 import streamlit as st
-from views import mobile, desktop, compare, stats
+from views import mobile, desktop, compare, stats_mobile, stats_desktop
 from views import postflop_desktop, postflop_mobile
 
 st.set_page_config(page_title="Poker Trainer", layout="wide", initial_sidebar_state="collapsed")
@@ -85,7 +85,10 @@ def main():
     if st.session_state.actual_app_mode == "Ranges":
         compare.show()
     elif st.session_state.actual_app_mode == "Stats":
-        stats.show()
+        if st.session_state.actual_view_type == "📱 Mobile":
+            stats_mobile.show()
+        else:
+            stats_desktop.show()
     elif st.session_state.actual_app_mode == "Postflop":
         if st.session_state.actual_view_type == "📱 Mobile":
             postflop_mobile.show()
