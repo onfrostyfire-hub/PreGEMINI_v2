@@ -37,7 +37,7 @@
       "ranges": {
         "call": "",
         "Raise": "AA,KK,QQ,JJ:0.5,AK,AQs:0.5",
-        "training": "AA,KK,QQ,JJ,TT,99,AK,AQ,AJs,KQs"
+        "training": "QQ,JJ,TT,99,AK,AQ,AJs,KQs"
       }
     },
     "O4BET @ SB def vs BB open 4bet": {
