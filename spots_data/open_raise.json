@@ -13,7 +13,7 @@
         "is_3bet_pot": false,
         "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 100, "SB": 99.5, "BB": 99.0}
       },
-      "stats": { "PFR": "16%", "Fold": "84%" },
+      "stats": { "PFR": "18%", "Fold": "82%" },
       "ranges": {
         "full": "AA,KK,QQ,JJ,TT,99,88,77,66:0.5,55:0.5,AK,AQ,AJ,AT,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQ,KJ,KTs,K9s,K8s,K7s:0.5,K6s:0.5,K5s:0.5,QJs,QTs,Q9s,JTs,J9s,T9s,98s:0.5,87s:0.5,76s:0.5,65s:0.5,54s:0.5",
         "training": "66,ATo,A7s,A6s,A3s,A2s,KJo,K9s,K8s,Q9s,J9s,T9s,55,44,33,22,KTo,K8s,K7s,QJo,Q8s,J8s,T8s,98s,97s,87s,76s,65s,54s"
@@ -30,9 +30,9 @@
         "is_3bet_pot": false,
         "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 100, "SB": 99.5, "BB": 99.0}
       },
-      "stats": { "PFR": "20%", "Fold": "80%" },
+      "stats": { "PFR": "22%", "Fold": "78%" },
       "ranges": {
-        "full": "AA,KK,QQ,JJ,TT,99,88,77,66,55:0.5,44:0.5,AK,AQ,AJ,AT,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQ,KJ,KT,K9s,K8s,K7s,K6s,K5s,QJ,QTs,QTo:0.5,Q9s,Q8s,JTs,J9s,T9s,T8s,98s:0.5,87s:0.5,76s:0.5,65s:0.5,54s:0.5",
+        "full": "AA,KK,QQ,JJ,TT,99,88,77,66,55:0.5,44:0.5,33:0.5,22:0.5,AK,AQ,AJ,AT,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQ,KJ,KT,K9s,K8s,K7s,K6s,K5s,QJ,QTs,QTo:0.5,Q9s,Q8s,JTs,J9s,T9s,T8s,98s:0.5,87s:0.5,76s:0.5,65s:0.5,54s:0.5",
         "training": "55,44,33,22,ATo,A9o,A3s,A2s,KJo,KTo,K9s,K8s,K7s,K6s,K5s,K4s,QJo,QTo,Q9s,Q8s,J9s,J8s,T9s,T8s,98s,97s,87s,86s,76s,65s,54s"
       }
     },
@@ -47,9 +47,9 @@
         "is_3bet_pot": false,
         "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 100, "SB": 99.5, "BB": 99.0}
       },
-      "stats": { "PFR": "28%", "Fold": "72%" },
+      "stats": { "PFR": "29%", "Fold": "71%" },
       "ranges": {
-        "full": "AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AK,AQ,AJ,AT,A9,A8s,A8o,A7s,A6s,A5s,A4s,A3s,A2s,KQ,KJ,KT,K9s,K8s,K7s,K6s,K5s,K4s,K3s,QJ,QT,Q9s,Q8s,Q7s,Q6s,Q5s,JT,J9s,J8s,T9s,T8s,98s,97s,87s,76s,65s,54s",
+        "full": "AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AK,AQ,AJ,AT,A9,A8s,A8o,A7s,A6s,A5s,A4s,A3s,A2s,KQ,KJ,KT,K9s,K8s,K7s,K6s,K5s,K4s,K3s,QJ,QT,Q9s,Q8s,Q7s,Q6s,Q5s,JT,J9s,J8s,J7s:0.5,T9s,T8s,T7s:0.5,98s,97s,87s,76s,65s,54s",
         "training": "33,22,A9o,A8o,A5o,K9o,K6s,K5s,K4s,K3s,K2s,QTo,Q7s,Q6s,Q5s,Q4s,Q3s,JTo,J7s,J6s,T7s,T6s,96s,86s,75s,65s,64s,54s,53s,43s"
       }
     },
@@ -64,7 +64,7 @@
         "is_3bet_pot": false,
         "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 100, "SB": 99.5, "BB": 99.0}
       },
-      "stats": { "PFR": "41%", "Fold": "59%" },
+      "stats": { "PFR": "42%", "Fold": "58%" },
       "ranges": {
         "full": "AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AK,AQ,AJ,AT,A9,A8,A7,A6,A5,A4,A3s,A2s,KQ,KJ,KT,K9,K8,K7s,K6s,K5s,K4s,K3s,K2s,QJ,QT,Q9,Q8s,Q7s,Q6s,Q5s,Q4s,Q3s,Q2s,JT,J9,J8s,J7s,J6s,J5s,J4s,T9,T8,T7s,T6s,98,97s,96s,87s,86s,76s,75s,65s,54s",
         "training": "A5o,A4o,A3o,A2o,K9o,K8o,K7o,K3s,K2s,Q9o,Q8o,Q5s,Q4s,Q3s,Q2s,J9o,J8o,J6s,J5s,J4s,T9o,T8o,T6s,T5s,T4s,98o,96s,95s,94s,87o,85s,84s,74s,64s,63s,53s,52s,43s,42s,32s"
