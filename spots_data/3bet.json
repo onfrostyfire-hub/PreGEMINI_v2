@@ -32,11 +32,11 @@
         "stacks": {"EP": 100, "MP": 97.5, "CO": 100, "BTN": 100, "SB": 99.5, "BB": 99.0}
       },
       "ranges": {
-        "3bet": "AA,KK,QQ,JJ,TT,99,88,77:0.5,AK,AQ,AJs,ATs,A9s,A5s,A4s,KQs,KJs,KTs,K9s:0.5,QJs,QTs,JTs,J9s:0.5,T9s:0.5,76s:0.5,65s:0.5,54s:0.5",
+        "3bet": "AA,KK,QQ,JJ,TT,99,88,77:0.5,66:0.5,AK,AQ,AJs,AJo:0.25,ATs,A9s,A8s:0.5,A5s,A4s,KQs,KQo:0.25,KJs,KTs,K9s:0.5,QJs,QTs,JTs,J9s:0.5,T9s:0.5,76s:0.5,65s:0.5,54s:0.5",
         "call": "",
         "training": "88,77,66,AJo,A9s,A8s,A7s,A5s,A4s,KQo,K9s,QTs,Q9s,JTs,J9s,T9s,T8s,98s,87s,76s,65s,54s"
       },
-      "stats": { "3bet": "10%" }
+      "stats": { "3bet": "11%" }
     },
     "3bet BUvsCO": {
       "setup": { 
@@ -86,7 +86,7 @@
         "stacks": {"EP": 100, "MP": 97.5, "CO": 100, "BTN": 100, "SB": 99.5, "BB": 99.0}
       },
       "ranges": {
-        "3bet": "AA,KK,QQ,JJ,TT,99,88:0.5,AK,AQ,AJs,ATs,A5s,A4s,KQs,KJs,KTs,QJs,QTs,JTs",
+        "3bet": "AA,KK,QQ,JJ,TT,99,88:0.5,AK,AQ,AJs,ATs,A5s,A4s,KQs,KJs,KTs,QJs,QTs,JTs,76s:0.5,65s:0.5,54s:0.5",
         "call": "",
         "training": "99,88,AJo,A9s,A5s,A4s,KQo,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,T8s,98s,87s,76s,65s"
       },
@@ -104,7 +104,7 @@
         "stacks": {"EP": 100, "MP": 100, "CO": 97.5, "BTN": 100, "SB": 99.5, "BB": 99.0}
       },
       "ranges": {
-        "3bet": "AA,KK,QQ,JJ,TT,99,88,AK,AQ,AJ,ATs,A9s,A5s,A4s,KQ,KJs,KTs,K9s,QJs,QTs,JTs,J9s,T9s",
+        "3bet": "AA,KK,QQ,JJ,TT,99,88,AK,AQ,AJ,ATs,A9s,A5s,A4s,KQ,KJs,KTs,K9s,QJs,QTs,JTs,J9s,T9s,76s:0.5,65s:0.5,54s:0.5",
         "call": "",
         "training": "99,88,77,66,55,AJo,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQo,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,T8s,98s,87s,76s,65s"
       },
@@ -122,7 +122,7 @@
         "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 99.0}
       },
       "ranges": {
-        "3bet": "AA,KK,QQ,JJ,TT,99,88,77,66,AK,AQ,AJ,ATs,ATo:0.5,A9s,A8s,A7s,A5s,A4s,KQ,KJs,KJo:0.5,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s",
+        "3bet": "AA,KK,QQ,JJ,TT,99,88,77,66,AK,AQ,AJ,ATs,ATo:0.5,A9s,A8s,A7s,A5s,A4s,KQ,KJs,KJo:0.5,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,98s:0.5,87s:0.5,76s:0.5,65s:0.5",
         "call": "",
         "training": "88,77,66,55,ATo,A9s,A8s,A7s,A6s,A3s,A2s,KJo,K9s,K8s,K7s,Q9s,Q8s,J9s,J8s,T8s,98s,87s,76s,65s"
       },
