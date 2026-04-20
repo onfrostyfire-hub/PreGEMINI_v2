@@ -72,9 +72,9 @@
       },
       "stats": { "5bet": "4%", "Call": "5.3%", "Fold": "56%" },
       "ranges": {
-        "Raise": "KK,QQ,JJ,TT:0.5,88:0.5,77:0.5,AK,AQo:0.5,A5s,A4s",
-        "call": "AA,TT:0.5,99,88:0.5,77:0.5,AQs,AQo:0.5,AJs,ATs,KQs,KJs,KTs:0.5,QJs,QTs:0.5,JTs,T9s:0.5,98s:0.5,87s:0.5,76s:0.5,65s:0.5,54s:0.5",
-        "training": "AA,KK,QQ,JJ,TT,99,88,77,66:0.5,AK,AQ,AJ,ATs,A9s,A5s,A4s,A3s,A2s,KQ,KJs,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,87s,76s,65s,54s"
+        "Raise": "KK,QQ,JJ,TT:0.75,99:0.5,88:0.5,77:0.5,66:0.5,AK,AQo:0.75,A5s:0.5,A4s:0.5",
+        "call": "AA,TT:0.5,99:0.5,88:0.5,77:0.5,66:0.5,AQs,AQo:0.25,AJ,ATs,A9s,A8s,A7s,A5s:0.5,A4s:0.5,A3s,KQ,KJs,KTs,K9s,K8s,K7s,K6s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,87s,76s,65s,54s",
+        "training": "AA,JJ,TT,99,88,77,66,AQ,AJ,AT,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQ,KJ,KTs,K9s,K8s,K7s,K6s,K5s,QJs,QTs,Q9s,Q8s,JTs,J9s,J8s,T9s,T8s,98s,97s,87s,86s,76s,75s,65s,64s,54s"
       }
     }
   }
