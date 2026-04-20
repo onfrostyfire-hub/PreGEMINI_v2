@@ -1,81 +1,347 @@
-{
-  "source": "Jayser",
-  "scenario": "HU",
-  "spots": {
-    "HU @ SB pfr": {
-      "setup": { 
-        "hero_pos": "SB", 
-        "villain_pos": null, 
-        "btn_pos": "SB", 
-        "active_players": ["SB", "BB"], 
-        "table_bets": {"SB": 0.5, "BB": 1.0}, 
-        "hero_bet": null, 
-        "is_3bet_pot": false, 
-        "table_size": 2,
-        "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 100, "SB": 99.5, "BB": 99.0}
-      },
-      "stats": { "PFR": "70%" },
-      "ranges": {
-        "full": "AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AK,AQ,AJ,AT,A9,A8,A7,A6,A5,A4,A3,A2,KQ,KJ,KT,K9,K8,K7,K6,K5,K4,K3,K2,QJ,QT,Q9,Q8,Q7,Q6,Q5,Q4s,Q4o:0.50001,Q3s,Q2s,JT,J9,J8,J7,J6s,J5s,J4s,J3s,J2s,T9,T8,T7,T6s,T5s,T4s,T3s,T2s,98,97,96s,95s,94s,93s,92s,87,86,85s,84s,83s,82s,76,75s,75o:0.50001,74s,73s,72s,65,64s,64o:0.50001,63s,62s,54,53s,52s,43s,42s,32s",
-        "training": "AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AK,AQ,AJ,AT,A9,A8,A7,A6,A5,A4,A3,A2,KQ,KJ,KT,K9,K8,K7,K6,K5,K4,K3,K2,QJ,QT,Q9,Q8,Q7,Q6,Q5,Q4,Q3,Q2,JT,J9,J8,J7,J6,J5,J4,J3,J2,T9,T8,T7,T6,T5,T4,T3,T2,98,97,96,95,94,93,92,87,86,85,84,83,82,76,75,74,73,72,65,64,63,62,54,53,52,43,42,32"
-      }
-    },
-    "HU @ BB def vs PFR": {
-      "setup": { 
-        "hero_pos": "BB", 
-        "villain_pos": "SB", 
-        "btn_pos": "SB", 
-        "active_players": ["SB", "BB"], 
-        "table_bets": {"SB": 2.5, "BB": 1.0}, 
-        "hero_bet": 1.0, 
-        "is_3bet_pot": false, 
-        "table_size": 2,
-        "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 100, "SB": 97.5, "BB": 99.0}
-      },
-      "stats": { "3bet": "21%", "Call": "47%", "Fold": "32%" },
-      "ranges": {
-        "3bet": "AA,KK,QQ,JJ,TT,99,88,77,66:0.5,AK,AQ,AJ,ATs,ATo:0.50001,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQ,KJs,KJo:0.50001,KTs,K9s,K8s,K7s,K6s,QJs,QTs,Q9s,Q8s,Q7s:0.50001,JTs,J9s,J8s,J7s:0.50001,T9s,T8s,T7s:0.50001,98s,97s,96s:0.50001,87s,86s:0.50001,85s:0.50001,76s,75s:0.50001,74s:0.50001,65s,64s:0.50001,54s,53s,43s",
-        "call": "66:0.5,55,44,33,22,ATo:0.50001,A9o,A8o,A7o,A6o,A5o,A4o,A3o,A2o,KJo:0.50001,KTo,K9o,K8o,K7o,K6o,K5,K4,K3,K2s,QJo,QTo,Q9o,Q8o,Q7s:0.50001,Q7o,Q6,Q5s,Q4s,Q3s,Q2s,JTo,J9o,J8o,J7s:0.50001,J7o,J6s,J5s,J4s,J3s,J2s,T9o,T8o,T7s:0.50001,T7o,T6s,T5s,T4s,T3s,T2s,98o,97o,96s:0.50001,96o:0.5,95s,94s,93s,92s,87o,86s:0.50001,86o,85s:0.50001,84s,83s,82s:0.5,76o,75s:0.50001,75o:0.5,74s:0.50001,73s,72s:0.5,65o,64s:0.50001,63s,62s:0.5,54o:0.5,53s,52s,43s,42s,32s",
-        "training": "AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AK,AQ,AJ,AT,A9,A8,A7,A6,A5,A4,A3,A2,KQ,KJ,KT,K9,K8,K7,K6,K5,K4,K3,K2,QJ,QT,Q9,Q8,Q7,Q6,Q5,Q4,Q3,Q2,JT,J9,J8,J7,J6,J5,J4,J3,J2,T9,T8,T7,T6,T5,T4,T3,T2,98,97,96,95,94,93,92,87,86,85,84,83,82,76,75,74,73,72,65,64,63,62,54,53,52,43,42,32"
-      }
-    },
-    "HU @ SB def vs 3bet": {
-      "setup": { 
-        "hero_pos": "SB", 
-        "villain_pos": "BB", 
-        "btn_pos": "SB", 
-        "active_players": ["SB", "BB"], 
-        "table_bets": {"BB": 12.0, "SB": 2.5}, 
-        "hero_bet": 2.5, 
-        "is_3bet_pot": true, 
-        "table_size": 2,
-        "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 100, "SB": 97.5, "BB": 88.0}
-      },
-      "stats": { "4bet": "8.3%", "Call": "27%", "Fold": "50%" },
-      "ranges": {
-        "4bet": "AA,KK,QQ,JJ,TT,99:0.5,AK,AQs,A5o:0.5,A4o:0.5,K8o:0.5,K2s:0.5,Q9o:0.5,Q4s:0.5,J9o:0.5,J4s:0.5,T4s:0.5,98o:0.5,94s:0.5,84s:0.5,73s:0.5,63s:0.5,53s:0.5,42s:0.5,32s:0.5",
-        "call": "99:0.5,88,77,66,55,44,33,22,AQo,AJ,AT,A9s,A9o:0.5,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQ,KJ,KT,K9s,K8s,K7s,K6s,K5s,K4s,K3s,QJ,QT,Q9s,Q8s,Q7s,Q6s,Q5s,JT,J9s,J8s,J7s,J6s,T9s,T9o:0.5,T8s,T7s,T6s,98s,98o:0.5,97s,96s,87s,86s,85s,76s,75s,74s,65s,64s,54s,43s",
-        "training": "AA,KK,QQ,JJ,TT,99,88,77,66,55,44,33,22,AK,AQ,AJ,AT,A9,A8,A7,A6,A5,A4,A3,A2,KQ,KJ,KT,K9,K8,K7,K6s,K5s,K4s,K3s,K2s,QJ,QT,Q9,Q8,Q7s,Q6s,Q5s,Q4s,Q3s,Q2s,JT,J9,J8,J7s,J6s,J5s,J4s,J3s,T9,T8,T7s,T6s,T5s,T4s,T3s,98,97s,96s,95s,94s,93s,87,86s,85s,84s,83s,76s,75s,74s,73s,65s,64s,63s,54s,53s,52s,43s,42s,32s"
-      }
-    },
-    "HU @ BB def vs 4bet": {
-      "setup": { 
-        "hero_pos": "BB", 
-        "villain_pos": "SB", 
-        "btn_pos": "SB", 
-        "active_players": ["SB", "BB"], 
-        "table_bets": {"SB": 25.0, "BB": 12.0}, 
-        "hero_bet": 12.0, 
-        "is_3bet_pot": true, 
-        "table_size": 2,
-        "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 100, "SB": 75.0, "BB": 88.0}
-      },
-      "stats": { "5bet": "4%", "Call": "5.3%", "Fold": "56%" },
-      "ranges": {
-        "Raise": "KK,QQ,JJ,TT:0.5,88:0.5,77:0.5,AK,AQo:0.5,A5s,A4s",
-        "call": "AA,TT:0.5,99,88:0.5,77:0.5,AQs,AQo:0.5,AJs,ATs,KQs,KJs,KTs:0.5,QJs,QTs:0.5,JTs,T9s:0.5,98s:0.5,87s:0.5,76s:0.5,65s:0.5,54s:0.5",
-        "training": "AA,KK,QQ,JJ,TT,99,88,77,66:0.5,AK,AQ,AJ,ATs,A9s,A5s,A4s,A3s,A2s,KQ,KJs,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,98s,87s,76s,65s,54s"
-      }
-    }
-  }
-}
+import streamlit as st
+import pandas as pd
+from datetime import datetime, timedelta
+import poker_utils as utils
+import json
+import os
+
+def fetch_history_direct(is_postflop):
+    sheets = utils.get_worksheets()
+    ws_name = "PostflopHistory" if is_postflop else "History"
+    df = pd.DataFrame(columns=["Date", "Spot", "Hand", "Result", "CorrectAction", "UserAction"])
+    if ws_name in sheets:
+        try:
+            vals = sheets[ws_name].get_all_values()
+            if vals and len(vals) > 1:
+                headers = vals[0]
+                if "UserAction" not in headers:
+                    headers.append("UserAction")
+                    for r in vals[1:]: r.append("UNKNOWN")
+                df = pd.DataFrame(vals[1:], columns=headers)
+        except: pass
+    return df
+
+def custom_delete_history(days=None):
+    try:
+        sheets = utils.get_worksheets()
+        headers = ["Date", "Spot", "Hand", "Result", "CorrectAction", "UserAction"]
+        for ws_name in ["History", "PostflopHistory"]:
+            if ws_name in sheets:
+                if days is None:
+                    sheets[ws_name].clear()
+                    sheets[ws_name].append_row(headers)
+                else:
+                    vals = sheets[ws_name].get_all_values()
+                    if vals and len(vals) > 1:
+                        df = pd.DataFrame(vals[1:], columns=vals[0])
+                        df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
+                        cutoff = datetime.now() - timedelta(days=days)
+                        df_new = df[df["Date"] >= cutoff]
+                        sheets[ws_name].clear()
+                        rows = [headers] + df_new.astype(str).values.tolist()
+                        sheets[ws_name].update(values=rows, range_name="A1")
+    except: pass
+
+def start_training(selected_spots, is_postflop):
+    if not selected_spots:
+        st.warning("Select spots first, Boss.")
+        return
+
+    for k in list(st.session_state.keys()):
+        if k.startswith("chk_") or k.startswith("pf_chk_") or k.startswith("sel_") or k.startswith("pf_sel_"):
+            del st.session_state[k]
+
+    if is_postflop:
+        settings = utils.load_user_settings(is_postflop=True)
+        pf_spots, pf_heroes, pf_streets, pf_branches = set(), set(), set(), set()
+        
+        for key in selected_spots:
+            parts = [p.strip() for p in key.split('|')]
+            if len(parts) >= 4:
+                pf_spots.add(parts[0])
+                pf_heroes.add(parts[1])
+                pf_streets.add(parts[2])
+                pf_branches.add(parts[3])
+                
+        settings["pf_sel_spots"] = list(pf_spots)
+        settings["pf_sel_heroes"] = list(pf_heroes)
+        settings["pf_sel_streets"] = list(pf_streets)
+        settings["pf_sel_branches"] = list(pf_branches)
+        settings["pf_spots"] = selected_spots
+        
+        utils.save_user_settings(settings, is_postflop=True)
+        st.session_state.actual_app_mode = "Postflop"
+        st.session_state.pf_hand = None
+        st.session_state.pf_current_spot_key = None
+    else:
+        settings = utils.load_user_settings(is_postflop=False)
+        ranges_db = utils.load_ranges()
+        
+        sel_src, sel_sc = set(), set()
+        for sp in selected_spots:
+            for src, sc_dict in ranges_db.items():
+                for sc, sp_dict in sc_dict.items():
+                    if sp in sp_dict:
+                        sel_src.add(src)
+                        sel_sc.add(sc)
+                        
+        settings["selected_sources"] = list(sel_src)
+        settings["selected_scenarios"] = list(sel_sc)
+        settings["selected_spots"] = selected_spots
+        
+        utils.save_user_settings(settings, is_postflop=False)
+        st.session_state.actual_app_mode = "Preflop"
+        st.session_state.hand = None
+        st.session_state.current_spot = None
+
+    if hasattr(utils, "force_sync"): utils.force_sync()
+    st.rerun()
+
+def show():
+    st.markdown("""
+        <style>
+        div[data-testid="stButton"] button[kind="primary"] {
+            height: 44px !important; background: linear-gradient(180deg, #1c3a55 0%, #102436 100%) !important;
+            border: none !important; font-weight: 900 !important; letter-spacing: 1px !important; color: #fff !important;
+            border-radius: 10px !important;
+        }
+        
+        .spot-row-marker-desk { display: none; }
+        
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) {
+            display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important;
+            align-items: center !important; background: #16181c !important; padding: 8px 12px !important;
+            border-radius: 12px !important; border: 1px solid #2d3139 !important; margin-bottom: 8px !important;
+            gap: 8px !important; width: 100% !important; grid-template-columns: none !important;
+        }
+        
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) > div[data-testid="column"] {
+            width: auto !important; min-width: 0 !important; margin: 0 !important; padding: 0 !important;
+        }
+        
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) > div[data-testid="column"]:nth-child(1) { flex: 0 0 24px !important; }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) > div[data-testid="column"]:nth-child(2) { flex: 0 0 32px !important; }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) > div[data-testid="column"]:nth-child(3) { flex: 1 1 35% !important; overflow: hidden; }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) > div[data-testid="column"]:nth-child(4) { flex: 0 0 40px !important; text-align: right; }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) > div[data-testid="column"]:nth-child(5) { flex: 1 1 35% !important; }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) > div[data-testid="column"]:nth-child(6) { flex: 0 0 35px !important; text-align: right; }
+        
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) div[data-testid="stButton"] button {
+            height: 28px !important; width: 28px !important; min-height: 28px !important; padding: 0 !important;
+            border-radius: 6px !important; font-size: 14px !important; line-height: 1 !important;
+            background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(255,255,255,0.1) !important;
+            display: flex; justify-content: center; align-items: center;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) div[data-testid="stButton"] button:hover {
+            border-color: #ffc107 !important; background: rgba(255,193,7,0.1) !important;
+        }
+        
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) div[data-testid="stCheckbox"] {
+            margin: 0 !important; padding: 0 !important; display: flex; align-items: center; justify-content: center;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) div[data-testid="stCheckbox"] label {
+            padding: 0 !important; min-height: 0 !important;
+        }
+
+        .mastery-name {
+            color: #e9ecef; font-weight: 800; font-size: 12px; text-transform: uppercase;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; margin: 0;
+        }
+        .mastery-count {
+            color: #fff; font-weight: 900; font-size: 13px; font-variant-numeric: tabular-nums; line-height: 1.2; margin: 0;
+        }
+        .mastery-max {
+            color: #6c757d; font-size: 11px; font-weight: 700; line-height: 1.2; margin: 0;
+        }
+        .mastery-bar-container {
+            width: 100%; background: rgba(0,0,0,0.6); height: 6px; border-radius: 3px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.8); margin-top: 1px;
+        }
+        .mastery-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease-out; }
+
+        /* FILTERS CSS */
+        div[data-testid="stHorizontalBlock"]:has(.filter-marker-desk) {
+            display: flex !important; flex-wrap: wrap !important; gap: 8px !important; margin-bottom: 20px !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.filter-marker-desk) > div {
+            min-width: auto !important; width: auto !important; flex: 0 0 auto !important; padding: 0 !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.filter-marker-desk) button {
+            border-radius: 12px !important; padding: 4px 14px !important; min-height: 30px !important; font-size: 13px !important; font-weight: bold !important; transition: 0.2s;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.filter-marker-desk) button[kind="primary"] {
+            background: #ffc107 !important; color: #000 !important; border: 1px solid #ffc107 !important; box-shadow: 0 0 10px rgba(255,193,7,0.3) !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.filter-marker-desk) button[kind="secondary"] {
+            background: #1a1c20 !important; color: #777 !important; border: 1px solid #333 !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown("## 📊 Statistics Hub")
+    
+    mode = st.radio("Section:", ["🔥 Preflop", "🌊 Postflop"], horizontal=True, label_visibility="collapsed")
+    is_postflop = (mode == "🌊 Postflop")
+    
+    df = fetch_history_direct(is_postflop)
+    
+    cat_map = {}
+    if is_postflop:
+        pf_dir = 'postflop_data' if os.path.exists('postflop_data') else 'spots_data'
+        if os.path.exists(pf_dir):
+            for file in os.listdir(pf_dir):
+                if file.endswith('.json'):
+                    try:
+                        with open(os.path.join(pf_dir, file), 'r', encoding='utf-8') as f:
+                            data = json.load(f)
+                            scen = data.get("scenario", "Postflop")
+                            if "spots" in data:
+                                for k in data["spots"].keys(): cat_map[k] = scen
+                            else:
+                                for k in data.keys():
+                                    if k not in ["scenario", "source"]: cat_map[k] = scen
+                    except: pass
+    else:
+        try:
+            ranges_db = utils.load_ranges()
+            for src, sc_dict in ranges_db.items():
+                for sc, sp_dict in sc_dict.items():
+                    for sp in sp_dict.keys():
+                        cat_map[sp] = sc
+        except: pass
+
+    if not df.empty and "Spot" in df.columns:
+        df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
+        df = df.dropna(subset=["Date"])
+        df["Result"] = pd.to_numeric(df["Result"], errors='coerce').fillna(0).astype(int)
+        df["Category"] = df["Spot"].apply(lambda x: cat_map.get(x, "Other"))
+        available_cats = sorted(list(df["Category"].unique()))
+    else:
+        available_cats = []
+
+    st.markdown("### 🎯 Filters")
+    filter_key = f"active_filters_v4_{is_postflop}"
+    if filter_key not in st.session_state:
+        st.session_state[filter_key] = [] 
+
+    if available_cats:
+        st.markdown("<div class='filter-marker-desk'></div>", unsafe_allow_html=True)
+        cols = st.columns(len(available_cats))
+        for i, cat in enumerate(available_cats):
+            with cols[i]:
+                is_active = cat in st.session_state[filter_key]
+                if st.button(cat, key=f"f_desk_{cat}", type="primary" if is_active else "secondary"):
+                    if is_active: st.session_state[filter_key].remove(cat)
+                    else: st.session_state[filter_key].append(cat)
+                    st.rerun()
+
+    active_cats = st.session_state[filter_key]
+    if active_cats:
+        filtered_df = df[df["Category"].isin(active_cats)]
+    else:
+        filtered_df = df
+
+    if filtered_df.empty:
+        st.info("No history data to show. Go train, Boss.")
+        return
+
+    st.markdown(f"### 📈 Performance ({mode.split()[1]})")
+    total_hands = len(filtered_df)
+    total_correct = filtered_df["Result"].sum()
+    winrate = (total_correct / total_hands * 100) if total_hands > 0 else 0
+    
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Total Hands", total_hands)
+    c2.metric("Correct", total_correct)
+    c3.metric("Accuracy", f"{winrate:.1f}%")
+
+    st.markdown("### 🎯 Spots Mastery")
+    stats = filtered_df.groupby("Spot")["Result"].agg(["count", "sum", "mean"]).reset_index()
+    stats["Errors"] = stats["count"] - stats["sum"]
+    stats["Accuracy"] = (stats["mean"] * 100).astype(int).astype(str) + "%"
+    
+    all_spots_sorted = stats.sort_values(by="count", ascending=False)
+    st.dataframe(all_spots_sorted[["Spot", "Errors", "Accuracy", "count"]].rename(columns={"count": "Total"}), use_container_width=True, hide_index=True)
+
+    st.divider()
+    st.markdown("### 🚀 Road to Mastery (5k Hands)")
+    st.caption("Check spots and click TRAIN SELECTED, or hit 🎯 for quick launch.")
+
+    spot_counts = filtered_df["Spot"].value_counts().to_dict()
+    sorted_spots = sorted(spot_counts.items(), key=lambda x: x[1], reverse=True)
+
+    col_btn, col_info = st.columns([1, 2])
+    with col_btn:
+        if st.button("🚀 TRAIN SELECTED", use_container_width=True, type="primary"):
+            selected = [sp for sp, _ in sorted_spots if st.session_state.get(f"sel_{sp}", False)]
+            start_training(selected, is_postflop)
+
+    for sp, cnt in sorted_spots:
+        pct = min(100, (cnt / 5000) * 100)
+        
+        if cnt < 100: grad, glow = "linear-gradient(90deg, #6c757d, #495057)", "rgba(108, 117, 125, 0.3)"
+        elif cnt < 500: grad, glow = "linear-gradient(90deg, #198754, #20c997)", "rgba(32, 201, 151, 0.4)"
+        elif cnt < 1500: grad, glow = "linear-gradient(90deg, #0dcaf0, #0d6efd)", "rgba(13, 202, 240, 0.5)"
+        elif cnt < 3000: grad, glow = "linear-gradient(90deg, #6f42c1, #d63384)", "rgba(214, 51, 132, 0.5)"
+        elif cnt < 5000: grad, glow = "linear-gradient(90deg, #dc3545, #fd7e14)", "rgba(253, 126, 20, 0.6)"
+        else: grad, glow = "linear-gradient(90deg, #ffc107, #ffef96)", "rgba(255, 193, 7, 0.8)"
+
+        c1, c2, c3, c4, c5, c6 = st.columns(6, vertical_alignment="center")
+        
+        with c1:
+            st.markdown("<div class='spot-row-marker-desk'></div>", unsafe_allow_html=True)
+            st.checkbox("", key=f"sel_{sp}", label_visibility="collapsed")
+        with c2:
+            if st.button("🎯", key=f"go_{sp}"): start_training([sp], is_postflop)
+        with c3:
+            st.markdown(f"<div class='mastery-name' title='{sp}'>{sp}</div>", unsafe_allow_html=True)
+        with c4:
+            st.markdown(f"<div class='mastery-count'>{cnt}</div>", unsafe_allow_html=True)
+        with c5:
+            st.markdown(f"<div class='mastery-bar-container'><div class='mastery-bar-fill' style='width:{pct}%; background:{grad}; box-shadow:0 0 10px {glow};'></div></div>", unsafe_allow_html=True)
+        with c6:
+            st.markdown("<div class='mastery-max'>5000</div>", unsafe_allow_html=True)
+
+    st.divider()
+    with st.expander("📜 Raw History Log"):
+        if not filtered_df.empty:
+            d = filtered_df.copy()
+            d["Result"] = d["Result"].apply(lambda x: "✅" if x==1 else "❌")
+            d = d.sort_values("Date", ascending=False)
+            d["Date"] = d["Date"].dt.strftime("%Y-%m-%d %H:%M:%S")
+            cols_to_show = ["Date", "Spot", "Hand", "CorrectAction", "UserAction", "Result"] if "UserAction" in d.columns else ["Date", "Spot", "Hand", "CorrectAction", "Result"]
+            st.dataframe(d[cols_to_show], use_container_width=True, hide_index=True)
+
+    st.markdown("### 🚑 Data Recovery")
+    with st.expander("Recover Spot Mastery from History", expanded=False):
+        st.markdown("If your progress got reset, this will recalculate your experience, streak, and Spot Mastery from raw history.")
+        if st.button("🔧 RECOVER SPOT MASTERY", use_container_width=True):
+            if not df.empty:
+                df_hist = df.copy().sort_values("Date")
+                new_mastery = {}
+                total_correct = df_hist["Result"].sum()
+                
+                for _, row in df_hist.iterrows():
+                    sp = row["Spot"]
+                    if sp not in new_mastery: new_mastery[sp] = {"t": 0, "h": "", "d": ""}
+                    new_mastery[sp]["t"] += 1
+                    new_mastery[sp]["h"] += "1" if row["Result"] == 1 else "0"
+                    if len(new_mastery[sp]["h"]) > 100: new_mastery[sp]["h"] = new_mastery[sp]["h"][-100:]
+                    new_mastery[sp]["d"] = row["Date"].strftime("%Y-%m-%d")
+
+                stats_dict = utils.load_user_stats(is_postflop=is_postflop)
+                stats_dict["xp"] = int(total_correct * 10)
+                stats_dict["total_hands"] = len(df_hist)
+                stats_dict["spot_mastery"] = new_mastery
+                
+                utils.save_user_stats(stats_dict, is_postflop=is_postflop)
+                st.success("✅ Recovery complete! Refresh the page.")
+                st.rerun()
+
+    st.markdown("### 🗑️ Danger Zone")
+    with st.expander("Clear History", expanded=False):
+        st.warning("⚠️ Warning: Clears ALL history globally (Preflop & Postflop).")
+        d1, d2, d3, d4 = st.columns(4)
+        if d1.button("Delete: 24 Hours", use_container_width=True): custom_delete_history(days=1); st.rerun()
+        if d2.button("Delete: 7 Days", use_container_width=True): custom_delete_history(days=7); st.rerun()
+        if d3.button("Delete: 30 Days", use_container_width=True): custom_delete_history(days=30); st.rerun()
+        if d4.button("NUKE ALL", use_container_width=True): custom_delete_history(); st.rerun()
