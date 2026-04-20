@@ -167,6 +167,10 @@ def canonicalize_history_spots(df, is_postflop):
     return mapped_df
 
 
+def get_preflop_category(spot_name, catalog):
+    return catalog.get(spot_name, {}).get("scenario", "Other")
+
+
 def get_filter_state_keys(is_postflop):
     if is_postflop:
         return {
@@ -648,13 +652,23 @@ def show():
     st.markdown("</div>", unsafe_allow_html=True)
 
     active_filters = get_active_filters(is_postflop)
-    filtered_df = df[df["Spot"].apply(lambda spot_name: spot_matches_filters(spot_name, catalog, active_filters, is_postflop))].copy()
+    if is_postflop:
+        filtered_df = df[
+            df["Spot"].apply(lambda spot_name: spot_matches_filters(spot_name, catalog, active_filters, is_postflop))
+        ].copy()
+    else:
+        df["Category"] = df["Spot"].apply(lambda spot_name: get_preflop_category(spot_name, catalog))
+        scenario_filters = active_filters.get("scenario", set())
+        if scenario_filters:
+            filtered_df = df[df["Category"].isin(scenario_filters)].copy()
+        else:
+            filtered_df = df.copy()
 
     st.markdown("### Spot Mastery")
     stats = filtered_df.groupby("Spot")["Result"].agg(["count", "sum", "mean"]).reset_index()
     stats["Errors"] = stats["count"] - stats["sum"]
     stats["Accuracy"] = (stats["mean"] * 100).round().astype(int).astype(str) + "%"
-    stats["DisplaySpot"] = stats["Spot"].apply(lambda name: catalog.get(name, {}).get("display_name", name))
+    stats["DisplaySpot"] = stats["Spot"]
     stats_view = stats.sort_values(by=["count", "DisplaySpot"], ascending=[False, True])
 
     if stats_view.empty:
@@ -708,7 +722,7 @@ def show():
                 if st.button("TRAIN", key=f"go_{spot_name}", use_container_width=True):
                     start_training([spot_name], is_postflop)
             with row_col_3:
-                display_name = catalog.get(spot_name, {}).get("display_name", spot_name)
+                display_name = spot_name
                 st.markdown(
                     f"<div class='mastery-name' title='{display_name}'>{display_name}</div>",
                     unsafe_allow_html=True,
