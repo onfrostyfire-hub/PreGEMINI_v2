@@ -664,74 +664,81 @@ def show():
         else:
             filtered_df = df.copy()
 
-    st.markdown("### 🎯 Spots Mastery")
+    st.markdown("### Spot Mastery")
     stats = filtered_df.groupby("Spot")["Result"].agg(["count", "sum", "mean"]).reset_index()
     stats["Errors"] = stats["count"] - stats["sum"]
-    stats["Accuracy"] = (stats["mean"] * 100).astype(int).astype(str) + "%"
-    
-    display_rename_map = {
-        "BUvsCO": "3bet BUvsCO", "SBvsCO": "3bet SBvsCO", "SBvsBU": "3bet SBvsBU",
-        "BBvsCO": "3bet BBvsCO", "BBvsBU": "3bet BBvsBU", "BBvsSB": "3bet BBvsSB"
-    }
+    stats["Accuracy"] = (stats["mean"] * 100).round().astype(int).astype(str) + "%"
+    stats["DisplaySpot"] = stats["Spot"]
+    stats_view = stats.sort_values(by=["count", "DisplaySpot"], ascending=[False, True])
 
-    display_df = stats.copy()
-    if not is_postflop:
-        display_df["Spot"] = display_df["Spot"].replace(display_rename_map)
-
-    all_spots_sorted = display_df.sort_values(by="count", ascending=False)
-    
-    if all_spots_sorted.empty:
-        st.info("No spots match the active filters.")
+    if stats_view.empty:
+        st.info("No spots match the active filters in Spot Mastery.")
     else:
-        st.dataframe(all_spots_sorted[["Spot", "Errors", "Accuracy", "count"]].rename(columns={"count": "Total"}), use_container_width=True, hide_index=True)
+        st.dataframe(
+            stats_view[["DisplaySpot", "Errors", "Accuracy", "count"]].rename(
+                columns={"DisplaySpot": "Spot", "count": "Total"}
+            ),
+            use_container_width=True,
+            hide_index=True,
+        )
 
     st.divider()
-    st.markdown("### 🚀 Road to Mastery (5k Hands)")
-    st.caption("Check spots and click TRAIN SELECTED, or hit 🎯 for quick launch.")
+    st.markdown("### Road to Mastery (5k Hands)")
+    st.caption("Check spots and click TRAIN SELECTED, or launch one spot directly.")
 
     spot_counts = filtered_df["Spot"].value_counts().to_dict()
-    sorted_spots = sorted(spot_counts.items(), key=lambda x: x[1], reverse=True)
+    sorted_spots = sorted(spot_counts.items(), key=lambda item: (-item[1], _spot_sort_key(item[0], catalog, is_postflop)))
 
     if not sorted_spots:
-        st.info("No spots match the active filters.")
+        st.info("No spots match the active filters in Road to Mastery.")
     else:
-        col_btn, _ = st.columns([1, 2])
-        with col_btn:
-            st.markdown('<div class="train-btn">', unsafe_allow_html=True)
-            if st.button("🚀 TRAIN SELECTED", key=f"train_sel_desk_{mode.lower()}", use_container_width=True):
-                selected = [sp for sp, _ in sorted_spots if st.session_state.get(f"sel_desk_{mode.lower()}_{sp}", False)]
-                start_training(selected, is_postflop)
-            st.markdown('</div>', unsafe_allow_html=True)
+        train_col, _ = st.columns([1, 2])
+        with train_col:
+            if st.button("TRAIN SELECTED", key=f"train_selected_{mode.lower()}", use_container_width=True, type="primary"):
+                selected_spots = [spot_name for spot_name, _ in sorted_spots if st.session_state.get(f"sel_{spot_name}", False)]
+                start_training(selected_spots, is_postflop)
 
-        for sp, cnt in sorted_spots:
-            pct = min(100, (cnt / 5000) * 100)
-            
-            if cnt < 100: grad, glow = "linear-gradient(90deg, #6c757d, #495057)", "rgba(108, 117, 125, 0.3)"
-            elif cnt < 500: grad, glow = "linear-gradient(90deg, #198754, #20c997)", "rgba(32, 201, 151, 0.4)"
-            elif cnt < 1500: grad, glow = "linear-gradient(90deg, #0dcaf0, #0d6efd)", "rgba(13, 202, 240, 0.5)"
-            elif cnt < 3000: grad, glow = "linear-gradient(90deg, #6f42c1, #d63384)", "rgba(214, 51, 132, 0.5)"
-            elif cnt < 5000: grad, glow = "linear-gradient(90deg, #dc3545, #fd7e14)", "rgba(253, 126, 20, 0.6)"
-            else: grad, glow = "linear-gradient(90deg, #ffc107, #ffef96)", "rgba(255, 193, 7, 0.8)"
+        for spot_name, count in sorted_spots:
+            pct = min(100, (count / 5000) * 100)
+            if count < 100:
+                gradient, glow = "linear-gradient(90deg, #6c757d, #495057)", "rgba(108, 117, 125, 0.3)"
+            elif count < 500:
+                gradient, glow = "linear-gradient(90deg, #198754, #20c997)", "rgba(32, 201, 151, 0.4)"
+            elif count < 1500:
+                gradient, glow = "linear-gradient(90deg, #0dcaf0, #0d6efd)", "rgba(13, 202, 240, 0.5)"
+            elif count < 3000:
+                gradient, glow = "linear-gradient(90deg, #6f42c1, #d63384)", "rgba(214, 51, 132, 0.5)"
+            elif count < 5000:
+                gradient, glow = "linear-gradient(90deg, #dc3545, #fd7e14)", "rgba(253, 126, 20, 0.6)"
+            else:
+                gradient, glow = "linear-gradient(90deg, #ffc107, #ffef96)", "rgba(255, 193, 7, 0.8)"
 
-            disp_name = display_rename_map.get(sp, sp) if not is_postflop else sp
+            row_col_1, row_col_2, row_col_3, row_col_4, row_col_5, row_col_6 = st.columns(6, vertical_alignment="center")
 
-            c1, c2, c3, c4, c5, c6 = st.columns(6) 
-            
-            with c1:
-                st.markdown("<div class='spot-row-marker-desk'></div><div class='hide-checkbox-label'>", unsafe_allow_html=True)
-                st.checkbox("", key=f"sel_desk_{mode.lower()}_{sp}")
-                st.markdown("</div>", unsafe_allow_html=True)
-            with c2:
-                st.markdown("<div class='target-btn-wrap'>", unsafe_allow_html=True)
-                if st.button("🎯", key=f"go_desk_{mode.lower()}_{sp}"): start_training([sp], is_postflop)
-                st.markdown("</div>", unsafe_allow_html=True)
-            with c3:
-                st.markdown(f"<div class='mastery-name' title='{sp}'>{disp_name}</div>", unsafe_allow_html=True)
-            with c4:
-                st.markdown(f"<div class='mastery-count'>{cnt}</div>", unsafe_allow_html=True)
-            with c5:
-                st.markdown(f"<div class='mastery-bar-container'><div class='mastery-bar-fill' style='width:{pct}%; background:{grad}; box-shadow:0 0 10px {glow};'></div></div>", unsafe_allow_html=True)
-            with c6:
+            with row_col_1:
+                st.markdown("<div class='spot-row-marker-desk'></div>", unsafe_allow_html=True)
+                st.checkbox("", key=f"sel_{spot_name}", label_visibility="collapsed")
+            with row_col_2:
+                if st.button("TRAIN", key=f"go_{spot_name}", use_container_width=True):
+                    start_training([spot_name], is_postflop)
+            with row_col_3:
+                display_name = spot_name
+                st.markdown(
+                    f"<div class='mastery-name' title='{display_name}'>{display_name}</div>",
+                    unsafe_allow_html=True,
+                )
+            with row_col_4:
+                st.markdown(f"<div class='mastery-count'>{count}</div>", unsafe_allow_html=True)
+            with row_col_5:
+                st.markdown(
+                    (
+                        "<div class='mastery-bar-container'>"
+                        f"<div class='mastery-bar-fill' style='width:{pct}%; background:{gradient}; "
+                        f"box-shadow:0 0 10px {glow};'></div></div>"
+                    ),
+                    unsafe_allow_html=True,
+                )
+            with row_col_6:
                 st.markdown("<div class='mastery-max'>5000</div>", unsafe_allow_html=True)
 
     st.divider()
