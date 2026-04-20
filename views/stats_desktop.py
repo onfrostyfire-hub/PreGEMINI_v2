@@ -5,65 +5,82 @@ import poker_utils as utils
 import json
 import os
 
-def get_spot_categories(is_postflop):
-    cat_map = {}
-    all_spots = set()
-    directory = 'postflop_data' if is_postflop else 'spots_data'
-    if os.path.exists(directory):
-        for file in os.listdir(directory):
-            if file.endswith('.json'):
+def load_postflop_keys():
+    db = {}
+    pf_dir = 'postflop_data' if os.path.exists('postflop_data') else 'spots_data'
+    if not os.path.exists(pf_dir): return db
+    for file in os.listdir(pf_dir):
+        if file.endswith('.json'):
+            with open(os.path.join(pf_dir, file), 'r', encoding='utf-8') as f:
                 try:
-                    with open(os.path.join(directory, file), 'r', encoding='utf-8') as f:
-                        data = json.load(f)
-                        scen = data.get("scenario", "Postflop" if is_postflop else "Other")
-                        if "spots" in data:
-                            for k in data["spots"].keys():
-                                cat_map[k] = scen
-                                all_spots.add(k)
-                        else:
-                            for k in data.keys():
-                                if k not in ["scenario", "source"]:
-                                    cat_map[k] = scen
-                                    all_spots.add(k)
+                    data = json.load(f)
+                    if "spots" in data:
+                        db.update(data["spots"])
+                    else:
+                        db.update(data)
                 except: pass
-    return cat_map, all_spots
+    return db
 
 @st.cache_data(ttl=60)
 def fetch_history(is_postflop):
     sheets = utils.get_worksheets()
-    ws_name = "PostflopHistory" if is_postflop else "History"
-    df = pd.DataFrame(columns=["Date", "Spot", "Hand", "Result", "CorrectAction", "UserAction"])
-    if ws_name in sheets:
-        try:
-            vals = sheets[ws_name].get_all_values()
-            if vals and len(vals) > 1:
-                headers = vals[0]
-                if "UserAction" not in headers:
-                    headers.append("UserAction")
-                    for r in vals[1:]: r.append("UNKNOWN")
-                df = pd.DataFrame(vals[1:], columns=headers)
-        except: pass
-    return df
+    if is_postflop:
+        df_pf = pd.DataFrame(columns=["Date", "Spot", "Hand", "Result", "CorrectAction", "UserAction"])
+        if "PostflopHistory" in sheets:
+            try:
+                vals = sheets["PostflopHistory"].get_all_values()
+                if vals and len(vals) > 1:
+                    headers = vals[0]
+                    if "UserAction" not in headers:
+                        headers.append("UserAction")
+                        for r in vals[1:]: r.append("UNKNOWN")
+                    df_pf = pd.DataFrame(vals[1:], columns=headers)
+            except: pass
+        elif os.path.exists("postflop_history.csv"):
+            try:
+                df_pf = pd.read_csv("postflop_history.csv", header=None)
+                if df_pf.iloc[0, 0] == "Date":
+                    df_pf.columns = df_pf.iloc[0]
+                    df_pf = df_pf[1:]
+                else:
+                    df_pf.columns = ["Date", "Spot", "Hand", "Result", "CorrectAction", "UserAction"]
+            except: pass
+        return df_pf
+    else:
+        df_pr = utils.load_history()
+        if df_pr.empty: return df_pr
+        return df_pr[~df_pr["Spot"].astype(str).str.contains('|', regex=False, na=False)].copy()
 
 def custom_delete_history(days=None):
+    utils.delete_history(days)
     try:
         sheets = utils.get_worksheets()
         headers = ["Date", "Spot", "Hand", "Result", "CorrectAction", "UserAction"]
-        for ws_name in ["History", "PostflopHistory"]:
-            if ws_name in sheets:
-                if days is None:
-                    sheets[ws_name].clear()
-                    sheets[ws_name].append_row(headers)
-                else:
-                    vals = sheets[ws_name].get_all_values()
-                    if vals and len(vals) > 1:
-                        df = pd.DataFrame(vals[1:], columns=vals[0])
-                        df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
-                        cutoff = datetime.now() - timedelta(days=days)
-                        df_new = df[df["Date"] >= cutoff]
-                        sheets[ws_name].clear()
-                        rows = [headers] + df_new.astype(str).values.tolist()
-                        sheets[ws_name].update(values=rows, range_name="A1")
+        if "PostflopHistory" in sheets:
+            if days is None:
+                sheets["PostflopHistory"].clear()
+                sheets["PostflopHistory"].append_row(headers)
+            else:
+                vals = sheets["PostflopHistory"].get_all_values()
+                if vals and len(vals) > 1:
+                    df = pd.DataFrame(vals[1:], columns=vals[0])
+                    df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
+                    cutoff = datetime.now() - timedelta(days=days)
+                    df_new = df[df["Date"] >= cutoff]
+                    sheets["PostflopHistory"].clear()
+                    rows = [headers] + df_new.astype(str).values.tolist()
+                    sheets["PostflopHistory"].update(values=rows, range_name="A1")
+        
+        if os.path.exists("postflop_history.csv"):
+            if days is None:
+                os.remove("postflop_history.csv")
+            else:
+                df = pd.read_csv("postflop_history.csv", names=headers)
+                if df.iloc[0]["Date"] == "Date": df = df[1:]
+                df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
+                cutoff = datetime.now() - timedelta(days=days)
+                df_new = df[df["Date"] >= cutoff]
+                df_new.to_csv("postflop_history.csv", index=False, header=True)
     except: pass
     fetch_history.clear()
 
@@ -207,9 +224,32 @@ def show():
     mode = st.radio("Section:", ["🔥 Preflop", "🌊 Postflop"], horizontal=True, label_visibility="collapsed")
     is_postflop = (mode == "🌊 Postflop")
     
-    cat_map, all_spots_names = get_spot_categories(is_postflop)
     df = fetch_history(is_postflop)
     
+    cat_map = {}
+    if is_postflop:
+        pf_dir = 'postflop_data' if os.path.exists('postflop_data') else 'spots_data'
+        if os.path.exists(pf_dir):
+            for file in os.listdir(pf_dir):
+                if file.endswith('.json'):
+                    try:
+                        with open(os.path.join(pf_dir, file), 'r', encoding='utf-8') as f:
+                            data = json.load(f)
+                            scen = data.get("scenario", "Postflop")
+                            if "spots" in data:
+                                for k in data["spots"].keys(): cat_map[k] = scen
+                            else:
+                                for k in data.keys():
+                                    if k not in ["scenario", "source"]: cat_map[k] = scen
+                    except: pass
+    else:
+        try:
+            ranges_db = utils.load_ranges()
+            for src, sc_dict in ranges_db.items():
+                for sc, sp_dict in sc_dict.items():
+                    for sp in sp_dict.keys(): cat_map[sp] = sc
+        except: pass
+
     rename_map = {
         "BUvsCO": "3bet BUvsCO", "SBvsCO": "3bet SBvsCO", "SBvsBU": "3bet SBvsBU",
         "BBvsCO": "3bet BBvsCO", "BBvsBU": "3bet BBvsBU", "BBvsSB": "3bet BBvsSB",
@@ -222,13 +262,10 @@ def show():
 
     if not df.empty and "Spot" in df.columns:
         df["Spot"] = df["Spot"].replace(rename_map)
-        df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
-        df = df.dropna(subset=["Date"])
-        df["Result"] = pd.to_numeric(df["Result"], errors='coerce').fillna(0).astype(int)
         df["Category"] = df["Spot"].apply(lambda x: cat_map.get(x, "Other"))
         available_cats = sorted(list(df["Category"].unique()))
     else:
-        available_cats = []
+        available_cats = sorted(list(set(cat_map.values())))
 
     st.markdown("### 🎯 Filters")
     filter_key = f"active_filters_{is_postflop}"
@@ -247,16 +284,21 @@ def show():
                     st.rerun()
 
     active_cats = st.session_state.get(filter_key, available_cats)
-    filtered_df = df[df["Category"].isin(active_cats)] if not df.empty else pd.DataFrame()
-    filtered_all_spots = [sp for sp in all_spots_names if cat_map.get(sp, "Other") in active_cats]
 
-    if filtered_df.empty:
-        st.info("No data for selected filters or history is empty. Go train, Boss.")
+    if not df.empty and "Category" in df.columns:
+        df = df[df["Category"].isin(active_cats)]
+
+    if df.empty or "Date" not in df.columns or "Result" not in df.columns:
+        st.info(f"History for {mode.split()[1]} is empty or filtered out. Go train, Boss.")
         return
+    
+    df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
+    df = df.dropna(subset=["Date"])
+    df["Result"] = pd.to_numeric(df["Result"], errors='coerce').fillna(0).astype(int)
 
     st.markdown(f"### 📈 Performance ({mode.split()[1]})")
-    total_hands = len(filtered_df)
-    total_correct = filtered_df["Result"].sum()
+    total_hands = len(df)
+    total_correct = df["Result"].sum()
     winrate = (total_correct / total_hands * 100) if total_hands > 0 else 0
     
     c1, c2, c3 = st.columns(3)
@@ -265,7 +307,7 @@ def show():
     c3.metric("Accuracy", f"{winrate:.1f}%")
 
     st.markdown("### 🎯 Spots Mastery")
-    stats = filtered_df.groupby("Spot")["Result"].agg(["count", "sum", "mean"]).reset_index()
+    stats = df.groupby("Spot")["Result"].agg(["count", "sum", "mean"]).reset_index()
     stats["Errors"] = stats["count"] - stats["sum"]
     stats["Accuracy"] = (stats["mean"] * 100).astype(int).astype(str) + "%"
     
@@ -276,8 +318,24 @@ def show():
     st.markdown("### 🚀 Road to Mastery (5k Hands)")
     st.caption("Check spots and click TRAIN SELECTED, or hit 🎯 for quick launch.")
 
-    spot_counts = filtered_df["Spot"].value_counts().to_dict()
-    merged_counts = {sp: 0 for sp in filtered_all_spots}
+    all_spots_names = set()
+    if is_postflop:
+        pf_db = load_postflop_keys()
+        for sp in pf_db.keys():
+            if cat_map.get(sp, "Other") in active_cats:
+                all_spots_names.add(sp)
+    else:
+        try:
+            ranges_db = utils.load_ranges()
+            for src, sc_dict in ranges_db.items():
+                for sc, sp_dict in sc_dict.items():
+                    for sp in sp_dict.keys():
+                        if cat_map.get(sp, "Other") in active_cats:
+                            all_spots_names.add(sp)
+        except: pass
+                
+    spot_counts = df["Spot"].value_counts().to_dict()
+    merged_counts = {sp: 0 for sp in all_spots_names}
     for sp, cnt in spot_counts.items():
         if sp in merged_counts:
             merged_counts[sp] = cnt
@@ -287,7 +345,7 @@ def show():
     col_btn, col_info = st.columns([1, 2])
     with col_btn:
         if st.button("🚀 TRAIN SELECTED", use_container_width=True, type="primary"):
-            selected = [sp for sp in filtered_all_spots if st.session_state.get(f"sel_{sp}", False)]
+            selected = [sp for sp in all_spots_names if st.session_state.get(f"sel_{sp}", False)]
             start_training(selected, is_postflop)
 
     for sp, cnt in sorted_spots:
