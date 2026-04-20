@@ -5,30 +5,6 @@ import poker_utils as utils
 import json
 import os
 
-def get_spot_categories(is_postflop):
-    cat_map = {}
-    all_spots = set()
-    directory = 'postflop_data' if is_postflop else 'spots_data'
-    if os.path.exists(directory):
-        for file in os.listdir(directory):
-            if file.endswith('.json'):
-                try:
-                    with open(os.path.join(directory, file), 'r', encoding='utf-8') as f:
-                        data = json.load(f)
-                        scen = data.get("scenario", "Postflop" if is_postflop else "Other")
-                        if "spots" in data:
-                            for k in data["spots"].keys():
-                                cat_map[k] = scen
-                                all_spots.add(k)
-                        else:
-                            for k in data.keys():
-                                if k not in ["scenario", "source"]:
-                                    cat_map[k] = scen
-                                    all_spots.add(k)
-                except: pass
-    return cat_map, all_spots
-
-# КЭШ СНЕСЕН. Прямой коннект к Google Sheets при каждой загрузке.
 def fetch_history_direct(is_postflop):
     sheets = utils.get_worksheets()
     ws_name = "PostflopHistory" if is_postflop else "History"
@@ -208,26 +184,45 @@ def show():
     mode = st.radio("Section:", ["🔥 Preflop", "🌊 Postflop"], horizontal=True, label_visibility="collapsed")
     is_postflop = (mode == "🌊 Postflop")
     
-    cat_map, all_spots_names = get_spot_categories(is_postflop)
     df = fetch_history_direct(is_postflop)
+
+    cat_map = {}
+    if is_postflop:
+        pf_dir = 'postflop_data' if os.path.exists('postflop_data') else 'spots_data'
+        if os.path.exists(pf_dir):
+            for file in os.listdir(pf_dir):
+                if file.endswith('.json'):
+                    try:
+                        with open(os.path.join(pf_dir, file), 'r', encoding='utf-8') as f:
+                            data = json.load(f)
+                            scen = data.get("scenario", "Postflop")
+                            if "spots" in data:
+                                for k in data["spots"].keys(): cat_map[k] = scen
+                            else:
+                                for k in data.keys():
+                                    if k not in ["scenario", "source"]: cat_map[k] = scen
+                    except: pass
+    else:
+        try:
+            ranges_db = utils.load_ranges()
+            for src, sc_dict in ranges_db.items():
+                for sc, sp_dict in sc_dict.items():
+                    for sp in sp_dict.keys(): cat_map[sp] = sc
+        except: pass
     
     if not df.empty and "Spot" in df.columns:
         df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
         df = df.dropna(subset=["Date"])
         df["Result"] = pd.to_numeric(df["Result"], errors='coerce').fillna(0).astype(int)
         df["Category"] = df["Spot"].apply(lambda x: cat_map.get(x, "Other"))
-        
         available_cats = sorted(list(df["Category"].unique()))
-        for cat in set(cat_map.values()):
-            if cat not in available_cats: available_cats.append(cat)
-        available_cats = sorted(available_cats)
     else:
-        available_cats = sorted(list(set(cat_map.values())))
+        available_cats = []
 
     st.markdown("### 🎯 Filters")
-    filter_key = f"active_filters_v2_mob_{is_postflop}"
+    filter_key = f"active_filters_v4_mob_{is_postflop}"
     if filter_key not in st.session_state:
-        st.session_state[filter_key] = available_cats.copy()
+        st.session_state[filter_key] = [] 
 
     if available_cats:
         st.markdown("<div class='filter-marker-mob'></div>", unsafe_allow_html=True)
@@ -240,48 +235,55 @@ def show():
                     else: st.session_state[filter_key].append(cat)
                     st.rerun()
 
-    active_cats = st.session_state.get(filter_key, available_cats)
-    filtered_df = df[df["Category"].isin(active_cats)] if not df.empty else pd.DataFrame()
-    filtered_all_spots = [sp for sp in all_spots_names if cat_map.get(sp, "Other") in active_cats]
+    active_cats = st.session_state[filter_key]
+    if active_cats:
+        filtered_df = df[df["Category"].isin(active_cats)]
+    else:
+        filtered_df = df
 
     if filtered_df.empty:
-        st.info(f"No history data for selected filters. Go train, Boss.")
-    else:
-        st.markdown(f"### 📈 Performance ({mode.split()[1]})")
-        total_hands = len(filtered_df)
-        total_correct = filtered_df["Result"].sum()
-        winrate = (total_correct / total_hands * 100) if total_hands > 0 else 0
-        
-        c1, c2, c3 = st.columns(3)
-        c1.metric("Total Hands", total_hands)
-        c2.metric("Correct", total_correct)
-        c3.metric("Accuracy", f"{winrate:.1f}%")
+        st.info("No history data to show. Go train, Boss.")
+        return
 
-        st.markdown("### 🎯 Spots Mastery")
-        stats = filtered_df.groupby("Spot")["Result"].agg(["count", "sum", "mean"]).reset_index()
-        stats["Errors"] = stats["count"] - stats["sum"]
-        stats["Accuracy"] = (stats["mean"] * 100).astype(int).astype(str) + "%"
+    st.markdown(f"### 📈 Performance ({mode.split()[1]})")
+    total_hands = len(filtered_df)
+    total_correct = filtered_df["Result"].sum()
+    winrate = (total_correct / total_hands * 100) if total_hands > 0 else 0
+    
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Total Hands", total_hands)
+    c2.metric("Correct", total_correct)
+    c3.metric("Accuracy", f"{winrate:.1f}%")
+
+    st.markdown("### 🎯 Spots Mastery")
+    stats = filtered_df.groupby("Spot")["Result"].agg(["count", "sum", "mean"]).reset_index()
+    stats["Errors"] = stats["count"] - stats["sum"]
+    stats["Accuracy"] = (stats["mean"] * 100).astype(int).astype(str) + "%"
+    
+    display_rename_map = {
+        "BUvsCO": "3bet BUvsCO", "SBvsCO": "3bet SBvsCO", "SBvsBU": "3bet SBvsBU",
+        "BBvsCO": "3bet BBvsCO", "BBvsBU": "3bet BBvsBU", "BBvsSB": "3bet BBvsSB"
+    }
+
+    display_df = stats.copy()
+    if not is_postflop:
+        display_df["Spot"] = display_df["Spot"].replace(display_rename_map)
         
-        all_spots_sorted = stats.sort_values(by="count", ascending=False)
-        st.dataframe(all_spots_sorted[["Spot", "Errors", "Accuracy", "count"]].rename(columns={"count": "Total"}), use_container_width=True, hide_index=True)
+    all_spots_sorted = display_df.sort_values(by="count", ascending=False)
+    st.dataframe(all_spots_sorted[["Spot", "Errors", "Accuracy", "count"]].rename(columns={"count": "Total"}), use_container_width=True, hide_index=True)
 
     st.divider()
     st.markdown("### 🚀 Road to Mastery (5k Hands)")
     st.caption("Check spots and click TRAIN SELECTED, or hit 🎯 for quick launch.")
 
-    spot_counts = filtered_df["Spot"].value_counts().to_dict() if not filtered_df.empty else {}
-    merged_counts = {sp: 0 for sp in filtered_all_spots}
-    for sp, cnt in spot_counts.items():
-        if sp in merged_counts:
-            merged_counts[sp] = cnt
-        
-    sorted_spots = sorted(merged_counts.items(), key=lambda x: x[1], reverse=True)
+    spot_counts = filtered_df["Spot"].value_counts().to_dict()
+    sorted_spots = sorted(spot_counts.items(), key=lambda x: x[1], reverse=True)
 
     col_btn, _ = st.columns([1, 1])
     with col_btn:
         st.markdown('<div class="train-btn">', unsafe_allow_html=True)
         if st.button("🚀 TRAIN SELECTED", use_container_width=True):
-            selected = [sp for sp in filtered_all_spots if st.session_state.get(f"sel_{sp}", False)]
+            selected = [sp for sp, _ in sorted_spots if st.session_state.get(f"sel_{sp}", False)]
             start_training(selected, is_postflop)
         st.markdown('</div>', unsafe_allow_html=True)
 
@@ -294,6 +296,8 @@ def show():
         elif cnt < 3000: grad, glow = "linear-gradient(90deg, #6f42c1, #d63384)", "rgba(214, 51, 132, 0.5)"
         elif cnt < 5000: grad, glow = "linear-gradient(90deg, #dc3545, #fd7e14)", "rgba(253, 126, 20, 0.6)"
         else: grad, glow = "linear-gradient(90deg, #ffc107, #ffef96)", "rgba(255, 193, 7, 0.8)"
+
+        disp_name = display_rename_map.get(sp, sp) if not is_postflop else sp
 
         c1, c2, c3 = st.columns([0.1, 0.12, 0.78], vertical_alignment="center")
         
@@ -309,7 +313,7 @@ def show():
             st.markdown('</div>', unsafe_allow_html=True)
             
         with c3:
-            html_out = f"<div style='display:flex; align-items:center; gap:8px; background:#16181c; padding:8px 12px; border-radius:10px; border:1px solid #2d3139; box-shadow:0 2px 4px rgba(0,0,0,0.2); width:100%; box-sizing:border-box;'><div style='flex:1 1 35%; min-width:0; color:#e9ecef; font-weight:800; font-size:11px; letter-spacing:0.02em; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;' title='{sp}'>{sp}</div><div style='flex:0 0 auto; color:#fff; font-weight:900; font-size:13px; text-align:right; font-variant-numeric:tabular-nums;'>{cnt}</div><div style='flex:1 1 45%; background:rgba(0,0,0,0.6); height:6px; border-radius:3px; box-shadow:inset 0 1px 3px rgba(0,0,0,0.8); position:relative; overflow:hidden;'><div style='width:{pct}%; height:100%; background:{grad}; border-radius:3px; box-shadow:0 0 10px {glow}; transition:width 0.5s ease-out;'></div></div><div style='flex:0 0 auto; color:#6c757d; font-weight:700; font-size:10px;'>5k</div></div>"
+            html_out = f"<div style='display:flex; align-items:center; gap:8px; background:#16181c; padding:8px 12px; border-radius:10px; border:1px solid #2d3139; box-shadow:0 2px 4px rgba(0,0,0,0.2); width:100%; box-sizing:border-box;'><div style='flex:1 1 35%; min-width:0; color:#e9ecef; font-weight:800; font-size:11px; letter-spacing:0.02em; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;' title='{sp}'>{disp_name}</div><div style='flex:0 0 auto; color:#fff; font-weight:900; font-size:13px; text-align:right; font-variant-numeric:tabular-nums;'>{cnt}</div><div style='flex:1 1 45%; background:rgba(0,0,0,0.6); height:6px; border-radius:3px; box-shadow:inset 0 1px 3px rgba(0,0,0,0.8); position:relative; overflow:hidden;'><div style='width:{pct}%; height:100%; background:{grad}; border-radius:3px; box-shadow:0 0 10px {glow}; transition:width 0.5s ease-out;'></div></div><div style='flex:0 0 auto; color:#6c757d; font-weight:700; font-size:10px;'>5k</div></div>"
             st.markdown(html_out, unsafe_allow_html=True)
 
     st.divider()
@@ -321,8 +325,6 @@ def show():
             d["Date"] = d["Date"].dt.strftime("%Y-%m-%d %H:%M:%S")
             cols_to_show = ["Date", "Spot", "Hand", "CorrectAction", "UserAction", "Result"] if "UserAction" in d.columns else ["Date", "Spot", "Hand", "CorrectAction", "Result"]
             st.dataframe(d[cols_to_show], use_container_width=True, hide_index=True)
-        else:
-            st.info("No raw history to show.")
 
     st.markdown("### 🚑 Data Recovery")
     with st.expander("Recover Spot Mastery from History", expanded=False):
