@@ -5,30 +5,6 @@ import poker_utils as utils
 import json
 import os
 
-def get_spot_categories(is_postflop):
-    cat_map = {}
-    all_spots = set()
-    directory = 'postflop_data' if is_postflop else 'spots_data'
-    if os.path.exists(directory):
-        for file in os.listdir(directory):
-            if file.endswith('.json'):
-                try:
-                    with open(os.path.join(directory, file), 'r', encoding='utf-8') as f:
-                        data = json.load(f)
-                        scen = data.get("scenario", "Postflop" if is_postflop else "Other")
-                        if "spots" in data:
-                            for k in data["spots"].keys():
-                                cat_map[k] = scen
-                                all_spots.add(k)
-                        else:
-                            for k in data.keys():
-                                if k not in ["scenario", "source"]:
-                                    cat_map[k] = scen
-                                    all_spots.add(k)
-                except: pass
-    return cat_map, all_spots
-
-# КЭШ СНЕСЕН. Прямой коннект к Google Sheets при каждой загрузке.
 def fetch_history_direct(is_postflop):
     sheets = utils.get_worksheets()
     ws_name = "PostflopHistory" if is_postflop else "History"
@@ -206,26 +182,46 @@ def show():
     mode = st.radio("Section:", ["🔥 Preflop", "🌊 Postflop"], horizontal=True, label_visibility="collapsed")
     is_postflop = (mode == "🌊 Postflop")
     
-    cat_map, all_spots_names = get_spot_categories(is_postflop)
     df = fetch_history_direct(is_postflop)
     
+    cat_map = {}
+    if is_postflop:
+        pf_dir = 'postflop_data' if os.path.exists('postflop_data') else 'spots_data'
+        if os.path.exists(pf_dir):
+            for file in os.listdir(pf_dir):
+                if file.endswith('.json'):
+                    try:
+                        with open(os.path.join(pf_dir, file), 'r', encoding='utf-8') as f:
+                            data = json.load(f)
+                            scen = data.get("scenario", "Postflop")
+                            if "spots" in data:
+                                for k in data["spots"].keys(): cat_map[k] = scen
+                            else:
+                                for k in data.keys():
+                                    if k not in ["scenario", "source"]: cat_map[k] = scen
+                    except: pass
+    else:
+        try:
+            ranges_db = utils.load_ranges()
+            for src, sc_dict in ranges_db.items():
+                for sc, sp_dict in sc_dict.items():
+                    for sp in sp_dict.keys():
+                        cat_map[sp] = sc
+        except: pass
+
     if not df.empty and "Spot" in df.columns:
         df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
         df = df.dropna(subset=["Date"])
         df["Result"] = pd.to_numeric(df["Result"], errors='coerce').fillna(0).astype(int)
         df["Category"] = df["Spot"].apply(lambda x: cat_map.get(x, "Other"))
-        
         available_cats = sorted(list(df["Category"].unique()))
-        for cat in set(cat_map.values()):
-            if cat not in available_cats: available_cats.append(cat)
-        available_cats = sorted(available_cats)
     else:
-        available_cats = sorted(list(set(cat_map.values())))
+        available_cats = []
 
     st.markdown("### 🎯 Filters")
-    filter_key = f"active_filters_v2_{is_postflop}"
+    filter_key = f"active_filters_v4_{is_postflop}"
     if filter_key not in st.session_state:
-        st.session_state[filter_key] = available_cats.copy()
+        st.session_state[filter_key] = [] 
 
     if available_cats:
         st.markdown("<div class='filter-marker-desk'></div>", unsafe_allow_html=True)
@@ -238,47 +234,45 @@ def show():
                     else: st.session_state[filter_key].append(cat)
                     st.rerun()
 
-    active_cats = st.session_state.get(filter_key, available_cats)
-    filtered_df = df[df["Category"].isin(active_cats)] if not df.empty else pd.DataFrame()
-    filtered_all_spots = [sp for sp in all_spots_names if cat_map.get(sp, "Other") in active_cats]
+    active_cats = st.session_state[filter_key]
+    if active_cats:
+        filtered_df = df[df["Category"].isin(active_cats)]
+    else:
+        filtered_df = df
 
     if filtered_df.empty:
-        st.info(f"No history data for selected filters. Go train, Boss.")
-    else:
-        st.markdown(f"### 📈 Performance ({mode.split()[1]})")
-        total_hands = len(filtered_df)
-        total_correct = filtered_df["Result"].sum()
-        winrate = (total_correct / total_hands * 100) if total_hands > 0 else 0
-        
-        c1, c2, c3 = st.columns(3)
-        c1.metric("Total Hands", total_hands)
-        c2.metric("Correct", total_correct)
-        c3.metric("Accuracy", f"{winrate:.1f}%")
+        st.info("No history data to show. Go train, Boss.")
+        return
 
-        st.markdown("### 🎯 Spots Mastery")
-        stats = filtered_df.groupby("Spot")["Result"].agg(["count", "sum", "mean"]).reset_index()
-        stats["Errors"] = stats["count"] - stats["sum"]
-        stats["Accuracy"] = (stats["mean"] * 100).astype(int).astype(str) + "%"
-        
-        all_spots_sorted = stats.sort_values(by="count", ascending=False)
-        st.dataframe(all_spots_sorted[["Spot", "Errors", "Accuracy", "count"]].rename(columns={"count": "Total"}), use_container_width=True, hide_index=True)
+    st.markdown(f"### 📈 Performance ({mode.split()[1]})")
+    total_hands = len(filtered_df)
+    total_correct = filtered_df["Result"].sum()
+    winrate = (total_correct / total_hands * 100) if total_hands > 0 else 0
+    
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Total Hands", total_hands)
+    c2.metric("Correct", total_correct)
+    c3.metric("Accuracy", f"{winrate:.1f}%")
+
+    st.markdown("### 🎯 Spots Mastery")
+    stats = filtered_df.groupby("Spot")["Result"].agg(["count", "sum", "mean"]).reset_index()
+    stats["Errors"] = stats["count"] - stats["sum"]
+    stats["Accuracy"] = (stats["mean"] * 100).astype(int).astype(str) + "%"
+    
+    all_spots_sorted = stats.sort_values(by="count", ascending=False)
+    st.dataframe(all_spots_sorted[["Spot", "Errors", "Accuracy", "count"]].rename(columns={"count": "Total"}), use_container_width=True, hide_index=True)
 
     st.divider()
     st.markdown("### 🚀 Road to Mastery (5k Hands)")
     st.caption("Check spots and click TRAIN SELECTED, or hit 🎯 for quick launch.")
 
-    spot_counts = filtered_df["Spot"].value_counts().to_dict() if not filtered_df.empty else {}
-    merged_counts = {sp: 0 for sp in filtered_all_spots}
-    for sp, cnt in spot_counts.items():
-        if sp in merged_counts:
-            merged_counts[sp] = cnt
-        
-    sorted_spots = sorted(merged_counts.items(), key=lambda x: x[1], reverse=True)
+    spot_counts = filtered_df["Spot"].value_counts().to_dict()
+    sorted_spots = sorted(spot_counts.items(), key=lambda x: x[1], reverse=True)
 
     col_btn, col_info = st.columns([1, 2])
     with col_btn:
         if st.button("🚀 TRAIN SELECTED", use_container_width=True, type="primary"):
-            selected = [sp for sp in filtered_all_spots if st.session_state.get(f"sel_{sp}", False)]
+            selected = [sp for sp, _ in sorted_spots if st.session_state.get(f"sel_{sp}", False)]
             start_training(selected, is_postflop)
 
     for sp, cnt in sorted_spots:
@@ -316,8 +310,6 @@ def show():
             d["Date"] = d["Date"].dt.strftime("%Y-%m-%d %H:%M:%S")
             cols_to_show = ["Date", "Spot", "Hand", "CorrectAction", "UserAction", "Result"] if "UserAction" in d.columns else ["Date", "Spot", "Hand", "CorrectAction", "Result"]
             st.dataframe(d[cols_to_show], use_container_width=True, hide_index=True)
-        else:
-            st.info("No raw history to show.")
 
     st.markdown("### 🚑 Data Recovery")
     with st.expander("Recover Spot Mastery from History", expanded=False):
