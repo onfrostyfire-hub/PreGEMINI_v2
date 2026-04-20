@@ -16,6 +16,16 @@ PRE_HU_MIGRATION_MAP = {
     "BB def vs 4bet": "HU @ BB def vs 4bet",
 }
 
+LEGACY_SPOT_RENAME_MAP = {
+    "BUvsCO": "3bet BUvsCO",
+    "SBvsCO": "3bet SBvsCO",
+    "SBvsBU": "3bet SBvsBU",
+    "BBvsCO": "3bet BBvsCO",
+    "BBvsBU": "3bet BBvsBU",
+    "BBvsSB": "3bet BBvsSB",
+    **PRE_HU_MIGRATION_MAP,
+}
+
 PRE_SCENARIO_ORDER = [
     "Open Raise",
     "3bet",
@@ -149,14 +159,11 @@ def canonicalize_history_spots(df, is_postflop):
     if df.empty or "Spot" not in df.columns:
         return df
 
-    _, aliases = get_spot_catalog(is_postflop)
     mapped_df = df.copy()
-
-    def _to_canonical(value):
-        clean_value = _normalize_text(value)
-        return aliases.get(clean_value.lower(), clean_value)
-
-    mapped_df["Spot"] = mapped_df["Spot"].apply(_to_canonical)
+    if not is_postflop:
+        mapped_df["Spot"] = mapped_df["Spot"].replace(LEGACY_SPOT_RENAME_MAP)
+    else:
+        mapped_df["Spot"] = mapped_df["Spot"].apply(_normalize_text)
     return mapped_df
 
 
@@ -282,36 +289,23 @@ def render_filter_chip_group(title, items, state_key, key_prefix, columns_per_ro
 
 def fetch_history(is_postflop):
     sheets = utils.get_worksheets()
-    if is_postflop:
-        df_pf = pd.DataFrame(columns=["Date", "Spot", "Hand", "Result", "CorrectAction", "UserAction"])
-        if "PostflopHistory" in sheets:
-            try:
-                vals = sheets["PostflopHistory"].get_all_values()
-                if vals and len(vals) > 1:
-                    headers = vals[0]
-                    if "UserAction" not in headers:
-                        headers.append("UserAction")
-                        for row in vals[1:]:
-                            row.append("UNKNOWN")
-                    df_pf = pd.DataFrame(vals[1:], columns=headers)
-            except Exception:
-                pass
-        elif os.path.exists("postflop_history.csv"):
-            try:
-                df_pf = pd.read_csv("postflop_history.csv", header=None)
-                if df_pf.iloc[0, 0] == "Date":
-                    df_pf.columns = df_pf.iloc[0]
-                    df_pf = df_pf[1:]
-                else:
-                    df_pf.columns = ["Date", "Spot", "Hand", "Result", "CorrectAction", "UserAction"]
-            except Exception:
-                pass
-        return df_pf
+    ws_name = "PostflopHistory" if is_postflop else "History"
+    df_hist = pd.DataFrame(columns=["Date", "Spot", "Hand", "Result", "CorrectAction", "UserAction"])
 
-    df_pr = utils.load_history()
-    if df_pr.empty:
-        return df_pr
-    return df_pr[~df_pr["Spot"].astype(str).str.contains("|", regex=False, na=False)].copy()
+    if ws_name in sheets:
+        try:
+            vals = sheets[ws_name].get_all_values()
+            if vals and len(vals) > 1:
+                headers = vals[0]
+                if "UserAction" not in headers:
+                    headers.append("UserAction")
+                    for row in vals[1:]:
+                        row.append("UNKNOWN")
+                df_hist = pd.DataFrame(vals[1:], columns=headers)
+        except Exception:
+            pass
+
+    return df_hist
 
 
 def custom_delete_history(days=None):
@@ -600,24 +594,14 @@ def show():
     st.markdown("</div>", unsafe_allow_html=True)
 
     active_filters = get_active_filters(is_postflop)
-    filtered_catalog_spots = {
-        spot_name
-        for spot_name in catalog.keys()
-        if spot_matches_filters(spot_name, catalog, active_filters, is_postflop)
-    }
+    filtered_df = df[df["Spot"].apply(lambda spot_name: spot_matches_filters(spot_name, catalog, active_filters, is_postflop))].copy()
 
     st.markdown("### Spot Mastery")
-    stats = df.groupby("Spot")["Result"].agg(["count", "sum", "mean"]).reset_index()
+    stats = filtered_df.groupby("Spot")["Result"].agg(["count", "sum", "mean"]).reset_index()
     stats["Errors"] = stats["count"] - stats["sum"]
     stats["Accuracy"] = (stats["mean"] * 100).round().astype(int).astype(str) + "%"
     stats["DisplaySpot"] = stats["Spot"].apply(lambda name: catalog.get(name, {}).get("display_name", name))
-
-    if has_active_filters(active_filters):
-        stats_view = stats[stats["Spot"].isin(filtered_catalog_spots)].copy()
-    else:
-        stats_view = stats.copy()
-
-    stats_view = stats_view.sort_values(by=["count", "DisplaySpot"], ascending=[False, True])
+    stats_view = stats.sort_values(by=["count", "DisplaySpot"], ascending=[False, True])
 
     if stats_view.empty:
         st.info("No spots match the active filters in Spot Mastery.")
@@ -634,10 +618,8 @@ def show():
     st.markdown("### Road to Mastery (5k Hands)")
     st.caption("Select spots and launch training right from here.")
 
-    road_spots = sorted(filtered_catalog_spots, key=lambda spot_name: _spot_sort_key(spot_name, catalog, is_postflop))
-    spot_counts = df["Spot"].value_counts().to_dict()
-    merged_counts = {spot_name: spot_counts.get(spot_name, 0) for spot_name in road_spots}
-    sorted_spots = sorted(merged_counts.items(), key=lambda item: (-item[1], _spot_sort_key(item[0], catalog, is_postflop)))
+    spot_counts = filtered_df["Spot"].value_counts().to_dict()
+    sorted_spots = sorted(spot_counts.items(), key=lambda item: (-item[1], _spot_sort_key(item[0], catalog, is_postflop)))
 
     if not sorted_spots:
         st.info("No spots match the active filters in Road to Mastery.")
