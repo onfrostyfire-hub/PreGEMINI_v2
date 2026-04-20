@@ -89,7 +89,7 @@ def load_preflop_catalog():
                     "source": _normalize_text(source),
                     "scenario": _normalize_text(scenario),
                 }
-                aliases[_normalize_text(canonical_name).lower()] = canonical_name
+                aliases[canonical_name.lower()] = canonical_name
 
                 if canonical_name.startswith("3bet "):
                     short_name = canonical_name.replace("3bet ", "", 1)
@@ -541,27 +541,6 @@ def show():
         .hide-checkbox-label div[data-testid="stCheckbox"] p {
             display: none !important;
         }
-
-        /* MOBILE SPOTS ROW MASTERY - ELITE CARD UI */
-        .spot-row-marker-mob { display: none; }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) {
-            display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; align-items: center !important;
-            background: rgba(28,28,30,0.6) !important; padding: 12px 14px !important; border-radius: 16px !important;
-            border: 1px solid rgba(255,255,255,0.04) !important; margin-bottom: 8px !important; gap: 10px !important;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15) !important; width: 100% !important;
-        }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"] { margin: 0 !important; padding: 0 !important; min-width: 0 !important; width: auto !important; }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(1) { flex: 0 0 24px !important; }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(2) { flex: 0 0 36px !important; }
-        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-mob) > div[data-testid="column"]:nth-child(3) { flex: 1 1 auto !important; }
-
-        /* SPOT CARD HTML */
-        .spot-card { display: flex; flex-direction: column; width: 100%; gap: 6px; justify-content: center; }
-        .spot-header { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .spot-title { color: #f2f2f7; font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.2px; flex: 1 1 auto; min-width: 0; padding-right: 10px; }
-        .spot-count { color: #8e8e93; font-weight: 700; font-size: 13px; font-variant-numeric: tabular-nums; flex: 0 0 auto; text-align: right; }
-        .spot-bar-bg { width: 100%; background: rgba(0,0,0,0.5); height: 8px; border-radius: 4px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.8); }
-        .spot-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1); }
         </style>
         """,
         unsafe_allow_html=True,
@@ -631,82 +610,87 @@ def show():
         else:
             filtered_df = df.copy()
 
-    st.markdown("### 🎯 Spots Mastery")
+    st.markdown("### Spot Mastery")
     stats = filtered_df.groupby("Spot")["Result"].agg(["count", "sum", "mean"]).reset_index()
     stats["Errors"] = stats["count"] - stats["sum"]
-    stats["Accuracy"] = (stats["mean"] * 100).astype(int).astype(str) + "%"
-    
-    display_rename_map = {
-        "BUvsCO": "3bet BUvsCO", "SBvsCO": "3bet SBvsCO", "SBvsBU": "3bet SBvsBU",
-        "BBvsCO": "3bet BBvsCO", "BBvsBU": "3bet BBvsBU", "BBvsSB": "3bet BBvsSB"
-    }
+    stats["Accuracy"] = (stats["mean"] * 100).round().astype(int).astype(str) + "%"
+    stats["DisplaySpot"] = stats["Spot"]
+    stats_view = stats.sort_values(by=["count", "DisplaySpot"], ascending=[False, True])
 
-    display_df = stats.copy()
-    if not is_postflop:
-        display_df["Spot"] = display_df["Spot"].replace(display_rename_map)
-
-    all_spots_sorted = display_df.sort_values(by="count", ascending=False)
-    
-    if all_spots_sorted.empty:
-        st.info("No spots match the active filters.")
+    if stats_view.empty:
+        st.info("No spots match the active filters in Spot Mastery.")
     else:
-        st.dataframe(all_spots_sorted[["Spot", "Errors", "Accuracy", "count"]].rename(columns={"count": "Total"}), use_container_width=True, hide_index=True)
+        st.dataframe(
+            stats_view[["DisplaySpot", "Errors", "Accuracy", "count"]].rename(
+                columns={"DisplaySpot": "Spot", "count": "Total"}
+            ),
+            use_container_width=True,
+            hide_index=True,
+        )
 
     st.divider()
-    st.markdown("### 🚀 Road to Mastery (5k Hands)")
-    st.caption("Check spots and click TRAIN SELECTED, or hit 🎯 for quick launch.")
+    st.markdown("### Road to Mastery (5k Hands)")
+    st.caption("Select spots and launch training right from here.")
 
     spot_counts = filtered_df["Spot"].value_counts().to_dict()
-    sorted_spots = sorted(spot_counts.items(), key=lambda x: x[1], reverse=True)
+    sorted_spots = sorted(spot_counts.items(), key=lambda item: (-item[1], _spot_sort_key(item[0], catalog, is_postflop)))
 
     if not sorted_spots:
-        st.info("No spots match the active filters.")
+        st.info("No spots match the active filters in Road to Mastery.")
     else:
-        col_btn, _ = st.columns([1, 1])
-        with col_btn:
-            st.markdown('<div class="train-btn">', unsafe_allow_html=True)
-            if st.button("🚀 TRAIN SELECTED", key=f"train_sel_mob_{mode.lower()}", use_container_width=True):
-                selected = [sp for sp, _ in sorted_spots if st.session_state.get(f"sel_mob_{mode.lower()}_{sp}", False)]
-                start_training(selected, is_postflop)
-            st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown('<div class="train-btn">', unsafe_allow_html=True)
+        if st.button("TRAIN SELECTED", key=f"train_selected_mobile_{mode.lower()}", use_container_width=True):
+            selected_spots = [spot_name for spot_name, _ in sorted_spots if st.session_state.get(f"sel_{spot_name}", False)]
+            start_training(selected_spots, is_postflop)
+        st.markdown("</div>", unsafe_allow_html=True)
 
-        for sp, cnt in sorted_spots:
-            pct = min(100, (cnt / 5000) * 100)
-            
-            if cnt < 100: grad, glow = "linear-gradient(90deg, #6c757d, #495057)", "rgba(108, 117, 125, 0.3)"
-            elif cnt < 500: grad, glow = "linear-gradient(90deg, #198754, #20c997)", "rgba(32, 201, 151, 0.4)"
-            elif cnt < 1500: grad, glow = "linear-gradient(90deg, #0dcaf0, #0d6efd)", "rgba(13, 202, 240, 0.5)"
-            elif cnt < 3000: grad, glow = "linear-gradient(90deg, #6f42c1, #d63384)", "rgba(214, 51, 132, 0.5)"
-            elif cnt < 5000: grad, glow = "linear-gradient(90deg, #dc3545, #fd7e14)", "rgba(253, 126, 20, 0.6)"
-            else: grad, glow = "linear-gradient(90deg, #ffc107, #ffef96)", "rgba(255, 193, 7, 0.8)"
+        for spot_name, count in sorted_spots:
+            pct = min(100, (count / 5000) * 100)
+            if count < 100:
+                gradient, glow = "linear-gradient(90deg, #6c757d, #495057)", "rgba(108, 117, 125, 0.3)"
+            elif count < 500:
+                gradient, glow = "linear-gradient(90deg, #198754, #20c997)", "rgba(32, 201, 151, 0.4)"
+            elif count < 1500:
+                gradient, glow = "linear-gradient(90deg, #0dcaf0, #0d6efd)", "rgba(13, 202, 240, 0.5)"
+            elif count < 3000:
+                gradient, glow = "linear-gradient(90deg, #6f42c1, #d63384)", "rgba(214, 51, 132, 0.5)"
+            elif count < 5000:
+                gradient, glow = "linear-gradient(90deg, #dc3545, #fd7e14)", "rgba(253, 126, 20, 0.6)"
+            else:
+                gradient, glow = "linear-gradient(90deg, #ffc107, #ffef96)", "rgba(255, 193, 7, 0.8)"
 
-            disp_name = display_rename_map.get(sp, sp) if not is_postflop else sp
+            left_col, action_col, card_col = st.columns([0.12, 0.18, 0.70], vertical_alignment="center")
 
-            c1, c2, c3 = st.columns(3) 
-            
-            with c1:
-                st.markdown("<div class='spot-row-marker-mob'></div><div class='hide-checkbox-label'>", unsafe_allow_html=True)
-                st.checkbox(" ", key=f"sel_mob_{mode.lower()}_{sp}")
+            with left_col:
+                st.markdown('<div class="hide-checkbox-label">', unsafe_allow_html=True)
+                st.checkbox(" ", key=f"sel_{spot_name}")
                 st.markdown("</div>", unsafe_allow_html=True)
-                
-            with c2:
-                st.markdown("<div class='target-btn-wrap'>", unsafe_allow_html=True)
-                if st.button("🎯", key=f"go_mob_{mode.lower()}_{sp}"): start_training([sp], is_postflop)
+
+            with action_col:
+                st.markdown('<div class="target-btn">', unsafe_allow_html=True)
+                if st.button("GO", key=f"go_{spot_name}", use_container_width=True):
+                    start_training([spot_name], is_postflop)
                 st.markdown("</div>", unsafe_allow_html=True)
-                
-            with c3:
-                html = f"""
-                <div class='spot-card'>
-                    <div class='spot-header'>
-                        <div class='spot-title' title='{sp}'>{disp_name}</div>
-                        <div class='spot-count'>{cnt}</div>
-                    </div>
-                    <div class='spot-bar-bg'>
-                        <div class='spot-bar-fill' style='width:{pct}%; background:{grad}; box-shadow: 0 0 10px {glow};'></div>
-                    </div>
-                </div>
-                """
-                st.markdown(html, unsafe_allow_html=True)
+
+            with card_col:
+                display_name = spot_name
+                html_output = (
+                    "<div style='display:flex; align-items:center; gap:8px; background:#16181c; padding:8px 10px; "
+                    "border-radius:10px; border:1px solid #2d3139; box-shadow:0 2px 4px rgba(0,0,0,0.2); "
+                    "width:100%; box-sizing:border-box;'>"
+                    f"<div style='flex:1 1 38%; min-width:0; color:#e9ecef; font-weight:800; font-size:10px; "
+                    f"letter-spacing:0.02em; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; "
+                    f"white-space:nowrap;' title='{display_name}'>{display_name}</div>"
+                    f"<div style='flex:0 0 auto; color:#ffffff; font-weight:900; font-size:12px; text-align:right; "
+                    f"font-variant-numeric:tabular-nums;'>{count}</div>"
+                    f"<div style='flex:1 1 42%; background:rgba(0,0,0,0.6); height:6px; border-radius:3px; "
+                    f"box-shadow:inset 0 1px 3px rgba(0,0,0,0.8); position:relative; overflow:hidden;'>"
+                    f"<div style='width:{pct}%; height:100%; background:{gradient}; border-radius:3px; "
+                    f"box-shadow:0 0 10px {glow}; transition:width 0.5s ease-out;'></div></div>"
+                    "<div style='flex:0 0 auto; color:#6c757d; font-weight:700; font-size:10px;'>5k</div>"
+                    "</div>"
+                )
+                st.markdown(html_output, unsafe_allow_html=True)
 
     st.divider()
     with st.expander("Raw History Log"):
