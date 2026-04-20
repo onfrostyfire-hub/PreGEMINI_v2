@@ -5,42 +5,34 @@ import poker_utils as utils
 import json
 import os
 
-def get_spot_metadata(is_postflop):
+def get_spot_categories(is_postflop):
+    cat_map = {}
+    all_spots = set()
     directory = 'postflop_data' if is_postflop else 'spots_data'
-    meta = {}
-    categories = set()
-    rename_map = {
-        "SB pfr": "HU @ SB pfr",
-        "BB def vs SB": "HU @ BB def vs SB",
-        "BB def vs BU": "HU @ BB def vs BU",
-        "CO pfr": "HU @ CO pfr",
-        "BTN pfr": "HU @ BTN pfr"
-    }
-    
     if os.path.exists(directory):
         for file in os.listdir(directory):
             if file.endswith('.json'):
                 try:
                     with open(os.path.join(directory, file), 'r', encoding='utf-8') as f:
                         data = json.load(f)
+                        scen = data.get("scenario", "Postflop" if is_postflop else "Other")
                         if "spots" in data:
-                            scen = data.get("scenario", "Other")
-                            categories.add(scen)
-                            for k in data["spots"].keys(): meta[k] = scen
+                            for k in data["spots"].keys():
+                                cat_map[k] = scen
+                                all_spots.add(k)
                         else:
-                            scen = data.get("scenario", "Postflop")
-                            categories.add(scen)
                             for k in data.keys():
-                                if k not in ["scenario", "source"]: meta[k] = scen
+                                if k not in ["scenario", "source"]:
+                                    cat_map[k] = scen
+                                    all_spots.add(k)
                 except: pass
-    return meta, sorted(list(categories)), rename_map
+    return cat_map, all_spots
 
 @st.cache_data(ttl=60)
 def fetch_history(is_postflop):
     sheets = utils.get_worksheets()
-    df = pd.DataFrame(columns=["Date", "Spot", "Hand", "Result", "CorrectAction", "UserAction"])
     ws_name = "PostflopHistory" if is_postflop else "History"
-    
+    df = pd.DataFrame(columns=["Date", "Spot", "Hand", "Result", "CorrectAction", "UserAction"])
     if ws_name in sheets:
         try:
             vals = sheets[ws_name].get_all_values()
@@ -50,147 +42,319 @@ def fetch_history(is_postflop):
                     headers.append("UserAction")
                     for r in vals[1:]: r.append("UNKNOWN")
                 df = pd.DataFrame(vals[1:], columns=headers)
-                df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
-                df["Result"] = pd.to_numeric(df["Result"], errors='coerce')
         except: pass
     return df
 
-def custom_delete_history(is_postflop, hours=None):
-    sheets = utils.get_worksheets()
-    ws_name = "PostflopHistory" if is_postflop else "History"
-    if ws_name in sheets:
-        try:
-            if hours is None:
-                sheets[ws_name].clear()
-                sheets[ws_name].append_row(["Date", "Spot", "Hand", "Result", "CorrectAction", "UserAction"])
-            else:
-                df = fetch_history(is_postflop)
-                if not df.empty:
-                    cutoff = datetime.now() - timedelta(hours=hours)
-                    df = df[df["Date"] < cutoff]
+def custom_delete_history(days=None):
+    try:
+        sheets = utils.get_worksheets()
+        headers = ["Date", "Spot", "Hand", "Result", "CorrectAction", "UserAction"]
+        for ws_name in ["History", "PostflopHistory"]:
+            if ws_name in sheets:
+                if days is None:
                     sheets[ws_name].clear()
-                    headers = ["Date", "Spot", "Hand", "Result", "CorrectAction", "UserAction"]
                     sheets[ws_name].append_row(headers)
-                    if not df.empty:
-                        df["Date"] = df["Date"].dt.strftime("%Y-%m-%d %H:%M:%S")
-                        sheets[ws_name].append_rows(df[headers].values.tolist())
-            fetch_history.clear()
-        except: pass
+                else:
+                    vals = sheets[ws_name].get_all_values()
+                    if vals and len(vals) > 1:
+                        df = pd.DataFrame(vals[1:], columns=vals[0])
+                        df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
+                        cutoff = datetime.now() - timedelta(days=days)
+                        df_new = df[df["Date"] >= cutoff]
+                        sheets[ws_name].clear()
+                        rows = [headers] + df_new.astype(str).values.tolist()
+                        sheets[ws_name].update(values=rows, range_name="A1")
+    except: pass
+    fetch_history.clear()
+
+def start_training(selected_spots, is_postflop):
+    if not selected_spots:
+        st.warning("Select spots first, Boss.")
+        return
+
+    for k in list(st.session_state.keys()):
+        if k.startswith("chk_") or k.startswith("pf_chk_") or k.startswith("sel_") or k.startswith("pf_sel_"):
+            del st.session_state[k]
+
+    if is_postflop:
+        settings = utils.load_user_settings(is_postflop=True)
+        pf_spots, pf_heroes, pf_streets, pf_branches = set(), set(), set(), set()
+        
+        for key in selected_spots:
+            parts = [p.strip() for p in key.split('|')]
+            if len(parts) >= 4:
+                pf_spots.add(parts[0])
+                pf_heroes.add(parts[1])
+                pf_streets.add(parts[2])
+                pf_branches.add(parts[3])
+                
+        settings["pf_sel_spots"] = list(pf_spots)
+        settings["pf_sel_heroes"] = list(pf_heroes)
+        settings["pf_sel_streets"] = list(pf_streets)
+        settings["pf_sel_branches"] = list(pf_branches)
+        settings["pf_spots"] = selected_spots
+        
+        utils.save_user_settings(settings, is_postflop=True)
+        st.session_state.actual_app_mode = "Postflop"
+        st.session_state.pf_hand = None
+        st.session_state.pf_current_spot_key = None
+    else:
+        settings = utils.load_user_settings(is_postflop=False)
+        ranges_db = utils.load_ranges()
+        
+        sel_src, sel_sc = set(), set()
+        for sp in selected_spots:
+            for src, sc_dict in ranges_db.items():
+                for sc, sp_dict in sc_dict.items():
+                    if sp in sp_dict:
+                        sel_src.add(src)
+                        sel_sc.add(sc)
+                        
+        settings["selected_sources"] = list(sel_src)
+        settings["selected_scenarios"] = list(sel_sc)
+        settings["selected_spots"] = selected_spots
+        
+        utils.save_user_settings(settings, is_postflop=False)
+        st.session_state.actual_app_mode = "Preflop"
+        st.session_state.hand = None
+        st.session_state.current_spot = None
+
+    if hasattr(utils, "force_sync"): utils.force_sync()
+    st.rerun()
 
 def show():
-    is_postflop = st.session_state.get("actual_app_mode") == "Postflop"
-    meta, available_cats, rename_map = get_spot_metadata(is_postflop)
+    st.markdown("""
+        <style>
+        div[data-testid="stButton"] button[kind="primary"] {
+            height: 44px !important; background: linear-gradient(180deg, #1c3a55 0%, #102436 100%) !important;
+            border: none !important; font-weight: 900 !important; letter-spacing: 1px !important; color: #fff !important;
+            border-radius: 10px !important;
+        }
+        
+        .spot-row-marker-desk { display: none; }
+        
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) {
+            display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important;
+            align-items: center !important; background: #16181c !important; padding: 8px 12px !important;
+            border-radius: 12px !important; border: 1px solid #2d3139 !important; margin-bottom: 8px !important;
+            gap: 8px !important; width: 100% !important; grid-template-columns: none !important;
+        }
+        
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) > div[data-testid="column"] {
+            width: auto !important; min-width: 0 !important; margin: 0 !important; padding: 0 !important;
+        }
+        
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) > div[data-testid="column"]:nth-child(1) { flex: 0 0 24px !important; }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) > div[data-testid="column"]:nth-child(2) { flex: 0 0 32px !important; }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) > div[data-testid="column"]:nth-child(3) { flex: 1 1 35% !important; overflow: hidden; }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) > div[data-testid="column"]:nth-child(4) { flex: 0 0 40px !important; text-align: right; }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) > div[data-testid="column"]:nth-child(5) { flex: 1 1 35% !important; }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) > div[data-testid="column"]:nth-child(6) { flex: 0 0 35px !important; text-align: right; }
+        
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) div[data-testid="stButton"] button {
+            height: 28px !important; width: 28px !important; min-height: 28px !important; padding: 0 !important;
+            border-radius: 6px !important; font-size: 14px !important; line-height: 1 !important;
+            background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(255,255,255,0.1) !important;
+            display: flex; justify-content: center; align-items: center;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) div[data-testid="stButton"] button:hover {
+            border-color: #ffc107 !important; background: rgba(255,193,7,0.1) !important;
+        }
+        
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) div[data-testid="stCheckbox"] {
+            margin: 0 !important; padding: 0 !important; display: flex; align-items: center; justify-content: center;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.spot-row-marker-desk) div[data-testid="stCheckbox"] label {
+            padding: 0 !important; min-height: 0 !important;
+        }
+
+        .mastery-name {
+            color: #e9ecef; font-weight: 800; font-size: 12px; text-transform: uppercase;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; margin: 0;
+        }
+        .mastery-count {
+            color: #fff; font-weight: 900; font-size: 13px; font-variant-numeric: tabular-nums; line-height: 1.2; margin: 0;
+        }
+        .mastery-max {
+            color: #6c757d; font-size: 11px; font-weight: 700; line-height: 1.2; margin: 0;
+        }
+        .mastery-bar-container {
+            width: 100%; background: rgba(0,0,0,0.6); height: 6px; border-radius: 3px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.8); margin-top: 1px;
+        }
+        .mastery-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease-out; }
+
+        /* FILTERS CSS */
+        div[data-testid="stHorizontalBlock"]:has(.filter-marker-desk) {
+            display: flex !important; flex-wrap: wrap !important; gap: 8px !important; margin-bottom: 20px !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.filter-marker-desk) > div {
+            min-width: auto !important; width: auto !important; flex: 0 0 auto !important; padding: 0 !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.filter-marker-desk) button {
+            border-radius: 12px !important; padding: 4px 14px !important; min-height: 30px !important; font-size: 13px !important; font-weight: bold !important; transition: 0.2s;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.filter-marker-desk) button[kind="primary"] {
+            background: #ffc107 !important; color: #000 !important; border: 1px solid #ffc107 !important; box-shadow: 0 0 10px rgba(255,193,7,0.3) !important;
+        }
+        div[data-testid="stHorizontalBlock"]:has(.filter-marker-desk) button[kind="secondary"] {
+            background: #1a1c20 !important; color: #777 !important; border: 1px solid #333 !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown("## 📊 Statistics Hub")
     
-    df_hist = fetch_history(is_postflop)
-    if not df_hist.empty:
-        df_hist["Spot"] = df_hist["Spot"].apply(lambda x: rename_map.get(x, x))
-        df_hist["Category"] = df_hist["Spot"].apply(lambda x: meta.get(x, "Archived"))
-        cats_in_data = sorted(list(df_hist["Category"].unique()))
+    mode = st.radio("Section:", ["🔥 Preflop", "🌊 Postflop"], horizontal=True, label_visibility="collapsed")
+    is_postflop = (mode == "🌊 Postflop")
+    
+    cat_map, all_spots_names = get_spot_categories(is_postflop)
+    df = fetch_history(is_postflop)
+    
+    rename_map = {
+        "BUvsCO": "3bet BUvsCO", "SBvsCO": "3bet SBvsCO", "SBvsBU": "3bet SBvsBU",
+        "BBvsCO": "3bet BBvsCO", "BBvsBU": "3bet BBvsBU", "BBvsSB": "3bet BBvsSB",
+        "SB pfr": "HU @ SB pfr",
+        "BB def vs PFR": "HU @ BB def vs PFR",
+        "SB def vs 3bet BB": "HU @ SB def vs 3bet",
+        "SB def vs 3bet": "HU @ SB def vs 3bet",
+        "BB def vs 4bet": "HU @ BB def vs 4bet"
+    }
+
+    if not df.empty and "Spot" in df.columns:
+        df["Spot"] = df["Spot"].replace(rename_map)
+        df["Date"] = pd.to_datetime(df["Date"], errors='coerce')
+        df = df.dropna(subset=["Date"])
+        df["Result"] = pd.to_numeric(df["Result"], errors='coerce').fillna(0).astype(int)
+        df["Category"] = df["Spot"].apply(lambda x: cat_map.get(x, "Other"))
+        available_cats = sorted(list(df["Category"].unique()))
     else:
-        cats_in_data = []
+        available_cats = []
 
-    if f"active_cats_desk_{is_postflop}" not in st.session_state:
-        st.session_state[f"active_cats_desk_{is_postflop}"] = cats_in_data.copy()
+    st.markdown("### 🎯 Filters")
+    filter_key = f"active_filters_{is_postflop}"
+    if filter_key not in st.session_state:
+        st.session_state[filter_key] = available_cats.copy()
 
-    st.markdown('### 🎯 Filters')
-    st.markdown('<div class="filter-row-marker"></div>', unsafe_allow_html=True)
-    st.markdown('''<style>
-    div:has(> .filter-row-marker) + div[data-testid="stHorizontalBlock"] {
-        display: flex !important; flex-wrap: wrap !important; gap: 8px !important; margin-bottom: 25px !important;
-    }
-    div:has(> .filter-row-marker) + div[data-testid="stHorizontalBlock"] > div {
-        min-width: auto !important; width: auto !important; flex: 0 0 auto !important; padding: 0 !important;
-    }
-    div:has(> .filter-row-marker) + div[data-testid="stHorizontalBlock"] button {
-        border-radius: 16px !important; padding: 4px 16px !important; min-height: 32px !important; font-size: 13px !important; font-weight: 800 !important; transition: 0.2s;
-    }
-    div:has(> .filter-row-marker) + div[data-testid="stHorizontalBlock"] button[kind="primary"] {
-        background: #ffc107 !important; color: #000 !important; border: 1px solid #ffc107 !important; box-shadow: 0 0 12px rgba(255,193,7,0.4) !important;
-    }
-    div:has(> .filter-row-marker) + div[data-testid="stHorizontalBlock"] button[kind="secondary"] {
-        background: #1a1c20 !important; color: #777 !important; border: 1px solid #333 !important;
-    }
-    </style>''', unsafe_allow_html=True)
-
-    if cats_in_data:
-        cols = st.columns(len(cats_in_data))
-        for i, cat in enumerate(cats_in_data):
+    if available_cats:
+        st.markdown("<div class='filter-marker-desk'></div>", unsafe_allow_html=True)
+        cols = st.columns(len(available_cats))
+        for i, cat in enumerate(available_cats):
             with cols[i]:
-                is_act = cat in st.session_state[f"active_cats_desk_{is_postflop}"]
-                if st.button(cat, key=f"fd_{cat}_{is_postflop}", type="primary" if is_act else "secondary"):
-                    if is_act: st.session_state[f"active_cats_desk_{is_postflop}"].remove(cat)
-                    else: st.session_state[f"active_cats_desk_{is_postflop}"].append(cat)
+                is_active = cat in st.session_state[filter_key]
+                if st.button(cat, key=f"f_desk_{cat}", type="primary" if is_active else "secondary"):
+                    if is_active: st.session_state[filter_key].remove(cat)
+                    else: st.session_state[filter_key].append(cat)
                     st.rerun()
 
-    if not df_hist.empty and st.session_state[f"active_cats_desk_{is_postflop}"]:
-        f_df = df_hist[df_hist["Category"].isin(st.session_state[f"active_cats_desk_{is_postflop}"])]
-    else:
-        f_df = pd.DataFrame(columns=df_hist.columns)
+    active_cats = st.session_state.get(filter_key, available_cats)
+    filtered_df = df[df["Category"].isin(active_cats)] if not df.empty else pd.DataFrame()
+    filtered_all_spots = [sp for sp in all_spots_names if cat_map.get(sp, "Other") in active_cats]
 
-    st.markdown("### 🏆 Road to Mastery (5K Hands)")
-    total_hands = len(f_df)
-    progress = min(total_hands / 5000.0, 1.0)
-    st.progress(progress)
-    st.caption(f"{total_hands} / 5000 hands processed (Filtered)")
+    if filtered_df.empty:
+        st.info("No data for selected filters or history is empty. Go train, Boss.")
+        return
 
-    st.markdown("### 📊 Spot Mastery")
-    if f_df.empty:
-        st.info("Нет данных по выбранным фильтрам. Расширь поиск.")
-    else:
-        for spot, group in f_df.groupby("Spot"):
-            correct = group["Result"].sum()
-            total = len(group)
-            wr = int((correct / total) * 100) if total > 0 else 0
+    st.markdown(f"### 📈 Performance ({mode.split()[1]})")
+    total_hands = len(filtered_df)
+    total_correct = filtered_df["Result"].sum()
+    winrate = (total_correct / total_hands * 100) if total_hands > 0 else 0
+    
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Total Hands", total_hands)
+    c2.metric("Correct", total_correct)
+    c3.metric("Accuracy", f"{winrate:.1f}%")
+
+    st.markdown("### 🎯 Spots Mastery")
+    stats = filtered_df.groupby("Spot")["Result"].agg(["count", "sum", "mean"]).reset_index()
+    stats["Errors"] = stats["count"] - stats["sum"]
+    stats["Accuracy"] = (stats["mean"] * 100).astype(int).astype(str) + "%"
+    
+    all_spots_sorted = stats.sort_values(by="count", ascending=False)
+    st.dataframe(all_spots_sorted[["Spot", "Errors", "Accuracy", "count"]].rename(columns={"count": "Total"}), use_container_width=True, hide_index=True)
+
+    st.divider()
+    st.markdown("### 🚀 Road to Mastery (5k Hands)")
+    st.caption("Check spots and click TRAIN SELECTED, or hit 🎯 for quick launch.")
+
+    spot_counts = filtered_df["Spot"].value_counts().to_dict()
+    merged_counts = {sp: 0 for sp in filtered_all_spots}
+    for sp, cnt in spot_counts.items():
+        if sp in merged_counts:
+            merged_counts[sp] = cnt
+        
+    sorted_spots = sorted(merged_counts.items(), key=lambda x: x[1], reverse=True)
+
+    col_btn, col_info = st.columns([1, 2])
+    with col_btn:
+        if st.button("🚀 TRAIN SELECTED", use_container_width=True, type="primary"):
+            selected = [sp for sp in filtered_all_spots if st.session_state.get(f"sel_{sp}", False)]
+            start_training(selected, is_postflop)
+
+    for sp, cnt in sorted_spots:
+        pct = min(100, (cnt / 5000) * 100)
+        
+        if cnt < 100: grad, glow = "linear-gradient(90deg, #6c757d, #495057)", "rgba(108, 117, 125, 0.3)"
+        elif cnt < 500: grad, glow = "linear-gradient(90deg, #198754, #20c997)", "rgba(32, 201, 151, 0.4)"
+        elif cnt < 1500: grad, glow = "linear-gradient(90deg, #0dcaf0, #0d6efd)", "rgba(13, 202, 240, 0.5)"
+        elif cnt < 3000: grad, glow = "linear-gradient(90deg, #6f42c1, #d63384)", "rgba(214, 51, 132, 0.5)"
+        elif cnt < 5000: grad, glow = "linear-gradient(90deg, #dc3545, #fd7e14)", "rgba(253, 126, 20, 0.6)"
+        else: grad, glow = "linear-gradient(90deg, #ffc107, #ffef96)", "rgba(255, 193, 7, 0.8)"
+
+        c1, c2, c3, c4, c5, c6 = st.columns(6, vertical_alignment="center")
+        
+        with c1:
+            st.markdown("<div class='spot-row-marker-desk'></div>", unsafe_allow_html=True)
+            st.checkbox("", key=f"sel_{sp}", label_visibility="collapsed")
+        with c2:
+            if st.button("🎯", key=f"go_{sp}"): start_training([sp], is_postflop)
+        with c3:
+            st.markdown(f"<div class='mastery-name' title='{sp}'>{sp}</div>", unsafe_allow_html=True)
+        with c4:
+            st.markdown(f"<div class='mastery-count'>{cnt}</div>", unsafe_allow_html=True)
+        with c5:
+            st.markdown(f"<div class='mastery-bar-container'><div class='mastery-bar-fill' style='width:{pct}%; background:{grad}; box-shadow:0 0 10px {glow};'></div></div>", unsafe_allow_html=True)
+        with c6:
+            st.markdown("<div class='mastery-max'>5000</div>", unsafe_allow_html=True)
+
+    st.divider()
+    with st.expander("📜 Raw History Log"):
+        d = df.copy()
+        d["Result"] = d["Result"].apply(lambda x: "✅" if x==1 else "❌")
+        d = d.sort_values("Date", ascending=False)
+        d["Date"] = d["Date"].dt.strftime("%Y-%m-%d %H:%M:%S")
+        cols_to_show = ["Date", "Spot", "Hand", "CorrectAction", "UserAction", "Result"] if "UserAction" in d.columns else ["Date", "Spot", "Hand", "CorrectAction", "Result"]
+        st.dataframe(d[cols_to_show], use_container_width=True, hide_index=True)
+
+    st.markdown("### 🚑 Data Recovery")
+    with st.expander("Recover Spot Mastery from History", expanded=False):
+        st.markdown("If your progress got reset, this will recalculate your experience, streak, and Spot Mastery from raw history.")
+        if st.button("🔧 RECOVER SPOT MASTERY", use_container_width=True):
+            df_hist = df.copy().sort_values("Date")
+            new_mastery = {}
+            total_correct = df_hist["Result"].sum()
             
-            color = "#dc3545" if wr < 70 else "#ffc107" if wr < 85 else "#28a745"
-            
-            c1, c2 = st.columns([4, 1])
-            with c1:
-                st.markdown(f'''
-                <div style="background:#1e2126; padding:12px 18px; border-radius:8px; margin-bottom:10px; border-left:4px solid {color}; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                        <strong style="color:#e0e0e0; font-size:15px;">{spot}</strong>
-                        <span style="color:{color}; font-weight:900;">{wr}% ({correct}/{total})</span>
-                    </div>
-                    <div style="background:#000; height:8px; border-radius:4px; overflow:hidden;">
-                        <div style="width:{wr}%; background:{color}; height:100%; box-shadow: 0 0 8px {color};"></div>
-                    </div>
-                </div>
-                ''', unsafe_allow_html=True)
-            with c2:
-                st.markdown("<div style='height: 14px;'></div>", unsafe_allow_html=True)
-                if st.button("TRAIN", key=f"td_{spot}", use_container_width=True):
-                    settings = utils.load_user_settings(is_postflop=is_postflop)
-                    settings["selected_spots"] = [spot]
-                    utils.save_user_settings(settings, is_postflop=is_postflop)
-                    st.cache_data.clear()
-                    st.success("Спот заряжен. Переходи в тренажер.")
+            for _, row in df_hist.iterrows():
+                sp = row["Spot"]
+                if sp not in new_mastery: new_mastery[sp] = {"t": 0, "h": "", "d": ""}
+                new_mastery[sp]["t"] += 1
+                new_mastery[sp]["h"] += "1" if row["Result"] == 1 else "0"
+                if len(new_mastery[sp]["h"]) > 100: new_mastery[sp]["h"] = new_mastery[sp]["h"][-100:]
+                new_mastery[sp]["d"] = row["Date"].strftime("%Y-%m-%d")
 
-    st.markdown("---")
+            stats_dict = utils.load_user_stats(is_postflop=is_postflop)
+            stats_dict["xp"] = int(total_correct * 10)
+            stats_dict["total_hands"] = len(df_hist)
+            stats_dict["spot_mastery"] = new_mastery
+            
+            utils.save_user_stats(stats_dict, is_postflop=is_postflop)
+            st.success("✅ Recovery complete! Refresh the page.")
+            st.rerun()
+
     st.markdown("### 🗑️ Danger Zone")
-    with st.expander("Clear & Recover", expanded=False):
-        if st.button("Recalculate Global XP & Mastery", use_container_width=True):
-            if not df_hist.empty:
-                new_mastery = {}
-                total_correct = df_hist["Result"].sum()
-                for _, row in df_hist.iterrows():
-                    sp = row["Spot"]
-                    if sp not in new_mastery: new_mastery[sp] = {"t": 0, "h": "", "d": ""}
-                    new_mastery[sp]["t"] += 1
-                    new_mastery[sp]["h"] += "1" if row["Result"] == 1 else "0"
-                    if len(new_mastery[sp]["h"]) > 100: new_mastery[sp]["h"] = new_mastery[sp]["h"][-100:]
-                    new_mastery[sp]["d"] = row["Date"].strftime("%Y-%m-%d")
-
-                stats_dict = utils.load_user_stats(is_postflop=is_postflop)
-                stats_dict["xp"] = int(total_correct * 10)
-                stats_dict["total_hands"] = len(df_hist)
-                stats_dict["spot_mastery"] = new_mastery
-                utils.save_user_stats(stats_dict, is_postflop=is_postflop)
-                st.success("✅ Global stats recalculated. Refresh the page.")
-
+    with st.expander("Clear History", expanded=False):
         st.warning("⚠️ Warning: Clears ALL history globally (Preflop & Postflop).")
         d1, d2, d3, d4 = st.columns(4)
-        if d1.button("Delete: 24 Hours", use_container_width=True): custom_delete_history(is_postflop, 24); st.rerun()
-        if d2.button("Delete: 7 Days", use_container_width=True): custom_delete_history(is_postflop, 24*7); st.rerun()
-        if d3.button("Delete: 30 Days", use_container_width=True): custom_delete_history(is_postflop, 24*30); st.rerun()
-        if d4.button("NUKE ALL", type="primary", use_container_width=True): custom_delete_history(is_postflop, None); st.rerun()
+        if d1.button("Delete: 24 Hours", use_container_width=True): custom_delete_history(days=1); st.rerun()
+        if d2.button("Delete: 7 Days", use_container_width=True): custom_delete_history(days=7); st.rerun()
+        if d3.button("Delete: 30 Days", use_container_width=True): custom_delete_history(days=30); st.rerun()
+        if d4.button("NUKE ALL", use_container_width=True): custom_delete_history(); st.rerun()
