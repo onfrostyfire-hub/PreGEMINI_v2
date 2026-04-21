@@ -95,7 +95,7 @@ def show():
         .bet-txt { font-size: 13px; font-weight: 700; color: rgba(255,235,190,0.9); text-shadow: 0 0 5px rgba(255,195,40,0.5), 0 1px 3px rgba(0,0,0,0.98); letter-spacing: 0.03em; white-space: nowrap; margin-top: -3px; }
 
         /* HERO PANEL */
-        .hero-panel { position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); z-index: 30; display: flex; align-items: flex-start; gap: 10px; padding: 10px 20px; border-radius: 16px; transition: all 0.5s ease; }
+        .hero-panel { position: absolute; bottom: -80px; left: 50%; transform: translateX(-50%); z-index: 30; display: flex; align-items: flex-start; gap: 10px; padding: 10px 20px; border-radius: 16px; transition: all 0.5s ease; }
         .hero-label { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); color: #ffc107; font-weight: 900; font-size: 11px; letter-spacing: 0.1em; text-shadow: 0 1px 3px #000; background: #111; padding: 2px 8px; border-radius: 8px; border: 1px solid #444; }
         .card { width: 58px; height: 84px; border-radius: 8px; position: relative; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -6px 16px rgba(0,0,0,0.7), 0 -12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1); display: flex; flex-direction: column; align-items: flex-start; overflow: hidden; }
         .card::after { content: ''; position: absolute; top: 0; left: 0; width: 60%; height: 45%; background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%); pointer-events: none; border-radius: 8px 0 0 0; }
@@ -534,7 +534,7 @@ def show():
 
         def get_chip_style(idx):
             return {
-                0: "bottom: 25%; left: 50%; transform: translateX(-50%);", 
+                0: "bottom: 15%; left: 50%; transform: translateX(-50%);", 
                 1: "bottom: 25%; left: 12%;", 
                 2: "top: 25%; left: 12%;",
                 3: "top: 20%; left: 50%; transform: translateX(-50%);", 
