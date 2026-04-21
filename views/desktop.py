@@ -1,5 +1,6 @@
 import streamlit as st
 import random
+import time
 from datetime import datetime
 import poker_utils as utils
 import inspect
@@ -34,9 +35,19 @@ def show():
         .block-container { padding-top: 4.5rem !important; max-width: 1400px !important; }
         
         /* СТОЛ ДЛЯ ДЕСКТОПА (ШИРОКИЙ ОВАЛ) */
-        .game-area { position: relative; width: 100%; max-width: 860px; height: 380px; margin: 40px auto 50px auto !important; border-radius: 190px; transition: background 0.5s, box-shadow 0.5s, border-color 0.5s; overflow: visible; }
+        .game-area { position: relative; width: 100%; max-width: 860px; height: 380px; margin: 40px auto 50px auto !important; border-radius: 190px; transition: background 0.5s, box-shadow 0.15s ease-in-out, border-color 0.15s ease-in-out; overflow: visible; }
         .game-area::before { content: ''; position: absolute; inset: 0; border-radius: 190px; pointer-events: none; z-index: 0; }
         .game-area::after { content: ''; position: absolute; inset: 15px; border-radius: 175px; pointer-events: none; z-index: 0; }
+        
+        /* СВЕЧЕНИЕ ПРИ ОТВЕТАХ ДЛЯ ДЕСКТОПА */
+        .table-glow-correct {
+            box-shadow: 0 0 0 12px #198754, 0 0 40px rgba(25,135,84,0.8), inset 0 0 25px rgba(25,135,84,0.5) !important;
+            border-color: #198754 !important;
+        }
+        .table-glow-incorrect {
+            box-shadow: 0 0 0 12px #dc3545, 0 0 40px rgba(220,53,69,0.8), inset 0 0 25px rgba(220,53,69,0.5) !important;
+            border-color: #dc3545 !important;
+        }
         
         /* СКРЫВАЕМ SVG ГЕРБЫ ИЗ СТАРОЙ ВЕРСИИ */
         .glass-shatter, .mastery-glow, .crest-left, .crest-right { display: none !important; }
@@ -391,6 +402,13 @@ def show():
     elif c >= 10: combo_cls = "combo-glow-10"
     elif c >= 5: combo_cls = "combo-glow-5"
 
+    is_flashing_correct = st.session_state.get("flash_correct", False)
+    table_status_class = ""
+    if is_flashing_correct:
+        table_status_class = "table-glow-correct"
+    elif st.session_state.last_error:
+        table_status_class = "table-glow-incorrect"
+
     tiers = [(0, 1.0), (10, 1.5), (25, 2.0), (50, 3.0), (100, 4.0), (250, 5.0), (500, 10.0), (1000, 25.0)]
     curr_mult = 1.0; next_mult = 1.5; prev_req = 0; next_req = 10
     for i in range(len(tiers)):
@@ -591,7 +609,7 @@ def show():
             hero_bs = get_btn_style(0)
             chips_html += f'<div class="dealer-button" style="{hero_bs}">D</div>'
 
-        html = f'<div class="game-area {combo_cls}"><div class="table-info"><div class="info-src">{sc}</div><div class="info-spot">{sp}</div><div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width: {m_pct}%;"></div></div><div class="hands-left">{hands_left_text}</div></div>{opp_html}{chips_html}<div class="hero-panel">{anim_html}<div class="card"><div class="tl {c1}">{h_val[0]}<br>{s1}</div><div class="cent {c1}">{s1}</div></div><div class="card"><div class="tl {c2}">{h_val[1]}<br>{s2}</div><div class="cent {c2}">{s2}</div></div><div class="rng-desktop">{rng}</div></div></div>'
+        html = f'<div class="game-area {combo_cls} {table_status_class}"><div class="table-info"><div class="info-src">{sc}</div><div class="info-spot">{sp}</div><div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width: {m_pct}%;"></div></div><div class="hands-left">{hands_left_text}</div></div>{opp_html}{chips_html}<div class="hero-panel">{anim_html}<div class="card"><div class="tl {c1}">{h_val[0]}<br>{s1}</div><div class="cent {c1}">{s1}</div></div><div class="card"><div class="tl {c2}">{h_val[1]}<br>{s2}</div><div class="cent {c2}">{s2}</div></div><div class="rng-desktop">{rng}</div></div></div>'
         
         st.markdown(html, unsafe_allow_html=True)
 
@@ -632,8 +650,9 @@ def show():
                     st.session_state.shields += 1
                     
                 st.session_state.last_error = False
-                st.session_state.hand = None
+                st.session_state.flash_correct = True
             else:
+                st.session_state.flash_correct = False
                 if st.session_state.shields > 0:
                     st.session_state.shields -= 1
                     st.session_state.last_error = True
@@ -684,7 +703,12 @@ def show():
             
             st.rerun()
 
-        if st.session_state.last_error:
+        if is_flashing_correct:
+            time.sleep(0.5)
+            st.session_state.flash_correct = False
+            st.session_state.hand = None
+            st.rerun()
+        elif st.session_state.last_error:
             st.markdown(f'<div style="background:#dc3545; color:white; padding:12px; border-radius:12px; text-align:center; font-weight:bold; margin-bottom:15px; font-size:16px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">{st.session_state.msg}</div>', unsafe_allow_html=True)
             
             st.markdown("""<style>
