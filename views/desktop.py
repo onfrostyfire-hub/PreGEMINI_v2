@@ -40,13 +40,21 @@ def show():
         .game-area::after { content: ''; position: absolute; inset: 15px; border-radius: 175px; pointer-events: none; z-index: 0; }
         
         /* СВЕЧЕНИЕ ПРИ ОТВЕТАХ ДЛЯ ДЕСКТОПА */
-        .table-glow-correct {
+        .game-area.table-glow-correct {
             box-shadow: 0 0 0 12px #198754, 0 0 40px rgba(25,135,84,0.8), inset 0 0 25px rgba(25,135,84,0.5) !important;
             border-color: #198754 !important;
         }
-        .table-glow-incorrect {
+        .game-area.table-glow-correct::after {
+            border-color: rgba(25,135,84,0.55) !important;
+            box-shadow: inset 0 0 18px rgba(25,135,84,0.35) !important;
+        }
+        .game-area.table-glow-incorrect {
             box-shadow: 0 0 0 12px #dc3545, 0 0 40px rgba(220,53,69,0.8), inset 0 0 25px rgba(220,53,69,0.5) !important;
             border-color: #dc3545 !important;
+        }
+        .game-area.table-glow-incorrect::after {
+            border-color: rgba(220,53,69,0.55) !important;
+            box-shadow: inset 0 0 18px rgba(220,53,69,0.35) !important;
         }
         
         /* СКРЫВАЕМ SVG ГЕРБЫ ИЗ СТАРОЙ ВЕРСИИ */
