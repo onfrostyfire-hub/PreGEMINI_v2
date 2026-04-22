@@ -50,11 +50,11 @@
         "stacks": {"EP": 100, "MP": 100, "CO": 97.5, "BTN": 100, "SB": 99.5, "BB": 99.0}
       },
       "ranges": {
-        "3bet": "AA,KK,QQ,JJ,TT,99,88,77,66:0.5,AK,AQ,AJ,ATs,A9s,A8s,A7s,A6s,A5s,A4s,KQ,KJs,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,76s:0.5,65s:0.5,54s:0.5",
+        "3bet": "AA,KK,QQ,JJ,TT,99,88,77,66:0.5,AK,AQ,AJ,ATs,A9s,A8s,A7s,A5s,A4s,KQ,KJs,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,76s:0.5,65s:0.5,54s:0.5",
         "call": "",
         "training": "88,77,66,55,AJo,ATo,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQo,K9s,K8s,QTs,Q9s,Q8s,JTs,J9s,J8s,T9s,T8s,98s,87s,76s,65s,54s"
       },
-      "stats": { "3bet": "13%" }
+      "stats": { "3bet": "13.7%" }
     },
     "3bet SBvsEP": {
       "setup": { 
@@ -72,7 +72,7 @@
         "call": "",
         "training": "99,88,AQo,A5s,A4s,KTs,QJs,QTs,JTs,T9s,98s,87s,76s,65s"
       },
-      "stats": { "3bet": "7.5%" }
+      "stats": { "3bet": "7%" }
     },
     "3bet SBvsMP": {
       "setup": { 
@@ -108,7 +108,7 @@
         "call": "",
         "training": "99,88,77,66,55,AJo,A9s,A8s,A7s,A6s,A5s,A4s,A3s,A2s,KQo,KTs,K9s,QJs,QTs,Q9s,JTs,J9s,T9s,T8s,98s,87s,76s,65s"
       },
-      "stats": { "3bet": "11%" }
+      "stats": { "3bet": "12%" }
     },
     "3bet SBvsBU": {
       "setup": { 
