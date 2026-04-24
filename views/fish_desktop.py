@@ -652,7 +652,7 @@ def show():
         sc = get_suit_color_class(suit)
         board_html += f'<div class="board-card-desk"><div class="bc-tl-desk {sc}">{rank_str}</div><div class="bc-c-desk {sc}">{suit}</div></div>'
         
-    mastery_html = f"""<div style="position: absolute; bottom: 15px; left: 15px; z-index: 15; width: 120px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; pointer-events: none;">
+    mastery_html = f"""<div style="position: absolute; bottom: 0px; left: 15px; z-index: 15; width: 120px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; pointer-events: none;">
         <div style="background: #111; border: 1px solid rgba(255,255,255,0.2); color: #fff; display: inline-flex; align-items: center; gap: 4px; border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em;">{m_icon} {m_name}</div>
         <div style="width: 80px; height: 3px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; margin-top: 2px;"><div style="height: 100%; border-radius: 3px; background: #0dcaf0; width: {m_pct}%;"></div></div>
         <div style="font-size: 10px; letter-spacing: 0.06em; margin-top: 2px; color: rgba(255,255,255,0.7);">{hands_left_text}</div>
