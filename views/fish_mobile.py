@@ -3,12 +3,11 @@ import random
 import time
 import os
 import json
-import inspect
 from datetime import datetime
 import pandas as pd
 import poker_utils as utils
 
-# --- ЖЕЛЕЗНЫЕ ОБЁРТКИ ДЛЯ FISH ---
+# --- ЖЕЛЕЗНЫЕ ОБЁРТКИ ДЛЯ FISH (Только Google Sheets) ---
 def safe_load_stats():
     settings = utils.load_user_settings(is_fish=True)
     stats = settings.get("stats", {})
@@ -98,7 +97,7 @@ def show():
            ========================================== */
         .pf-pot-badge { position: absolute; top: 26%; left: 50%; transform: translateX(-50%); z-index: 15; }
         .pf-board { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
-        .pf-mastery { position: absolute; bottom: -55px; left: 5%; z-index: 15; width: 120px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; pointer-events: none;}
+        .pf-mastery { position: absolute; bottom: -60px; left: 5%; z-index: 15; width: 100px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; pointer-events: none;}
         
         .mobile-game-area { margin-top: 50px !important; margin-bottom: 55px !important; }
         .rng-hint-wrap { margin-top: 12px !important; margin-bottom: 8px !important; }
@@ -681,15 +680,6 @@ def show():
         k = f"{chosen_key}_{h_val}".replace(" ","_")
         utils.update_srs_auto(k, h_val, corr)
         
-        safe_save_history({
-            "Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 
-            "Spot": chosen_key, 
-            "Hand": f"{h_val}", 
-            "Result": int(corr), 
-            "CorrectAction": correct_act, 
-            "UserAction": action
-        })
-        
         shield_used = False
         if corr:
             st.session_state.fish_session_correct += 1
@@ -793,6 +783,22 @@ def show():
             curr_stats["max_combo"] = c_new
             
         safe_save_stats(curr_stats)
+        
+        spot = st.session_state.fish_current_spot
+        safe_save_history({
+            "Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 
+            "Fish_Type": spot.get("vpip", ""),
+            "Position": spot.get("pos", ""),
+            "Action_Line": spot.get("line", ""),
+            "Texture": spot.get("texture", ""),
+            "Runout": spot.get("runout", ""),
+            "Hand": f"{h_val}", 
+            "Action_Taken": action,
+            "Correct_Action": correct_act, 
+            "Result": int(corr),
+            "XP": reward_val
+        })
+
         if hasattr(utils, "force_sync"):
             utils.force_sync()
             
