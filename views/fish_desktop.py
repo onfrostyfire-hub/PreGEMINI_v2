@@ -3,7 +3,6 @@ import random
 import time
 import os
 import json
-import inspect
 from datetime import datetime
 import pandas as pd
 import poker_utils as utils
@@ -68,7 +67,6 @@ def generate_desktop_theme(bg_rad1, bg_rad2, shadow1, shadow2, shadow3, seat_rad
     @keyframes {anim_name}_ava {{ 0%,100% {{ box-shadow: 0 -4px 8px {pulse_shadow1}, inset 0 2px 4px rgba(255,255,255,0.1); }} 50% {{ box-shadow: 0 -4px 20px {pulse_shadow2}, inset 0 2px 4px rgba(255,255,255,0.1); }} }}
     @keyframes {anim_name}_plate {{ 0%,100% {{ box-shadow: 0 4px 8px {pulse_shadow1}; }} 50% {{ box-shadow: 0 4px 20px {pulse_shadow2}; }} }}
     
-    .floating-reward-desk {{ color: {text_color} !important; }}
     .card-desk {{ background: {card_bg} !important; border: 1px solid {card_border} !important; }}
     .rng-badge-desk {{ color: {text_color} !important; background: {rng_bg} !important; border: 1.5px solid {seat_border} !important; }}
     .hero-plate-desk {{ border-color: {seat_act_border} !important; }}
@@ -186,8 +184,8 @@ def show():
         .hero-cards-wrap-desk { display: flex !important; gap: 8px !important; position: relative !important; }
         .hero-plate-desk { width: 100px !important; height: 22px !important; background: #141518 !important; border-radius: 6px !important; border: 2px solid #ffc107 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 8px !important; box-sizing: border-box !important; font-size: 12px !important; font-weight: bold !important; box-shadow: 0 4px 12px rgba(0,0,0,0.7) !important; transition: border-color 0.3s; }
         
-        .floating-reward-desk { position: absolute !important; top: -45px !important; left: 50% !important; transform: translateX(-50%) !important; font-size: 18px !important; font-weight: 900 !important; color: #17f07e !important; text-shadow: 0 0 15px rgba(23,240,126,0.8), 0 0 30px rgba(23,240,126,0.4) !important; white-space: nowrap !important; animation: float-reward-desk 2.2s ease-out forwards !important; pointer-events: none !important; }
-        @keyframes float-reward-desk { 0%   { opacity: 1; transform: translateX(-50%) translateY(0); } 100% { opacity: 0; transform: translateX(-50%) translateY(-30px); } }
+        .floating-reward-desk { position: absolute !important; top: -45px !important; left: 50% !important; transform: translateX(-50%) !important; font-size: 18px !important; font-weight: 900 !important; text-shadow: 0px 2px 5px rgba(0,0,0,0.9), 0px 0px 2px #000 !important; z-index: 100 !important; pointer-events: none !important; animation: float-reward-desk 1.2s ease-out forwards !important; }
+        @keyframes float-reward-desk { 0%   { opacity: 1; transform: translate(-50%, 0) scale(0.8); } 20% { opacity: 1; transform: translate(-50%, -15px) scale(1.2); } 100% { opacity: 0; transform: translate(-50%, -50px) scale(1); } }
 
         .card-desk { width: 55px !important; height: 78px !important; border-radius: 6px !important; position: relative !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; overflow: hidden !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -8px 20px rgba(0,0,0,0.7), 0 -15px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,1) !important;}
         .card-desk::after { content: '' !important; position: absolute !important; top: 0 !important; left: 0 !important; width: 60% !important; height: 45% !important; background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; pointer-events: none !important; border-radius: 6px 0 0 0 !important; }
@@ -200,6 +198,14 @@ def show():
         
         .rng-badge-desk { position: absolute !important; top: 50% !important; right: -35px !important; transform: translateY(-50%) !important; width: 30px !important; height: 30px !important; border-radius: 50% !important; font-weight: 900 !important; font-size: 13px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 4px 8px rgba(0,0,0,0.6) !important; z-index: 40 !important; }
         
+        /* SPOT MASTERY INSIDE TABLE */
+        .pf-mastery { position: absolute; bottom: 35px; left: 35px; z-index: 15; width: 120px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; pointer-events: none;}
+        .mastery-badge { background: #111; border: 1px solid rgba(255,255,255,0.2); color: #fff; display: inline-flex; align-items: center; gap: 4px; border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; }
+        .mastery-bar-bg { width: 80px; height: 3px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; margin-top: 2px; }
+        .mastery-bar-fill { height: 100%; border-radius: 3px; background: #0dcaf0; }
+        .hands-left { font-size: 10px; letter-spacing: 0.06em; margin-top: 2px; color: rgba(255,255,255,0.7); }
+
+        /* ── Action Buttons Color Overrides (Desktop) ── */
         .pf-btn-0 button { background: linear-gradient(180deg, #252830 0%, #16181f 100%) !important; box-shadow: 0 5px 0 #0c0d12, 0 8px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 0 0 1px rgba(255,255,255,0.06) !important; }
         .pf-btn-0 button:active { box-shadow: 0 1px 0 #0c0d12, inset 0 1px 0 rgba(255,255,255,0.05), 0 0 25px rgba(255,255,255,0.15) !important; filter: brightness(1.5) !important; }
         .pf-btn-0 button p { color: rgba(190,190,205,0.8) !important; }
@@ -306,8 +312,9 @@ def show():
 
     stats_data_init = safe_load_stats()
     if 'fish_shields' not in st.session_state: st.session_state.fish_shields = stats_data_init.get("shields", 0)
+    if 'fish_combo' not in st.session_state: st.session_state.fish_combo = stats_data_init.get("combo", 0)
 
-    for k in ['fish_combo', 'fish_session_hands', 'fish_session_correct', 'fish_rng']:
+    for k in ['fish_session_hands', 'fish_session_correct', 'fish_rng']:
         if k not in st.session_state: st.session_state[k] = 0
     if 'fish_toast_msgs' not in st.session_state: st.session_state.fish_toast_msgs = []
     if st.session_state.fish_toast_msgs:
@@ -391,10 +398,19 @@ def show():
     try: mastery = utils.get_spot_mastery_info(stats_data.get("spot_mastery", {}).get(chosen_key, {}))
     except: mastery = {"rank": 0, "name": "Sandbox", "icon": "⚪", "color": "#6c757d", "is_rusty": False, "prog_pct": 0, "total": 0, "next": 100, "svg": ""}
 
+    m_rust = mastery.get("is_rusty", False)
+    m_pct = mastery.get("prog_pct", 0)
+    m_total = mastery.get("total", 0)
+    m_next = mastery.get("next", 100)
+    if mastery.get("rank", 0) >= 5: hands_left_text = "MAX RANK"
+    else: hands_left_text = f"Remaining: {max(0, m_next - m_total)} hands"
+
     visual_rank = mastery.get("rank", 0)
     if visual_rank > 5: visual_rank = 5
 
     theme = THEMES[visual_rank]
+    m_icon = theme["icon"]
+    m_name = theme["name"]
     st.markdown(theme["css"], unsafe_allow_html=True)
 
     combo_cls = ""
@@ -636,23 +652,14 @@ def show():
         suit = map_suit(card[-1])
         sc = get_suit_color_class(suit)
         board_html += f'<div class="board-card-desk"><div class="bc-tl-desk {sc}">{rank_str}</div><div class="bc-c-desk {sc}">{suit}</div></div>'
+        
+    mastery_html = f"""<div class="pf-mastery">
+        <div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div>
+        <div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width: {m_pct}%;"></div></div>
+        <div class="hands-left">{hands_left_text}</div>
+    </div>"""
 
-    html = f'<div class="desktop-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge-desk"><div class="pot-badge-desk">Pot: {display_pot} bb</div></div><div class="pf-board-desk"><div class="board-container-desk">{board_html}</div></div>{opp_html}{chips_html}<div class="hero-desk">{anim_html}<div class="hero-cards-wrap-desk"><div class="card-desk"><div class="tl-desk {c1}">{r1}<br>{s1}</div><div class="c-desk {c1}">{s1}</div></div><div class="card-desk"><div class="tl-desk {c2}">{r2}<br>{s2}</div><div class="c-desk {c2}">{s2}</div></div><div class="rng-badge-desk">{st.session_state.fish_rng}</div></div><div class="hero-plate-desk"><span class="pos-desk">HERO {hero_pos}</span><span class="stack-desk">{hero_stack}</span></div></div></div>'
-    
-    st.markdown(f"""<div class="spot-info-panel" style="display:flex; align-items:center; gap:15px; margin-left: -10px; margin-top: 15px;">
-        <div style="width:50px; height:50px;">{mastery['svg']}</div>
-        <div style="flex-grow:1;">
-            <div style="color:#aaa; font-size:10px; font-weight:bold; letter-spacing:1px;">SPOT MASTERY</div>
-            <div style="color:{mastery['color']}; font-size:14px; font-weight:900; text-transform:uppercase;">{mastery['name']}</div>
-            <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:5px;">
-                <div style="color:#888; font-size:10px;">Hands: {mastery['total']} / {mastery['next']}</div>
-                <div style="color:{mastery['color']}; font-size:12px; font-weight:bold;">{mastery['prog_pct']}%</div>
-            </div>
-            <div style="background:#222; height:4px; border-radius:2px; margin-top:4px; overflow:hidden;">
-                <div style="background:{mastery['color']}; height:100%; width:{mastery['prog_pct']}%; box-shadow:0 0 5px {mastery['color']};"></div>
-            </div>
-        </div>
-    </div>""", unsafe_allow_html=True)
+    html = f'<div class="desktop-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge-desk"><div class="pot-badge-desk">Pot: {display_pot} bb</div></div><div class="pf-board-desk"><div class="board-container-desk">{board_html}</div></div>{mastery_html}{opp_html}{chips_html}<div class="hero-desk">{anim_html}<div class="hero-cards-wrap-desk"><div class="card-desk"><div class="tl-desk {c1}">{r1}<br>{s1}</div><div class="c-desk {c1}">{s1}</div></div><div class="card-desk"><div class="tl-desk {c2}">{r2}<br>{s2}</div><div class="c-desk {c2}">{s2}</div></div><div class="rng-badge-desk">{st.session_state.fish_rng}</div></div><div class="hero-plate-desk"><span class="pos-desk">HERO {hero_pos}</span><span class="stack-desk">{hero_stack}</span></div></div></div>'
     
     st.markdown(html, unsafe_allow_html=True)
 
@@ -766,6 +773,7 @@ def show():
             curr_stats["max_combo"] = c_new
             
         safe_save_stats(curr_stats)
+        st.session_state.fish_anim_reward = reward_val
         
         parts = chosen_key.split('|')
         safe_save_history({
