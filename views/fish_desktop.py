@@ -157,19 +157,19 @@ def show():
         .desktop-game-area.table-glow-correct { border-color: #198754 !important; box-shadow: 0 0 35px rgba(25,135,84,0.6), inset 0 0 25px rgba(25,135,84,0.4) !important; }
         .desktop-game-area.table-glow-incorrect { border-color: #dc3545 !important; box-shadow: 0 0 35px rgba(220,53,69,0.6), inset 0 0 25px rgba(220,53,69,0.4) !important; }
 
-        .seat-desk { position: absolute !important; z-index: 20 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 0 !important; width: 70px !important; height: 55px !important; background: transparent !important; border: none !important; box-shadow: none !important; }
-        .ava-desk { width: 60px !important; height: 30px !important; background: linear-gradient(180deg, #2a2d32 0%, #1c1e22 100%) !important; border-radius: 60px 60px 0 0 !important; border: 2px solid #3a3d42 !important; border-bottom: none !important; box-shadow: inset 0 2px 4px rgba(255,255,255,0.05) !important; transition: all 0.3s ease !important; }
-        .plate-desk { width: 70px !important; height: 24px !important; background: #141518 !important; border-radius: 0 0 8px 8px !important; border: 2px solid #3a3d42 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 6px !important; box-sizing: border-box !important; font-size: 12px !important; box-shadow: 0 4px 8px rgba(0,0,0,0.5) !important; transition: all 0.3s ease !important; }
+        .seat-desk { position: absolute !important; z-index: 20 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 0 !important; width: 85px !important; height: 60px !important; background: transparent !important; border: none !important; box-shadow: none !important; }
+        .ava-desk { width: 75px !important; height: 35px !important; background: linear-gradient(180deg, #2a2d32 0%, #1c1e22 100%) !important; border-radius: 75px 75px 0 0 !important; border: 2px solid #3a3d42 !important; border-bottom: none !important; box-shadow: inset 0 2px 4px rgba(255,255,255,0.05) !important; transition: all 0.3s ease !important; }
+        .plate-desk { width: 85px !important; height: 26px !important; background: #141518 !important; border-radius: 0 0 8px 8px !important; border: 2px solid #3a3d42 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 6px !important; box-sizing: border-box !important; font-size: 13px !important; box-shadow: 0 4px 8px rgba(0,0,0,0.5) !important; transition: all 0.3s ease !important; }
         .pos-desk { font-weight: 900 !important; color: #fff !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.5) !important; }
-        .stack-desk { font-weight: 700 !important; color: #fff !important; font-size: 11px !important; }
+        .stack-desk { font-weight: 700 !important; color: #fff !important; font-size: 12px !important; }
 
         .seat-folded-desk { opacity: 0.85 !important; filter: grayscale(50%) !important; }
         .seat-folded-desk .opp-cards-desk { opacity: 0.6 !important; }
         
-        .opp-cards-desk { position: absolute !important; top: -20px !important; left: 50% !important; transform: translateX(-50%) !important; display: flex !important; align-items: flex-end !important; pointer-events: none; }
-        .opp-card-desk { width: 18px !important; height: 26px !important; border-radius: 4px !important; position: relative !important; background: repeating-linear-gradient(45deg, rgba(15,70,185,0.95) 0px, rgba(15,70,185,0.95) 2px, rgba(8,44,130,0.95) 2px, rgba(8,44,130,0.95) 6px) !important; border: 1px solid rgba(80,140,255,0.3) !important; box-shadow: 0 2px 5px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.06) !important; }
+        .opp-cards-desk { position: absolute !important; top: -25px !important; left: 50% !important; transform: translateX(-50%) !important; display: flex !important; align-items: flex-end !important; pointer-events: none; }
+        .opp-card-desk { width: 24px !important; height: 34px !important; border-radius: 4px !important; position: relative !important; background: repeating-linear-gradient(45deg, rgba(15,70,185,0.95) 0px, rgba(15,70,185,0.95) 2px, rgba(8,44,130,0.95) 2px, rgba(8,44,130,0.95) 6px) !important; border: 1px solid rgba(80,140,255,0.3) !important; box-shadow: 0 2px 5px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.06) !important; }
         .opp-card-desk::before { content: '' !important; position: absolute !important; inset: 2px !important; border-radius: 2px !important; border: 1px solid rgba(80,140,255,0.15) !important; }
-        .opp-card-desk.right-desk { margin-left: -6px !important; transform: rotate(10deg) !important; z-index: -1 !important; }
+        .opp-card-desk.right-desk { margin-left: -8px !important; transform: rotate(10deg) !important; z-index: -1 !important; }
 
         .pot-badge-desk { background: #111; color: #ffc107; font-weight: bold; font-size: 14px; padding: 4px 14px; border-radius: 14px; border: 1.5px solid #ffc107; box-shadow: 0 2px 6px rgba(0,0,0,0.6); }
         .board-container-desk { display: flex; gap: 6px; background: rgba(0,0,0,0.4); padding: 8px 16px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
@@ -348,11 +348,19 @@ def show():
     btn_pos = setup.get("btn_pos", "BTN")
     active_players = setup.get("active_players", [hero_pos, villain_pos])
     board_raw = setup.get("board_cards", [])
-    pot_size = setup.get("pot_size", 0)
+    base_pot = setup.get("pot_size", 0)
     villain_act = setup.get("villain_action", "")
     hero_act = setup.get("hero_action", "")
     actions = data.get("actions", ["Check"])
     ranges = data.get("ranges", {})
+    
+    v_size = setup.get("villain_sizing_bb", "")
+    is_bet = villain_act and ("BET" in villain_act.upper() or "RAISE" in villain_act.upper() or "ALL-IN" in villain_act.upper())
+    
+    display_pot = base_pot
+    if is_bet and v_size:
+        try: display_pot = round(float(base_pot) + float(v_size), 1)
+        except: pass
     
     table_size = setup.get("table_size", 6)
     stacks_data = setup.get("stacks", {})
@@ -534,11 +542,11 @@ def show():
 
     def get_seat_style(idx):
         return {
-            1: "top: 75%; left: -3%; transform: translateY(-50%);", 
+            1: "top: 75%; left: -8%; transform: translateY(-50%);", 
             2: "top: 15%; left: 5%;", 
             3: "top: -10%; left: 50%; transform: translateX(-50%);", 
             4: "top: 15%; right: 5%;", 
-            5: "top: 75%; right: -3%; transform: translateY(-50%);"
+            5: "top: 75%; right: -8%; transform: translateY(-50%);"
         }.get(idx, "")
 
     def get_chip_style(idx):
@@ -571,8 +579,6 @@ def show():
         ss = get_seat_style(3)
         
         v_act_html = ""
-        is_bet = villain_act and ("BET" in villain_act.upper() or "RAISE" in villain_act.upper() or "ALL-IN" in villain_act.upper())
-        
         if villain_act:
             if is_bet:
                 act_word = "RAISE" if "RAISE" in villain_act.upper() else ("ALL-IN" if "ALL-IN" in villain_act.upper() else "BET")
@@ -584,8 +590,8 @@ def show():
         
         cs = get_chip_style(3)
         if is_bet:
-            bet_amount_str = villain_act.upper().replace("BET", "").replace("RAISE", "").strip().lower()
-            bet_txt = f'<div class="bet-txt-desk">{bet_amount_str}</div>'
+            bet_amount_str = f"{v_size}" if v_size else villain_act.upper().replace("BET", "").replace("RAISE", "").replace("ALL-IN", "").strip().lower()
+            bet_txt = f'<div class="bet-txt-desk">{bet_amount_str} bb</div>'
             chips_html += f'<div class="chip-container-desk" style="{cs}"><div class="chip-desk"></div>{bet_txt}</div>'
         
         if villain_p == btn_pos:
@@ -601,8 +607,6 @@ def show():
             ss = get_seat_style(i)
             
             v_act_html = ""
-            is_bet = villain_act and ("BET" in villain_act.upper() or "RAISE" in villain_act.upper() or "ALL-IN" in villain_act.upper())
-            
             if p == villain_pos and villain_act:
                 if is_bet:
                     act_word = "RAISE" if "RAISE" in villain_act.upper() else ("ALL-IN" if "ALL-IN" in villain_act.upper() else "BET")
@@ -618,16 +622,16 @@ def show():
                 
             if p == villain_pos and is_bet:
                 cs = get_chip_style(i)
-                bet_amount_str = villain_act.upper().replace("BET", "").replace("RAISE", "").strip().lower()
-                bet_txt = f'<div class="bet-txt-desk">{bet_amount_str}</div>'
+                bet_amount_str = f"{v_size}" if v_size else villain_act.upper().replace("BET", "").replace("RAISE", "").replace("ALL-IN", "").strip().lower()
+                bet_txt = f'<div class="bet-txt-desk">{bet_amount_str} bb</div>'
                 chips_html += f'<div class="chip-container-desk" style="{cs}"><div class="chip-desk"></div>{bet_txt}</div>'
 
     if hero_act:
         is_hero_bet = ("BET" in hero_act.upper() or "RAISE" in hero_act.upper() or "ALL-IN" in hero_act.upper())
         if is_hero_bet:
             hero_cs = get_chip_style(0)
-            hero_bet_amount_str = hero_act.upper().replace("BET", "").replace("RAISE", "").strip().lower()
-            hero_bet_txt = f'<div class="bet-txt-desk">{hero_bet_amount_str}</div>'
+            hero_bet_amount_str = hero_act.upper().replace("BET", "").replace("RAISE", "").replace("ALL-IN", "").strip().lower()
+            hero_bet_txt = f'<div class="bet-txt-desk">{hero_bet_amount_str} bb</div>'
             chips_html += f'<div class="chip-container-desk" style="{hero_cs}"><div class="chip-desk"></div>{hero_bet_txt}</div>'
 
     hero_stack = stacks_data.get(hero_pos, "---")
@@ -642,7 +646,23 @@ def show():
         sc = get_suit_color_class(suit)
         board_html += f'<div class="board-card-desk"><div class="bc-tl-desk {sc}">{rank_str}</div><div class="bc-c-desk {sc}">{suit}</div></div>'
 
-    html = f'<div class="desktop-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge-desk"><div class="pot-badge-desk">Pot: {pot_size} bb</div></div><div class="pf-board-desk"><div class="board-container-desk">{board_html}</div></div>{opp_html}{chips_html}<div class="hero-desk">{anim_html}<div class="hero-cards-wrap-desk"><div class="card-desk"><div class="tl-desk {c1}">{r1}<br>{s1}</div><div class="c-desk {c1}">{s1}</div></div><div class="card-desk"><div class="tl-desk {c2}">{r2}<br>{s2}</div><div class="c-desk {c2}">{s2}</div></div><div class="rng-badge-desk">{st.session_state.fish_rng}</div></div><div class="hero-plate-desk"><span class="pos-desk">HERO {hero_pos}</span><span class="stack-desk">{hero_stack}</span></div></div></div>'
+    html = f'<div class="desktop-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge-desk"><div class="pot-badge-desk">Pot: {display_pot} bb</div></div><div class="pf-board-desk"><div class="board-container-desk">{board_html}</div></div>{opp_html}{chips_html}<div class="hero-desk">{anim_html}<div class="hero-cards-wrap-desk"><div class="card-desk"><div class="tl-desk {c1}">{r1}<br>{s1}</div><div class="c-desk {c1}">{s1}</div></div><div class="card-desk"><div class="tl-desk {c2}">{r2}<br>{s2}</div><div class="c-desk {c2}">{s2}</div></div><div class="rng-badge-desk">{st.session_state.fish_rng}</div></div><div class="hero-plate-desk"><span class="pos-desk">HERO {hero_pos}</span><span class="stack-desk">{hero_stack}</span></div></div></div>'
+    
+    # Добавили отступы слева и сверху, чтобы сдвинуть Spot Mastery
+    st.markdown(f"""<div class="spot-info-panel" style="display:flex; align-items:center; gap:15px; margin-left: -10px; margin-top: 15px;">
+        <div style="width:50px; height:50px;">{mastery['svg']}</div>
+        <div style="flex-grow:1;">
+            <div style="color:#aaa; font-size:10px; font-weight:bold; letter-spacing:1px;">SPOT MASTERY</div>
+            <div style="color:{mastery['color']}; font-size:14px; font-weight:900; text-transform:uppercase;">{mastery['name']}</div>
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:5px;">
+                <div style="color:#888; font-size:10px;">Hands: {mastery['total']} / {mastery['next']}</div>
+                <div style="color:{mastery['color']}; font-size:12px; font-weight:bold;">{mastery['prog_pct']}%</div>
+            </div>
+            <div style="background:#222; height:4px; border-radius:2px; margin-top:4px; overflow:hidden;">
+                <div style="background:{mastery['color']}; height:100%; width:{mastery['prog_pct']}%; box-shadow:0 0 5px {mastery['color']};"></div>
+            </div>
+        </div>
+    </div>""", unsafe_allow_html=True)
     
     st.markdown(html, unsafe_allow_html=True)
 
