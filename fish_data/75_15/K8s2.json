@@ -6,8 +6,9 @@
           "hero_pos": "BTN",
           "villain_pos": "BB",
           "pot_size": 5.5,
-          "board_cards": ["Kh", "8h", "2d", "5c"],
+          "board_cards": ["Kh", "8h", "2d", "Ac"],
           "villain_action": "CHECK",
+          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
           "onenote_url": "https://1drv.ms/o/c/acb7650af03ef10d/IgAN8T7wCmW3IICsOAIAAAAAAXyNkDpsveYvbK6vdnlq0qs?e=KLmggW"
         },
         "actions": [
@@ -19,6 +20,71 @@
           "Bet 33%": "QhQc, QsQd, QhQs, JhJc, JsJd, JhJs, ThTc, TsTd, ThTs, 9h9c, 9s9d, 9h9s, Ah8c, As8d, Ac8h"
         },
         "training": "Qh8h, Qs8c, Qd8s, Jh8h, Js8c, Jd8s, Th8h, Ts8c, Td8s, 9h8h, 9s8c, 9d8s, QhQc, QsQd, QhQs, JhJc, JsJd, JhJs, ThTc, TsTd, ThTs, 9h9c, 9s9d, 9h9s, Ah8c, As8d, Ac8h"
+      }
+    },
+    "33%-XB-?": {
+      "Kh8h2dTh6h": {
+        "setup": {
+          "hero_pos": "BTN",
+          "villain_pos": "BB",
+          "pot_size": 5.4,
+          "board_cards": ["Kh", "8h", "2d", "Th", "6h"],
+          "villain_action": "BET",
+          "villain_sizing_bb": 2.7,
+          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
+          "onenote_url": ""
+        },
+        "actions": [
+          "Fold",
+          "Call"
+        ],
+        "ranges": {
+          "Call": "Ac2h, Ad2h, As2h, 6s6c, 6s6d, 6c6d, Ts6s, Tc6c, Td6d, 8s6s, 8c6c, 8d6d, QsQc, QsQd, QcQd, JsJc, JsJd, JcJd, AsTc, AcTd, AdTs, QsTc, QcTd, QdTs, JsTc, JcTd, JdTs, Ts9c, Tc9d, Td9s, Ts7c, Tc7d, Td7s",
+          "Fold": "9s9c, 9s9d, 9c9d, As8c, Ac8d, Ad8s, Qs8c, Qc8d, Qd8s, Js8c, Jc8d, Jd8s, 9s8c, 9c8d, 9d8s, 8s7c, 8c7d, 8d7s, 8s5c, 8c5d, 8d5s"
+        },
+        "training": "Ac2h, Ad2h, As2h, 6s6c, 6s6d, 6c6d, Ts6s, Tc6c, Td6d, 8s6s, 8c6c, 8d6d, QsQc, QsQd, QcQd, JsJc, JsJd, JcJd, AsTc, AcTd, AdTs, QsTc, QcTd, QdTs, JsTc, JcTd, JdTs, Ts9c, Tc9d, Td9s, Ts7c, Tc7d, Td7s, 9s9c, 9s9d, 9c9d, As8c, Ac8d, Ad8s, Qs8c, Qc8d, Qd8s, Js8c, Jc8d, Jd8s, 9s8c, 9c8d, 9d8s, 8s7c, 8c7d, 8d7s, 8s5c, 8c5d, 8d5s"
+      },
+      "Kh8h2dThAc": {
+        "setup": {
+          "hero_pos": "BTN",
+          "villain_pos": "BB",
+          "pot_size": 5.4,
+          "board_cards": ["Kh", "8h", "2d", "Th", "Ac"],
+          "villain_action": "BET",
+          "villain_sizing_bb": 4.1,
+          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
+          "onenote_url": ""
+        },
+        "actions": [
+          "Fold",
+          "Call"
+        ],
+        "ranges": {
+          "Call": "QsQc, QsQd, QcQd, JsJc, JsJd, JcJd, QsTc, QcTd, QdTs, JsTc, JcTd, JdTs, Ts9c, Tc9d, Td9s, Ts7c, Tc7d, Td7s, Qs8c, Qc8d, Qd8s, Js8c, Jc8d, Jd8s",
+          "Fold": "9s8c, 9c8d, 9d8s, 8s7c, 8c7d, 8d7s, 8s5s, 8c5c, 8d5d, 7s7c, 7s7d, 7c7d, 6s6c, 6s6d, 6c6d, 5s5c, 5s5d, 5c5d, Qs2s, Qc2c, Qd2d, 5s2s, 5c2c, 5d2d"
+        },
+        "training": "QsQc, QsQd, QcQd, JsJc, JsJd, JcJd, QsTc, QcTd, QdTs, JsTc, JcTd, JdTs, Ts9c, Tc9d, Td9s, Ts7c, Tc7d, Td7s, Qs8c, Qc8d, Qd8s, Js8c, Jc8d, Jd8s, 9s8c, 9c8d, 9d8s, 8s7c, 8c7d, 8d7s, 8s5s, 8c5c, 8d5d, 7s7c, 7s7d, 7c7d, 6s6c, 6s6d, 6c6d, 5s5c, 5s5d, 5c5d, Qs2s, Qc2c, Qd2d, 5s2s, 5c2c, 5d2d"
+      },
+      "Kh8h2dTh4c": {
+        "setup": {
+          "hero_pos": "BTN",
+          "villain_pos": "BB",
+          "pot_size": 5.4,
+          "board_cards": ["Kh", "8h", "2d", "Th", "4c"],
+          "villain_action": "BET",
+          "villain_sizing_bb": 4.1,
+          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
+          "onenote_url": ""
+        },
+        "actions": [
+          "Fold",
+          "Call"
+        ],
+        "ranges": {
+          "Call": "7s7c, 7s7d, 7c7d, 9s9c, 9s9d, 9c9d, 8s7c, 8c7d, 8d7s, 9s8c, 9c8d, 9d8s, Js8c, Jc8d, Jd8s, Qs8c, Qc8d, Qd8s, As8c, Ac8d, Ad8s, Ts7c, Tc7d, Td7s, Ts9c, Tc9d, Td9s, JsTc, JcTd, JdTs, QsTc, QcTd, QdTs, AsTc, AcTd, AdTs",
+          "Fold": "AsQc, AcQd, AdQs, AsJc, AcJd, AdJs, As9c, Ac9d, Ad9s, As7c, Ac7d, Ad7s, As4c, Ac4d, Ad4s, As2c, Ac2d, Ad2s, 3s3c, 3s3d, 3c3d, 5s5c, 5s5d, 5c5d, 6s6c, 6s6d, 6c6d, 3s2s, 3c2c, 3d2d, 5s2s, 5c2c, 5d2d, Qs2s, Qc2c, Qd2d"
+        },
+        "training": "7s7c, 7s7d, 7c7d, 9s9c, 9s9d, 9c9d, 8s7c, 8c7d, 8d7s, 9s8c, 9c8d, 9d8s, Js8c, Jc8d, Jd8s, Qs8c, Qc8d, Qd8s, As8c, Ac8d, Ad8s, Ts7c, Tc7d, Td7s, Ts9c, Tc9d, Td9s, JsTc, JcTd, JdTs, QsTc, QcTd, QdTs, AsTc, AcTd, AdTs, AsQc, AcQd, AdQs, AsJc, AcJd, AdJs, As9c, Ac9d, Ad9s, As7c, Ac7d, Ad7s, As4c, Ac4d, Ad4s, As2c, Ac2d, Ad2s, 3s3c, 3s3d, 3c3d, 5s5c, 5s5d, 5c5d, 6s6c, 6s6d, 6c6d, 3s2s, 3c2c, 3d2d, 5s2s, 5c2c, 5d2d, Qs2s, Qc2c, Qd2d"
       }
     }
   }
