@@ -1,0 +1,49 @@
+{
+  "IP": {
+    "33%-?": {
+      "K8s2Js": {
+        "setup": {
+          "hero_pos": "BTN",
+          "villain_pos": "BB",
+          "pot_size": 5.5,
+          "board_cards": ["Kh", "8h", "2d", "Js"],
+          "villain_action": "CHECK"
+        },
+        "actions": ["Check", "Bet 33%", "Bet 75%"],
+        "ranges": {
+          "Check": "AsTs, AcTc...",
+          "Bet 33%": "Ks7s:50...",
+          "Bet 75%": "..."
+        },
+        "training": "AsTs, AcTc, Ks7s..."
+      },
+      "K8s23r": {
+        "setup": { "..." },
+        "actions": [],
+        "ranges": {},
+        "training": ""
+      }
+    },
+    "33%-33%-?": {
+      "K8s2JsAr": {
+        "setup": { "board_cards": ["Kh", "8h", "2d", "Js", "Ac"], "pot_size": 12.5 },
+        "actions": ["Check", "Bet 75%", "All-in"],
+        "ranges": {},
+        "training": ""
+      }
+    }
+  },
+  "OOP": {
+    "33%-?": {
+      "K8s2Js": {
+        "setup": {
+          "hero_pos": "SB",
+          "villain_pos": "BB"
+        },
+        "actions": [],
+        "ranges": {},
+        "training": ""
+      }
+    }
+  }
+}
