@@ -3,33 +3,30 @@ import random
 import time
 import os
 import json
-import inspect
 from datetime import datetime
+import pandas as pd
 import poker_utils as utils
 
-# --- УМНЫЕ ОБЁРТКИ ДЛЯ НЕЗАВИСИМЫХ СТАТОВ FISH ---
+# --- ЖЕЛЕЗНЫЕ ОБЁРТКИ ДЛЯ FISH (Только Google Sheets) ---
 def safe_load_stats():
-    sig = inspect.signature(utils.load_user_stats)
-    if 'is_fish' in sig.parameters:
-        return utils.load_user_stats(is_fish=True)
-    try:
-        with open("fish_stats.json", "r") as f: return json.load(f)
-    except:
-        return {"xp": 0, "combo": 0, "shields": 0, "spot_mastery": {}}
+    settings = utils.load_user_settings(is_fish=True)
+    stats = settings.get("stats", {})
+    if "xp" not in stats: stats["xp"] = 0
+    if "combo" not in stats: stats["combo"] = 0
+    if "shields" not in stats: stats["shields"] = 0
+    if "spot_mastery" not in stats: stats["spot_mastery"] = {}
+    if "streak" not in stats: stats["streak"] = 0
+    if "total_hands" not in stats: stats["total_hands"] = 0
+    if "max_combo" not in stats: stats["max_combo"] = 0
+    return stats
 
 def safe_save_stats(data):
-    sig = inspect.signature(utils.save_user_stats)
-    if 'is_fish' in sig.parameters:
-        utils.save_user_stats(data, is_fish=True)
-    else:
-        with open("fish_stats.json", "w") as f: json.dump(data, f)
+    settings = utils.load_user_settings(is_fish=True)
+    settings["stats"] = data
+    utils.save_user_settings(settings, is_fish=True)
 
 def safe_save_history(data):
-    sig = inspect.signature(utils.save_to_history)
-    if 'is_fish' in sig.parameters:
-        utils.save_to_history(data, is_fish=True)
-    else:
-        utils.save_to_history(data)
+    utils.save_to_history(data, is_fish=True)
 # --------------------------------------------------------
 
 def map_suit(s):
@@ -91,9 +88,6 @@ def show():
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap');
 
-        /* ==========================================
-           НАСТРОЙКИ ОТСТУПОВ (ДЛЯ ДЕСКТОПА) FISH
-           ========================================== */
         .pf-pot-badge-desk { position: absolute; top: 22%; left: 50%; transform: translateX(-50%); z-index: 15; }
         .pf-board-desk { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
         
@@ -108,7 +102,6 @@ def show():
         
         .rng-hint-wrap-desk { text-align: center; color: #6c757d; font-size: 13px; font-family: 'Roboto', sans-serif; font-weight: 500; letter-spacing: 0.5px; margin-bottom: 15px; margin-top: 15px; }
         div[data-testid="stHorizontalBlock"] { gap: 15px !important; margin-top: 10px; max-width: 850px; margin-left: auto; margin-right: auto; }
-        /* ------------------------------------------ */
 
         .block-container { padding-top: 2rem !important; padding-bottom: 2rem !important; max-width: 1200px !important; }
         div[data-testid="column"] { width: 100% !important; min-width: 0 !important; max-width: 100% !important; margin-bottom: 0 !important; }
@@ -157,17 +150,18 @@ def show():
         .desktop-game-area.table-glow-correct { border-color: #198754 !important; box-shadow: 0 0 35px rgba(25,135,84,0.6), inset 0 0 25px rgba(25,135,84,0.4) !important; }
         .desktop-game-area.table-glow-incorrect { border-color: #dc3545 !important; box-shadow: 0 0 35px rgba(220,53,69,0.6), inset 0 0 25px rgba(220,53,69,0.4) !important; }
 
-        .seat-desk { position: absolute !important; z-index: 20 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 0 !important; width: 85px !important; height: 60px !important; background: transparent !important; border: none !important; box-shadow: none !important; }
-        .ava-desk { width: 75px !important; height: 35px !important; background: linear-gradient(180deg, #2a2d32 0%, #1c1e22 100%) !important; border-radius: 75px 75px 0 0 !important; border: 2px solid #3a3d42 !important; border-bottom: none !important; box-shadow: inset 0 2px 4px rgba(255,255,255,0.05) !important; transition: all 0.3s ease !important; }
-        .plate-desk { width: 85px !important; height: 26px !important; background: #141518 !important; border-radius: 0 0 8px 8px !important; border: 2px solid #3a3d42 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 6px !important; box-sizing: border-box !important; font-size: 13px !important; box-shadow: 0 4px 8px rgba(0,0,0,0.5) !important; transition: all 0.3s ease !important; }
+        /* INCREASED OPPONENT SEAT SIZES & FIXED PLACEMENT */
+        .seat-desk { position: absolute !important; z-index: 20 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 0 !important; width: 95px !important; height: 65px !important; background: transparent !important; border: none !important; box-shadow: none !important; }
+        .ava-desk { width: 85px !important; height: 40px !important; background: linear-gradient(180deg, #2a2d32 0%, #1c1e22 100%) !important; border-radius: 85px 85px 0 0 !important; border: 2px solid #3a3d42 !important; border-bottom: none !important; box-shadow: inset 0 2px 4px rgba(255,255,255,0.05) !important; transition: all 0.3s ease !important; }
+        .plate-desk { width: 95px !important; height: 28px !important; background: #141518 !important; border-radius: 0 0 8px 8px !important; border: 2px solid #3a3d42 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 8px !important; box-sizing: border-box !important; font-size: 14px !important; box-shadow: 0 4px 8px rgba(0,0,0,0.5) !important; transition: all 0.3s ease !important; }
         .pos-desk { font-weight: 900 !important; color: #fff !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.5) !important; }
-        .stack-desk { font-weight: 700 !important; color: #fff !important; font-size: 12px !important; }
+        .stack-desk { font-weight: 700 !important; color: #fff !important; font-size: 13px !important; }
 
         .seat-folded-desk { opacity: 0.85 !important; filter: grayscale(50%) !important; }
         .seat-folded-desk .opp-cards-desk { opacity: 0.6 !important; }
         
-        .opp-cards-desk { position: absolute !important; top: -25px !important; left: 50% !important; transform: translateX(-50%) !important; display: flex !important; align-items: flex-end !important; pointer-events: none; }
-        .opp-card-desk { width: 24px !important; height: 34px !important; border-radius: 4px !important; position: relative !important; background: repeating-linear-gradient(45deg, rgba(15,70,185,0.95) 0px, rgba(15,70,185,0.95) 2px, rgba(8,44,130,0.95) 2px, rgba(8,44,130,0.95) 6px) !important; border: 1px solid rgba(80,140,255,0.3) !important; box-shadow: 0 2px 5px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.06) !important; }
+        .opp-cards-desk { position: absolute !important; top: -30px !important; left: 50% !important; transform: translateX(-50%) !important; display: flex !important; align-items: flex-end !important; pointer-events: none; }
+        .opp-card-desk { width: 30px !important; height: 42px !important; border-radius: 4px !important; position: relative !important; background: repeating-linear-gradient(45deg, rgba(15,70,185,0.95) 0px, rgba(15,70,185,0.95) 2px, rgba(8,44,130,0.95) 2px, rgba(8,44,130,0.95) 6px) !important; border: 1px solid rgba(80,140,255,0.3) !important; box-shadow: 0 2px 5px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.06) !important; }
         .opp-card-desk::before { content: '' !important; position: absolute !important; inset: 2px !important; border-radius: 2px !important; border: 1px solid rgba(80,140,255,0.15) !important; }
         .opp-card-desk.right-desk { margin-left: -8px !important; transform: rotate(10deg) !important; z-index: -1 !important; }
 
@@ -223,7 +217,7 @@ def show():
 
         .pf-btn-3 button { background: linear-gradient(180deg, #30094a 0%, #160530 100%) !important; box-shadow: 0 5px 0 #0f031a, 0 8px 25px rgba(180,20,220,0.25), inset 0 1px 0 rgba(220,80,255,0.14), inset 0 0 0 1px rgba(200,30,220,0.18) !important; }
         .pf-btn-3 button:active { box-shadow: 0 1px 0 #0f031a, inset 0 1px 0 rgba(220,80,255,0.1), 0 0 25px rgba(220,50,255,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
-        .pf-btn-3 button p { color: rgba(230,90,255,0.95) !important; text-shadow: 0 0 15px rgba(220,50,255,0.5) !important; }
+        .pf-btn-3 button p { color: rgba(230,90,255,0.95) !important; text-shadow: 0 0 14px rgba(220,50,255,0.5) !important; }
 
         </style>
     """, unsafe_allow_html=True)
@@ -361,7 +355,7 @@ def show():
     if is_bet and v_size:
         try: display_pot = round(float(base_pot) + float(v_size), 1)
         except: pass
-    
+
     table_size = setup.get("table_size", 6)
     stacks_data = setup.get("stacks", {})
 
@@ -542,20 +536,20 @@ def show():
 
     def get_seat_style(idx):
         return {
-            1: "top: 75%; left: -8%; transform: translateY(-50%);", 
-            2: "top: 15%; left: 5%;", 
+            1: "top: 75%; left: -3%; transform: translateY(-50%);", 
+            2: "top: 15%; left: -3%;", 
             3: "top: -10%; left: 50%; transform: translateX(-50%);", 
-            4: "top: 15%; right: 5%;", 
-            5: "top: 75%; right: -8%; transform: translateY(-50%);"
+            4: "top: 15%; right: -3%;", 
+            5: "top: 75%; right: -3%; transform: translateY(-50%);"
         }.get(idx, "")
 
     def get_chip_style(idx):
         return {
             0: "bottom: 45px; left: 50%; transform: translateX(-50%);", 
             1: "top: 60%; left: 16%; transform: translateY(-50%);", 
-            2: "top: 25%; left: 20%;",
+            2: "top: 25%; left: 10%;",
             3: "top: 15%; left: 50%; transform: translateX(-50%);", 
-            4: "top: 25%; right: 20%;", 
+            4: "top: 25%; right: 10%;", 
             5: "top: 60%; right: 16%; transform: translateY(-50%);"
         }.get(idx, "")
 
@@ -563,9 +557,9 @@ def show():
         return {
             0: "bottom: 20px; left: 50%; margin-left: -110px; z-index: 35;", 
             1: "top: 77%; left: 12%; transform: translateY(-50%);", 
-            2: "top: 28%; left: 12%;",
+            2: "top: 28%; left: 3%;",
             3: "top: 12%; left: 58%;", 
-            4: "top: 28%; right: 12%;", 
+            4: "top: 28%; right: 3%;", 
             5: "top: 77%; right: 12%; transform: translateY(-50%);"
         }.get(idx, "")
 
@@ -648,7 +642,6 @@ def show():
 
     html = f'<div class="desktop-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge-desk"><div class="pot-badge-desk">Pot: {display_pot} bb</div></div><div class="pf-board-desk"><div class="board-container-desk">{board_html}</div></div>{opp_html}{chips_html}<div class="hero-desk">{anim_html}<div class="hero-cards-wrap-desk"><div class="card-desk"><div class="tl-desk {c1}">{r1}<br>{s1}</div><div class="c-desk {c1}">{s1}</div></div><div class="card-desk"><div class="tl-desk {c2}">{r2}<br>{s2}</div><div class="c-desk {c2}">{s2}</div></div><div class="rng-badge-desk">{st.session_state.fish_rng}</div></div><div class="hero-plate-desk"><span class="pos-desk">HERO {hero_pos}</span><span class="stack-desk">{hero_stack}</span></div></div></div>'
     
-    # Добавили отступы слева и сверху, чтобы сдвинуть Spot Mastery
     st.markdown(f"""<div class="spot-info-panel" style="display:flex; align-items:center; gap:15px; margin-left: -10px; margin-top: 15px;">
         <div style="width:50px; height:50px;">{mastery['svg']}</div>
         <div style="flex-grow:1;">
@@ -672,12 +665,6 @@ def show():
         
         k = f"{chosen_key}_{h_val}".replace(" ","_")
         utils.update_srs_auto(k, h_val, corr)
-        
-        safe_save_history({
-            "Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 
-            "Spot": chosen_key, "Hand": f"{h_val}", "Result": int(corr), 
-            "CorrectAction": correct_act, "UserAction": action
-        })
         
         shield_used = False
         if corr:
@@ -725,20 +712,82 @@ def show():
         if new_mult > curr_mult:
             st.session_state.fish_just_leveled_up = True
 
-        try:
-            alerts, _ = utils.process_gamification(corr, st.session_state.fish_combo, st.session_state.fish_session_hands, chosen_key, shield_used=shield_used, is_fish=True)
-            if alerts: st.session_state.fish_toast_msgs.extend(alerts)
-        except Exception: pass
+        curr_stats = safe_load_stats()
+        curr_stats["combo"] = st.session_state.fish_combo
+        curr_stats["shields"] = st.session_state.fish_shields
+        curr_stats["total_hands"] = curr_stats.get("total_hands", 0) + 1
         
-        try:
-            curr_stats = safe_load_stats()
-            curr_stats["combo"] = st.session_state.fish_combo
-            curr_stats["shields"] = st.session_state.fish_shields
-            safe_save_stats(curr_stats)
-            if hasattr(utils, "force_sync"):
-                utils.force_sync()
-        except Exception: pass
+        now_date_str = datetime.now().strftime("%Y-%m-%d")
         
+        last_date = curr_stats.get("last_date", "")
+        if last_date:
+            try:
+                delta = (datetime.now().date() - datetime.strptime(last_date, "%Y-%m-%d").date()).days
+                if delta == 1: curr_stats["streak"] = curr_stats.get("streak", 1) + 1
+                elif delta > 1: curr_stats["streak"] = 1
+            except: curr_stats["streak"] = 1
+        else: curr_stats["streak"] = 1
+        curr_stats["last_date"] = now_date_str
+        
+        if "spot_mastery" not in curr_stats: curr_stats["spot_mastery"] = {}
+        sp_data = curr_stats["spot_mastery"].get(chosen_key, {"t": 0, "h": "", "d": ""})
+        if not isinstance(sp_data, dict): sp_data = {"t": 0, "h": "", "d": ""}
+        sp_data["t"] += 1
+        sp_data["h"] += "1" if corr else "0"
+        sp_data["d"] = now_date_str
+        if len(sp_data["h"]) > 100: sp_data["h"] = sp_data["h"][-100:]
+        curr_stats["spot_mastery"][chosen_key] = sp_data
+        
+        if curr_stats.get("dailies", {}).get("date") != now_date_str:
+            try: curr_stats["dailies"] = {"date": now_date_str, "quests": utils.generate_dailies()}
+            except: pass
+            
+        if "dailies" in curr_stats and "quests" in curr_stats["dailies"]:
+            for q in curr_stats["dailies"]["quests"]:
+                if not q.get("done", False):
+                    if q["id"] == "play": q["progress"] += 1
+                    elif q["id"] == "correct" and corr: q["progress"] += 1
+                    elif q["id"] == "combo" and c_new > q["progress"]: q["progress"] = c_new
+                    
+                    if q["progress"] >= q["target"]:
+                        q["progress"] = q["target"]
+                        q["done"] = True
+                        curr_stats["xp"] = curr_stats.get("xp", 0) + q.get("xp", 0)
+                        st.session_state.fish_toast_msgs.append(f"🎯 Daily: {q['desc']} (+${q['xp']})")
+        
+        reward_val = 0
+        if not shield_used:
+            if corr: reward_val = int(10 * curr_mult)
+            else:
+                if visual_rank == 1: reward_val = -int(10 * curr_mult)
+                elif visual_rank > 1: reward_val = -int(20 * curr_mult)
+        
+        curr_stats["xp"] = curr_stats.get("xp", 0) + reward_val
+        if curr_stats["xp"] < 0: curr_stats["xp"] = 0
+        
+        if c_new > curr_stats.get("max_combo", 0):
+            curr_stats["max_combo"] = c_new
+            
+        safe_save_stats(curr_stats)
+        
+        spot = st.session_state.fish_current_spot
+        safe_save_history({
+            "Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 
+            "Fish_Type": spot.get("vpip", ""),
+            "Position": spot.get("pos", ""),
+            "Action_Line": spot.get("line", ""),
+            "Texture": spot.get("texture", ""),
+            "Runout": spot.get("runout", ""),
+            "Hand": f"{h_val}", 
+            "Action_Taken": action,
+            "Correct_Action": correct_act, 
+            "Result": int(corr),
+            "XP": reward_val
+        })
+
+        if hasattr(utils, "force_sync"):
+            utils.force_sync()
+            
         st.rerun()
 
     if is_flashing_correct:
