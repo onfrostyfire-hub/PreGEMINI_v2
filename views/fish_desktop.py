@@ -184,8 +184,8 @@ def show():
         .hero-cards-wrap-desk { display: flex !important; gap: 8px !important; position: relative !important; }
         .hero-plate-desk { width: 100px !important; height: 22px !important; background: #141518 !important; border-radius: 6px !important; border: 2px solid #ffc107 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 8px !important; box-sizing: border-box !important; font-size: 12px !important; font-weight: bold !important; box-shadow: 0 4px 12px rgba(0,0,0,0.7) !important; transition: border-color 0.3s; }
         
-        .floating-reward-desk { position: absolute !important; top: -45px !important; left: 50% !important; transform: translateX(-50%) !important; font-size: 18px !important; font-weight: 900 !important; text-shadow: 0px 2px 5px rgba(0,0,0,0.9), 0px 0px 2px #000 !important; z-index: 100 !important; pointer-events: none !important; animation: float-reward-desk 1.2s ease-out forwards !important; }
-        @keyframes float-reward-desk { 0%   { opacity: 1; transform: translate(-50%, 0) scale(0.8); } 20% { opacity: 1; transform: translate(-50%, -15px) scale(1.2); } 100% { opacity: 0; transform: translate(-50%, -50px) scale(1); } }
+        .floating-reward-desk { position: absolute !important; top: -45px !important; left: 50% !important; transform: translateX(-50%) !important; font-size: 18px !important; font-weight: 900 !important; color: #17f07e !important; text-shadow: 0 0 15px rgba(23,240,126,0.8), 0 0 30px rgba(23,240,126,0.4) !important; white-space: nowrap !important; animation: float-reward-desk 2.2s ease-out forwards !important; pointer-events: none !important; }
+        @keyframes float-reward-desk { 0%   { opacity: 1; transform: translateX(-50%) translateY(0); } 100% { opacity: 0; transform: translateX(-50%) translateY(-30px); } }
 
         .card-desk { width: 55px !important; height: 78px !important; border-radius: 6px !important; position: relative !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; overflow: hidden !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -8px 20px rgba(0,0,0,0.7), 0 -15px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,1) !important;}
         .card-desk::after { content: '' !important; position: absolute !important; top: 0 !important; left: 0 !important; width: 60% !important; height: 45% !important; background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; pointer-events: none !important; border-radius: 6px 0 0 0 !important; }
@@ -198,8 +198,7 @@ def show():
         
         .rng-badge-desk { position: absolute !important; top: 50% !important; right: -35px !important; transform: translateY(-50%) !important; width: 30px !important; height: 30px !important; border-radius: 50% !important; font-weight: 900 !important; font-size: 13px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 4px 8px rgba(0,0,0,0.6) !important; z-index: 40 !important; }
         
-        /* SPOT MASTERY INSIDE TABLE */
-        .pf-mastery { position: absolute; bottom: 35px; left: 35px; z-index: 15; width: 120px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; pointer-events: none;}
+        .pf-mastery { position: absolute; bottom: 15px; left: 15px; z-index: 15; width: 120px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; pointer-events: none;}
         .mastery-badge { background: #111; border: 1px solid rgba(255,255,255,0.2); color: #fff; display: inline-flex; align-items: center; gap: 4px; border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; }
         .mastery-bar-bg { width: 80px; height: 3px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; margin-top: 2px; }
         .mastery-bar-fill { height: 100%; border-radius: 3px; background: #0dcaf0; }
@@ -653,10 +652,10 @@ def show():
         sc = get_suit_color_class(suit)
         board_html += f'<div class="board-card-desk"><div class="bc-tl-desk {sc}">{rank_str}</div><div class="bc-c-desk {sc}">{suit}</div></div>'
         
-    mastery_html = f"""<div class="pf-mastery">
-        <div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div>
-        <div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width: {m_pct}%;"></div></div>
-        <div class="hands-left">{hands_left_text}</div>
+    mastery_html = f"""<div style="position: absolute; bottom: 15px; left: 15px; z-index: 15; width: 120px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; pointer-events: none;">
+        <div style="background: #111; border: 1px solid rgba(255,255,255,0.2); color: #fff; display: inline-flex; align-items: center; gap: 4px; border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em;">{m_icon} {m_name}</div>
+        <div style="width: 80px; height: 3px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; margin-top: 2px;"><div style="height: 100%; border-radius: 3px; background: #0dcaf0; width: {m_pct}%;"></div></div>
+        <div style="font-size: 10px; letter-spacing: 0.06em; margin-top: 2px; color: rgba(255,255,255,0.7);">{hands_left_text}</div>
     </div>"""
 
     html = f'<div class="desktop-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge-desk"><div class="pot-badge-desk">Pot: {display_pot} bb</div></div><div class="pf-board-desk"><div class="board-container-desk">{board_html}</div></div>{mastery_html}{opp_html}{chips_html}<div class="hero-desk">{anim_html}<div class="hero-cards-wrap-desk"><div class="card-desk"><div class="tl-desk {c1}">{r1}<br>{s1}</div><div class="c-desk {c1}">{s1}</div></div><div class="card-desk"><div class="tl-desk {c2}">{r2}<br>{s2}</div><div class="c-desk {c2}">{s2}</div></div><div class="rng-badge-desk">{st.session_state.fish_rng}</div></div><div class="hero-plate-desk"><span class="pos-desk">HERO {hero_pos}</span><span class="stack-desk">{hero_stack}</span></div></div></div>'
