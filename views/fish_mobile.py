@@ -214,7 +214,7 @@ def show():
         .pf-btn-0 button p { color: rgba(190,190,205,0.8) !important; }
 
         .pf-btn-1 button { background: linear-gradient(180deg, #0c3828 0%, #071e16 100%) !important; box-shadow: 0 4px 0 #030f0b, 0 6px 20px rgba(0,180,80,0.12), inset 0 1px 0 rgba(0,230,110,0.12), inset 0 0 0 1px rgba(0,200,90,0.1) !important; }
-        .pf-btn-1 button:active { box-shadow: 0 1px 0 #030f0b, inset 0 1px 0 rgba(0,200,90,0.08), 0 0 20px rgba(255,50,50,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
+        .pf-btn-1 button:active { box-shadow: 0 1px 0 #030f0b, inset 0 1px 0 rgba(0,200,90,0.08), 0 0 20px rgba(0,255,100,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
         .pf-btn-1 button p { color: rgba(50,220,130,0.92) !important; text-shadow: 0 0 12px rgba(30,200,100,0.4) !important; }
 
         .pf-btn-2 button { background: linear-gradient(180deg, #4a0909 0%, #300505 100%) !important; box-shadow: 0 4px 0 #1a0303, 0 6px 20px rgba(180,20,20,0.2), inset 0 1px 0 rgba(255,80,80,0.14), inset 0 0 0 1px rgba(200,30,30,0.18) !important; }
@@ -655,14 +655,14 @@ def show():
         sc = get_suit_color_class(suit)
         board_html += f'<div class="board-card-mob"><div class="bc-tl-mob {sc}">{rank_str}</div><div class="bc-c-mob {sc}">{suit}</div></div>'
         
-   mastery_html = f"""<div style="position: absolute; bottom: -98px; left: 10px; z-index: 15; width: 100px; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; pointer-events: none;">
+    mastery_html = f"""<div style="position: absolute; bottom: -98px; left: 10px; z-index: 15; width: 100px; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; pointer-events: none;">
         <div style="display: inline-flex; align-items: center; gap: 4px; border-radius: 20px; padding: 2px 9px 2px 7px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.05em; white-space: nowrap; background: #111; border: 1px solid rgba(255,255,255,0.2); color: #fff; text-shadow: 0 0 6px rgba(0,0,0,0.4);">{m_icon} {m_name}</div>
         <div style="width: 60px; height: 2px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden;"><div style="height: 100%; border-radius: 2px; background: #0dcaf0; width: {m_pct}%;"></div></div>
         <div style="font-size: 9px !important; transform: scale(0.6); transform-origin: left top; letter-spacing: 0.05em !important; margin-top: 2px !important; color: rgba(255,255,255,0.7) !important; text-align: left !important; white-space: nowrap !important;">{hands_left_text}</div>
     </div>"""
 
-    html = f'<div class="mobile-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge"><div class="pot-badge-mob">Pot: {pot_size} bb</div></div><div class="pf-board"><div class="board-container-mob">{board_html}</div></div>{mastery_html}{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{st.session_state.pf_rng}</div></div><div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div></div></div>'
-
+    html = f'<div class="mobile-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge"><div class="pot-badge-mob">Pot: {display_pot} bb</div></div><div class="pf-board"><div class="board-container-mob">{board_html}</div></div>{mastery_html}{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{st.session_state.fish_rng}</div></div><div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div></div></div>'
+    
     st.markdown(html, unsafe_allow_html=True)
 
     def handle_action(action):
