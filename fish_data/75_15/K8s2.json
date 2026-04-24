@@ -7,42 +7,18 @@
           "villain_pos": "BB",
           "pot_size": 5.5,
           "board_cards": ["Kh", "8h", "2d", "Js"],
-          "villain_action": "CHECK"
+          "villain_action": "CHECK",
+          "onenote_url": "https://1drv.ms/o/c/acb7650af03ef10d/IgAN8T7wCmW3IICsOAIAAAAAAXyNkDpsveYvbK6vdnlq0qs?e=KLmggW"
         },
-        "actions": ["Check", "Bet 33%", "Bet 75%"],
+        "actions": [
+          "Check",
+          "Bet 33%"
+        ],
         "ranges": {
-          "Check": "AsTs, AcTc...",
-          "Bet 33%": "Ks7s:50...",
-          "Bet 75%": "..."
+          "Check": "Qh8h, Qs8c, Qd8s, Jh8h, Js8c, Jd8s, Th8h, Ts8c, Td8s, 9h8h, 9s8c, 9d8s",
+          "Bet 33%": "QhQc, QsQd, QhQs, JhJc, JsJd, JhJs, ThTc, TsTd, ThTs, 9h9c, 9s9d, 9h9s, Ah8c, As8d, Ac8h"
         },
-        "training": "AsTs, AcTc, Ks7s..."
-      },
-      "K8s23r": {
-        "setup": { "..." },
-        "actions": [],
-        "ranges": {},
-        "training": ""
-      }
-    },
-    "33%-33%-?": {
-      "K8s2JsAr": {
-        "setup": { "board_cards": ["Kh", "8h", "2d", "Js", "Ac"], "pot_size": 12.5 },
-        "actions": ["Check", "Bet 75%", "All-in"],
-        "ranges": {},
-        "training": ""
-      }
-    }
-  },
-  "OOP": {
-    "33%-?": {
-      "K8s2Js": {
-        "setup": {
-          "hero_pos": "SB",
-          "villain_pos": "BB"
-        },
-        "actions": [],
-        "ranges": {},
-        "training": ""
+        "training": "Qh8h, Qs8c, Qd8s, Jh8h, Js8c, Jd8s, Th8h, Ts8c, Td8s, 9h8h, 9s8c, 9d8s, QhQc, QsQd, QhQs, JhJc, JsJd, JhJs, ThTc, TsTd, ThTs, 9h9c, 9s9d, 9h9s, Ah8c, As8d, Ac8h"
       }
     }
   }
