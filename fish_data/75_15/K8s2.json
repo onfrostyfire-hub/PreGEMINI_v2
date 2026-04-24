@@ -1,12 +1,12 @@
 {
   "IP": {
     "33%-?": {
-      "K8s2Js": {
+      "K8s2Ac": {
         "setup": {
           "hero_pos": "BTN",
           "villain_pos": "BB",
           "pot_size": 5.5,
-          "board_cards": ["Kh", "8h", "2d", "Js"],
+          "board_cards": ["Kh", "8h", "2d", "5c"],
           "villain_action": "CHECK",
           "onenote_url": "https://1drv.ms/o/c/acb7650af03ef10d/IgAN8T7wCmW3IICsOAIAAAAAAXyNkDpsveYvbK6vdnlq0qs?e=KLmggW"
         },
