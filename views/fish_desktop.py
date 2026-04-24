@@ -3,6 +3,7 @@ import random
 import time
 import os
 import json
+import inspect
 from datetime import datetime
 import pandas as pd
 import poker_utils as utils
@@ -110,7 +111,6 @@ def show():
         div[data-testid="stButton"] button:active { transform: translateY(5px) !important; box-shadow: 0 0 0 transparent !important; }
         div[data-testid="stButton"] button p { font-family: 'Roboto', sans-serif !important; font-size: 18px !important; font-weight: 900 !important; margin: 0 !important; letter-spacing: 1px !important; text-transform: uppercase !important; }
 
-        /* ── CARBON NOIR DESKTOP HEADER ── */
         .cn-desk-header { max-width: 850px; margin: 0 auto 10px auto; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; -webkit-font-smoothing: antialiased; border-radius: 16px; overflow: hidden; position: relative; background: linear-gradient(165deg, rgba(18,22,28,0.92) 0%, rgba(8,10,14,0.96) 100%); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
         .cn-desk-header::before { content: ''; position: absolute; inset: 0; border-radius: 16px; pointer-events: none; background: linear-gradient(125deg, rgba(255,255,255,0.07) 0%, transparent 42%, transparent 58%, rgba(255,255,255,0.03) 100%); z-index: 0; }
         .cn-desk-wr-track { height: 4px; width: 100%; background: rgba(0,0,0,0.45); position: relative; z-index: 1; }
@@ -132,7 +132,6 @@ def show():
         .cn-desk-combo-fire { font-size: 18px; font-weight: 900; color: #fff; text-shadow: 0 0 18px rgba(255,120,40,0.55); letter-spacing: -0.03em; }
         .cn-desk-shield { font-size: 14px; margin-left: 4px; font-weight: 800; color: rgba(120,230,255,0.95); filter: drop-shadow(0 0 6px rgba(0,200,255,0.55)); align-items: center; gap: 3px; }
 
-        /* ── RAGE BAR DESKTOP ── */
         .rage-bar-container-desk { width: 100%; max-width: 850px; margin: 0 auto 15px auto; height: 32px; border-radius: 999px; position: relative; display: flex; align-items: stretch; padding: 4px; background: linear-gradient(180deg, rgba(12,14,20,0.95) 0%, rgba(6,8,12,0.98) 100%); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65), inset 0 -1px 0 rgba(255,255,255,0.05); overflow: hidden; }
         .rage-bar-container-desk::before { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%); z-index: 3; }
         .rage-bar-fill-desk { height: 100%; border-radius: 999px; transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; min-width: 0; box-shadow: inset 0 2px 8px rgba(255,255,255,0.35), inset 0 -3px 8px rgba(0,0,0,0.45), 0 0 20px rgba(255,255,255,0.12); }
@@ -150,7 +149,6 @@ def show():
         .desktop-game-area.table-glow-correct { border-color: #198754 !important; box-shadow: 0 0 35px rgba(25,135,84,0.6), inset 0 0 25px rgba(25,135,84,0.4) !important; }
         .desktop-game-area.table-glow-incorrect { border-color: #dc3545 !important; box-shadow: 0 0 35px rgba(220,53,69,0.6), inset 0 0 25px rgba(220,53,69,0.4) !important; }
 
-        /* INCREASED OPPONENT SEAT SIZES & FIXED PLACEMENT */
         .seat-desk { position: absolute !important; z-index: 20 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 0 !important; width: 95px !important; height: 65px !important; background: transparent !important; border: none !important; box-shadow: none !important; }
         .ava-desk { width: 85px !important; height: 40px !important; background: linear-gradient(180deg, #2a2d32 0%, #1c1e22 100%) !important; border-radius: 85px 85px 0 0 !important; border: 2px solid #3a3d42 !important; border-bottom: none !important; box-shadow: inset 0 2px 4px rgba(255,255,255,0.05) !important; transition: all 0.3s ease !important; }
         .plate-desk { width: 95px !important; height: 28px !important; background: #141518 !important; border-radius: 0 0 8px 8px !important; border: 2px solid #3a3d42 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 8px !important; box-sizing: border-box !important; font-size: 14px !important; box-shadow: 0 4px 8px rgba(0,0,0,0.5) !important; transition: all 0.3s ease !important; }
@@ -202,7 +200,6 @@ def show():
         
         .rng-badge-desk { position: absolute !important; top: 50% !important; right: -35px !important; transform: translateY(-50%) !important; width: 30px !important; height: 30px !important; border-radius: 50% !important; font-weight: 900 !important; font-size: 13px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 4px 8px rgba(0,0,0,0.6) !important; z-index: 40 !important; }
         
-        /* ── Action Buttons Color Overrides (Desktop) ── */
         .pf-btn-0 button { background: linear-gradient(180deg, #252830 0%, #16181f 100%) !important; box-shadow: 0 5px 0 #0c0d12, 0 8px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 0 0 1px rgba(255,255,255,0.06) !important; }
         .pf-btn-0 button:active { box-shadow: 0 1px 0 #0c0d12, inset 0 1px 0 rgba(255,255,255,0.05), 0 0 25px rgba(255,255,255,0.15) !important; filter: brightness(1.5) !important; }
         .pf-btn-0 button p { color: rgba(190,190,205,0.8) !important; }
@@ -216,7 +213,7 @@ def show():
         .pf-btn-2 button p { color: rgba(255,90,90,0.95) !important; text-shadow: 0 0 15px rgba(220,50,50,0.5) !important; }
 
         .pf-btn-3 button { background: linear-gradient(180deg, #30094a 0%, #160530 100%) !important; box-shadow: 0 5px 0 #0f031a, 0 8px 25px rgba(180,20,220,0.25), inset 0 1px 0 rgba(220,80,255,0.14), inset 0 0 0 1px rgba(200,30,220,0.18) !important; }
-        .pf-btn-3 button:active { box-shadow: 0 1px 0 #0f031a, inset 0 1px 0 rgba(220,80,255,0.1), 0 0 25px rgba(220,50,255,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
+        .pf-btn-3 button:active { box-shadow: 0 1px 0 #0f031a, inset 0 1px 0 rgba(220,80,255,0.1), 0 0 20px rgba(220,50,255,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
         .pf-btn-3 button p { color: rgba(230,90,255,0.95) !important; text-shadow: 0 0 14px rgba(220,50,255,0.5) !important; }
 
         </style>
@@ -770,14 +767,14 @@ def show():
             
         safe_save_stats(curr_stats)
         
-        spot = st.session_state.fish_current_spot
+        parts = chosen_key.split('|')
         safe_save_history({
             "Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 
-            "Fish_Type": spot.get("vpip", ""),
-            "Position": spot.get("pos", ""),
-            "Action_Line": spot.get("line", ""),
-            "Texture": spot.get("texture", ""),
-            "Runout": spot.get("runout", ""),
+            "Fish_Type": parts[0] if len(parts) > 0 else "",
+            "Position": parts[2] if len(parts) > 2 else "",
+            "Action_Line": parts[3] if len(parts) > 3 else "",
+            "Texture": parts[1] if len(parts) > 1 else "",
+            "Runout": parts[4] if len(parts) > 4 else "",
             "Hand": f"{h_val}", 
             "Action_Taken": action,
             "Correct_Action": correct_act, 
