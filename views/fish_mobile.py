@@ -96,9 +96,9 @@ def show():
         /* ==========================================
            НАСТРОЙКИ ОТСТУПОВ (ДЛЯ АЙФОНА) FISH
            ========================================== */
-        .pf-pot-badge { position: absolute; top: 20%; left: 50%; transform: translateX(-50%); z-index: 15; }
-        .pf-board { position: absolute; top: 43%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
-        .pf-mastery { position: absolute; bottom: -45px; left: 20%; transform: translateX(-50%); z-index: 15; width: 100px; display: flex; flex-direction: column; align-items: center; gap: 4px; pointer-events: none;}
+        .pf-pot-badge { position: absolute; top: 26%; left: 50%; transform: translateX(-50%); z-index: 15; }
+        .pf-board { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
+        .pf-mastery { position: absolute; bottom: -55px; left: 5%; z-index: 15; width: 120px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; pointer-events: none;}
         
         .mobile-game-area { margin-top: 50px !important; margin-bottom: 55px !important; }
         .rng-hint-wrap { margin-top: 12px !important; margin-bottom: 8px !important; }
@@ -135,7 +135,7 @@ def show():
         .mastery-badge { display: inline-flex !important; align-items: center !important; gap: 4px !important; border-radius: 20px !important; padding: 2px 9px 2px 7px !important; font-size: 9.5px !important; font-weight: 700 !important; letter-spacing: 0.05em !important; white-space: nowrap; }
         .mastery-bar-bg { width: 60px !important; height: 2px !important; background: rgba(255,255,255,0.07) !important; border-radius: 2px !important; overflow: hidden !important; }
         .mastery-bar-fill { height: 100% !important; border-radius: 2px !important; }
-        .hands-left-mob { font-size: 8.5px !important; letter-spacing: 0.06em !important; white-space: nowrap; text-align: center; }
+        .hands-left-mob { font-size: 8.5px !important; letter-spacing: 0.06em !important; white-space: nowrap; text-align: left; }
 
         .seat { position: absolute !important; z-index: 20 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 0 !important; width: 56px !important; height: 46px !important; background: transparent !important; border: none !important; box-shadow: none !important; }
         .ava { width: 50px !important; height: 25px !important; background: linear-gradient(180deg, #2a2d32 0%, #1c1e22 100%) !important; border-radius: 50px 50px 0 0 !important; border: 1.5px solid #3a3d42 !important; border-bottom: none !important; box-shadow: inset 0 2px 4px rgba(255,255,255,0.05) !important; transition: all 0.3s ease !important; }
@@ -363,12 +363,20 @@ def show():
     btn_pos = setup.get("btn_pos", "BTN")
     active_players = setup.get("active_players", [hero_pos, villain_pos])
     board_raw = setup.get("board_cards", [])
-    pot_size = setup.get("pot_size", 0)
+    base_pot = setup.get("pot_size", 0)
     villain_act = setup.get("villain_action", "")
     hero_act = setup.get("hero_action", "")
     actions = data.get("actions", ["Check"])
     ranges = data.get("ranges", {})
     
+    v_size = setup.get("villain_sizing_bb", "")
+    is_bet = villain_act and ("BET" in villain_act.upper() or "RAISE" in villain_act.upper() or "ALL-IN" in villain_act.upper())
+    
+    display_pot = base_pot
+    if is_bet and v_size:
+        try: display_pot = round(float(base_pot) + float(v_size), 1)
+        except: pass
+
     table_size = setup.get("table_size", 6)
     stacks_data = setup.get("stacks", {})
 
@@ -595,8 +603,6 @@ def show():
         ss = get_seat_style(3)
         
         v_act_html = ""
-        is_bet = villain_act and ("BET" in villain_act.upper() or "RAISE" in villain_act.upper() or "ALL-IN" in villain_act.upper())
-        
         if villain_act:
             if is_bet:
                 act_word = "RAISE" if "RAISE" in villain_act.upper() else ("ALL-IN" if "ALL-IN" in villain_act.upper() else "BET")
@@ -608,8 +614,8 @@ def show():
         
         cs = get_chip_style(3)
         if is_bet:
-            bet_amount_str = villain_act.upper().replace("BET", "").replace("RAISE", "").strip().lower()
-            bet_txt = f'<div class="bet-txt">{bet_amount_str}</div>'
+            bet_amount_str = f"{v_size}" if v_size else villain_act.upper().replace("BET", "").replace("RAISE", "").replace("ALL-IN", "").strip().lower()
+            bet_txt = f'<div class="bet-txt">{bet_amount_str} bb</div>'
             chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-mob"></div>{bet_txt}</div>'
         
         if villain_p == btn_pos:
@@ -625,8 +631,6 @@ def show():
             ss = get_seat_style(i)
             
             v_act_html = ""
-            is_bet = villain_act and ("BET" in villain_act.upper() or "RAISE" in villain_act.upper() or "ALL-IN" in villain_act.upper())
-            
             if p == villain_pos and villain_act:
                 if is_bet:
                     act_word = "RAISE" if "RAISE" in villain_act.upper() else ("ALL-IN" if "ALL-IN" in villain_act.upper() else "BET")
@@ -642,16 +646,16 @@ def show():
                 
             if p == villain_pos and is_bet:
                 cs = get_chip_style(i)
-                bet_amount_str = villain_act.upper().replace("BET", "").replace("RAISE", "").strip().lower()
-                bet_txt = f'<div class="bet-txt">{bet_amount_str}</div>'
+                bet_amount_str = f"{v_size}" if v_size else villain_act.upper().replace("BET", "").replace("RAISE", "").replace("ALL-IN", "").strip().lower()
+                bet_txt = f'<div class="bet-txt">{bet_amount_str} bb</div>'
                 chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-mob"></div>{bet_txt}</div>'
 
     if hero_act:
         is_hero_bet = ("BET" in hero_act.upper() or "RAISE" in hero_act.upper() or "ALL-IN" in hero_act.upper())
         if is_hero_bet:
             hero_cs = get_chip_style(0)
-            hero_bet_amount_str = hero_act.upper().replace("BET", "").replace("RAISE", "").strip().lower()
-            hero_bet_txt = f'<div class="bet-txt">{hero_bet_amount_str}</div>'
+            hero_bet_amount_str = hero_act.upper().replace("BET", "").replace("RAISE", "").replace("ALL-IN", "").strip().lower()
+            hero_bet_txt = f'<div class="bet-txt">{hero_bet_amount_str} bb</div>'
             chips_html += f'<div class="chip-container" style="{hero_cs}"><div class="chip-mob"></div>{hero_bet_txt}</div>'
 
     hero_stack = stacks_data.get(hero_pos, "---")
@@ -666,7 +670,7 @@ def show():
         sc = get_suit_color_class(suit)
         board_html += f'<div class="board-card-mob"><div class="bc-tl-mob {sc}">{rank_str}</div><div class="bc-c-mob {sc}">{suit}</div></div>'
 
-    html = f'<div class="mobile-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge"><div class="pot-badge-mob">Pot: {pot_size} bb</div></div><div class="pf-board"><div class="board-container-mob">{board_html}</div></div><div class="pf-mastery"><div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width:{m_pct}%;"></div></div><div class="hands-left-mob">{hands_left_text}</div></div>{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{st.session_state.fish_rng}</div></div><div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div></div></div>'
+    html = f'<div class="mobile-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge"><div class="pot-badge-mob">Pot: {display_pot} bb</div></div><div class="pf-board"><div class="board-container-mob">{board_html}</div></div><div class="pf-mastery"><div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width:{m_pct}%;"></div></div><div class="hands-left-mob">{hands_left_text}</div></div>{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{st.session_state.fish_rng}</div></div><div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div></div></div>'
     
     st.markdown(html, unsafe_allow_html=True)
 
