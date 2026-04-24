@@ -2,6 +2,13 @@ import streamlit as st
 from views import mobile, desktop, compare, stats_mobile, stats_desktop
 from views import postflop_desktop, postflop_mobile
 
+# Заглушка, пока ты не вставишь код в новые файлы
+try:
+    from views import fish_desktop, fish_mobile
+    FISH_AVAILABLE = True
+except ImportError:
+    FISH_AVAILABLE = False
+
 st.set_page_config(page_title="Poker Trainer", layout="wide", initial_sidebar_state="collapsed")
 
 def detect_mobile():
@@ -65,14 +72,15 @@ def main():
     if "actual_view_type" not in st.session_state:
         st.session_state.actual_view_type = "📱 Mobile" if detect_mobile() else "💻 Desktop"
         
-    if "actual_app_mode" not in st.session_state or st.session_state.actual_app_mode not in ["Preflop", "Postflop", "Ranges", "Stats"]:
+    nav_options = ["Preflop", "Postflop", "Fish", "Ranges", "Stats"]
+    if "actual_app_mode" not in st.session_state or st.session_state.actual_app_mode not in nav_options:
         st.session_state.actual_app_mode = "Preflop"
 
     st.markdown('<div class="compact-tabs"></div>', unsafe_allow_html=True)
     nav_mode = st.radio(
         "Nav", 
-        ["Preflop", "Postflop", "Ranges", "Stats"], 
-        index=["Preflop", "Postflop", "Ranges", "Stats"].index(st.session_state.actual_app_mode),
+        nav_options, 
+        index=nav_options.index(st.session_state.actual_app_mode),
         horizontal=True, 
         label_visibility="collapsed"
     )
@@ -92,6 +100,13 @@ def main():
             postflop_mobile.show()
         else:
             postflop_desktop.show()
+    elif st.session_state.actual_app_mode == "Fish":
+        if not FISH_AVAILABLE:
+            st.error("Файлы fish_mobile.py и fish_desktop.py еще не созданы. Жду подкрепления.")
+        elif st.session_state.actual_view_type == "📱 Mobile":
+            fish_mobile.show()
+        else:
+            fish_desktop.show()
     else:
         if st.session_state.actual_view_type == "📱 Mobile":
             mobile.show()
