@@ -40,6 +40,10 @@ def get_worksheets():
         res["PostflopHistory"] = sh.worksheet("PostflopHistory")
     except:
         pass
+    try:
+        res["FishHistory"] = sh.worksheet("FishHistory")
+    except:
+        pass
     return res
 
 @st.cache_data(ttl=60)
@@ -108,14 +112,20 @@ def init_cloud_data():
             
         st.session_state["history_buffer"] = []
         st.session_state["pf_history_buffer"] = []
+        st.session_state["fish_history_buffer"] = []
         st.session_state["unsaved_count"] = 0
         st.session_state["settings_changed"] = False
         st.session_state["app_initialized"] = True
 
 # --- GAMIFICATION CORE ---
-def load_user_stats(is_postflop=False):
+def load_user_stats(is_postflop=False, is_fish=False):
     init_cloud_data()
-    if is_postflop:
+    if is_fish:
+        try:
+            with open("fish_stats.json", "r") as f: stats = json.load(f)
+        except:
+            stats = {}
+    elif is_postflop:
         try:
             with open("postflop_stats.json", "r") as f: stats = json.load(f)
         except:
@@ -133,8 +143,10 @@ def load_user_stats(is_postflop=False):
     if "spot_mastery" not in stats: stats["spot_mastery"] = {}
     return stats
 
-def save_user_stats(stats, is_postflop=False):
-    if is_postflop:
+def save_user_stats(stats, is_postflop=False, is_fish=False):
+    if is_fish:
+        with open("fish_stats.json", "w") as f: json.dump(stats, f)
+    elif is_postflop:
         with open("postflop_stats.json", "w") as f: json.dump(stats, f)
     else:
         sets = st.session_state.get("user_settings", {})
@@ -274,8 +286,8 @@ def get_spot_mastery_info(spot_data_dict):
         "is_rusty": is_rusty, "prog_pct": prog_pct, "total": total, "next": info["nt"], "svg": info["svg"]
     }
 
-def process_gamification(is_correct, combo, session_total_hands, spot_key=None, shield_used=False, is_postflop=False):
-    stats = load_user_stats(is_postflop=is_postflop)
+def process_gamification(is_correct, combo, session_total_hands, spot_key=None, shield_used=False, is_postflop=False, is_fish=False):
+    stats = load_user_stats(is_postflop=is_postflop, is_fish=is_fish)
     now_date = datetime.now().date()
     now_date_str = now_date.strftime("%Y-%m-%d")
     alerts = []
@@ -356,7 +368,7 @@ def process_gamification(is_correct, combo, session_total_hands, spot_key=None, 
         if len(s_data["h"]) > 100: s_data["h"] = s_data["h"][-100:]
         stats["spot_mastery"][spot_key] = s_data
 
-    save_user_stats(stats, is_postflop=is_postflop)
+    save_user_stats(stats, is_postflop=is_postflop, is_fish=is_fish)
     return alerts, reward_val
 
 # --- ADAPTIVE SRS ALGORITHM ---
@@ -379,18 +391,26 @@ def update_srs_auto(spot_id, hand, is_correct):
     st.session_state["unsaved_count"] += 1
     check_auto_sync()
 
-def load_user_settings(is_postflop=False, **kwargs):
+def load_user_settings(is_postflop=False, is_fish=False, **kwargs):
     init_cloud_data()
     settings = st.session_state.get("user_settings", {})
-    if is_postflop:
+    if is_fish:
+        if "fish_settings" not in settings:
+            settings["fish_settings"] = {}
+        return settings["fish_settings"]
+    elif is_postflop:
         if "postflop_settings" not in settings:
             settings["postflop_settings"] = {}
         return settings["postflop_settings"]
     return settings
 
-def save_user_settings(settings, is_postflop=False, **kwargs):
+def save_user_settings(settings, is_postflop=False, is_fish=False, **kwargs):
     init_cloud_data()
-    if is_postflop:
+    if is_fish:
+        curr = st.session_state.get("user_settings", {})
+        curr["fish_settings"] = settings
+        st.session_state["user_settings"] = curr
+    elif is_postflop:
         curr = st.session_state.get("user_settings", {})
         curr["postflop_settings"] = settings
         st.session_state["user_settings"] = curr
@@ -400,22 +420,40 @@ def save_user_settings(settings, is_postflop=False, **kwargs):
     st.session_state["unsaved_count"] += 1
     check_auto_sync()
 
-def save_to_history(record, is_postflop=False):
+def save_to_history(record, is_postflop=False, is_fish=False):
     init_cloud_data()
-    row = [
-        str(record.get("Date", "")), 
-        str(record.get("Spot", "")), 
-        str(record.get("Hand", "")), 
-        str(record.get("Result", "")), 
-        str(record.get("CorrectAction", "")),
-        str(record.get("UserAction", ""))
-    ]
-    if is_postflop:
-        if "pf_history_buffer" not in st.session_state: st.session_state["pf_history_buffer"] = []
-        st.session_state["pf_history_buffer"].append(row)
+    
+    if is_fish:
+        fish_row = [
+            str(record.get("Date", "")),
+            str(record.get("Fish_Type", "")),
+            str(record.get("Position", "")),
+            str(record.get("Action_Line", "")),
+            str(record.get("Texture", "")),
+            str(record.get("Runout", "")),
+            str(record.get("Hand", "")),
+            str(record.get("Action_Taken", "")),
+            str(record.get("Correct_Action", "")),
+            str(record.get("Result", "0")),
+            str(record.get("XP", "0"))
+        ]
+        if "fish_history_buffer" not in st.session_state: st.session_state["fish_history_buffer"] = []
+        st.session_state["fish_history_buffer"].append(fish_row)
     else:
-        if "history_buffer" not in st.session_state: st.session_state["history_buffer"] = []
-        st.session_state["history_buffer"].append(row)
+        row = [
+            str(record.get("Date", "")), 
+            str(record.get("Spot", "")), 
+            str(record.get("Hand", "")), 
+            str(record.get("Result", "")), 
+            str(record.get("CorrectAction", "")),
+            str(record.get("UserAction", ""))
+        ]
+        if is_postflop:
+            if "pf_history_buffer" not in st.session_state: st.session_state["pf_history_buffer"] = []
+            st.session_state["pf_history_buffer"].append(row)
+        else:
+            if "history_buffer" not in st.session_state: st.session_state["history_buffer"] = []
+            st.session_state["history_buffer"].append(row)
     
     st.session_state["unsaved_count"] += 1
     check_auto_sync()
@@ -451,6 +489,19 @@ def force_sync():
         except Exception as e:
             sync_success = False
             print(f"PF History Sync error: {e}")
+
+    if "fish_history_buffer" in st.session_state and st.session_state["fish_history_buffer"]:
+        try:
+            if "FishHistory" in sheets:
+                sheets["FishHistory"].append_rows(st.session_state["fish_history_buffer"])
+            else:
+                with open("fish_history.csv", "a") as f:
+                    for row in st.session_state["fish_history_buffer"]:
+                        f.write(",".join(map(str, row)) + "\n")
+            st.session_state["fish_history_buffer"] = []
+        except Exception as e:
+            sync_success = False
+            print(f"Fish History Sync error: {e}")
 
     if st.session_state.get("settings_changed"):
         try:
@@ -518,6 +569,28 @@ def load_postflop_ranges():
                     if sc not in db[src]: db[src][sc] = {}
                     db[src][sc].update(data.get("spots", {}))
                 except Exception as e: st.error(f"Read error {file}: {e}")
+    return db
+
+@st.cache_data(ttl=0)
+def load_fish_data():
+    """
+    Тянет все данные рыбы. Структура: db[fish_type][texture] = JSON
+    """
+    db = {}
+    fish_dir = 'fish_data'
+    if not os.path.exists(fish_dir): return db
+    for ftype in os.listdir(fish_dir):
+        ftype_path = os.path.join(fish_dir, ftype)
+        if os.path.isdir(ftype_path):
+            db[ftype] = {}
+            for file in os.listdir(ftype_path):
+                if file.endswith('.json'):
+                    texture = file.replace('.json', '')
+                    with open(os.path.join(ftype_path, file), 'r', encoding='utf-8') as f:
+                        try:
+                            db[ftype][texture] = json.load(f)
+                        except Exception as e:
+                            st.error(f"Ошибка загрузки рыбы {file}: {e}")
     return db
 
 ALL_HANDS = []
