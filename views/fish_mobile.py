@@ -68,10 +68,6 @@ def generate_mobile_theme(bg_rad1, bg_rad2, shadow1, shadow2, shadow3, seat_rad,
     @keyframes {anim_name}_plate {{ 0%,100% {{ box-shadow: 0 4px 8px {pulse_shadow1}; }} 50% {{ box-shadow: 0 4px 20px {pulse_shadow2}; }} }}
     
     .mob-info-spot {{ color: {text_color} !important; text-shadow: 0 1px 4px rgba(0,0,0,0.95) !important; }}
-    .mastery-badge {{ background: {badge_bg} !important; border: 1px solid {seat_border} !important; color: {text_color} !important; text-shadow: 0 0 6px rgba(0,0,0,0.4) !important; }}
-    .mastery-bar-fill {{ background: {bar_fill} !important; }}
-    .hands-left-mob {{ color: {text_color} !important; opacity: 0.8; }}
-    .floating-reward {{ color: {text_color} !important; }}
     .card-mob {{ background: {card_bg} !important; border: 1px solid {card_border} !important; }}
     .rng-badge {{ color: {text_color} !important; background: {rng_bg} !important; border: 1.5px solid {seat_border} !important; }}
     .hero-plate {{ border-color: {seat_act_border} !important; }}
@@ -92,9 +88,8 @@ def show():
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap');
 
-        .pf-pot-badge { position: absolute; top: 28%; left: 50%; transform: translateX(-50%); z-index: 15; }
-        .pf-board { position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
-        .pf-mastery { position: absolute; bottom: -60px; left: 5%; z-index: 15; width: 100px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; pointer-events: none;}
+        .pf-pot-badge { position: absolute; top: 26%; left: 50%; transform: translateX(-50%); z-index: 15; }
+        .pf-board { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
         
         .mobile-game-area { margin-top: 50px !important; margin-bottom: 55px !important; }
         .rng-hint-wrap { margin-top: 12px !important; margin-bottom: 8px !important; }
@@ -127,10 +122,11 @@ def show():
             box-shadow: 0 0 25px rgba(220,53,69,0.6), inset 0 0 15px rgba(220,53,69,0.4) !important;
         }
 
-        .mastery-badge { display: inline-flex !important; align-items: center !important; gap: 4px !important; border-radius: 20px !important; padding: 2px 9px 2px 7px !important; font-size: 9.5px !important; font-weight: 700 !important; letter-spacing: 0.05em !important; white-space: nowrap; }
-        .mastery-bar-bg { width: 60px !important; height: 2px !important; background: rgba(255,255,255,0.07) !important; border-radius: 2px !important; overflow: hidden !important; }
-        .mastery-bar-fill { height: 100% !important; border-radius: 2px !important; }
-        .hands-left-mob { font-size: 8.5px !important; letter-spacing: 0.06em !important; white-space: nowrap; text-align: left; }
+        .pf-mastery { position: absolute; bottom: 25px; left: 25px; z-index: 15; width: 100px; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; pointer-events: none;}
+        .mastery-badge { background: #111; border: 1px solid rgba(255,255,255,0.2); color: #fff; display: inline-flex; align-items: center; gap: 3px; border-radius: 20px; padding: 2px 8px; font-size: 9px; font-weight: 700; letter-spacing: 0.05em; }
+        .mastery-bar-bg { width: 60px; height: 3px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; margin-top: 2px; }
+        .mastery-bar-fill { height: 100%; border-radius: 3px; background: #0dcaf0; }
+        .hands-left { font-size: 9px; letter-spacing: 0.06em; margin-top: 2px; color: rgba(255,255,255,0.7); text-align: left; }
 
         .seat { position: absolute !important; z-index: 20 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 0 !important; width: 56px !important; height: 46px !important; background: transparent !important; border: none !important; box-shadow: none !important; }
         .ava { width: 50px !important; height: 25px !important; background: linear-gradient(180deg, #2a2d32 0%, #1c1e22 100%) !important; border-radius: 50px 50px 0 0 !important; border: 1.5px solid #3a3d42 !important; border-bottom: none !important; box-shadow: inset 0 2px 4px rgba(255,255,255,0.05) !important; transition: all 0.3s ease !important; }
@@ -169,8 +165,8 @@ def show():
         .hero-cards-wrap { display: flex !important; gap: 5px !important; position: relative !important; }
         .hero-plate { width: 84px !important; height: 18px !important; background: #141518 !important; border-radius: 4px !important; border: 1.5px solid #ffc107 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 6px !important; box-sizing: border-box !important; font-size: 10px !important; font-weight: bold !important; box-shadow: 0 4px 10px rgba(0,0,0,0.6) !important; transition: border-color 0.3s; }
         
-        .floating-reward { position: absolute !important; top: -38px !important; left: 50% !important; transform: translateX(-50%) !important; font-size: 14px !important; font-weight: 800 !important; color: #17f07e !important; text-shadow: 0 0 12px rgba(23,240,126,0.8), 0 0 28px rgba(23,240,126,0.3) !important; white-space: nowrap !important; animation: float-reward 2.2s ease-out forwards !important; pointer-events: none !important; }
-        @keyframes float-reward { 0%   { opacity: 1; transform: translateX(-50%) translateY(0); } 100% { opacity: 0; transform: translateX(-50%) translateY(-24px); } }
+        .floating-reward { position: absolute !important; top: -38px !important; left: 50% !important; transform: translateX(-50%) !important; font-size: 18px !important; font-weight: 900 !important; text-shadow: 0px 2px 5px rgba(0,0,0,0.9), 0px 0px 2px #000 !important; z-index: 100 !important; pointer-events: none !important; animation: float-reward 1.2s ease-out forwards !important; }
+        @keyframes float-reward { 0%   { opacity: 1; transform: translate(-50%, 0) scale(0.8); } 20% { opacity: 1; transform: translate(-50%, -15px) scale(1.2); } 100% { opacity: 0; transform: translate(-50%, -50px) scale(1); } }
 
         .card-mob { width: 44px !important; height: 62px !important; border-radius: 5px !important; position: relative !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; overflow: hidden !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -6px 16px rgba(0,0,0,0.7), 0 -12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1) !important;}
         .card-mob::after { content: '' !important; position: absolute !important; top: 0 !important; left: 0 !important; width: 60% !important; height: 45% !important; background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; pointer-events: none !important; border-radius: 5px 0 0 0 !important; }
@@ -664,8 +660,14 @@ def show():
         suit = map_suit(card[-1])
         sc = get_suit_color_class(suit)
         board_html += f'<div class="board-card-mob"><div class="bc-tl-mob {sc}">{rank_str}</div><div class="bc-c-mob {sc}">{suit}</div></div>'
+        
+    mastery_html = f"""<div class="pf-mastery">
+        <div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div>
+        <div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width: {m_pct}%;"></div></div>
+        <div class="hands-left-mob">{hands_left_text}</div>
+    </div>"""
 
-    html = f'<div class="mobile-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge"><div class="pot-badge-mob">Pot: {display_pot} bb</div></div><div class="pf-board"><div class="board-container-mob">{board_html}</div></div><div class="pf-mastery"><div class="mastery-badge rusty-{m_rust}">{m_icon} {m_name}</div><div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width:{m_pct}%;"></div></div><div class="hands-left-mob">{hands_left_text}</div></div>{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{st.session_state.fish_rng}</div></div><div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div></div></div>'
+    html = f'<div class="mobile-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge"><div class="pot-badge-mob">Pot: {display_pot} bb</div></div><div class="pf-board"><div class="board-container-mob">{board_html}</div></div>{mastery_html}{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{st.session_state.fish_rng}</div></div><div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div></div></div>'
     
     st.markdown(html, unsafe_allow_html=True)
 
@@ -779,6 +781,7 @@ def show():
             curr_stats["max_combo"] = c_new
             
         safe_save_stats(curr_stats)
+        st.session_state.fish_anim_reward = reward_val
         
         parts = chosen_key.split('|')
         safe_save_history({
