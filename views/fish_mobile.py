@@ -655,10 +655,10 @@ def show():
         sc = get_suit_color_class(suit)
         board_html += f'<div class="board-card-mob"><div class="bc-tl-mob {sc}">{rank_str}</div><div class="bc-c-mob {sc}">{suit}</div></div>'
         
-    mastery_html = f"""<div style="position: absolute; bottom: -58px; left: 10px; z-index: 15; width: 100px; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; pointer-events: none;">
+    mastery_html = f"""<div style="position: absolute; bottom: -78px; left: 10px; z-index: 15; width: 100px; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; pointer-events: none;">
         <div style="display: inline-flex; align-items: center; gap: 4px; border-radius: 20px; padding: 2px 9px 2px 7px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.05em; white-space: nowrap; background: #111; border: 1px solid rgba(255,255,255,0.2); color: #fff; text-shadow: 0 0 6px rgba(0,0,0,0.4);">{m_icon} {m_name}</div>
         <div style="width: 60px; height: 2px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden;"><div style="height: 100%; border-radius: 2px; background: #0dcaf0; width: {m_pct}%;"></div></div>
-        <div style="font-size: 8px !important; letter-spacing: 0.05em !important; margin-top: 2px !important; color: rgba(255,255,255,0.7) !important; text-align: left !important; white-space: nowrap !important;">{hands_left_text}</div>
+        <div style="font-size: 5px !important; letter-spacing: 0.05em !important; margin-top: 2px !important; color: rgba(255,255,255,0.7) !important; text-align: left !important; white-space: nowrap !important;">{hands_left_text}</div>
     </div>"""
 
     html = f'<div class="mobile-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge"><div class="pot-badge-mob">Pot: {display_pot} bb</div></div><div class="pf-board"><div class="board-container-mob">{board_html}</div></div>{mastery_html}{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{st.session_state.fish_rng}</div></div><div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div></div></div>'
