@@ -92,17 +92,13 @@ def show():
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap');
 
-        /* ==========================================
-           НАСТРОЙКИ ОТСТУПОВ (ДЛЯ АЙФОНА) FISH
-           ========================================== */
-        .pf-pot-badge { position: absolute; top: 26%; left: 50%; transform: translateX(-50%); z-index: 15; }
-        .pf-board { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
+        .pf-pot-badge { position: absolute; top: 28%; left: 50%; transform: translateX(-50%); z-index: 15; }
+        .pf-board { position: absolute; top: 52%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
         .pf-mastery { position: absolute; bottom: -60px; left: 5%; z-index: 15; width: 100px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; pointer-events: none;}
         
         .mobile-game-area { margin-top: 50px !important; margin-bottom: 55px !important; }
         .rng-hint-wrap { margin-top: 12px !important; margin-bottom: 8px !important; }
         div[data-testid="stHorizontalBlock"] { margin-top: 0px !important; gap: 8px !important; }
-        /* ------------------------------------------ */
 
         .block-container { padding-top: 1.5rem !important; padding-bottom: 1rem !important; max-width: 100% !important; overflow-x: hidden !important; }
         [data-testid="stExpander"] { margin-top: -5px !important; }
@@ -784,14 +780,14 @@ def show():
             
         safe_save_stats(curr_stats)
         
-        spot = st.session_state.fish_current_spot
+        parts = chosen_key.split('|')
         safe_save_history({
             "Date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 
-            "Fish_Type": spot.get("vpip", ""),
-            "Position": spot.get("pos", ""),
-            "Action_Line": spot.get("line", ""),
-            "Texture": spot.get("texture", ""),
-            "Runout": spot.get("runout", ""),
+            "Fish_Type": parts[0] if len(parts) > 0 else "",
+            "Position": parts[2] if len(parts) > 2 else "",
+            "Action_Line": parts[3] if len(parts) > 3 else "",
+            "Texture": parts[1] if len(parts) > 1 else "",
+            "Runout": parts[4] if len(parts) > 4 else "",
             "Hand": f"{h_val}", 
             "Action_Taken": action,
             "Correct_Action": correct_act, 
