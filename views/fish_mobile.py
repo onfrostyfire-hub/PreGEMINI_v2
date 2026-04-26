@@ -72,6 +72,10 @@ def generate_mobile_theme(bg_rad1, bg_rad2, shadow1, shadow2, shadow3, seat_rad,
     .rng-badge {{ color: {text_color} !important; background: {rng_bg} !important; border: 1.5px solid {seat_border} !important; }}
     .hero-plate {{ border-color: {seat_act_border} !important; }}
     .hero-plate .pos {{ color: {seat_act_border} !important; }}
+    
+    /* ИКОНКА ONENOTE */
+    .info-hook {{ position: absolute; top: 12px; left: 15px; width: 22px; height: 22px; background: rgba(0,0,0,0.6); border: 1.5px solid rgba(255,255,255,0.4); border-radius: 50%; color: #fff; display: flex; justify-content: center; align-items: center; font-weight: bold; font-family: serif; text-decoration: none; transition: 0.2s; z-index: 100; font-size: 12px; text-shadow: none; }}
+    .info-hook:active {{ background: #0dcaf0; color: #000; border-color: #0dcaf0; box-shadow: 0 0 8px #0dcaf0; }}
     </style>"""
 
 THEMES = {
@@ -661,7 +665,10 @@ def show():
         <div style="font-size: 9px !important; transform: scale(0.6); transform-origin: left top; letter-spacing: 0.05em !important; margin-top: 2px !important; color: rgba(255,255,255,0.7) !important; text-align: left !important; white-space: nowrap !important;">{hands_left_text}</div>
     </div>"""
 
-    html = f'<div class="mobile-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge"><div class="pot-badge-mob">Pot: {display_pot} bb</div></div><div class="pf-board"><div class="board-container-mob">{board_html}</div></div>{mastery_html}{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{st.session_state.fish_rng}</div></div><div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div></div></div>'
+    onenote = setup.get("info_link", setup.get("onenote_url", ""))
+    hook_html = f'<a href="{onenote}" target="_blank" class="info-hook">i</a>' if onenote else ""
+
+    html = f'<div class="mobile-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge"><div class="pot-badge-mob">Pot: {display_pot} bb</div></div><div class="pf-board"><div class="board-container-mob">{board_html}</div></div>{hook_html}{mastery_html}{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{st.session_state.fish_rng}</div></div><div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div></div></div>'
     
     st.markdown(html, unsafe_allow_html=True)
 
