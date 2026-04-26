@@ -666,7 +666,10 @@ def show():
     </div>"""
 
     onenote = setup.get("info_link", setup.get("onenote_url", ""))
-    hook_html = f'<a href="{onenote}" target="_blank" class="info-hook">i</a>' if onenote else ""
+    if onenote:
+        hook_html = f'<a href="{onenote}" target="_blank" class="info-hook" title="Open Range in OneNote">i</a>'
+    else:
+        hook_html = f'<a href="#" target="_blank" class="info-hook" style="opacity:0.3; cursor:default;" onclick="return false;" title="No link">i</a>'
 
     html = f'<div class="mobile-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge"><div class="pot-badge-mob">Pot: {display_pot} bb</div></div><div class="pf-board"><div class="board-container-mob">{board_html}</div></div>{hook_html}{mastery_html}{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{st.session_state.fish_rng}</div></div><div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div></div></div>'
     
