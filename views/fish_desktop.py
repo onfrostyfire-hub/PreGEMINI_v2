@@ -207,7 +207,7 @@ def show():
         .pf-btn-0 button:active { box-shadow: 0 1px 0 #0c0d12, inset 0 1px 0 rgba(255,255,255,0.05), 0 0 25px rgba(255,255,255,0.15) !important; filter: brightness(1.5) !important; }
         .pf-btn-0 button p { color: rgba(190,190,205,0.8) !important; }
 
-        .pf-btn-1 button { background: linear-gradient(180deg, #0c3828 0%, #071e16 100%) !important; box-shadow: 0 4px 0 #030f0b, 0 8px 25px rgba(0,180,80,0.15), inset 0 1px 0 rgba(0,230,110,0.12), inset 0 0 0 1px rgba(0,200,90,0.1) !important; }
+        .pf-btn-1 button { background: linear-gradient(180deg, #0c3828 0%, #071e16 100%) !important; box-shadow: 0 5px 0 #030f0b, 0 8px 25px rgba(0,180,80,0.15), inset 0 1px 0 rgba(0,230,110,0.12), inset 0 0 0 1px rgba(0,200,90,0.1) !important; }
         .pf-btn-1 button:active { box-shadow: 0 1px 0 #030f0b, inset 0 1px 0 rgba(0,200,90,0.08), 0 0 25px rgba(0,255,100,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
         .pf-btn-1 button p { color: rgba(50,220,130,0.92) !important; text-shadow: 0 0 15px rgba(30,200,100,0.4) !important; }
 
@@ -309,8 +309,9 @@ def show():
 
     stats_data_init = safe_load_stats()
     if 'fish_shields' not in st.session_state: st.session_state.fish_shields = stats_data_init.get("shields", 0)
+    if 'fish_combo' not in st.session_state: st.session_state.fish_combo = stats_data_init.get("combo", 0)
 
-    for k in ['fish_combo', 'fish_session_hands', 'fish_session_correct', 'fish_rng']:
+    for k in ['fish_session_hands', 'fish_session_correct', 'fish_rng']:
         if k not in st.session_state: st.session_state[k] = 0
     if 'fish_toast_msgs' not in st.session_state: st.session_state.fish_toast_msgs = []
     if st.session_state.fish_toast_msgs:
@@ -649,14 +650,17 @@ def show():
         sc = get_suit_color_class(suit)
         board_html += f'<div class="board-card-desk"><div class="bc-tl-desk {sc}">{rank_str}</div><div class="bc-c-desk {sc}">{suit}</div></div>'
         
-    mastery_html = f"""<div style="position: absolute; bottom: 35px; left: 35px; z-index: 15; width: 120px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; pointer-events: none;">
+    mastery_html = f"""<div style="position: absolute; bottom: -60px; left: 20px; z-index: 15; width: 120px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; pointer-events: none;">
         <div style="background: #111; border: 1px solid rgba(255,255,255,0.2); color: #fff; display: inline-flex; align-items: center; gap: 4px; border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em;">{m_icon} {m_name}</div>
         <div style="width: 80px; height: 3px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; margin-top: 2px;"><div style="height: 100%; border-radius: 3px; background: #0dcaf0; width: {m_pct}%;"></div></div>
         <div style="font-size: 10px; letter-spacing: 0.06em; margin-top: 2px; color: rgba(255,255,255,0.7);">{hands_left_text}</div>
     </div>"""
 
     onenote = setup.get("info_link", setup.get("onenote_url", ""))
-    hook_html = f'<a href="{onenote}" target="_blank" class="info-hook" title="Open Range in OneNote">i</a>' if onenote else ""
+    if onenote:
+        hook_html = f'<a href="{onenote}" target="_blank" class="info-hook" title="Open Range in OneNote">i</a>'
+    else:
+        hook_html = f'<a href="#" target="_blank" class="info-hook" style="opacity:0.3; cursor:default;" onclick="return false;" title="No link">i</a>'
 
     html = f'<div class="desktop-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge-desk"><div class="pot-badge-desk">Pot: {display_pot} bb</div></div><div class="pf-board-desk"><div class="board-container-desk">{board_html}</div></div>{hook_html}{mastery_html}{opp_html}{chips_html}<div class="hero-desk">{anim_html}<div class="hero-cards-wrap-desk"><div class="card-desk"><div class="tl-desk {c1}">{r1}<br>{s1}</div><div class="c-desk {c1}">{s1}</div></div><div class="card-desk"><div class="tl-desk {c2}">{r2}<br>{s2}</div><div class="c-desk {c2}">{s2}</div></div><div class="rng-badge-desk">{st.session_state.fish_rng}</div></div><div class="hero-plate-desk"><span class="pos-desk">HERO {hero_pos}</span><span class="stack-desk">{hero_stack}</span></div></div></div>'
     
