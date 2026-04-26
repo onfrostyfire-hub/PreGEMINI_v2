@@ -658,9 +658,12 @@ def show():
 
     onenote = setup.get("info_link", setup.get("onenote_url", ""))
     if onenote:
-        hook_html = f'<a href="{onenote}" target="_blank" class="info-hook" title="Open Range in OneNote">i</a>'
+        # Принудительно сажаем на протокол приложения
+        if not onenote.startswith("onenote:"):
+            onenote = f"onenote:{onenote}"
+        hook_html = f'<a href="{onenote}" class="info-hook" title="Open in App">i</a>'
     else:
-        hook_html = f'<a href="#" target="_blank" class="info-hook" style="opacity:0.3; cursor:default;" onclick="return false;" title="No link">i</a>'
+        hook_html = f'<a href="#" class="info-hook" style="opacity:0.3; cursor:default;" onclick="return false;" title="No link">i</a>'
 
     html = f'<div class="desktop-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge-desk"><div class="pot-badge-desk">Pot: {display_pot} bb</div></div><div class="pf-board-desk"><div class="board-container-desk">{board_html}</div></div>{hook_html}{mastery_html}{opp_html}{chips_html}<div class="hero-desk">{anim_html}<div class="hero-cards-wrap-desk"><div class="card-desk"><div class="tl-desk {c1}">{r1}<br>{s1}</div><div class="c-desk {c1}">{s1}</div></div><div class="card-desk"><div class="tl-desk {c2}">{r2}<br>{s2}</div><div class="c-desk {c2}">{s2}</div></div><div class="rng-badge-desk">{st.session_state.fish_rng}</div></div><div class="hero-plate-desk"><span class="pos-desk">HERO {hero_pos}</span><span class="stack-desk">{hero_stack}</span></div></div></div>'
     
