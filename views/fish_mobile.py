@@ -54,139 +54,187 @@ def fish_get_weight(hand, r_str):
         if h == hand: return w
     return 0.0
 
-def generate_desktop_theme(bg_rad1, bg_rad2, shadow1, shadow2, shadow3, seat_rad, seat_border, seat_act_border, seat_act_shadow, anim_name, pulse_shadow1, pulse_shadow2, text_color, badge_bg, bar_fill, card_bg, card_border, rng_bg):
+def generate_mobile_theme(bg_rad1, bg_rad2, shadow1, shadow2, shadow3, seat_rad, seat_border, seat_act_border, seat_act_shadow, anim_name, pulse_shadow1, pulse_shadow2, text_color, badge_bg, bar_fill, card_bg, card_border, rng_bg):
     return f"""<style>
-    .desktop-game-area {{ background: radial-gradient(ellipse 50% 38% at 50% 42%, {bg_rad1} 0%, transparent 70%), radial-gradient(ellipse 88% 78% at 50% 50%, {bg_rad2}) !important; border-color: {shadow1} !important; }}
-    .seat-active-desk .ava-desk, .seat-active-desk .plate-desk {{ border-color: {seat_act_border} !important; }}
-    .seat-active-desk .ava-desk {{ box-shadow: 0 -4px 10px {pulse_shadow1}, inset 0 2px 4px rgba(255,255,255,0.1) !important; animation: {anim_name}_ava 2.6s ease-in-out infinite !important; }}
-    .seat-active-desk .plate-desk {{ box-shadow: 0 4px 10px {pulse_shadow1} !important; animation: {anim_name}_plate 2.6s ease-in-out infinite !important; }}
+    .mobile-game-area {{ 
+        background: radial-gradient(ellipse 50% 38% at 50% 42%, {bg_rad1} 0%, transparent 70%), radial-gradient(ellipse 88% 78% at 50% 50%, {bg_rad2}) !important; 
+        border-color: {shadow1} !important; 
+    }}
+    .seat-active .ava, .seat-active .plate {{ border-color: {seat_act_border} !important; }}
+    .seat-active .ava {{ box-shadow: 0 -4px 10px {pulse_shadow1}, inset 0 2px 4px rgba(255,255,255,0.1) !important; animation: {anim_name}_ava 2.6s ease-in-out infinite !important; }}
+    .seat-active .plate {{ box-shadow: 0 4px 10px {pulse_shadow1} !important; animation: {anim_name}_plate 2.6s ease-in-out infinite !important; }}
+    
     @keyframes {anim_name}_ava {{ 0%,100% {{ box-shadow: 0 -4px 8px {pulse_shadow1}, inset 0 2px 4px rgba(255,255,255,0.1); }} 50% {{ box-shadow: 0 -4px 20px {pulse_shadow2}, inset 0 2px 4px rgba(255,255,255,0.1); }} }}
     @keyframes {anim_name}_plate {{ 0%,100% {{ box-shadow: 0 4px 8px {pulse_shadow1}; }} 50% {{ box-shadow: 0 4px 20px {pulse_shadow2}; }} }}
-    .card-desk {{ background: {card_bg} !important; border: 1px solid {card_border} !important; }}
-    .rng-badge-desk {{ color: {text_color} !important; background: {rng_bg} !important; border: 1.5px solid {seat_border} !important; }}
-    .hero-plate-desk {{ border-color: {seat_act_border} !important; }}
-    .hero-plate-desk .pos-desk {{ color: {seat_act_border} !important; }}
+    
+    .mob-info-spot {{ color: {text_color} !important; text-shadow: 0 1px 4px rgba(0,0,0,0.95) !important; }}
+    .card-mob {{ background: {card_bg} !important; border: 1px solid {card_border} !important; }}
+    .rng-badge {{ color: {text_color} !important; background: {rng_bg} !important; border: 1.5px solid {seat_border} !important; }}
+    .hero-plate {{ border-color: {seat_act_border} !important; }}
+    .hero-plate .pos {{ color: {seat_act_border} !important; }}
+    
     /* ИКОНКА ONENOTE */
-    .info-hook {{ position: absolute; top: 15px; left: 20px; width: 26px; height: 26px; background: rgba(0,0,0,0.6); border: 1.5px solid rgba(255,255,255,0.4); border-radius: 50%; color: #fff; display: flex; justify-content: center; align-items: center; font-weight: bold; font-family: serif; text-decoration: none; transition: 0.2s; z-index: 100; font-size: 14px; text-shadow: none; }}
-    .info-hook:hover {{ background: #0dcaf0; color: #000; border-color: #0dcaf0; box-shadow: 0 0 12px #0dcaf0; }}
+    .info-hook {{ position: absolute; top: 282px; left: 245px; width: 22px; height: 22px; background: rgba(0,0,0,0.6); border: 1.5px solid rgba(255,255,255,0.4); border-radius: 50%; color: #fff; display: flex; justify-content: center; align-items: center; font-weight: bold; font-family: serif; text-decoration: none; transition: 0.2s; z-index: 100; font-size: 12px; text-shadow: none; }}
+    .info-hook:active {{ background: #0dcaf0; color: #000; border-color: #0dcaf0; box-shadow: 0 0 8px #0dcaf0; }}
     </style>"""
 
 THEMES = {
-    0: {"icon": "⚪", "name": "Sandbox", "css": generate_desktop_theme("rgba(50,55,60,0.5)", "#202428 0%, #15181a 55%, #0a0b0d 100%", "#1f2329", "#16181b", "#0b0d0f", "#1f2226 0%, #111316 60%, #08090a 100%", "rgba(140,150,160,0.18)", "rgba(160,170,180,0.55)", "rgba(160,170,180,0.48)", "r0-pulse", "rgba(160,170,180,0.38)", "rgba(160,170,180,0.7)", "rgba(150,160,170,0.9)", "rgba(150,160,170,0.09)", "linear-gradient(90deg, #8b959e, #5b636a)", "#f8faff", "rgba(255,255,255,0.85)", "rgba(150,160,170,0.09)")},
-    1: {"icon": "🌱", "name": "Basic", "css": generate_desktop_theme("rgba(30,55,38,0.5)", "#1a2e20 0%, #111e16 55%, #090e0b 100%", "#182b1d", "#182219", "#0b100d", "#1a2d21 0%, #0e1a12 60%, #080d0a 100%", "rgba(120,160,130,0.18)", "rgba(120,180,140,0.55)", "rgba(120,180,140,0.45)", "r1-pulse", "rgba(120,180,140,0.38)", "rgba(120,180,140,0.7)", "rgba(130,190,150,0.9)", "rgba(120,180,140,0.08)", "linear-gradient(90deg, #6ab880, #4a9060)", "#f8faff", "rgba(255,255,255,0.85)", "rgba(120,180,140,0.08)")},
-    2: {"icon": "💎", "name": "Solid", "css": generate_desktop_theme("rgba(10,50,80,0.6)", "#0b3040 0%, #071e2e 58%, #030e18 100%", "#0c2738", "#0f2234", "#060e17", "#162840 0%, #0c1a28 60%, #060e18 100%", "rgba(60,130,200,0.22)", "rgba(60,160,255,0.78)", "rgba(60,160,255,0.42)", "r2-pulse", "rgba(60,160,255,0.34)", "rgba(60,160,255,0.62)", "rgba(80,170,255,0.9)", "rgba(60,130,200,0.09)", "linear-gradient(90deg, #3ab0ff, #1480d8)", "#f8faff", "rgba(255,255,255,0.85)", "rgba(60,130,200,0.09)")},
-    3: {"icon": "🔥", "name": "Unexploitable", "css": generate_desktop_theme("rgba(90,18,28,0.65)", "#3a0d14 0%, #240810 58%, #0f0408 100%", "#2b0d12", "#2e1014", "#12060a", "#3a1c10 0%, #221008 60%, #0f0804 100%", "rgba(180,110,40,0.28)", "rgba(210,150,50,0.88)", "rgba(210,150,50,0.48)", "r3-pulse", "rgba(210,150,50,0.4)", "rgba(220,165,60,0.68)", "rgba(220,165,65,0.9)", "rgba(180,110,40,0.09)", "linear-gradient(90deg, #d49030, #a86018)", "linear-gradient(145deg, #f5f0e8 0%, #ede5d4 100%)", "rgba(210,175,110,0.7)", "rgba(180,110,40,0.09)")},
-    4: {"icon": "⚡", "name": "Elite", "css": generate_desktop_theme("rgba(55,20,90,0.6)", "#1e0d30 0%, #130820 58%, #07030f 100%", "#1b0b2e", "#1e1028", "#0d0614", "#2a1840 0%, #180e28 60%, #0a0812 100%", "rgba(160,130,220,0.28)", "rgba(190,160,255,0.88)", "rgba(170,130,255,0.52)", "r4-pulse", "rgba(170,130,255,0.42)", "rgba(190,150,255,0.7)", "rgba(190,165,255,0.9)", "rgba(140,110,220,0.09)", "linear-gradient(90deg, #a070ff, #7040d8)", "linear-gradient(150deg, #2a2a32 0%, #1e1e26 100%)", "rgba(200,190,230,0.3)", "rgba(140,110,220,0.09)")},
-    5: {"icon": "☢️", "name": "Solver", "css": generate_desktop_theme("rgba(60,50,10,0.5)", "#141410 0%, #0c0c09 55%, #050504 100%", "#1a1a12", "#1c1c16", "#0a0a08", "#1c1a10 0%, #111008 60%, #080806 100%", "rgba(190,158,50,0.3)", "rgba(220,188,70,0.95)", "rgba(220,188,70,0.58)", "r5-pulse", "rgba(220,188,70,0.46)", "rgba(240,205,80,0.78)", "rgba(220,188,70,0.9)", "rgba(190,158,50,0.1)", "linear-gradient(90deg, #d4a820, #a07810)", "linear-gradient(150deg, #1a1a18 0%, #111110 100%)", "rgba(210,180,70,0.38)", "rgba(190,158,50,0.1)")}
+    0: {"icon": "⚪", "name": "Sandbox", "css": generate_mobile_theme("rgba(50,55,60,0.5)", "#202428 0%, #15181a 55%, #0a0b0d 100%", "#1f2329", "#16181b", "#0b0d0f", "#1f2226 0%, #111316 60%, #08090a 100%", "rgba(140,150,160,0.18)", "rgba(160,170,180,0.55)", "rgba(160,170,180,0.48)", "r0-pulse", "rgba(160,170,180,0.38)", "rgba(160,170,180,0.7)", "rgba(150,160,170,0.9)", "rgba(150,160,170,0.09)", "linear-gradient(90deg, #8b959e, #5b636a)", "#f8faff", "rgba(255,255,255,0.85)", "rgba(150,160,170,0.09)")},
+    1: {"icon": "🌱", "name": "Basic", "css": generate_mobile_theme("rgba(30,55,38,0.5)", "#1a2e20 0%, #111e16 55%, #090e0b 100%", "#182b1d", "#182219", "#0b100d", "#1a2d21 0%, #0e1a12 60%, #080d0a 100%", "rgba(120,160,130,0.18)", "rgba(120,180,140,0.55)", "rgba(120,180,140,0.45)", "r1-pulse", "rgba(120,180,140,0.38)", "rgba(120,180,140,0.7)", "rgba(130,190,150,0.9)", "rgba(120,180,140,0.08)", "linear-gradient(90deg, #6ab880, #4a9060)", "#f8faff", "rgba(255,255,255,0.85)", "rgba(120,180,140,0.08)")},
+    2: {"icon": "💎", "name": "Solid", "css": generate_mobile_theme("rgba(10,50,80,0.6)", "#0b3040 0%, #071e2e 58%, #030e18 100%", "#0c2738", "#0f2234", "#060e17", "#162840 0%, #0c1a28 60%, #060e18 100%", "rgba(60,130,200,0.22)", "rgba(60,160,255,0.78)", "rgba(60,160,255,0.42)", "r2-pulse", "rgba(60,160,255,0.34)", "rgba(60,160,255,0.62)", "rgba(80,170,255,0.9)", "rgba(60,130,200,0.09)", "linear-gradient(90deg, #3ab0ff, #1480d8)", "#f8faff", "rgba(255,255,255,0.85)", "rgba(60,130,200,0.09)")},
+    3: {"icon": "🔥", "name": "Unexploitable", "css": generate_mobile_theme("rgba(90,18,28,0.65)", "#3a0d14 0%, #240810 58%, #0f0408 100%", "#2b0d12", "#2e1014", "#12060a", "#3a1c10 0%, #221008 60%, #0f0804 100%", "rgba(180,110,40,0.28)", "rgba(210,150,50,0.88)", "rgba(210,150,50,0.48)", "r3-pulse", "rgba(210,150,50,0.4)", "rgba(220,165,60,0.68)", "rgba(220,165,65,0.9)", "rgba(180,110,40,0.09)", "linear-gradient(90deg, #d49030, #a86018)", "linear-gradient(145deg, #f5f0e8 0%, #ede5d4 100%)", "rgba(210,175,110,0.7)", "rgba(180,110,40,0.09)")},
+    4: {"icon": "⚡", "name": "Elite", "css": generate_mobile_theme("rgba(55,20,90,0.6)", "#1e0d30 0%, #130820 58%, #07030f 100%", "#1b0b2e", "#1e1028", "#0d0614", "#2a1840 0%, #180e28 60%, #0a0812 100%", "rgba(160,130,220,0.28)", "rgba(190,160,255,0.88)", "rgba(170,130,255,0.52)", "r4-pulse", "rgba(170,130,255,0.42)", "rgba(190,150,255,0.7)", "rgba(190,165,255,0.9)", "rgba(140,110,220,0.09)", "linear-gradient(90deg, #a070ff, #7040d8)", "linear-gradient(150deg, #2a2a32 0%, #1e1e26 100%)", "rgba(200,190,230,0.3)", "rgba(140,110,220,0.09)")},
+    5: {"icon": "☢️", "name": "Solver", "css": generate_mobile_theme("rgba(60,50,10,0.5)", "#141410 0%, #0c0c09 55%, #050504 100%", "#1a1a12", "#1c1c16", "#0a0a08", "#1c1a10 0%, #111008 60%, #080806 100%", "rgba(190,158,50,0.3)", "rgba(220,188,70,0.95)", "rgba(220,188,70,0.58)", "r5-pulse", "rgba(220,188,70,0.46)", "rgba(240,205,80,0.78)", "rgba(220,188,70,0.9)", "rgba(190,158,50,0.1)", "linear-gradient(90deg, #d4a820, #a07810)", "linear-gradient(150deg, #1a1a18 0%, #111110 100%)", "rgba(210,180,70,0.38)", "rgba(190,158,50,0.1)")}
 }
 
 def show():
     st.markdown("""
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap');
-        .pf-pot-badge-desk { position: absolute; top: 22%; left: 50%; transform: translateX(-50%); z-index: 15; }
-        .pf-board-desk { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
-        .desktop-game-area { position: relative; width: 100%; max-width: 850px; height: 380px; margin: 20px auto 90px auto; border: 16px solid #1a1c20; border-radius: 200px; box-shadow: 0 10px 40px rgba(0,0,0,0.8), inset 0 3px 15px rgba(0,0,0,0.6); transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }
-        .rng-hint-wrap-desk { text-align: center; color: #6c757d; font-size: 13px; font-family: 'Roboto', sans-serif; font-weight: 500; letter-spacing: 0.5px; margin-bottom: 15px; margin-top: 15px; }
-        div[data-testid="stHorizontalBlock"] { gap: 15px !important; margin-top: 10px; max-width: 850px; margin-left: auto; margin-right: auto; }
-        .block-container { padding-top: 2rem !important; padding-bottom: 2rem !important; max-width: 1200px !important; }
+
+        .pf-pot-badge { position: absolute; top: 26%; left: 50%; transform: translateX(-50%); z-index: 15; }
+        .pf-board { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
+        
+        .mobile-game-area { margin-top: 50px !important; margin-bottom: 55px !important; }
+        .rng-hint-wrap { margin-top: 12px !important; margin-bottom: 8px !important; }
+        div[data-testid="stHorizontalBlock"] { margin-top: 0px !important; gap: 8px !important; }
+
+        .block-container { padding-top: 1.5rem !important; padding-bottom: 1rem !important; max-width: 100% !important; overflow-x: hidden !important; }
+        [data-testid="stExpander"] { margin-top: -5px !important; }
+        
+        div[data-testid="stHorizontalBlock"] { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(10px, 1fr)) !important; width: 100% !important; }
         div[data-testid="column"] { width: 100% !important; min-width: 0 !important; max-width: 100% !important; margin-bottom: 0 !important; }
         div[data-testid="stButton"] { width: 100% !important; }
-        div[data-testid="stButton"] button { width: 100% !important; height: 60px !important; padding: 0 !important; border-radius: 14px !important; border: none !important; transition: transform 0.1s !important; background: #343a40 !important; color: #fff !important; box-shadow: 0 5px 0 #1d2124 !important; }
-        div[data-testid="stButton"] button:active { transform: translateY(5px) !important; box-shadow: 0 0 0 transparent !important; }
-        div[data-testid="stButton"] button p { font-family: 'Roboto', sans-serif !important; font-size: 18px !important; font-weight: 900 !important; margin: 0 !important; letter-spacing: 1px !important; text-transform: uppercase !important; }
-        .cn-desk-header { max-width: 850px; margin: 0 auto 10px auto; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; -webkit-font-smoothing: antialiased; border-radius: 16px; overflow: hidden; position: relative; background: linear-gradient(165deg, rgba(18,22,28,0.92) 0%, rgba(8,10,14,0.96) 100%); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
-        .cn-desk-header::before { content: ''; position: absolute; inset: 0; border-radius: 16px; pointer-events: none; background: linear-gradient(125deg, rgba(255,255,255,0.07) 0%, transparent 42%, transparent 58%, rgba(255,255,255,0.03) 100%); z-index: 0; }
-        .cn-desk-wr-track { height: 4px; width: 100%; background: rgba(0,0,0,0.45); position: relative; z-index: 1; }
-        .cn-desk-wr-fill { height: 100%; transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 12px currentColor; }
-        .cn-desk-inner { position: relative; z-index: 1; padding: 12px 20px 14px; }
-        .cn-desk-row1 { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
-        .cn-desk-rank { font-size: 14px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: rgba(255,214,120,0.95); text-shadow: 0 0 20px rgba(255,200,80,0.25); line-height: 1.15; }
-        .cn-desk-xp-meta { font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; color: rgba(180,190,205,0.85); white-space: nowrap; letter-spacing: 0.02em; }
-        .cn-desk-xp-bar-wrap { flex: 1; min-width: 0; margin-top: 4px; }
-        .cn-desk-xp-bar-bg { height: 6px; border-radius: 6px; background: rgba(0,0,0,0.5); box-shadow: inset 0 1px 3px rgba(0,0,0,0.6); overflow: hidden; }
-        .cn-desk-xp-bar-fill { height: 100%; border-radius: 6px; background: linear-gradient(90deg, #1a7a4a, #2ee88a); box-shadow: 0 0 10px rgba(46,232,138,0.45); transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
-        .cn-desk-row2 { display: flex; align-items: stretch; justify-content: space-between; gap: 10px; margin-top: 4px; }
-        .cn-desk-stat { flex: 1; min-width: 0; }
-        .cn-desk-stat-label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(140,150,165,0.75); margin-bottom: 2px; }
-        .cn-desk-stat-val { font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; line-height: 1.1; }
-        .cn-desk-stat-val.light { color: rgba(245,248,252,0.98); }
-        .cn-desk-combo-wrap { flex: 1.15; display: flex; justify-content: center; align-items: center; min-width: 0; }
-        .cn-desk-combo-pill { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 4px 16px 4px 12px; border-radius: 999px; background: linear-gradient(145deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.02) 100%); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 4px 16px rgba(0,0,0,0.35); }
-        .cn-desk-combo-fire { font-size: 18px; font-weight: 900; color: #fff; text-shadow: 0 0 18px rgba(255,120,40,0.55); letter-spacing: -0.03em; }
-        .cn-desk-shield { font-size: 14px; margin-left: 4px; font-weight: 800; color: rgba(120,230,255,0.95); filter: drop-shadow(0 0 6px rgba(0,200,255,0.55)); align-items: center; gap: 3px; }
-        .rage-bar-container-desk { width: 100%; max-width: 850px; margin: 0 auto 15px auto; height: 32px; border-radius: 999px; position: relative; display: flex; align-items: stretch; padding: 4px; background: linear-gradient(180deg, rgba(12,14,20,0.95) 0%, rgba(6,8,12,0.98) 100%); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65), inset 0 -1px 0 rgba(255,255,255,0.05); overflow: hidden; }
-        .rage-bar-container-desk::before { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%); z-index: 3; }
-        .rage-bar-fill-desk { height: 100%; border-radius: 999px; transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; min-width: 0; box-shadow: inset 0 2px 8px rgba(255,255,255,0.35), inset 0 -3px 8px rgba(0,0,0,0.45), 0 0 20px rgba(255,255,255,0.12); }
-        .rage-bar-fill-desk::before, .rage-bar-fill-desk::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle, rgba(255,255,255,0.85) 1px, transparent 2px), radial-gradient(circle, rgba(255,255,255,0.45) 2px, transparent 3px), radial-gradient(circle, rgba(255,255,255,0.35) 1px, transparent 2px); z-index: 1; pointer-events: none; }
-        .rage-bar-fill-desk::before { background-size: 18px 22px, 32px 36px, 14px 18px; animation: bubbleRise1 1.15s infinite linear; opacity: 0.85; }
-        .rage-bar-fill-desk::after { background-size: 22px 28px, 40px 46px, 20px 24px; animation: bubbleRise2 1.65s infinite linear; opacity: 0.45; }
-        .rage-labels-desk { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); display: flex; justify-content: space-between; align-items: center; padding: 0 16px; pointer-events: none; z-index: 4; font-family: 'Inter', system-ui, sans-serif; font-weight: 800; font-size: 13px; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; color: rgba(255,255,255,0.98); text-shadow: 0 1px 2px rgba(0,0,0,0.95), 0 0 12px rgba(0,0,0,0.8), 0 0 1px rgba(0,0,0,1); }
-        .rage-pulse-desk { animation: ragePulseNeon 0.45s ease-in-out infinite alternate; }
-        .rage-flash-desk { animation: rageTubeFlash 0.65s ease-out; }
-        @keyframes bubbleRise1 { 0% { background-position: 0px 22px, 0px 36px, 0px 18px; } 50% { background-position: 5px 11px, -5px 18px, 3px 9px; } 100% { background-position: 0px 0px, 0px 0px, 0px 0px; } }
-        @keyframes bubbleRise2 { 0% { background-position: 0px 28px, 0px 46px, 0px 24px; } 50% { background-position: -6px 14px, 6px 22px, -4px 12px; } 100% { background-position: 0px 0px, 0px 0px, 0px 0px; } }
-        @keyframes ragePulseNeon { 0% { filter: brightness(1) saturate(1); box-shadow: inset 0 2px 8px rgba(255,255,255,0.3), 0 0 8px rgba(255,60,80,0.35); } 100% { filter: brightness(1.15) saturate(1.2); box-shadow: inset 0 2px 12px rgba(255,255,255,0.5), 0 0 22px rgba(255,80,100,0.65), 0 0 40px rgba(255,40,60,0.25); } }
-        @keyframes rageTubeFlash { 0% { box-shadow: 0 0 0 1px rgba(255,255,255,0.9), 0 0 40px rgba(255,255,255,0.8), inset 0 0 30px rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.65); } 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65); border-color: rgba(255,255,255,0.1); } }
-        .desktop-game-area.table-glow-correct { border-color: #198754 !important; box-shadow: 0 0 35px rgba(25,135,84,0.6), inset 0 0 25px rgba(25,135,84,0.4) !important; }
-        .desktop-game-area.table-glow-incorrect { border-color: #dc3545 !important; box-shadow: 0 0 35px rgba(220,53,69,0.6), inset 0 0 25px rgba(220,53,69,0.4) !important; }
-        .seat-desk { position: absolute !important; z-index: 20 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 0 !important; width: 95px !important; height: 65px !important; background: transparent !important; border: none !important; box-shadow: none !important; }
-        .ava-desk { width: 85px !important; height: 40px !important; background: linear-gradient(180deg, #2a2d32 0%, #1c1e22 100%) !important; border-radius: 85px 85px 0 0 !important; border: 2px solid #3a3d42 !important; border-bottom: none !important; box-shadow: inset 0 2px 4px rgba(255,255,255,0.05) !important; transition: all 0.3s ease !important; }
-        .plate-desk { width: 95px !important; height: 28px !important; background: #141518 !important; border-radius: 0 0 8px 8px !important; border: 2px solid #3a3d42 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 8px !important; box-sizing: border-box !important; font-size: 14px !important; box-shadow: 0 4px 8px rgba(0,0,0,0.5) !important; transition: all 0.3s ease !important; }
-        .pos-desk { font-weight: 900 !important; color: #fff !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.5) !important; }
-        .stack-desk { font-weight: 700 !important; color: #fff !important; font-size: 13px !important; }
-        .seat-folded-desk { opacity: 0.85 !important; filter: grayscale(50%) !important; }
-        .seat-folded-desk .opp-cards-desk { opacity: 0.6 !important; }
-        .opp-cards-desk { position: absolute !important; top: -30px !important; left: 50% !important; transform: translateX(-50%) !important; display: flex !important; align-items: flex-end !important; pointer-events: none; }
-        .opp-card-desk { width: 30px !important; height: 42px !important; border-radius: 4px !important; position: relative !important; background: repeating-linear-gradient(45deg, rgba(15,70,185,0.95) 0px, rgba(15,70,185,0.95) 2px, rgba(8,44,130,0.95) 2px, rgba(8,44,130,0.95) 6px) !important; border: 1px solid rgba(80,140,255,0.3) !important; box-shadow: 0 2px 5px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.06) !important; }
-        .opp-card-desk::before { content: '' !important; position: absolute !important; inset: 2px !important; border-radius: 2px !important; border: 1px solid rgba(80,140,255,0.15) !important; }
-        .opp-card-desk.right-desk { margin-left: -8px !important; transform: rotate(10deg) !important; z-index: -1 !important; }
-        .pot-badge-desk { background: #111; color: #ffc107; font-weight: bold; font-size: 14px; padding: 4px 14px; border-radius: 14px; border: 1.5px solid #ffc107; box-shadow: 0 2px 6px rgba(0,0,0,0.6); }
-        .board-container-desk { display: flex; gap: 6px; background: rgba(0,0,0,0.4); padding: 8px 16px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .board-card-desk { width: 50px; height: 72px; background: white; border-radius: 4px; position: relative; color: black; box-shadow: 0 2px 5px rgba(0,0,0,0.6); font-family: Arial, sans-serif !important; }
-        .bc-tl-desk { position: absolute; top: 3px; left: 4px; font-weight: 900; font-size: 16px; line-height: 1; }
-        .bc-c-desk { position: absolute; top: 55%; left: 50%; transform: translate(-50%,-50%); font-size: 28px; line-height: 1; }
-        .villain-act-badge-desk { position: absolute; background: #dc3545; color: #fff; font-weight: bold; font-size: 11px; padding: 2px 8px; border-radius: 6px; border: 1px solid #ffaaaa; box-shadow: 0 2px 5px rgba(0,0,0,0.6); z-index: 25; text-transform: uppercase; white-space: nowrap; left: 50%; transform: translateX(-50%); bottom: -20px; }
-        .dealer-desk { position: absolute !important; z-index: 30 !important; width: 26px !important; height: 26px !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 11px !important; font-weight: 900 !important; color: #120700 !important; background: radial-gradient(circle at 38% 30%, #ffd84a, #c88408) !important; border: 2px solid rgba(255,255,255,0.35) !important; box-shadow: 0 0 0 2px rgba(0,0,0,0.7), 0 2px 10px rgba(200,132,8,0.7), inset 0 1px 3px rgba(255,255,255,0.55) !important; }
-        .chip-container-desk { position: absolute !important; z-index: 22 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 4px !important; }
-        .chip-desk, .chip-3bet-desk, .chip-4bet-desk { width: 20px !important; height: 20px !important; border-radius: 50% !important; position: relative !important; background: repeating-conic-gradient(rgba(255,255,255,0.13) 0deg 18deg, transparent 18deg 36deg), radial-gradient(circle at 36% 30%, #1e3a8a, #0c1844) !important; border: 2px solid rgba(255,255,255,0.22) !important; box-shadow: 0 0 0 1.5px rgba(0,0,0,0.7), 0 2px 5px rgba(0,0,0,0.8), inset 0 1px 2px rgba(255,255,255,0.2) !important; }
-        .chip-3bet-desk { background: radial-gradient(circle at 36% 30%, #ff5722, #9e3211) !important; }
-        .chip-4bet-desk { background: repeating-conic-gradient(rgba(255,255,255,0.15) 0deg 18deg, transparent 18deg 36deg), radial-gradient(circle at 36% 30%, #68158e, #3F055B) !important; }
-        .chip-desk::before, .chip-3bet-desk::before, .chip-4bet-desk::before { content: '' !important; position: absolute !important; inset: 4px !important; border-radius: 50% !important; border: 1px solid rgba(255,255,255,0.12) !important; }
-        .chip-desk::after, .chip-3bet-desk::after, .chip-4bet-desk::after { content: '' !important; position: absolute !important; top: 2px !important; left: 2px !important; width: 8px !important; height: 5px !important; border-radius: 50% !important; background: rgba(255,255,255,0.22) !important; filter: blur(1px) !important; }
-        .bet-txt-desk { font-size: 12px !important; font-weight: 700 !important; color: rgba(255,235,190,0.9) !important; text-shadow: 0 0 6px rgba(255,195,40,0.6), 0 1px 3px rgba(0,0,0,0.98) !important; letter-spacing: 0.03em !important; white-space: nowrap !important; }
-        .hero-desk { position: absolute !important; bottom: -70px !important; left: 50% !important; transform: translateX(-50%) !important; z-index: 30 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 6px !important; width: 140px !important; }
-        .hero-cards-wrap-desk { display: flex !important; gap: 8px !important; position: relative !important; }
-        .hero-plate-desk { width: 100px !important; height: 22px !important; background: #141518 !important; border-radius: 6px !important; border: 2px solid #ffc107 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 8px !important; box-sizing: border-box !important; font-size: 12px !important; font-weight: bold !important; box-shadow: 0 4px 12px rgba(0,0,0,0.7) !important; transition: border-color 0.3s; }
-        .floating-reward-desk { position: absolute !important; top: -45px !important; left: 50% !important; transform: translateX(-50%) !important; font-size: 18px !important; font-weight: 900 !important; color: #17f07e !important; text-shadow: 0 0 15px rgba(23,240,126,0.8), 0 0 30px rgba(23,240,126,0.4) !important; white-space: nowrap !important; animation: float-reward-desk 2.2s ease-out forwards !important; pointer-events: none !important; }
-        @keyframes float-reward-desk { 0%   { opacity: 1; transform: translateX(-50%) translateY(0); } 100% { opacity: 0; transform: translateX(-50%) translateY(-30px); } }
-        .card-desk { width: 55px !important; height: 78px !important; border-radius: 6px !important; position: relative !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; overflow: hidden !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -8px 20px rgba(0,0,0,0.7), 0 -15px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,1) !important;}
-        .card-desk::after { content: '' !important; position: absolute !important; top: 0 !important; left: 0 !important; width: 60% !important; height: 45% !important; background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; pointer-events: none !important; border-radius: 6px 0 0 0 !important; }
-        .tl-desk { padding: 4px 0 0 5px !important; font-size: 16px !important; font-weight: 900 !important; line-height: 0.9 !important; letter-spacing: -0.04em !important; z-index: 2 !important; position: relative !important; font-family: Arial, sans-serif !important; }
-        .c-desk { position: absolute !important; top: 55% !important; left: 50% !important; transform: translate(-50%,-50%) !important; font-size: 28px !important; opacity: 1 !important; line-height: 1 !important; z-index: 2 !important; font-family: Arial, sans-serif !important; }
+        div[data-testid="stButton"] button { width: 100% !important; height: 50px !important; padding: 0 !important; border-radius: 12px !important; border: none !important; transition: transform 0.1s !important; background: #343a40 !important; color: #fff !important; box-shadow: 0 4px 0 #1d2124 !important; }
+        div[data-testid="stButton"] button:active { transform: translateY(4px) !important; box-shadow: 0 0 0 transparent !important; }
+        div[data-testid="stButton"] button p { font-family: 'Roboto', sans-serif !important; font-size: 15px !important; font-weight: 900 !important; margin: 0 !important; letter-spacing: 0.5px !important; text-transform: uppercase !important; }
+
+        .mobile-game-area { 
+            position: relative; width: 100%; height: 280px; 
+            border: 12px solid #1a1c20; 
+            border-radius: 135px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 3px 12px rgba(0,0,0,0.6); 
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; 
+        }
+        
+        .mobile-game-area.table-glow-correct {
+            border-color: #198754 !important;
+            box-shadow: 0 0 25px rgba(25,135,84,0.6), inset 0 0 15px rgba(25,135,84,0.4) !important;
+        }
+        .mobile-game-area.table-glow-incorrect {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 25px rgba(220,53,69,0.6), inset 0 0 15px rgba(220,53,69,0.4) !important;
+        }
+
+        .seat { position: absolute !important; z-index: 20 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 0 !important; width: 56px !important; height: 46px !important; background: transparent !important; border: none !important; box-shadow: none !important; }
+        .ava { width: 50px !important; height: 25px !important; background: linear-gradient(180deg, #2a2d32 0%, #1c1e22 100%) !important; border-radius: 50px 50px 0 0 !important; border: 1.5px solid #3a3d42 !important; border-bottom: none !important; box-shadow: inset 0 2px 4px rgba(255,255,255,0.05) !important; transition: all 0.3s ease !important; }
+        .plate { width: 56px !important; height: 20px !important; background: #141518 !important; border-radius: 0 0 6px 6px !important; border: 1.5px solid #3a3d42 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 5px !important; box-sizing: border-box !important; font-size: 10px !important; box-shadow: 0 4px 6px rgba(0,0,0,0.5) !important; transition: all 0.3s ease !important; }
+        .pos { font-weight: 900 !important; color: #fff !important; text-shadow: 1px 1px 2px rgba(0,0,0,0.5) !important; }
+        .stack { font-weight: 700 !important; color: #fff !important; }
+
+        .seat-folded { opacity: 0.85 !important; filter: grayscale(50%) !important; }
+        .seat-folded .opp-cards-mob { opacity: 0.6 !important; }
+        
+        .opp-cards-mob { position: absolute !important; top: -16px !important; left: 50% !important; transform: translateX(-50%) !important; display: flex !important; align-items: flex-end !important; pointer-events: none; }
+        .opp-card-mob { width: 14px !important; height: 20px !important; border-radius: 3px !important; position: relative !important; background: repeating-linear-gradient(45deg, rgba(15,70,185,0.95) 0px, rgba(15,70,185,0.95) 2px, rgba(8,44,130,0.95) 2px, rgba(8,44,130,0.95) 6px) !important; border: 1px solid rgba(80,140,255,0.3) !important; box-shadow: 0 2px 5px rgba(0,0,0,0.8), inset 0 0 0 1px rgba(255,255,255,0.06) !important; }
+        .opp-card-mob::before { content: '' !important; position: absolute !important; inset: 2px !important; border-radius: 2px !important; border: 1px solid rgba(80,140,255,0.15) !important; }
+        .opp-card-mob.right { margin-left: -5px !important; transform: rotate(10deg) !important; z-index: -1 !important; }
+
+        .pot-badge-mob { background: #111; color: #ffc107; font-weight: bold; font-size: 11px; padding: 2px 10px; border-radius: 12px; border: 1px solid #ffc107; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        .board-container-mob { display: flex; gap: 4px; background: rgba(0,0,0,0.4); padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 2px 10px rgba(0,0,0,0.4); }
+        .board-card-mob { width: 38px; height: 54px; background: white; border-radius: 3px; position: relative; color: black; box-shadow: 0 1px 3px rgba(0,0,0,0.5); font-family: Arial, sans-serif !important; }
+        .bc-tl-mob { position: absolute; top: 2px; left: 3px; font-weight: bold; font-size: 12px; line-height: 1; }
+        .bc-c-mob { position: absolute; top: 55%; left: 50%; transform: translate(-50%,-50%); font-size: 20px; line-height: 1; }
+        
+        .villain-act-badge-mob { position: absolute; background: #dc3545; color: #fff; font-weight: bold; font-size: 9px; padding: 1px 5px; border-radius: 4px; border: 1px solid #ffaaaa; box-shadow: 0 2px 3px rgba(0,0,0,0.5); z-index: 25; text-transform: uppercase; white-space: nowrap; left: 50%; transform: translateX(-50%); bottom: -16px; }
+
+        .dealer-mob { position: absolute !important; z-index: 30 !important; width: 20px !important; height: 20px !important; border-radius: 50% !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 8px !important; font-weight: 900 !important; color: #120700 !important; background: radial-gradient(circle at 38% 30%, #ffd84a, #c88408) !important; border: 1.5px solid rgba(255,255,255,0.35) !important; box-shadow: 0 0 0 2px rgba(0,0,0,0.7), 0 2px 10px rgba(200,132,8,0.7), inset 0 1px 3px rgba(255,255,255,0.55) !important; }
+
+        .chip-container { position: absolute !important; z-index: 22 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 3px !important; }
+        .chip-mob, .chip-3bet, .chip-4bet { width: 15px !important; height: 15px !important; border-radius: 50% !important; position: relative !important; background: repeating-conic-gradient(rgba(255,255,255,0.13) 0deg 18deg, transparent 18deg 36deg), radial-gradient(circle at 36% 30%, #1e3a8a, #0c1844) !important; border: 2px solid rgba(255,255,255,0.22) !important; box-shadow: 0 0 0 1.5px rgba(0,0,0,0.7), 0 2px 5px rgba(0,0,0,0.8), inset 0 1px 2px rgba(255,255,255,0.2) !important; }
+        .chip-3bet { background: radial-gradient(circle at 36% 30%, #ff5722, #9e3211) !important; }
+        .chip-4bet { background: repeating-conic-gradient(rgba(255,255,255,0.15) 0deg 18deg, transparent 18deg 36deg), radial-gradient(circle at 36% 30%, #68158e, #3F055B) !important; }
+        .chip-mob::before, .chip-3bet::before, .chip-4bet::before { content: '' !important; position: absolute !important; inset: 4px !important; border-radius: 50% !important; border: 1px solid rgba(255,255,255,0.12) !important; }
+        .chip-mob::after, .chip-3bet::after, .chip-4bet::after { content: '' !important; position: absolute !important; top: 2px !important; left: 2px !important; width: 6px !important; height: 4px !important; border-radius: 50% !important; background: rgba(255,255,255,0.22) !important; filter: blur(1px) !important; }
+        
+        .bet-txt { font-size: 10px !important; font-weight: 700 !important; color: rgba(255,235,190,0.9) !important; text-shadow: 0 0 5px rgba(255,195,40,0.5), 0 1px 3px rgba(0,0,0,0.98) !important; letter-spacing: 0.03em !important; white-space: nowrap !important; }
+
+        .hero-mob { position: absolute !important; bottom: -55px !important; left: 50% !important; transform: translateX(-50%) !important; z-index: 30 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 4px !important; width: 120px !important; }
+        .hero-cards-wrap { display: flex !important; gap: 5px !important; position: relative !important; }
+        .hero-plate { width: 84px !important; height: 18px !important; background: #141518 !important; border-radius: 4px !important; border: 1.5px solid #ffc107 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 6px !important; box-sizing: border-box !important; font-size: 10px !important; font-weight: bold !important; box-shadow: 0 4px 10px rgba(0,0,0,0.6) !important; transition: border-color 0.3s; }
+        
+        .floating-reward { position: absolute !important; top: -38px !important; left: 50% !important; transform: translateX(-50%) !important; font-size: 14px !important; font-weight: 800 !important; color: #17f07e !important; text-shadow: 0px 2px 5px rgba(0,0,0,0.9), 0px 0px 2px #000 !important; z-index: 100 !important; pointer-events: none !important; animation: float-reward 1.2s ease-out forwards !important; }
+        @keyframes float-reward { 0%   { opacity: 1; transform: translateX(-50%) translateY(0); } 20% { opacity: 1; transform: translateX(-50%) translateY(-15px) scale(1.2); } 100% { opacity: 0; transform: translateX(-50%) translateY(-24px); } }
+
+        .card-mob { width: 44px !important; height: 62px !important; border-radius: 5px !important; position: relative !important; display: flex !important; flex-direction: column !important; align-items: flex-start !important; overflow: hidden !important; box-shadow: 0 0 0 1px rgba(0,0,0,0.2), 0 -6px 16px rgba(0,0,0,0.7), 0 -12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,1) !important;}
+        .card-mob::after { content: '' !important; position: absolute !important; top: 0 !important; left: 0 !important; width: 60% !important; height: 45% !important; background: linear-gradient(135deg, rgba(255,255,255,0.45) 0%, transparent 100%) !important; pointer-events: none !important; border-radius: 5px 0 0 0 !important; }
+        .tl-mob { padding: 3px 0 0 4px !important; font-size: 13px !important; font-weight: 900 !important; line-height: 0.9 !important; letter-spacing: -0.04em !important; z-index: 2 !important; position: relative !important; font-family: Arial, sans-serif !important; }
+        .c-mob { position: absolute !important; top: 55% !important; left: 50% !important; transform: translate(-50%,-50%) !important; font-size: 22px !important; opacity: 1 !important; line-height: 1 !important; z-index: 2 !important; font-family: Arial, sans-serif !important; }
         .suit-red   { color: #c00a0a !important; }
         .suit-black { color: #0a0a0a !important; }
         .suit-blue  { color: #0056b3 !important; }
         .suit-green { color: #198754 !important; }
-        .rng-badge-desk { position: absolute !important; top: 50% !important; right: -35px !important; transform: translateY(-50%) !important; width: 30px !important; height: 30px !important; border-radius: 50% !important; font-weight: 900 !important; font-size: 13px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 4px 8px rgba(0,0,0,0.6) !important; z-index: 40 !important; }
-        .pf-btn-0 button { background: linear-gradient(180deg, #252830 0%, #16181f 100%) !important; box-shadow: 0 5px 0 #0c0d12, 0 8px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 0 0 1px rgba(255,255,255,0.06) !important; }
-        .pf-btn-0 button:active { box-shadow: 0 1px 0 #0c0d12, inset 0 1px 0 rgba(255,255,255,0.05), 0 0 25px rgba(255,255,255,0.15) !important; filter: brightness(1.5) !important; }
+        
+        .rng-badge { position: absolute !important; top: 50% !important; right: -30px !important; transform: translateY(-50%) !important; width: 24px !important; height: 24px !important; border-radius: 50% !important; font-weight: bold !important; font-size: 10px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 5px rgba(0,0,0,0.5) !important; z-index: 40 !important; }
+        .rng-hint-wrap { text-align: center; color: #6c757d; font-size: 11px; font-family: 'Roboto', sans-serif; font-weight: 500; letter-spacing: 0.5px; }
+
+        .cn-mob-header { margin-top: -15px; margin-bottom: 2px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; -webkit-font-smoothing: antialiased; border-radius: 14px; overflow: hidden; position: relative; background: linear-gradient(165deg, rgba(18,22,28,0.92) 0%, rgba(8,10,14,0.96) 100%); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+        .cn-mob-header::before { content: ''; position: absolute; inset: 0; border-radius: 14px; pointer-events: none; background: linear-gradient(125deg, rgba(255,255,255,0.07) 0%, transparent 42%, transparent 58%, rgba(255,255,255,0.03) 100%); z-index: 0; }
+        .cn-mob-wr-track { height: 3px; width: 100%; background: rgba(0,0,0,0.45); position: relative; z-index: 1; }
+        .cn-mob-wr-fill { height: 100%; transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 12px currentColor; }
+        .cn-mob-inner { position: relative; z-index: 1; padding: 8px 10px 9px; }
+        .cn-mob-row1 { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+        .cn-mob-rank { font-size: 11px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: rgba(255,214,120,0.95); text-shadow: 0 0 20px rgba(255,200,80,0.25); line-height: 1.15; }
+        .cn-mob-xp-meta { font-size: 9px; font-weight: 700; font-variant-numeric: tabular-nums; color: rgba(180,190,205,0.85); white-space: nowrap; letter-spacing: 0.02em; }
+        .cn-mob-xp-bar-wrap { flex: 1; min-width: 0; margin-top: 3px; }
+        .cn-mob-xp-bar-bg { height: 4px; border-radius: 4px; background: rgba(0,0,0,0.5); box-shadow: inset 0 1px 3px rgba(0,0,0,0.6); overflow: hidden; }
+        .cn-mob-xp-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #1a7a4a, #2ee88a); box-shadow: 0 0 10px rgba(46,232,138,0.45); transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+        .cn-mob-row2 { display: flex; align-items: stretch; justify-content: space-between; gap: 6px; margin-top: 2px; }
+        .cn-mob-stat { flex: 1; min-width: 0; }
+        .cn-mob-stat-label { font-size: 8px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(140,150,165,0.75); margin-bottom: 1px; }
+        .cn-mob-stat-val { font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; line-height: 1.1; }
+        .cn-mob-stat-val.light { color: rgba(245,248,252,0.98); }
+        .cn-mob-combo-wrap { flex: 1.15; display: flex; justify-content: center; align-items: center; min-width: 0; }
+        .cn-mob-combo-pill { display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 3px 11px 3px 9px; border-radius: 999px; background: linear-gradient(145deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.02) 100%); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 4px 16px rgba(0,0,0,0.35); }
+        .cn-mob-combo-fire { font-size: 14px; font-weight: 900; color: #fff; text-shadow: 0 0 18px rgba(255,120,40,0.55); letter-spacing: -0.03em; }
+        .cn-mob-shield { font-size: 11px; margin-left: 2px; font-weight: 800; color: rgba(120,230,255,0.95); filter: drop-shadow(0 0 6px rgba(0,200,255,0.55)); align-items: center; gap: 2px; }
+
+        .rage-bar-container { width: 100%; max-width: 700px; margin: 0 auto 5px auto; height: 26px; border-radius: 999px; position: relative; display: flex; align-items: stretch; padding: 3px; background: linear-gradient(180deg, rgba(12,14,20,0.95) 0%, rgba(6,8,12,0.98) 100%); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65), inset 0 -1px 0 rgba(255,255,255,0.05); overflow: hidden; }
+        .rage-bar-container::before { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%); z-index: 3; }
+        .rage-bar-fill { height: 100%; border-radius: 999px; transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; min-width: 0; box-shadow: inset 0 2px 8px rgba(255,255,255,0.35), inset 0 -3px 8px rgba(0,0,0,0.45), 0 0 20px rgba(255,255,255,0.12); }
+        .rage-bar-fill::before, .rage-bar-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle, rgba(255,255,255,0.85) 1px, transparent 2px), radial-gradient(circle, rgba(255,255,255,0.45) 2px, transparent 3px), radial-gradient(circle, rgba(255,255,255,0.35) 1px, transparent 2px); z-index: 1; pointer-events: none; }
+        .rage-bar-fill::before { background-size: 18px 22px, 32px 36px, 14px 18px; animation: bubbleRise1 1.15s infinite linear; opacity: 0.85; }
+        .rage-bar-fill::after { background-size: 22px 28px, 40px 46px, 20px 24px; animation: bubbleRise2 1.65s infinite linear; opacity: 0.45; }
+        @keyframes bubbleRise1 { 0% { background-position: 0px 22px, 0px 36px, 0px 18px; } 50% { background-position: 5px 11px, -5px 18px, 3px 9px; } 100% { background-position: 0px 0px, 0px 0px, 0px 0px; } }
+        @keyframes bubbleRise2 { 0% { background-position: 0px 28px, 0px 46px, 0px 24px; } 50% { background-position: -6px 14px, 6px 22px, -4px 12px; } 100% { background-position: 0px 0px, 0px 0px, 0px 0px; } }
+        .rage-labels { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); display: flex; justify-content: space-between; align-items: center; padding: 0 14px; pointer-events: none; z-index: 4; font-family: 'Inter', system-ui, sans-serif; font-weight: 800; font-size: 11px; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; color: rgba(255,255,255,0.98); text-shadow: 0 1px 2px rgba(0,0,0,0.95), 0 0 12px rgba(0,0,0,0.8), 0 0 1px rgba(0,0,0,1); }
+        .rage-pulse { animation: ragePulseNeon 0.45s ease-in-out infinite alternate; }
+        @keyframes ragePulseNeon { 0% { filter: brightness(1) saturate(1); box-shadow: inset 0 2px 8px rgba(255,255,255,0.3), 0 0 8px rgba(255,60,80,0.35); } 100% { filter: brightness(1.15) saturate(1.2); box-shadow: inset 0 2px 12px rgba(255,255,255,0.5), 0 0 22px rgba(255,80,100,0.65), 0 0 40px rgba(255,40,60,0.25); } }
+        .rage-flash { animation: rageTubeFlash 0.65s ease-out; }
+        @keyframes rageTubeFlash { 0% { box-shadow: 0 0 0 1px rgba(255,255,255,0.9), 0 0 40px rgba(255,255,255,0.8), inset 0 0 30px rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.65); } 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65); border-color: rgba(255,255,255,0.1); } }
+
+        .pf-btn-0 button { background: linear-gradient(180deg, #252830 0%, #16181f 100%) !important; box-shadow: 0 4px 0 #0c0d12, 0 6px 16px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 0 0 1px rgba(255,255,255,0.06) !important; }
+        .pf-btn-0 button:active { box-shadow: 0 1px 0 #0c0d12, inset 0 1px 0 rgba(255,255,255,0.05), 0 0 20px rgba(255,255,255,0.15) !important; filter: brightness(1.5) !important; }
         .pf-btn-0 button p { color: rgba(190,190,205,0.8) !important; }
+
         .pf-btn-1 button { background: linear-gradient(180deg, #0c3828 0%, #071e16 100%) !important; box-shadow: 0 4px 0 #030f0b, 0 8px 25px rgba(0,180,80,0.15), inset 0 1px 0 rgba(0,230,110,0.12), inset 0 0 0 1px rgba(0,200,90,0.1) !important; }
-        .pf-btn-1 button:active { box-shadow: 0 1px 0 #030f0b, inset 0 1px 0 rgba(0,200,90,0.08), 0 0 25px rgba(0,255,100,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
-        .pf-btn-1 button p { color: rgba(50,220,130,0.92) !important; text-shadow: 0 0 15px rgba(30,200,100,0.4) !important; }
+        .pf-btn-1 button:active { box-shadow: 0 1px 0 #030f0b, inset 0 1px 0 rgba(0,200,90,0.08), 0 0 20px rgba(0,255,100,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
+        .pf-btn-1 button p { color: rgba(50,220,130,0.92) !important; text-shadow: 0 0 12px rgba(30,200,100,0.4) !important; }
+
         .pf-btn-2 button { background: linear-gradient(180deg, #4a0909 0%, #300505 100%) !important; box-shadow: 0 5px 0 #1a0303, 0 8px 25px rgba(180,20,20,0.25), inset 0 1px 0 rgba(255,80,80,0.14), inset 0 0 0 1px rgba(200,30,30,0.18) !important; }
-        .pf-btn-2 button:active { box-shadow: 0 1px 0 #1a0303, inset 0 1px 0 rgba(255,80,80,0.1), 0 0 25px rgba(255,50,50,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
+        .pf-btn-2 button:active { box-shadow: 0 1px 0 #1a0303, inset 0 1px 0 rgba(255,80,80,0.1), 0 0 20px rgba(255,50,50,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
         .pf-btn-2 button p { color: rgba(255,90,90,0.95) !important; text-shadow: 0 0 15px rgba(220,50,50,0.5) !important; }
+
         .pf-btn-3 button { background: linear-gradient(180deg, #30094a 0%, #160530 100%) !important; box-shadow: 0 5px 0 #0f031a, 0 8px 25px rgba(180,20,220,0.25), inset 0 1px 0 rgba(220,80,255,0.14), inset 0 0 0 1px rgba(200,30,220,0.18) !important; }
         .pf-btn-3 button:active { box-shadow: 0 1px 0 #0f031a, inset 0 1px 0 rgba(220,80,255,0.1), 0 0 20px rgba(220,50,255,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
         .pf-btn-3 button p { color: rgba(230,90,255,0.95) !important; text-shadow: 0 0 14px rgba(220,50,255,0.5) !important; }
+
         </style>
     """, unsafe_allow_html=True)
 
     fish_db = utils.load_fish_data()
     if not fish_db: 
-        st.error("База пуста. Проверь файлы JSON в папке fish_data.")
+        st.error("Database is empty. Check JSON files in fish_data.")
         return
 
     flat_fish_db = {}
@@ -197,8 +245,7 @@ def show():
                     for runout, spot_info in r_data.items():
                         flat_fish_db[f"{vp}|{tex}|{pos}|{line}|{runout}"] = spot_info
 
-    with st.sidebar:
-        st.markdown("### ⚙️ View & Fish Filters")
+    with st.expander("⚙️ Fish Filters", expanded=False):
         c_v1, c_v2 = st.columns(2)
         with c_v1:
             if st.button("📱 Mobile", key="mv_btn"): st.session_state.actual_view_type = "📱 Mobile"; st.rerun()
@@ -251,7 +298,7 @@ def show():
                 is_checked = (full_key in saved_runouts) if "fish_spots" in saved else True
                 parts = full_key.split('|')
                 short_lbl = f"{runout_name} ({parts[0]} | {parts[3]})"
-                if st.checkbox(short_lbl, value=is_checked, key=f"fish_chk_d_{full_key}"):
+                if st.checkbox(short_lbl, value=is_checked, key=f"fish_chk_m_{full_key}"):
                     sel_spots_keys.append(full_key)
         
         if st.button("🚀 Apply Filters", use_container_width=True):
@@ -266,7 +313,7 @@ def show():
 
     pool = sel_spots_keys
     if not pool:
-        st.warning("⚠️ Выбери фильтры в боковом меню.")
+        st.warning("⚠️ Please select filters.")
         st.stop()
 
     stats_data_init = safe_load_stats()
@@ -275,6 +322,7 @@ def show():
 
     for k in ['fish_session_hands', 'fish_session_correct', 'fish_rng']:
         if k not in st.session_state: st.session_state[k] = 0
+        
     if 'fish_toast_msgs' not in st.session_state: st.session_state.fish_toast_msgs = []
     if st.session_state.fish_toast_msgs:
         for msg in st.session_state.fish_toast_msgs: st.toast(msg, icon="🔥" if "Combo" in msg else "🎯")
@@ -409,8 +457,8 @@ def show():
         rage_pct = int((c - prev_req) / (next_req - prev_req) * 100)
         lbl_left = f"x{curr_mult}"; lbl_right = f"x{next_mult}"
 
-    is_pulsing = "rage-pulse-desk" if rage_pct >= 95 and next_mult != "MAX" else ""
-    is_flashing = "rage-flash-desk" if st.session_state.pop("fish_just_leveled_up", False) else ""
+    is_pulsing = "rage-pulse" if rage_pct >= 95 and next_mult != "MAX" else ""
+    is_flashing = "rage-flash" if st.session_state.pop("fish_just_leveled_up", False) else ""
     
     if curr_mult == 1.0: grad = "linear-gradient(90deg, #17a2b8, #0dcaf0)"
     elif curr_mult == 1.5: grad = "linear-gradient(90deg, #0dcaf0, #28a745)"
@@ -423,9 +471,9 @@ def show():
     shield_display = (
         f'<span style="'
         f'display:{"inline-flex" if st.session_state.fish_shields > 0 else "none"};'
-        f'align-items:center;gap:3px;'
-        f'font-size:14px;font-weight:800;letter-spacing:0.04em;'
-        f'padding:2px 8px 2px 6px;margin-left:6px;'
+        f'align-items:center;gap:2px;'
+        f'font-size:10px;font-weight:700;letter-spacing:0.04em;'
+        f'padding:1px 6px 1px 5px;margin-left:4px;'
         f'background:rgba(13,202,240,0.09);'
         f'border:1px solid rgba(13,202,240,0.28);'
         f'border-radius:8px;'
@@ -437,14 +485,14 @@ def show():
     combo_badge = (
         f'<div style="flex:1;display:flex;justify-content:center;align-items:center;">'
         f'<div style="'
-        f'display:inline-flex;align-items:center;gap:2px;'
-        f'padding:4px 16px 4px 12px;border-radius:20px;'
+        f'display:inline-flex;align-items:center;gap:1px;'
+        f'padding:3px 11px 3px 9px;border-radius:20px;'
         f'background:rgba(255,255,255,0.035);'
         f'border:1px solid rgba(255,255,255,0.09);'
         f'box-shadow:0 0 14px rgba(255,150,20,0.07),inset 0 1px 0 rgba(255,255,255,0.05);'
         f'">'
         f'<span style="'
-        f'font-size:18px;font-weight:900;color:#fff;letter-spacing:-0.03em;'
+        f'font-size:14px;font-weight:900;color:#fff;letter-spacing:-0.03em;'
         f'text-shadow:0 0 12px rgba(255,130,10,0.8),0 0 24px rgba(255,100,0,0.3);'
         f'">🔥{c}</span>'
         f'{shield_display}'
@@ -452,39 +500,39 @@ def show():
     )
 
     header_html = (
-        f'<div class="cn-desk-header">'
-        f'<div class="cn-desk-wr-track">'
-        f'<div class="cn-desk-wr-fill" style="width:{wr if sh > 0 else 100}%; background:{wr_color if sh > 0 else "#2a2a2a"}; box-shadow:0 0 8px {wr_color if sh > 0 else "transparent"};"></div></div>'
-        f'<div class="cn-desk-inner">'
-        f'<div class="cn-desk-row1">'
+        f'<div class="cn-mob-header">'
+        f'<div class="cn-mob-wr-track">'
+        f'<div class="cn-mob-wr-fill" style="width:{wr if sh > 0 else 100}%; background:{wr_color if sh > 0 else "#2a2a2a"}; box-shadow:0 0 8px {wr_color if sh > 0 else "transparent"};"></div></div>'
+        f'<div class="cn-mob-inner">'
+        f'<div class="cn-mob-row1">'
         f'<div style="flex:1;min-width:0;">'
-        f'<div class="cn-desk-rank">{rank_name}</div>'
-        f'<div class="cn-desk-xp-bar-wrap"><div class="cn-desk-xp-bar-bg"><div class="cn-desk-xp-bar-fill" style="width:{progress_pct}%;"></div></div></div>'
+        f'<div class="cn-mob-rank">{rank_name}</div>'
+        f'<div class="cn-mob-xp-bar-wrap"><div class="cn-mob-xp-bar-bg"><div class="cn-mob-xp-bar-fill" style="width:{progress_pct}%;"></div></div></div>'
         f'</div>'
-        f'<div class="cn-desk-xp-meta">${stats_data.get("xp", 0)} <span style="color:rgba(255,255,255,0.15);margin:0 4px;">/</span> ${next_xp}</div>'
+        f'<div class="cn-mob-xp-meta">${stats_data.get("xp", 0)} <span style="color:rgba(255,255,255,0.15);margin:0 2px;">/</span> ${next_xp}</div>'
         f'</div>'
-        f'<div class="cn-desk-row2">'
-        f'<div class="cn-desk-stat">'
-        f'<div class="cn-desk-stat-label">Winrate</div>'
-        f'<div class="cn-desk-stat-val" style="color:{wr_color}; text-shadow:0 0 10px {wr_color}44;">{wr}%</div>'
+        f'<div class="cn-mob-row2">'
+        f'<div class="cn-mob-stat">'
+        f'<div class="cn-mob-stat-label">Winrate</div>'
+        f'<div class="cn-mob-stat-val" style="color:{wr_color}; text-shadow:0 0 10px {wr_color}44;">{wr}%</div>'
         f'</div>'
-        f'<div class="cn-desk-combo-wrap">{combo_badge}</div>'
-        f'<div class="cn-desk-stat" style="text-align:right;">'
-        f'<div class="cn-desk-stat-label">Hands</div>'
-        f'<div class="cn-desk-stat-val light">{sh}</div>'
+        f'<div class="cn-mob-combo-wrap">{combo_badge}</div>'
+        f'<div class="cn-mob-stat" style="text-align:right;">'
+        f'<div class="cn-mob-stat-label">Hands</div>'
+        f'<div class="cn-mob-stat-val light">{sh}</div>'
         f'</div>'
         f'</div></div></div>'
     )
 
     rage_bar_html = f"""
-    <div class="rage-bar-container-desk {is_flashing}">
-      <div class="rage-bar-fill-desk {is_pulsing}" style="width: {rage_pct}%; background: {grad};"></div>
-      <div class="rage-labels-desk">
-        <span>{lbl_left}</span>
-        <span>{lbl_right}</span>
-      </div>
-    </div>
-    """
+<div class="rage-bar-container {is_flashing}">
+  <div class="rage-bar-fill {is_pulsing}" style="width: {rage_pct}%; background: {grad};"></div>
+  <div class="rage-labels">
+    <span>{lbl_left}</span>
+    <span>{lbl_right}</span>
+  </div>
+</div>
+"""
 
     anim_html = ""
     anim_reward = st.session_state.pop("fish_anim_reward", None)
@@ -492,7 +540,7 @@ def show():
         if anim_reward > 0: a_color = "#00ff00"; a_text = f"+${anim_reward}"
         elif anim_reward < 0: a_color = "#ff0000"; a_text = f"-${abs(anim_reward)}"
         else: a_color = "#888"; a_text = "$0"
-        anim_html = f'<div class="floating-reward-desk" style="color: {a_color}">{a_text}</div>'
+        anim_html = f'<div class="floating-reward" style="color: {a_color}">{a_text}</div>'
         
     shatter_html = '<div class="glass-shatter"></div>' if st.session_state.pop("fish_shield_break_anim", False) else ""
 
@@ -508,31 +556,31 @@ def show():
 
     def get_seat_style(idx):
         return {
-            1: "top: 75%; left: -3%; transform: translateY(-50%);", 
-            2: "top: 15%; left: -3%;", 
-            3: "top: -10%; left: 50%; transform: translateX(-50%);", 
-            4: "top: 15%; right: -3%;", 
-            5: "top: 75%; right: -3%; transform: translateY(-50%);"
+            1: "top: 75%; left: -2%; transform: translateY(-50%);", 
+            2: "top: 8%; left: 2%;", 
+            3: "top: -17%; left: 50%; transform: translateX(-50%);", 
+            4: "top: 8%; right: 2%;", 
+            5: "top: 75%; right: -2%; transform: translateY(-50%);"
         }.get(idx, "")
 
     def get_chip_style(idx):
         return {
-            0: "bottom: 45px; left: 50%; transform: translateX(-50%);", 
-            1: "top: 60%; left: 16%; transform: translateY(-50%);", 
-            2: "top: 25%; left: 10%;",
-            3: "top: 15%; left: 50%; transform: translateX(-50%);", 
-            4: "top: 25%; right: 10%;", 
-            5: "top: 60%; right: 16%; transform: translateY(-50%);"
+            0: "bottom: 38px; left: 50%; transform: translateX(-50%);", 
+            1: "top: 63%; left: 16%; transform: translateY(-50%);", 
+            2: "top: 23%; left: 20%;",
+            3: "top: 13%; left: 50%; transform: translateX(-50%);", 
+            4: "top: 23%; right: 20%;", 
+            5: "top: 63%; right: 16%; transform: translateY(-50%);"
         }.get(idx, "")
 
     def get_btn_style(idx):
         return {
-            0: "bottom: 20px; left: 50%; margin-left: -110px; z-index: 35;", 
-            1: "top: 77%; left: 12%; transform: translateY(-50%);", 
-            2: "top: 28%; left: 3%;",
-            3: "top: 12%; left: 58%;", 
-            4: "top: 28%; right: 3%;", 
-            5: "top: 77%; right: 12%; transform: translateY(-50%);"
+            0: "bottom: 15px; left: 50%; margin-left: -85px; z-index: 35;", 
+            1: "top: 77%; left: 13%; transform: translateY(-50%);", 
+            2: "top: 25%; left: 13%;",
+            3: "top: 10%; left: 55%;", 
+            4: "top: 25%; right: 13%;", 
+            5: "top: 77%; right: 13%; transform: translateY(-50%);"
         }.get(idx, "")
 
     opp_html = ""; chips_html = ""
@@ -540,91 +588,91 @@ def show():
     if is_hu:
         villain_p = [p for p in active_players if p != hero_pos][0] if len(active_players) > 1 else "BB"
         p_stack = stacks_data.get(villain_p, "---")
-        cls = "seat-active-desk"
-        cards = '<div class="opp-cards-desk"><div class="opp-card-desk"></div><div class="opp-card-desk right-desk"></div></div>'
+        cls = "seat-active"
+        cards = '<div class="opp-cards-mob"><div class="opp-card-mob"></div><div class="opp-card-mob right"></div></div>'
         ss = get_seat_style(3)
         
         v_act_html = ""
         if villain_act:
             if is_bet:
                 act_word = "RAISE" if "RAISE" in villain_act.upper() else ("ALL-IN" if "ALL-IN" in villain_act.upper() else "BET")
-                v_act_html = f'<div class="villain-act-badge-desk act-bottom-mob">{act_word}</div>'
+                v_act_html = f'<div class="villain-act-badge-mob act-bottom-mob">{act_word}</div>'
             else:
-                v_act_html = f'<div class="villain-act-badge-desk act-bottom-mob">{villain_act}</div>'
+                v_act_html = f'<div class="villain-act-badge-mob act-bottom-mob">{villain_act}</div>'
                 
-        opp_html += f'<div class="seat-desk {cls}" style="{ss}">{cards}<div class="ava-desk"></div><div class="plate-desk"><span class="pos-desk">{villain_p}</span><span class="stack-desk">{p_stack}</span></div>{v_act_html}</div>'
+        opp_html += f'<div class="seat {cls}" style="{ss}">{cards}<div class="ava"></div><div class="plate"><span class="pos">{villain_p}</span><span class="stack">{p_stack}</span></div>{v_act_html}</div>'
         
         cs = get_chip_style(3)
         if is_bet:
             bet_amount_str = f"{v_size}" if v_size else villain_act.upper().replace("BET", "").replace("RAISE", "").replace("ALL-IN", "").strip().lower()
-            bet_txt = f'<div class="bet-txt-desk">{bet_amount_str} bb</div>'
-            chips_html += f'<div class="chip-container-desk" style="{cs}"><div class="chip-desk"></div>{bet_txt}</div>'
+            bet_txt = f'<div class="bet-txt">{bet_amount_str} bb</div>'
+            chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-mob"></div>{bet_txt}</div>'
         
         if villain_p == btn_pos:
             bs = get_btn_style(3)
-            chips_html += f'<div class="dealer-desk" style="{bs}">D</div>'
+            chips_html += f'<div class="dealer-mob" style="{bs}">D</div>'
     else:
         for i in range(1, 6):
             p = rot[i]
             p_stack = stacks_data.get(p, "---")
             has_cards = (p in active_players)
-            cls = "seat-active-desk" if has_cards else "seat-folded-desk"
-            cards = '<div class="opp-cards-desk"><div class="opp-card-desk"></div><div class="opp-card-desk right-desk"></div></div>' if has_cards else ""
+            cls = "seat-active" if has_cards else "seat-folded"
+            cards = '<div class="opp-cards-mob"><div class="opp-card-mob"></div><div class="opp-card-mob right"></div></div>' if has_cards else ""
             ss = get_seat_style(i)
             
             v_act_html = ""
             if p == villain_pos and villain_act:
                 if is_bet:
                     act_word = "RAISE" if "RAISE" in villain_act.upper() else ("ALL-IN" if "ALL-IN" in villain_act.upper() else "BET")
-                    v_act_html = f'<div class="villain-act-badge-desk act-bottom-mob">{act_word}</div>'
+                    v_act_html = f'<div class="villain-act-badge-mob act-bottom-mob">{act_word}</div>'
                 else:
-                    v_act_html = f'<div class="villain-act-badge-desk act-bottom-mob">{villain_act}</div>'
+                    v_act_html = f'<div class="villain-act-badge-mob act-bottom-mob">{villain_act}</div>'
                 
-            opp_html += f'<div class="seat-desk {cls}" style="{ss}">{cards}<div class="ava-desk"></div><div class="plate-desk"><span class="pos-desk">{p}</span><span class="stack-desk">{p_stack}</span></div>{v_act_html}</div>'
+            opp_html += f'<div class="seat {cls}" style="{ss}">{cards}<div class="ava"></div><div class="plate"><span class="pos">{p}</span><span class="stack">{p_stack}</span></div>{v_act_html}</div>'
 
             if p == btn_pos:
                 bs = get_btn_style(i)
-                chips_html += f'<div class="dealer-desk" style="{bs}">D</div>'
+                chips_html += f'<div class="dealer-mob" style="{bs}">D</div>'
                 
             if p == villain_pos and is_bet:
                 cs = get_chip_style(i)
                 bet_amount_str = f"{v_size}" if v_size else villain_act.upper().replace("BET", "").replace("RAISE", "").replace("ALL-IN", "").strip().lower()
-                bet_txt = f'<div class="bet-txt-desk">{bet_amount_str} bb</div>'
-                chips_html += f'<div class="chip-container-desk" style="{cs}"><div class="chip-desk"></div>{bet_txt}</div>'
+                bet_txt = f'<div class="bet-txt">{bet_amount_str} bb</div>'
+                chips_html += f'<div class="chip-container" style="{cs}"><div class="chip-mob"></div>{bet_txt}</div>'
 
     if hero_act:
         is_hero_bet = ("BET" in hero_act.upper() or "RAISE" in hero_act.upper() or "ALL-IN" in hero_act.upper())
         if is_hero_bet:
             hero_cs = get_chip_style(0)
             hero_bet_amount_str = hero_act.upper().replace("BET", "").replace("RAISE", "").replace("ALL-IN", "").strip().lower()
-            hero_bet_txt = f'<div class="bet-txt-desk">{hero_bet_amount_str} bb</div>'
-            chips_html += f'<div class="chip-container-desk" style="{hero_cs}"><div class="chip-desk"></div>{hero_bet_txt}</div>'
+            hero_bet_txt = f'<div class="bet-txt">{hero_bet_amount_str} bb</div>'
+            chips_html += f'<div class="chip-container" style="{hero_cs}"><div class="chip-mob"></div>{hero_bet_txt}</div>'
 
     hero_stack = stacks_data.get(hero_pos, "---")
     if rot[0] == btn_pos:
         hero_bs = get_btn_style(0)
-        chips_html += f'<div class="dealer-desk" style="{hero_bs}">D</div>'
+        chips_html += f'<div class="dealer-mob" style="{hero_bs}">D</div>'
 
     board_html = ""
     for card in board_raw:
         rank_str = card[:-1].upper()
         suit = map_suit(card[-1])
         sc = get_suit_color_class(suit)
-        board_html += f'<div class="board-card-desk"><div class="bc-tl-desk {sc}">{rank_str}</div><div class="bc-c-desk {sc}">{suit}</div></div>'
+        board_html += f'<div class="board-card-mob"><div class="bc-tl-mob {sc}">{rank_str}</div><div class="bc-c-mob {sc}">{suit}</div></div>'
         
-    mastery_html = f"""<div style="position: absolute; bottom: -60px; left: 20px; z-index: 15; width: 120px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; pointer-events: none;">
-        <div style="background: #111; border: 1px solid rgba(255,255,255,0.2); color: #fff; display: inline-flex; align-items: center; gap: 4px; border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em;">{m_icon} {m_name}</div>
-        <div style="width: 80px; height: 3px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; margin-top: 2px;"><div style="height: 100%; border-radius: 3px; background: #0dcaf0; width: {m_pct}%;"></div></div>
-        <div style="font-size: 10px; letter-spacing: 0.06em; margin-top: 2px; color: rgba(255,255,255,0.7);">{hands_left_text}</div>
+    mastery_html = f"""<div style="position: absolute; bottom: -98px; left: 10px; z-index: 15; width: 100px; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; pointer-events: none;">
+        <div style="display: inline-flex; align-items: center; gap: 4px; border-radius: 20px; padding: 2px 9px 2px 7px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.05em; white-space: nowrap; background: #111; border: 1px solid rgba(255,255,255,0.2); color: #fff; text-shadow: 0 0 6px rgba(0,0,0,0.4);">{m_icon} {m_name}</div>
+        <div style="width: 60px; height: 2px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden;"><div style="height: 100%; border-radius: 2px; background: #0dcaf0; width: {m_pct}%;"></div></div>
+        <div style="font-size: 9px !important; transform: scale(0.6); transform-origin: left top; letter-spacing: 0.05em !important; margin-top: 2px !important; color: rgba(255,255,255,0.7) !important; text-align: left !important; white-space: nowrap !important;">{hands_left_text}</div>
     </div>"""
 
     onenote = setup.get("info_link", setup.get("onenote_url", ""))
     if onenote:
-        hook_html = f'<a href="{onenote}" target="_blank" class="info-hook" title="Open Range">i</a>'
+        hook_html = f'<a href="{onenote}" class="info-hook" title="Open in App">i</a>'
     else:
-        hook_html = f'<a href="#" target="_blank" class="info-hook" style="opacity:0.3; cursor:default;" onclick="return false;" title="No link">i</a>'
+        hook_html = f'<a href="#" class="info-hook" style="opacity:0.3; cursor:default;" onclick="return false;" title="No link">i</a>'
 
-    html = f'<div class="desktop-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge-desk"><div class="pot-badge-desk">Pot: {display_pot} bb</div></div><div class="pf-board-desk"><div class="board-container-desk">{board_html}</div></div>{hook_html}{mastery_html}{opp_html}{chips_html}<div class="hero-desk">{anim_html}<div class="hero-cards-wrap-desk"><div class="card-desk"><div class="tl-desk {c1}">{r1}<br>{s1}</div><div class="c-desk {c1}">{s1}</div></div><div class="card-desk"><div class="tl-desk {c2}">{r2}<br>{s2}</div><div class="c-desk {c2}">{s2}</div></div><div class="rng-badge-desk">{st.session_state.fish_rng}</div></div><div class="hero-plate-desk"><span class="pos-desk">HERO {hero_pos}</span><span class="stack-desk">{hero_stack}</span></div></div></div>'
+    html = f'<div class="mobile-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge"><div class="pot-badge-mob">Pot: {display_pot} bb</div></div><div class="pf-board"><div class="board-container-mob">{board_html}</div></div>{hook_html}{mastery_html}{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{st.session_state.fish_rng}</div></div><div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div></div></div>'
     
     st.markdown(html, unsafe_allow_html=True)
 
@@ -766,15 +814,15 @@ def show():
         st.session_state.fish_hand = None
         st.rerun()
     elif st.session_state.fish_last_error:
-        st.markdown(f'<div style="background:#dc3545; color:white; padding:15px; border-radius:14px; text-align:center; font-weight:bold; margin-bottom:20px; font-size:18px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); max-width: 850px; margin-left: auto; margin-right: auto;">{st.session_state.fish_msg}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="background:#dc3545; color:white; padding:12px; border-radius:12px; text-align:center; font-weight:bold; margin-bottom:15px; font-size:16px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">{st.session_state.fish_msg}</div>', unsafe_allow_html=True)
         st.markdown("""<style>
         div[data-testid="stButton"] button[kind="primary"] {
             background: linear-gradient(180deg, #1c3a55 0%, #102436 100%) !important;
-            box-shadow: 0 5px 0 #081520, 0 8px 25px rgba(30,120,200,0.2), inset 0 1px 0 rgba(60,160,255,0.12), inset 0 0 0 1px rgba(40,130,220,0.14) !important;
-            border: none !important; height: 60px !important; border-radius: 14px !important; max-width: 850px; margin: 0 auto;
+            box-shadow: 0 4px 0 #081520, 0 6px 20px rgba(30,120,200,0.15), inset 0 1px 0 rgba(60,160,255,0.12), inset 0 0 0 1px rgba(40,130,220,0.14) !important;
+            border: none !important; height: 44px !important; border-radius: 12px !important;
         }
-        div[data-testid="stButton"] button[kind="primary"]:active { transform: translateY(5px) !important; box-shadow: 0 1px 0 #081520, inset 0 1px 0 rgba(60,160,255,0.08) !important; }
-        div[data-testid="stButton"] button[kind="primary"] p { color: rgba(80,180,255,0.95) !important; text-shadow: 0 0 15px rgba(50,160,240,0.5) !important; font-size: 16px !important; font-weight: 900 !important; letter-spacing: 0.1em !important; text-transform: uppercase !important; }
+        div[data-testid="stButton"] button[kind="primary"]:active { transform: translateY(3px) !important; box-shadow: 0 1px 0 #081520, inset 0 1px 0 rgba(60,160,255,0.08) !important; }
+        div[data-testid="stButton"] button[kind="primary"] p { color: rgba(80,180,255,0.95) !important; text-shadow: 0 0 12px rgba(50,160,240,0.4) !important; font-size: 13px !important; font-weight: 900 !important; letter-spacing: 0.1em !important; text-transform: uppercase !important; }
         </style>""", unsafe_allow_html=True)
         
         if st.button("UNDERSTOOD, NEXT", type="primary", use_container_width=True):
@@ -783,7 +831,7 @@ def show():
             st.session_state.fish_shield_break_anim = False
             st.rerun()
     else:
-        st.markdown('<div class="rng-hint-wrap-desk">RNG 0-Freq: ACTION &nbsp;|&nbsp; Freq-100: FOLD/CHECK</div>', unsafe_allow_html=True)
+        st.markdown('<div class="rng-hint-wrap">RNG 0-Freq: ACTION &nbsp;|&nbsp; Freq-100: FOLD/CHECK</div>', unsafe_allow_html=True)
 
         btn_cols = st.columns(len(actions))
         for i, act in enumerate(actions):
