@@ -71,6 +71,10 @@ def generate_desktop_theme(bg_rad1, bg_rad2, shadow1, shadow2, shadow3, seat_rad
     .rng-badge-desk {{ color: {text_color} !important; background: {rng_bg} !important; border: 1.5px solid {seat_border} !important; }}
     .hero-plate-desk {{ border-color: {seat_act_border} !important; }}
     .hero-plate-desk .pos-desk {{ color: {seat_act_border} !important; }}
+    
+    /* ИКОНКА ONENOTE */
+    .info-hook {{ position: absolute; top: 15px; left: 20px; width: 26px; height: 26px; background: rgba(0,0,0,0.6); border: 1.5px solid rgba(255,255,255,0.4); border-radius: 50%; color: #fff; display: flex; justify-content: center; align-items: center; font-weight: bold; font-family: serif; text-decoration: none; transition: 0.2s; z-index: 100; font-size: 14px; text-shadow: none; }}
+    .info-hook:hover {{ background: #0dcaf0; color: #000; border-color: #0dcaf0; box-shadow: 0 0 12px #0dcaf0; }}
     </style>"""
 
 THEMES = {
@@ -203,7 +207,7 @@ def show():
         .pf-btn-0 button:active { box-shadow: 0 1px 0 #0c0d12, inset 0 1px 0 rgba(255,255,255,0.05), 0 0 25px rgba(255,255,255,0.15) !important; filter: brightness(1.5) !important; }
         .pf-btn-0 button p { color: rgba(190,190,205,0.8) !important; }
 
-        .pf-btn-1 button { background: linear-gradient(180deg, #0c3828 0%, #071e16 100%) !important; box-shadow: 0 5px 0 #030f0b, 0 8px 25px rgba(0,180,80,0.15), inset 0 1px 0 rgba(0,230,110,0.12), inset 0 0 0 1px rgba(0,200,90,0.1) !important; }
+        .pf-btn-1 button { background: linear-gradient(180deg, #0c3828 0%, #071e16 100%) !important; box-shadow: 0 4px 0 #030f0b, 0 8px 25px rgba(0,180,80,0.15), inset 0 1px 0 rgba(0,230,110,0.12), inset 0 0 0 1px rgba(0,200,90,0.1) !important; }
         .pf-btn-1 button:active { box-shadow: 0 1px 0 #030f0b, inset 0 1px 0 rgba(0,200,90,0.08), 0 0 25px rgba(0,255,100,0.5) !important; filter: brightness(1.4) saturate(1.2) !important; }
         .pf-btn-1 button p { color: rgba(50,220,130,0.92) !important; text-shadow: 0 0 15px rgba(30,200,100,0.4) !important; }
 
@@ -305,9 +309,8 @@ def show():
 
     stats_data_init = safe_load_stats()
     if 'fish_shields' not in st.session_state: st.session_state.fish_shields = stats_data_init.get("shields", 0)
-    if 'fish_combo' not in st.session_state: st.session_state.fish_combo = stats_data_init.get("combo", 0)
 
-    for k in ['fish_session_hands', 'fish_session_correct', 'fish_rng']:
+    for k in ['fish_combo', 'fish_session_hands', 'fish_session_correct', 'fish_rng']:
         if k not in st.session_state: st.session_state[k] = 0
     if 'fish_toast_msgs' not in st.session_state: st.session_state.fish_toast_msgs = []
     if st.session_state.fish_toast_msgs:
@@ -652,7 +655,10 @@ def show():
         <div style="font-size: 10px; letter-spacing: 0.06em; margin-top: 2px; color: rgba(255,255,255,0.7);">{hands_left_text}</div>
     </div>"""
 
-    html = f'<div class="desktop-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge-desk"><div class="pot-badge-desk">Pot: {display_pot} bb</div></div><div class="pf-board-desk"><div class="board-container-desk">{board_html}</div></div>{mastery_html}{opp_html}{chips_html}<div class="hero-desk">{anim_html}<div class="hero-cards-wrap-desk"><div class="card-desk"><div class="tl-desk {c1}">{r1}<br>{s1}</div><div class="c-desk {c1}">{s1}</div></div><div class="card-desk"><div class="tl-desk {c2}">{r2}<br>{s2}</div><div class="c-desk {c2}">{s2}</div></div><div class="rng-badge-desk">{st.session_state.fish_rng}</div></div><div class="hero-plate-desk"><span class="pos-desk">HERO {hero_pos}</span><span class="stack-desk">{hero_stack}</span></div></div></div>'
+    onenote = setup.get("info_link", setup.get("onenote_url", ""))
+    hook_html = f'<a href="{onenote}" target="_blank" class="info-hook" title="Open Range in OneNote">i</a>' if onenote else ""
+
+    html = f'<div class="desktop-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge-desk"><div class="pot-badge-desk">Pot: {display_pot} bb</div></div><div class="pf-board-desk"><div class="board-container-desk">{board_html}</div></div>{hook_html}{mastery_html}{opp_html}{chips_html}<div class="hero-desk">{anim_html}<div class="hero-cards-wrap-desk"><div class="card-desk"><div class="tl-desk {c1}">{r1}<br>{s1}</div><div class="c-desk {c1}">{s1}</div></div><div class="card-desk"><div class="tl-desk {c2}">{r2}<br>{s2}</div><div class="c-desk {c2}">{s2}</div></div><div class="rng-badge-desk">{st.session_state.fish_rng}</div></div><div class="hero-plate-desk"><span class="pos-desk">HERO {hero_pos}</span><span class="stack-desk">{hero_stack}</span></div></div></div>'
     
     st.markdown(html, unsafe_allow_html=True)
 
