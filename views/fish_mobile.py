@@ -665,9 +665,8 @@ def show():
         <div style="font-size: 9px !important; transform: scale(0.6); transform-origin: left top; letter-spacing: 0.05em !important; margin-top: 2px !important; color: rgba(255,255,255,0.7) !important; text-align: left !important; white-space: nowrap !important;">{hands_left_text}</div>
     </div>"""
 
-   onenote = setup.get("info_link", setup.get("onenote_url", ""))
+    onenote = setup.get("info_link", setup.get("onenote_url", ""))
     if onenote:
-        # Принудительно сажаем на протокол приложения
         if not onenote.startswith("onenote:"):
             onenote = f"onenote:{onenote}"
         hook_html = f'<a href="{onenote}" class="info-hook" title="Open in App">i</a>'
