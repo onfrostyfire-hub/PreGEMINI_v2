@@ -73,7 +73,7 @@ def generate_desktop_theme(bg_rad1, bg_rad2, shadow1, shadow2, shadow3, seat_rad
     .hero-plate-desk .pos-desk {{ color: {seat_act_border} !important; }}
     
     /* ИКОНКА ONENOTE */
-    .info-hook {{ position: absolute; top: 15px; left: 20px; width: 26px; height: 26px; background: rgba(0,0,0,0.6); border: 1.5px solid rgba(255,255,255,0.4); border-radius: 50%; color: #fff; display: flex; justify-content: center; align-items: center; font-weight: bold; font-family: serif; text-decoration: none; transition: 0.2s; z-index: 100; font-size: 14px; text-shadow: none; }}
+    .info-hook {{ position: absolute; top: 245px; left: 150px; width: 26px; height: 26px; background: rgba(0,0,0,0.6); border: 1.5px solid rgba(255,255,255,0.4); border-radius: 50%; color: #fff; display: flex; justify-content: center; align-items: center; font-weight: bold; font-family: serif; text-decoration: none; transition: 0.2s; z-index: 100; font-size: 14px; text-shadow: none; }}
     .info-hook:hover {{ background: #0dcaf0; color: #000; border-color: #0dcaf0; box-shadow: 0 0 12px #0dcaf0; }}
     </style>"""
 
