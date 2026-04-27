@@ -3,6 +3,7 @@ import random
 import time
 import os
 import json
+import html
 from datetime import datetime
 import pandas as pd
 import poker_utils as utils
@@ -53,6 +54,41 @@ def fish_get_weight(hand, r_str):
         w = float(parts[1])*100 if len(parts)>1 and float(parts[1])<=1.0 else (float(parts[1]) if len(parts)>1 else 100.0)
         if h == hand: return w
     return 0.0
+
+def get_line_progress_gradient(hands_played):
+    if hands_played <= 100:
+        return "linear-gradient(90deg, #7d8792 0%, #a9b3bd 100%)"
+    if hands_played <= 250:
+        return "linear-gradient(90deg, #2fd67b 0%, #17b26a 100%)"
+    if hands_played <= 500:
+        return "linear-gradient(90deg, #37c3ff 0%, #2b7fff 100%)"
+    return "linear-gradient(90deg, #f4c95d 0%, #ff8f3d 100%)"
+
+def build_action_line_progress_html(progress_rows):
+    if not progress_rows:
+        return ""
+
+    rows_html = ""
+    for line_name, hands_played in progress_rows:
+        hands_val = max(0, int(hands_played))
+        pct = max(0, min(hands_val, 1000)) / 10
+        gradient = get_line_progress_gradient(hands_val)
+        rows_html += f"""
+        <div style="margin-bottom: 9px;">
+            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 4px;">
+                <div style="font-size: 11px; line-height: 1.2; font-weight: 700; color: rgba(255,255,255,0.9);">{html.escape(str(line_name))}</div>
+                <div style="font-size: 10px; line-height: 1; font-weight: 800; color: rgba(180,190,205,0.78); white-space: nowrap;">{hands_val}/1000</div>
+            </div>
+            <div style="height: 3px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.45);">
+                <div style="width: {pct}%; height: 100%; border-radius: 999px; background: {gradient}; box-shadow: 0 0 10px rgba(255,255,255,0.14);"></div>
+            </div>
+        </div>"""
+
+    return f"""
+    <div style="margin: 8px 0 10px 0; padding: 8px 10px 2px 10px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
+        <div style="margin-bottom: 8px; font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(150,160,175,0.72);">Road To 1000 Hands</div>
+        {rows_html}
+    </div>"""
 
 def generate_mobile_theme(bg_rad1, bg_rad2, shadow1, shadow2, shadow3, seat_rad, seat_border, seat_act_border, seat_act_shadow, anim_name, pulse_shadow1, pulse_shadow2, text_color, badge_bg, bar_fill, card_bg, card_border, rng_bg):
     return f"""<style>
@@ -245,6 +281,9 @@ def show():
                     for runout, spot_info in r_data.items():
                         flat_fish_db[f"{vp}|{tex}|{pos}|{line}|{runout}"] = spot_info
 
+    filter_stats = safe_load_stats()
+    filter_mastery = filter_stats.get("spot_mastery", {})
+
     with st.expander("⚙️ Fish Filters", expanded=False):
         c_v1, c_v2 = st.columns(2)
         with c_v1:
@@ -276,7 +315,33 @@ def show():
                         avail_lines.add(line)
                         for runout in runout_data.keys(): avail_runouts.add(runout)
 
-        sel_lines = st.multiselect("4. Action Line", sorted(list(avail_lines)), default=[x for x in saved.get("fish_sel_lines", []) if x in avail_lines])
+        avail_lines_sorted = sorted(list(avail_lines))
+        sel_lines = st.multiselect("4. Action Line", avail_lines_sorted, default=[x for x in saved.get("fish_sel_lines", []) if x in avail_lines])
+
+        if avail_lines_sorted:
+            line_progress = {line: 0 for line in avail_lines_sorted}
+            board_pool = sel_boards or sorted(list(avail_boards))
+
+            for vp in (sel_vpips or all_vpips):
+                for tex in board_pool:
+                    for pos, line_data in fish_db.get(vp, {}).get(tex, {}).items():
+                        if sel_pos and pos not in sel_pos:
+                            continue
+                        for line, runout_data in line_data.items():
+                            if line not in line_progress:
+                                continue
+                            for runout in runout_data.keys():
+                                full_key = f"{vp}|{tex}|{pos}|{line}|{runout}"
+                                spot_stats = filter_mastery.get(full_key, {})
+                                if not isinstance(spot_stats, dict):
+                                    continue
+                                try:
+                                    line_progress[line] += int(spot_stats.get("t", 0) or 0)
+                                except (TypeError, ValueError):
+                                    pass
+
+            progress_rows = [(line, line_progress[line]) for line in avail_lines_sorted]
+            st.markdown(build_action_line_progress_html(progress_rows), unsafe_allow_html=True)
         
         sel_spots_keys = []
         if sel_lines:
