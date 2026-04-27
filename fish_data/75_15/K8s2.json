@@ -133,7 +133,7 @@
           "hero_pos": "BTN",
           "villain_pos": "BB",
           "pot_size": 5.4,
-          "board_cards": ["Kh", "8h", "2d", "5c", "9s"],
+          "board_cards": ["Kh", "8h", "2d", "5c", "9h"],
           "villain_action": "BET",
           "villain_sizing_bb": 4.1,
           "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
