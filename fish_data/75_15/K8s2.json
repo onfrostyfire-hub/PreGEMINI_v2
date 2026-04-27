@@ -1,6 +1,6 @@
 {
   "IP": {
-    "33%-?": {
+    "33% -> Turn": {
       "K8s2Ac": {
         "setup": {
           "hero_pos": "BTN",
@@ -22,7 +22,7 @@
         "training": "Qh8h, Qs8c, Qd8s, Jh8h, Js8c, Jd8s, Th8h, Ts8c, Td8s, 9h8h, 9s8c, 9d8s, QhQc, QsQd, QhQs, JhJc, JsJd, JhJs, ThTc, TsTd, ThTs, 9h9c, 9s9d, 9h9s, Ah8c, As8d, Ac8h"
       }
     },
-    "33%-XB-?": {
+    "33% - XB - Faced bet": {
       "Kh8h2dTh6h": {
         "setup": {
           "hero_pos": "BTN",
