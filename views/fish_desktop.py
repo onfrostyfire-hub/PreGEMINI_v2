@@ -336,6 +336,8 @@ def show():
 
     chosen_key = st.session_state.fish_current_spot_key
     data = flat_fish_db[chosen_key]
+    chosen_parts = chosen_key.split('|')
+    spot_line_name = chosen_parts[3] if len(chosen_parts) > 3 else chosen_key
     setup = data.get("setup", {})
     
     hero_pos = setup.get("hero_pos", "BTN")
@@ -821,7 +823,7 @@ def show():
             st.session_state.fish_shield_break_anim = False
             st.rerun()
     else:
-        st.markdown('<div class="rng-hint-wrap-desk">RNG 0-Freq: ACTION &nbsp;|&nbsp; Freq-100: FOLD/CHECK</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="rng-hint-wrap-desk">{spot_line_name}</div>', unsafe_allow_html=True)
 
         btn_cols = st.columns(len(actions))
         for i, act in enumerate(actions):
