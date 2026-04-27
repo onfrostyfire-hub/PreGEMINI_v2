@@ -4,6 +4,7 @@ import time
 import os
 import json
 import html
+import textwrap
 from datetime import datetime
 import pandas as pd
 import poker_utils as utils
@@ -73,22 +74,24 @@ def build_action_line_progress_html(progress_rows):
         hands_val = max(0, int(hands_played))
         pct = max(0, min(hands_val, 1000)) / 10
         gradient = get_line_progress_gradient(hands_val)
-        rows_html += f"""
-        <div style="margin-bottom: 9px;">
-            <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 4px;">
-                <div style="font-size: 11px; line-height: 1.2; font-weight: 700; color: rgba(255,255,255,0.9);">{html.escape(str(line_name))}</div>
-                <div style="font-size: 10px; line-height: 1; font-weight: 800; color: rgba(180,190,205,0.78); white-space: nowrap;">{hands_val}/1000</div>
+        rows_html += textwrap.dedent(f"""
+            <div style="margin-bottom: 9px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 4px;">
+                    <div style="font-size: 11px; line-height: 1.2; font-weight: 700; color: rgba(255,255,255,0.9);">{html.escape(str(line_name))}</div>
+                    <div style="font-size: 10px; line-height: 1; font-weight: 800; color: rgba(180,190,205,0.78); white-space: nowrap;">{hands_val}/1000</div>
+                </div>
+                <div style="height: 3px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.45);">
+                    <div style="width: {pct}%; height: 100%; border-radius: 999px; background: {gradient}; box-shadow: 0 0 10px rgba(255,255,255,0.14);"></div>
+                </div>
             </div>
-            <div style="height: 3px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.45);">
-                <div style="width: {pct}%; height: 100%; border-radius: 999px; background: {gradient}; box-shadow: 0 0 10px rgba(255,255,255,0.14);"></div>
-            </div>
-        </div>"""
+        """).strip()
 
-    return f"""
-    <div style="margin: 8px 0 10px 0; padding: 8px 10px 2px 10px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
-        <div style="margin-bottom: 8px; font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(150,160,175,0.72);">Road To 1000 Hands</div>
-        {rows_html}
-    </div>"""
+    return textwrap.dedent(f"""
+        <div style="margin: 8px 0 10px 0; padding: 8px 10px 2px 10px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
+            <div style="margin-bottom: 8px; font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(150,160,175,0.72);">Road To 1000 Hands</div>
+            {rows_html}
+        </div>
+    """).strip()
 
 def generate_mobile_theme(bg_rad1, bg_rad2, shadow1, shadow2, shadow3, seat_rad, seat_border, seat_act_border, seat_act_shadow, anim_name, pulse_shadow1, pulse_shadow2, text_color, badge_bg, bar_fill, card_bg, card_border, rng_bg):
     return f"""<style>
