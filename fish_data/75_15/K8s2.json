@@ -85,6 +85,132 @@
           "Fold": "AsQc, AcQd, AdQs, AsJc, AcJd, AdJs, As9c, Ac9d, Ad9s, As7c, Ac7d, Ad7s, As4c, Ac4d, Ad4s, As2c, Ac2d, Ad2s, 3s3c, 3s3d, 3c3d, 5s5c, 5s5d, 5c5d, 6s6c, 6s6d, 6c6d, 3s2s, 3c2c, 3d2d, 5s2s, 5c2c, 5d2d, Qs2s, Qc2c, Qd2d"
         },
         "training": "7s7c, 7s7d, 7c7d, 9s9c, 9s9d, 9c9d, 8s7c, 8c7d, 8d7s, 9s8c, 9c8d, 9d8s, Js8c, Jc8d, Jd8s, Qs8c, Qc8d, Qd8s, As8c, Ac8d, Ad8s, Ts7c, Tc7d, Td7s, Ts9c, Tc9d, Td9s, JsTc, JcTd, JdTs, QsTc, QcTd, QdTs, AsTc, AcTd, AdTs, AsQc, AcQd, AdQs, AsJc, AcJd, AdJs, As9c, Ac9d, Ad9s, As7c, Ac7d, Ad7s, As4c, Ac4d, Ad4s, As2c, Ac2d, Ad2s, 3s3c, 3s3d, 3c3d, 5s5c, 5s5d, 5c5d, 6s6c, 6s6d, 6c6d, 3s2s, 3c2c, 3d2d, 5s2s, 5c2c, 5d2d, Qs2s, Qc2c, Qd2d"
+      },
+      "Kh8h2d5cQc": {
+        "setup": {
+          "hero_pos": "BTN",
+          "villain_pos": "BB",
+          "pot_size": 5.4,
+          "board_cards": ["Kh", "8h", "2d", "5c", "Qc"],
+          "villain_action": "BET",
+          "villain_sizing_bb": 4.1,
+          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#33%25%20-%20XB%20-%20Faced%20bet&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={5564DFE4-78C2-4489-8CDB-564CE85F7878}&end"
+        },
+        "actions": [
+          "Fold",
+          "Call"
+        ],
+        "ranges": {
+          "Call": "6s6c, 6s6d, 6s6h, 6c6d, 6c6h, 6d6h, As5s, Ah5h, Ad5d, 6s5s, 6h5h, 6d5d, 7s5s, 7h5h, 7d5d, 5s3s, 5h3h, 5d3d, 4s4c, 4s4d, 4s4h, 4c4d, 4c4h, 4d4h, 3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h",
+          "Fold": "As2c, As2h, Ac2s, Ac2h, Ah2s, Ah2c, Ad2s, Ad2c, Ad2h, 4s2s, 4c2c, 4h2h, 3s2s, 3c2c, 3h2h, AsJc, AsJd, AsJh, AcJs, AcJd, AcJh, AhJs, AhJc, AhJd, AdJs, AdJc, AdJh, AsTs, AcTc, AhTh, AdTd"
+        },
+        "training": "6s6c, 6s6d, 6s6h, 6c6d, 6c6h, 6d6h, As5s, Ah5h, Ad5d, 6s5s, 6h5h, 6d5d, 7s5s, 7h5h, 7d5d, 5s3s, 5h3h, 5d3d, 4s4c, 4s4d, 4s4h, 4c4d, 4c4h, 4d4h, 3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h, As2c, As2h, Ac2s, Ac2h, Ah2s, Ah2c, Ad2s, Ad2c, Ad2h, 4s2s, 4c2c, 4h2h, 3s2s, 3c2c, 3h2h, AsJc, AsJd, AsJh, AcJs, AcJd, AcJh, AhJs, AhJc, AhJd, AdJs, AdJc, AdJh, AsTs, AcTc, AhTh, AdTd"
+      },
+      "Kh8h2d5c5d": {
+        "setup": {
+          "hero_pos": "BTN",
+          "villain_pos": "BB",
+          "pot_size": 5.4,
+          "board_cards": ["Kh", "8h", "2d", "5c", "5d"],
+          "villain_action": "BET",
+          "villain_sizing_bb": 4.1,
+          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#33%25%20-%20XB%20-%20Faced%20bet&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={5564DFE4-78C2-4489-8CDB-564CE85F7878}&end"
+        },
+        "actions": [
+          "Fold",
+          "Call"
+        ],
+        "ranges": {
+          "Call": "4s4c, 4s4d, 4s4h, 4c4d, 4c4h, 4d4h, 3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h, 4s2s, 4c2c, 4h2h, 3s2s, 3c2c, 3h2h, Qs2s, Qc2c, Qh2h, As2s, Ac2c, Ah2h",
+          "Fold": "AsQc, AsQd, AsQh, AcQs, AcQd, AcQh, AhQs, AhQc, AhQd, AdQs, AdQc, AdQh, AsJc, AsJd, AsJh, AcJs, AcJd, AcJh, AhJs, AhJc, AhJd, AdJs, AdJc, AdJh, AsTc, AsTd, AsTh, AcTs, AcTd, AcTh, AhTs, AhTc, AhTd, AdTs, AdTc, AdTh, As9c, As9d, As9h, Ac9s, Ac9d, Ac9h, Ah9s, Ah9c, Ah9d, Ad9s, Ad9c, Ad9h"
+        },
+        "training": "4s4c, 4s4d, 4s4h, 4c4d, 4c4h, 4d4h, 3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h, 4s2s, 4c2c, 4h2h, 3s2s, 3c2c, 3h2h, Qs2s, Qc2c, Qh2h, As2s, Ac2c, Ah2h, AsQc, AsQd, AsQh, AcQs, AcQd, AcQh, AhQs, AhQc, AhQd, AdQs, AdQc, AdQh, AsJc, AsJd, AsJh, AcJs, AcJd, AcJh, AhJs, AhJc, AhJd, AdJs, AdJc, AdJh, AsTc, AsTd, AsTh, AcTs, AcTd, AcTh, AhTs, AhTc, AhTd, AdTs, AdTc, AdTh, As9c, As9d, As9h, Ac9s, Ac9d, Ac9h, Ah9s, Ah9c, Ah9d, Ad9s, Ad9c, Ad9h"
+      },
+      "Kh8h2d5c9s": {
+        "setup": {
+          "hero_pos": "BTN",
+          "villain_pos": "BB",
+          "pot_size": 5.4,
+          "board_cards": ["Kh", "8h", "2d", "5c", "9s"],
+          "villain_action": "BET",
+          "villain_sizing_bb": 4.1,
+          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#33%25%20-%20XB%20-%20Faced%20bet&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={5564DFE4-78C2-4489-8CDB-564CE85F7878}&end"
+        },
+        "actions": [
+          "Fold",
+          "Call"
+        ],
+        "ranges": {
+          "Call": "3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h, 4s4c, 4s4d, 4s4h, 4c4d, 4c4h, 4d4h, 5s3s, 5h3h, 5d3d, 5s4s, 5h4h, 5d4d, 6s5s, 6h5h, 6d5d, 7s5s, 7h5h, 7d5d, 6s6c, 6s6d, 6s6h, 6c6d, 6c6h, 6d6h",
+          "Fold": "AsQc, AsQd, AsQh, AcQs, AcQd, AcQh, AhQs, AhQc, AhQd, AdQs, AdQc, AdQh, As2c, As2h, Ac2s, Ac2h, Ah2s, Ah2c, Ad2s, Ad2c, Ad2h, 4s2s, 4c2c, 4h2h, 3s2s, 3c2c, 3h2h"
+        },
+        "training": "3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h, 4s4c, 4s4d, 4s4h, 4c4d, 4c4h, 4d4h, 5s3s, 5h3h, 5d3d, 5s4s, 5h4h, 5d4d, 6s5s, 6h5h, 6d5d, 7s5s, 7h5h, 7d5d, 6s6c, 6s6d, 6s6h, 6c6d, 6c6h, 6d6h, AsQc, AsQd, AsQh, AcQs, AcQd, AcQh, AhQs, AhQc, AhQd, AdQs, AdQc, AdQh, As2c, As2h, Ac2s, Ac2h, Ah2s, Ah2c, Ad2s, Ad2c, Ad2h, 4s2s, 4c2c, 4h2h, 3s2s, 3c2c, 3h2h"
+      },
+      "Kh8h2dAcQc": {
+        "setup": {
+          "hero_pos": "BTN",
+          "villain_pos": "BB",
+          "pot_size": 5.4,
+          "board_cards": ["Kh", "8h", "2d", "Ac", "Qc"],
+          "villain_action": "BET",
+          "villain_sizing_bb": 4.1,
+          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#33%25%20-%20XB%20-%20Faced%20bet&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={5564DFE4-78C2-4489-8CDB-564CE85F7878}&end"
+        },
+        "actions": [
+          "Fold",
+          "Call"
+        ],
+        "ranges": {
+          "Call": "8s5s, 8d5d, 8s6s, 8d6d, 8s7c, 8s7d, 8s7h, 8c7s, 8c7d, 8c7h, 8d7s, 8d7c, 8d7h, 9s8c, 9s8d, 9c8s, 9c8d, 9c8h, 9d8s, 9d8c, 9d8h, 9h8s, 9h8c, 9h8d, Ts8c, Ts8d, Tc8s, Tc8d, Tc8h, Td8s, Td8c, Td8h, Th8s, Th8c, Th8d",
+          "Fold": "5s2s, 5h2h, 4s2s, 4h2h, 3s2s, 3h2h, 3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h, 4s4c, 4s4d, 4s4h, 4c4d, 4c4h, 4d4h, 5s5c, 5s5d, 5s5h, 5c5d, 5c5h, 5d5h, 6s6c, 6s6d, 6s6h, 6c6d, 6c6h, 6d6h, 7s7c, 7s7d, 7s7h, 7c7d, 7c7h, 7d7h"
+        },
+        "training": "8s5s, 8d5d, 8s6s, 8d6d, 8s7c, 8s7d, 8s7h, 8c7s, 8c7d, 8c7h, 8d7s, 8d7c, 8d7h, 9s8c, 9s8d, 9c8s, 9c8d, 9c8h, 9d8s, 9d8c, 9d8h, 9h8s, 9h8c, 9h8d, Ts8c, Ts8d, Tc8s, Tc8d, Tc8h, Td8s, Td8c, Td8h, Th8s, Th8c, Th8d, 5s2s, 5h2h, 4s2s, 4h2h, 3s2s, 3h2h, 3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h, 4s4c, 4s4d, 4s4h, 4c4d, 4c4h, 4d4h, 5s5c, 5s5d, 5s5h, 5c5d, 5c5h, 5d5h, 6s6c, 6s6d, 6s6h, 6c6d, 6c6h, 6d6h, 7s7c, 7s7d, 7s7h, 7c7d, 7c7h, 7d7h"
+      },
+      "Kh8h2dAc9h": {
+        "setup": {
+          "hero_pos": "BTN",
+          "villain_pos": "BB",
+          "pot_size": 5.4,
+          "board_cards": ["Kh", "8h", "2d", "Ac", "9h"],
+          "villain_action": "BET",
+          "villain_sizing_bb": 4.1,
+          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#33%25%20-%20XB%20-%20Faced%20bet&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={5564DFE4-78C2-4489-8CDB-564CE85F7878}&end"
+        },
+        "actions": [
+          "Fold",
+          "Call"
+        ],
+        "ranges": {
+          "Call": "Ts8c, Ts8d, Tc8s, Tc8d, Td8s, Td8c, Th8s, Th8c, Th8d, Js8c, Js8d, Jc8s, Jc8d, Jd8s, Jd8c, Jh8s, Jh8c, Jh8d, Qs8c, Qs8d, Qc8s, Qc8d, Qd8s, Qd8c, Qh8s, Qh8c, Qh8d, TsTc, TsTd, TsTh, TcTd, TcTh, TdTh",
+          "Fold": "3s2s, 3c2c, 4s2s, 4c2c, 5s2s, 5c2c, Qs2s, Qc2c, 3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h, 4s4c, 4s4d, 4s4h, 4c4d, 4c4h, 4d4h, 5s5c, 5s5d, 5s5h, 5c5d, 5c5h, 5d5h, 6s6c, 6s6d, 6s6h, 6c6d, 6c6h, 6d6h, 7s7c, 7s7d, 7s7h, 7c7d, 7c7h, 7d7h, 8s5s, 8d5d, 8s6s, 8d6d, 8s7c, 8s7d, 8s7h, 8c7s, 8c7d, 8c7h, 8d7s, 8d7c, 8d7h"
+        },
+        "training": "Ts8c, Ts8d, Tc8s, Tc8d, Td8s, Td8c, Th8s, Th8c, Th8d, Js8c, Js8d, Jc8s, Jc8d, Jd8s, Jd8c, Jh8s, Jh8c, Jh8d, Qs8c, Qs8d, Qc8s, Qc8d, Qd8s, Qd8c, Qh8s, Qh8c, Qh8d, TsTc, TsTd, TsTh, TcTd, TcTh, TdTh, 3s2s, 3c2c, 4s2s, 4c2c, 5s2s, 5c2c, Qs2s, Qc2c, 3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h, 4s4c, 4s4d, 4s4h, 4c4d, 4c4h, 4d4h, 5s5c, 5s5d, 5s5h, 5c5d, 5c5h, 5d5h, 6s6c, 6s6d, 6s6h, 6c6d, 6c6h, 6d6h, 7s7c, 7s7d, 7s7h, 7c7d, 7c7h, 7d7h, 8s5s, 8d5d, 8s6s, 8d6d, 8s7c, 8s7d, 8s7h, 8c7s, 8c7d, 8c7h, 8d7s, 8d7c, 8d7h"
+      },
+      "Kh8h2dAc4d": {
+        "setup": {
+          "hero_pos": "BTN",
+          "villain_pos": "BB",
+          "pot_size": 5.4,
+          "board_cards": ["Kh", "8h", "2d", "Ac", "4d"],
+          "villain_action": "BET",
+          "villain_sizing_bb": 4.1,
+          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#33%25%20-%20XB%20-%20Faced%20bet&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={5564DFE4-78C2-4489-8CDB-564CE85F7878}&end"
+        },
+        "actions": [
+          "Fold",
+          "Call"
+        ],
+        "ranges": {
+          "Call": "5s5c, 5s5d, 5s5h, 5c5d, 5c5h, 5d5h, 6s6c, 6s6d, 6s6h, 6c6d, 6c6h, 6d6h, 7s7c, 7s7d, 7s7h, 7c7d, 7c7h, 7d7h, 8s5s, 8c5c, 8s6s, 8c6c",
+          "Fold": "3s2s, 3c2c, 3h2h, 5s2s, 5c2c, 5h2h, Qs2s, Qc2c, Qh2h, 3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h"
+        },
+        "training": "5s5c, 5s5d, 5s5h, 5c5d, 5c5h, 5d5h, 6s6c, 6s6d, 6s6h, 6c6d, 6c6h, 6d6h, 7s7c, 7s7d, 7s7h, 7c7d, 7c7h, 7d7h, 8s5s, 8c5c, 8s6s, 8c6c, 3s2s, 3c2c, 3h2h, 5s2s, 5c2c, 5h2h, Qs2s, Qc2c, Qh2h, 3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h"
       }
     }
   }
