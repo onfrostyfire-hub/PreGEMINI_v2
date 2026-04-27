@@ -211,6 +211,7 @@
           "Fold": "3s2s, 3c2c, 3h2h, 5s2s, 5c2c, 5h2h, Qs2s, Qc2c, Qh2h, 3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h"
         },
         "training": "5s5c, 5s5d, 5s5h, 5c5d, 5c5h, 5d5h, 6s6c, 6s6d, 6s6h, 6c6d, 6c6h, 6d6h, 7s7c, 7s7d, 7s7h, 7c7d, 7c7h, 7d7h, 8s5s, 8c5c, 8s6s, 8c6c, 3s2s, 3c2c, 3h2h, 5s2s, 5c2c, 5h2h, Qs2s, Qc2c, Qh2h, 3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h"
+        }
     },
     "75% - Turn": {
       "Kh8h2dTh": {
