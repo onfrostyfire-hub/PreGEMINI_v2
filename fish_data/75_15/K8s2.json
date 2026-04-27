@@ -211,6 +211,69 @@
           "Fold": "3s2s, 3c2c, 3h2h, 5s2s, 5c2c, 5h2h, Qs2s, Qc2c, Qh2h, 3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h"
         },
         "training": "5s5c, 5s5d, 5s5h, 5c5d, 5c5h, 5d5h, 6s6c, 6s6d, 6s6h, 6c6d, 6c6h, 6d6h, 7s7c, 7s7d, 7s7h, 7c7d, 7c7h, 7d7h, 8s5s, 8c5c, 8s6s, 8c6c, 3s2s, 3c2c, 3h2h, 5s2s, 5c2c, 5h2h, Qs2s, Qc2c, Qh2h, 3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h"
+    },
+    "75% - Turn": {
+      "Kh8h2dTh": {
+        "setup": {
+          "hero_pos": "BTN",
+          "villain_pos": "BB",
+          "pot_size": 9.6,
+          "board_cards": ["Kh", "8h", "2d", "Th"],
+          "villain_action": "CHECK",
+          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
+          "onenote_url": "onenote:https://d.docs.live.net/ACB7650AF03EF10D/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2dTh&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={1D49C3E6-3054-42F9-B114-426314CC7CF9}&end"
+        },
+        "actions": [
+          "Bet 75%",
+          "Bet 50%",
+          "Check"
+        ],
+        "ranges": {
+          "Bet 75%": "AdAc, AsAc, AsAd, AhKs, AhKc, AhKd, KcKd, KcKs, KdKs, 8c8d, 8c8s, 8d8s, 2c2h, 2c2s, 2h2s, KsQh, KcQh, KdQh",
+          "Bet 50%": "KsJh, KcJh, KdJh, Ks9h, Kc9h, Kd9h, AcAd, AcAs, AdAs, AcKs, AcKc, AcKd, AdKs, AdKc, AdKd, AsKs, AsKc, AsKd",
+          "Check": "Ks7h, Kc7h, Kd7h, Ks6h, Kc6h, Kd6h, Ks5h, Kc5h, Kd5h, Ks4h, Kc4h, Kd4h, Ks3h, Kc3h, Kd3h, KsQs, KsQc, KsQd, KcQs, KcQc, KcQd, KdQs, KdQc, KdQd, KsJs, KsJc, KsJd, KcJs, KcJc, KcJd, KdJs, KdJc, KdJd, Ks9s, Ks9c, Ks9d, Kc9s, Kc9c, Kc9d, Kd9s, Kd9c, Kd9d, Ks8s, Ks8c, Ks8d, Kc8s, Kc8c, Kc8d, Kd8s, Kd8c, Kd8d, Ks7s, Ks7c, Ks7d, Kc7s, Kc7c, Kc7d, Kd7s, Kd7c, Kd7d"
+        },
+        "training": "AdAc, AsAc, AsAd, AhKs, AhKc, AhKd, KcKd, KcKs, KdKs, 8c8d, 8c8s, 8d8s, 2c2h, 2c2s, 2h2s, KsQh, KcQh, KdQh, KsJh, KcJh, KdJh, Ks9h, Kc9h, Kd9h, AcAd, AcAs, AdAs, AcKs, AcKc, AcKd, AdKs, AdKc, AdKd, AsKs, AsKc, AsKd, Ks7h, Kc7h, Kd7h, Ks6h, Kc6h, Kd6h, Ks5h, Kc5h, Kd5h, Ks4h, Kc4h, Kd4h, Ks3h, Kc3h, Kd3h, KsQs, KsQc, KsQd, KcQs, KcQc, KcQd, KdQs, KdQc, KdQd, KsJs, KsJc, KsJd, KcJs, KcJc, KcJd, KdJs, KdJc, KdJd, Ks9s, Ks9c, Ks9d, Kc9s, Kc9c, Kc9d, Kd9s, Kd9c, Kd9d, Ks8s, Ks8c, Ks8d, Kc8s, Kc8c, Kc8d, Kd8s, Kd8c, Kd8d, Ks7s, Ks7c, Ks7d, Kc7s, Kc7c, Kc7d, Kd7s, Kd7c, Kd7d"
+      },
+      "Kh8h2dAc": {
+        "setup": {
+          "hero_pos": "BTN",
+          "villain_pos": "BB",
+          "pot_size": 9.6,
+          "board_cards": ["Kh", "8h", "2d", "Ac"],
+          "villain_action": "CHECK",
+          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
+          "onenote_url": "onenote:https://d.docs.live.net/ACB7650AF03EF10D/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2dAc&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={41234C98-2E94-474C-B3AD-75D788A8C86A}&end"
+        },
+        "actions": [
+          "Bet 75%",
+          "Check"
+        ],
+        "ranges": {
+          "Bet 75%": "As4s, Ad4d, Ah4h, As3s, Ad3d, Ah3h, As2s, Ah2h",
+          "Check": "KsQc, KsQd, KsQh, KcQs, KcQd, KcQh, KdQs, KdQc, KdQh, KsJc, KsJd, KsJh, KcJs, KcJd, KcJh, KdJs, KdJc, KdJh, KsTc, KsTd, KsTh, KcTs, KcTd, KcTh, KdTs, KdTc, KdTh, Ks9c, Ks9d, Ks9h, Kc9s, Kc9d, Kc9h, Kd9s, Kd9c, Kd9h, Ks7c, Ks7d, Ks7h, Kc7s, Kc7d, Kc7h, Kd7s, Kd7c, Kd7h"
+        },
+        "training": "As4s, Ad4d, Ah4h, As3s, Ad3d, Ah3h, As2s, Ah2h, KsQc, KsQd, KsQh, KcQs, KcQd, KcQh, KdQs, KdQc, KdQh, KsJc, KsJd, KsJh, KcJs, KcJd, KcJh, KdJs, KdJc, KdJh, KsTc, KsTd, KsTh, KcTs, KcTd, KcTh, KdTs, KdTc, KdTh, Ks9c, Ks9d, Ks9h, Kc9s, Kc9d, Kc9h, Kd9s, Kd9c, Kd9h, Ks7c, Ks7d, Ks7h, Kc7s, Kc7d, Kc7h, Kd7s, Kd7c, Kd7h"
+      },
+      "Kh8h2d5c": {
+        "setup": {
+          "hero_pos": "BTN",
+          "villain_pos": "BB",
+          "pot_size": 9.6,
+          "board_cards": ["Kh", "8h", "2d", "5c"],
+          "villain_action": "CHECK",
+          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
+          "onenote_url": "onenote:https://d.docs.live.net/ACB7650AF03EF10D/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2d5c&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={9AFE8AAB-BEE1-41D1-B28B-5129FF05DD8D}&end"
+        },
+        "actions": [
+          "Bet 75%",
+          "Bet 50%"
+        ],
+        "ranges": {
+          "Bet 75%": "KsTc, KsTd, KsTh, KcTs, KcTd, KcTh, KdTs, KdTc, KdTh, Ks9c, Ks9d, Ks9h, Kc9s, Kc9d, Kc9h, Kd9s, Kd9c, Kd9h, Ks7c, Ks7d, Ks7h, Kc7s, Kc7d, Kc7h, Kd7s, Kd7c, Kd7h, Ks6c, Ks6d, Ks6h, Kc6s, Kc6d, Kc6h, Kd6s, Kd6c, Kd6h",
+          "Bet 50%": "Ks4c, Ks4d, Ks4h, Kc4s, Kc4d, Kc4h, Kd4s, Kd4c, Kd4h, Ks3c, Ks3d, Ks3h, Kc3s, Kc3d, Kc3h, Kd3s, Kd3c, Kd3h"
+        },
+        "training": "KsTc, KsTd, KsTh, KcTs, KcTd, KcTh, KdTs, KdTc, KdTh, Ks9c, Ks9d, Ks9h, Kc9s, Kc9d, Kc9h, Kd9s, Kd9c, Kd9h, Ks7c, Ks7d, Ks7h, Kc7s, Kc7d, Kc7h, Kd7s, Kd7c, Kd7h, Ks6c, Ks6d, Ks6h, Kc6s, Kc6d, Kc6h, Kd6s, Kd6c, Kd6h, Ks4c, Ks4d, Ks4h, Kc4s, Kc4d, Kc4h, Kd4s, Kd4c, Kd4h, Ks3c, Ks3d, Ks3h, Kc3s, Kc3d, Kc3h, Kd3s, Kd3c, Kd3h"
       }
     }
   }
