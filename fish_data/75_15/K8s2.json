@@ -128,7 +128,7 @@
         },
         "training": "4s4c, 4s4d, 4s4h, 4c4d, 4c4h, 4d4h, 3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h, 4s2s, 4c2c, 4h2h, 3s2s, 3c2c, 3h2h, Qs2s, Qc2c, Qh2h, As2s, Ac2c, Ah2h, AsQc, AsQd, AsQh, AcQs, AcQd, AcQh, AhQs, AhQc, AhQd, AdQs, AdQc, AdQh, AsJc, AsJd, AsJh, AcJs, AcJd, AcJh, AhJs, AhJc, AhJd, AdJs, AdJc, AdJh, AsTc, AsTd, AsTh, AcTs, AcTd, AcTh, AhTs, AhTc, AhTd, AdTs, AdTc, AdTh, As9c, As9d, As9h, Ac9s, Ac9d, Ac9h, Ah9s, Ah9c, Ah9d, Ad9s, Ad9c, Ad9h"
       },
-      "Kh8h2d5c9s": {
+      "Kh8h2d5c9h": {
         "setup": {
           "hero_pos": "BTN",
           "villain_pos": "BB",
