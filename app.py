@@ -33,35 +33,65 @@ def main():
         .block-container { padding-top: 1.5rem !important; padding-bottom: 1rem !important; }
         
         .compact-tabs { display: none; }
-        .compact-tabs + div[role="radiogroup"] {
-            display: inline-flex !important;
+        div[role="radiogroup"][aria-label="Nav"] {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            align-items: center !important;
+            width: 100% !important;
+            max-width: 560px !important;
             background: #1a1c20 !important;
-            padding: 2px !important;
-            border-radius: 8px !important;
+            padding: 3px !important;
+            border-radius: 10px !important;
             border: 1px solid #333 !important;
-            gap: 2px !important;
-            margin-top: -5px !important;
-            margin-bottom: -5px !important;
+            gap: 3px !important;
+            margin: -6px 0 4px 0 !important;
+            overflow: hidden !important;
         }
-        .compact-tabs + div[role="radiogroup"] label {
-            padding: 4px 10px !important;
+        div[role="radiogroup"][aria-label="Nav"] label {
+            flex: 1 1 0 !important;
+            min-width: 0 !important;
+            display: inline-flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            padding: 5px 6px !important;
             background: transparent !important;
-            border-radius: 6px !important;
+            border-radius: 7px !important;
             cursor: pointer !important;
             margin: 0 !important;
             border: none !important;
+            white-space: nowrap !important;
         }
-        .compact-tabs + div[role="radiogroup"] label div:first-child { display: none !important; }
-        .compact-tabs + div[role="radiogroup"] label p { 
-            color: #888 !important; font-size: 12px !important; font-weight: bold !important; margin: 0 !important; text-transform: uppercase; 
+        div[role="radiogroup"][aria-label="Nav"] label > div:first-child { display: none !important; }
+        div[role="radiogroup"][aria-label="Nav"] label p {
+            color: #9aa0aa !important;
+            font-size: 12px !important;
+            font-weight: 800 !important;
+            line-height: 1 !important;
+            margin: 0 !important;
+            text-transform: uppercase;
+            white-space: nowrap !important;
+            letter-spacing: 0 !important;
         }
-        .compact-tabs + div[role="radiogroup"] label[data-checked="true"],
-        .compact-tabs + div[role="radiogroup"] label:has(input:checked) {
-            background: #ffc107 !important; box-shadow: 0 1px 3px rgba(0,0,0,0.4) !important;
+        div[role="radiogroup"][aria-label="Nav"] label[data-checked="true"],
+        div[role="radiogroup"][aria-label="Nav"] label:has(input:checked) {
+            background: #ff4b55 !important;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4) !important;
         }
-        .compact-tabs + div[role="radiogroup"] label[data-checked="true"] p,
-        .compact-tabs + div[role="radiogroup"] label:has(input:checked) p {
-            color: #000 !important; font-weight: 900 !important;
+        div[role="radiogroup"][aria-label="Nav"] label[data-checked="true"] p,
+        div[role="radiogroup"][aria-label="Nav"] label:has(input:checked) p {
+            color: #fff !important;
+            font-weight: 900 !important;
+        }
+        @media (max-width: 640px) {
+            div[role="radiogroup"][aria-label="Nav"] {
+                max-width: 100% !important;
+                gap: 2px !important;
+                padding: 2px !important;
+                margin-top: -10px !important;
+            }
+            div[role="radiogroup"][aria-label="Nav"] label { padding: 5px 3px !important; }
+            div[role="radiogroup"][aria-label="Nav"] label p { font-size: 10.5px !important; }
         }
         
         div[data-testid="stVerticalBlock"] > div { padding-bottom: 0 !important; margin-bottom: 0 !important; }
