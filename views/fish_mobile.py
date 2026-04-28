@@ -124,11 +124,11 @@ def show():
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap');
 
-        .pf-pot-badge { position: absolute; top: 23%; left: 50%; transform: translateX(-50%); z-index: 15; }
-        .pf-street-pot { position: absolute; top: 55.5%; left: 50%; transform: translateX(-50%); z-index: 18; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 6px; pointer-events: none; }
-        .pf-board { position: absolute; top: 42.5%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
+        .pf-pot-badge { position: absolute; top: 22%; left: 50%; transform: translateX(-50%); z-index: 15; }
+        .pf-street-pot { position: absolute; top: 53.5%; left: 50%; transform: translateX(-50%); z-index: 18; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 6px; pointer-events: none; }
+        .pf-board { position: absolute; top: 40.5%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
         
-        .mobile-game-area { margin-top: 40px !important; margin-bottom: 34px !important; }
+        .mobile-game-area { margin-top: 34px !important; margin-bottom: 18px !important; }
         .rng-hint-wrap { display: none !important; }
         div[data-testid="stHorizontalBlock"] { margin-top: 0px !important; gap: 8px !important; }
 
@@ -147,9 +147,9 @@ def show():
         div.element-container:has(#fish-runouts-all-m-marker) + div.element-container div[data-testid="stButton"] button p { font-size: 10px !important; letter-spacing: 0.05em !important; color: rgba(255,255,255,0.88) !important; }
 
         .mobile-game-area { 
-            position: relative; width: 100%; height: 345px; 
+            position: relative; width: 100%; height: 395px; 
             border: 12px solid #1a1c20; 
-            border-radius: 184px; 
+            border-radius: 52% / 48%; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 3px 12px rgba(0,0,0,0.6); 
             transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; 
         }
@@ -188,12 +188,12 @@ def show():
         .street-chip-pot.c4 { top: 2px; left: 7px; background: repeating-conic-gradient(rgba(255,255,255,0.22) 0deg 16deg, transparent 16deg 34deg), radial-gradient(circle at 36% 30%, #f8fafc, #8d99a8 72%); }
         .street-chip-pot.c5 { top: 0; left: 5px; background: repeating-conic-gradient(rgba(255,255,255,0.22) 0deg 16deg, transparent 16deg 34deg), radial-gradient(circle at 36% 30%, #f7c948, #8a5808 72%); }
         .street-pot-txt { background: rgba(8,9,12,0.92); border: 1px solid rgba(255,193,7,0.32); color: #f4d384; border-radius: 7px; padding: 1px 6px; font-size: 9px; font-weight: 800; line-height: 1.25; box-shadow: 0 2px 4px rgba(0,0,0,0.55); white-space: nowrap; }
-        .spot-mastery-felt { position: absolute; top: 65.5%; left: 50%; transform: translateX(-50%); z-index: 16; min-width: 132px; max-width: 154px; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 4px 8px 5px; border-radius: 12px; pointer-events: none; background: radial-gradient(circle at 50% 0%, rgba(80,135,92,0.18), rgba(9,18,13,0.62) 62%, rgba(5,8,7,0.74)); border: 1px solid rgba(148,210,162,0.16); box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 18px rgba(0,0,0,0.42); backdrop-filter: blur(4px); }
-        .spot-mastery-pill { display: inline-flex; align-items: center; justify-content: center; gap: 4px; max-width: 100%; border-radius: 999px; padding: 2px 8px 2px 7px; font-size: 9px; font-weight: 800; letter-spacing: 0.03em; white-space: nowrap; background: rgba(5,8,7,0.72); border: 1px solid rgba(255,255,255,0.14); color: rgba(255,255,255,0.94); text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
-        .spot-mastery-meter { width: 72px; height: 2px; border-radius: 999px; overflow: hidden; background: rgba(255,255,255,0.08); box-shadow: inset 0 1px 2px rgba(0,0,0,0.7); }
-        .spot-mastery-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #1ac8d9, #58f0b0); box-shadow: 0 0 8px rgba(32,220,190,0.45); }
-        .spot-mastery-remaining { font-size: 8.5px; font-weight: 700; letter-spacing: 0.02em; line-height: 1; color: rgba(230,238,235,0.76); white-space: nowrap; }
-        .spot-line-felt { position: absolute; top: 80%; left: 50%; transform: translateX(-50%); z-index: 14; width: 80%; text-align: center; pointer-events: none; color: rgba(215,224,218,0.34); font-family: 'Roboto', sans-serif; font-size: 13px; font-weight: 800; letter-spacing: 0.04em; line-height: 1; text-shadow: 0 1px 5px rgba(0,0,0,0.65); white-space: nowrap; }
+        .spot-mastery-felt { position: absolute; top: 61%; left: 50%; transform: translateX(-50%); z-index: 16; min-width: 132px; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 0; pointer-events: none; background: transparent; border: 0; box-shadow: none; }
+        .spot-mastery-pill { display: inline-flex; align-items: center; justify-content: center; gap: 5px; max-width: 100%; padding: 0; font-size: 11px; font-weight: 900; letter-spacing: 0.03em; white-space: nowrap; background: transparent; border: 0; color: rgba(230,244,232,0.78); text-shadow: 0 1px 5px rgba(0,0,0,0.82), 0 0 10px rgba(70,190,120,0.18); }
+        .spot-mastery-meter { display: none; }
+        .spot-mastery-fill { display: none; }
+        .spot-mastery-remaining { font-size: 9px; font-weight: 800; letter-spacing: 0.03em; line-height: 1; color: rgba(220,232,224,0.46); text-shadow: 0 1px 5px rgba(0,0,0,0.82); white-space: nowrap; }
+        .spot-line-felt { position: absolute; top: 14.5%; left: 50%; transform: translateX(-50%); z-index: 14; width: 86%; text-align: center; pointer-events: none; color: rgba(220,232,224,0.42); font-family: 'Roboto', sans-serif; font-size: 14px; font-weight: 900; letter-spacing: 0.04em; line-height: 1; text-shadow: 0 1px 6px rgba(0,0,0,0.75), 0 0 12px rgba(80,180,120,0.12); white-space: nowrap; }
         .board-container-mob { display: flex; gap: 4px; background: rgba(0,0,0,0.4); padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 2px 10px rgba(0,0,0,0.4); }
         .board-card-mob { width: 38px; height: 54px; background: white; border-radius: 3px; position: relative; color: black; box-shadow: 0 1px 3px rgba(0,0,0,0.5); font-family: Arial, sans-serif !important; }
         .bc-tl-mob { position: absolute; top: 2px; left: 3px; font-weight: bold; font-size: 12px; line-height: 1; }
@@ -212,7 +212,7 @@ def show():
         
         .bet-txt { font-size: 10px !important; font-weight: 700 !important; color: rgba(255,235,190,0.9) !important; text-shadow: 0 0 5px rgba(255,195,40,0.5), 0 1px 3px rgba(0,0,0,0.98) !important; letter-spacing: 0.03em !important; white-space: nowrap !important; }
 
-        .hero-mob { position: absolute !important; bottom: -55px !important; left: 50% !important; transform: translateX(-50%) !important; z-index: 30 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 4px !important; width: 120px !important; }
+        .hero-mob { position: absolute !important; bottom: 12px !important; left: 50% !important; transform: translateX(-50%) !important; z-index: 30 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 4px !important; width: 120px !important; }
         .hero-cards-wrap { display: flex !important; gap: 5px !important; position: relative !important; }
         .hero-plate { width: 84px !important; height: 18px !important; background: #141518 !important; border-radius: 4px !important; border: 1.5px solid #ffc107 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 6px !important; box-sizing: border-box !important; font-size: 10px !important; font-weight: bold !important; box-shadow: 0 4px 10px rgba(0,0,0,0.6) !important; transition: border-color 0.3s; }
         
@@ -657,7 +657,7 @@ def show():
         return {
             1: "top: 75%; left: -2%; transform: translateY(-50%);", 
             2: "top: 8%; left: 2%;", 
-            3: "top: -9%; left: 50%; transform: translateX(-50%);", 
+            3: "top: -5%; left: 50%; transform: translateX(-50%);", 
             4: "top: 8%; right: 2%;", 
             5: "top: 75%; right: -2%; transform: translateY(-50%);"
         }.get(idx, "")
