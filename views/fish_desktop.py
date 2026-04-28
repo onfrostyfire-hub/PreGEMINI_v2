@@ -91,20 +91,20 @@ def show():
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap');
 
-        .pf-pot-badge-desk { position: absolute; top: 20%; left: 50%; transform: translateX(-50%); z-index: 15; }
-        .pf-street-pot-desk { position: absolute; top: 57.5%; left: 50%; transform: translateX(-50%); z-index: 18; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px; pointer-events: none; }
-        .pf-board-desk { position: absolute; top: 42.5%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
+        .pf-pot-badge-desk { position: absolute; top: 19%; left: 50%; transform: translateX(-50%); z-index: 15; }
+        .pf-street-pot-desk { position: absolute; top: 53.5%; left: 50%; transform: translateX(-50%); z-index: 18; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px; pointer-events: none; }
+        .pf-board-desk { position: absolute; top: 39.5%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
         
         .desktop-game-area { 
-            position: relative; width: 100%; max-width: 850px; height: 410px; 
+            position: relative; width: 100%; max-width: 850px; height: 455px; 
             margin: 12px auto 90px auto; 
             border: 16px solid #1a1c20; 
-            border-radius: 220px; 
+            border-radius: 245px; 
             box-shadow: 0 10px 40px rgba(0,0,0,0.8), inset 0 3px 15px rgba(0,0,0,0.6); 
             transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; 
         }
         
-        .rng-hint-wrap-desk { text-align: center; color: #6c757d; font-size: 13px; font-family: 'Roboto', sans-serif; font-weight: 500; letter-spacing: 0.5px; margin-bottom: 15px; margin-top: 15px; }
+        .rng-hint-wrap-desk { display: none !important; }
         div[data-testid="stHorizontalBlock"] { gap: 15px !important; margin-top: 10px; max-width: 850px; margin-left: auto; margin-right: auto; }
 
         .block-container { padding-top: 1rem !important; padding-bottom: 2rem !important; max-width: 1200px !important; }
@@ -181,11 +181,12 @@ def show():
         .street-chip-pot-desk.c4 { top: 2px; left: 8px; background: repeating-conic-gradient(rgba(255,255,255,0.22) 0deg 16deg, transparent 16deg 34deg), radial-gradient(circle at 36% 30%, #f8fafc, #8d99a8 72%); }
         .street-chip-pot-desk.c5 { top: 0; left: 6px; background: repeating-conic-gradient(rgba(255,255,255,0.22) 0deg 16deg, transparent 16deg 34deg), radial-gradient(circle at 36% 30%, #f7c948, #8a5808 72%); }
         .street-pot-txt-desk { background: rgba(8,9,12,0.92); border: 1px solid rgba(255,193,7,0.32); color: #f4d384; border-radius: 9px; padding: 2px 8px; font-size: 11px; font-weight: 800; line-height: 1.25; box-shadow: 0 2px 5px rgba(0,0,0,0.6); white-space: nowrap; }
-        .spot-mastery-felt-desk { position: absolute; top: 68.5%; left: 50%; transform: translateX(-50%); z-index: 16; min-width: 164px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px 12px 7px; border-radius: 14px; pointer-events: none; background: radial-gradient(circle at 50% 0%, rgba(80,135,92,0.18), rgba(9,18,13,0.62) 62%, rgba(5,8,7,0.74)); border: 1px solid rgba(148,210,162,0.16); box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 24px rgba(0,0,0,0.42); backdrop-filter: blur(5px); }
+        .spot-mastery-felt-desk { position: absolute; top: 64%; left: 50%; transform: translateX(-50%); z-index: 16; min-width: 164px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px 12px 7px; border-radius: 14px; pointer-events: none; background: radial-gradient(circle at 50% 0%, rgba(80,135,92,0.18), rgba(9,18,13,0.62) 62%, rgba(5,8,7,0.74)); border: 1px solid rgba(148,210,162,0.16); box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 24px rgba(0,0,0,0.42); backdrop-filter: blur(5px); }
         .spot-mastery-pill-desk { display: inline-flex; align-items: center; justify-content: center; gap: 5px; border-radius: 999px; padding: 3px 10px; font-size: 11px; font-weight: 800; letter-spacing: 0.03em; white-space: nowrap; background: rgba(5,8,7,0.72); border: 1px solid rgba(255,255,255,0.14); color: rgba(255,255,255,0.94); text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
         .spot-mastery-meter-desk { width: 92px; height: 3px; border-radius: 999px; overflow: hidden; background: rgba(255,255,255,0.08); box-shadow: inset 0 1px 2px rgba(0,0,0,0.7); }
         .spot-mastery-fill-desk { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #1ac8d9, #58f0b0); box-shadow: 0 0 10px rgba(32,220,190,0.45); }
         .spot-mastery-remaining-desk { font-size: 10px; font-weight: 700; letter-spacing: 0.02em; line-height: 1; color: rgba(230,238,235,0.76); white-space: nowrap; }
+        .spot-line-felt-desk { position: absolute; top: 79%; left: 50%; transform: translateX(-50%); z-index: 14; width: 78%; text-align: center; pointer-events: none; color: rgba(215,224,218,0.34); font-family: 'Roboto', sans-serif; font-size: 16px; font-weight: 800; letter-spacing: 0.04em; line-height: 1; text-shadow: 0 1px 6px rgba(0,0,0,0.7); white-space: nowrap; }
         .board-container-desk { display: flex; gap: 6px; background: rgba(0,0,0,0.4); padding: 8px 16px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .board-card-desk { width: 50px; height: 72px; background: white; border-radius: 4px; position: relative; color: black; box-shadow: 0 2px 5px rgba(0,0,0,0.6); font-family: Arial, sans-serif !important; }
         .bc-tl-desk { position: absolute; top: 3px; left: 4px; font-weight: 900; font-size: 16px; line-height: 1; }
@@ -608,7 +609,7 @@ def show():
         return {
             1: "top: 75%; left: -3%; transform: translateY(-50%);", 
             2: "top: 15%; left: -3%;", 
-            3: "top: -10%; left: 50%; transform: translateX(-50%);", 
+            3: "top: -6%; left: 50%; transform: translateX(-50%);", 
             4: "top: 15%; right: -3%;", 
             5: "top: 75%; right: -3%; transform: translateY(-50%);"
         }.get(idx, "")
@@ -720,13 +721,15 @@ def show():
         <div class="spot-mastery-remaining-desk">{hands_left_text}</div>
     </div>"""
 
+    spot_line_html = f'<div class="spot-line-felt-desk">{spot_line_name}</div>'
+
     onenote = setup.get("info_link", setup.get("onenote_url", ""))
     if onenote:
         hook_html = f'<a href="{onenote}" target="_blank" class="info-hook" title="Open in OneNote">i</a>'
     else:
         hook_html = f'<a href="#" target="_blank" class="info-hook" style="opacity:0.3; cursor:default;" onclick="return false;" title="No link">i</a>'
 
-    html = f'<div class="desktop-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge-desk"><div class="pot-badge-desk">Total Pot: {display_pot_str} bb</div></div><div class="pf-board-desk"><div class="board-container-desk">{board_html}</div></div>{street_pot_html}{hook_html}{mastery_html}{opp_html}{chips_html}<div class="hero-desk">{anim_html}<div class="hero-cards-wrap-desk"><div class="card-desk"><div class="tl-desk {c1}">{r1}<br>{s1}</div><div class="c-desk {c1}">{s1}</div></div><div class="card-desk"><div class="tl-desk {c2}">{r2}<br>{s2}</div><div class="c-desk {c2}">{s2}</div></div><div class="rng-badge-desk">{st.session_state.fish_rng}</div></div><div class="hero-plate-desk"><span class="pos-desk">HERO {hero_pos}</span><span class="stack-desk">{hero_stack}</span></div></div></div>'
+    html = f'<div class="desktop-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge-desk"><div class="pot-badge-desk">Total Pot: {display_pot_str} bb</div></div><div class="pf-board-desk"><div class="board-container-desk">{board_html}</div></div>{street_pot_html}{hook_html}{mastery_html}{spot_line_html}{opp_html}{chips_html}<div class="hero-desk">{anim_html}<div class="hero-cards-wrap-desk"><div class="card-desk"><div class="tl-desk {c1}">{r1}<br>{s1}</div><div class="c-desk {c1}">{s1}</div></div><div class="card-desk"><div class="tl-desk {c2}">{r2}<br>{s2}</div><div class="c-desk {c2}">{s2}</div></div><div class="rng-badge-desk">{st.session_state.fish_rng}</div></div><div class="hero-plate-desk"><span class="pos-desk">HERO {hero_pos}</span><span class="stack-desk">{hero_stack}</span></div></div></div>'
     
     st.markdown(html, unsafe_allow_html=True)
 
