@@ -225,9 +225,9 @@
           "onenote_url": "onenote:https://d.docs.live.net/ACB7650AF03EF10D/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2dTh&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={1D49C3E6-3054-42F9-B114-426314CC7CF9}&end"
         },
         "actions": [
-          "Bet 75%",
+          "Check",
           "Bet 50%",
-          "Check"
+          "Bet 75%"
         ],
         "ranges": {
           "Bet 75%": "AdAc, AsAc, AsAd, AhKs, AhKc, AhKd, KcKd, KcKs, KdKs, 8c8d, 8c8s, 8d8s, 2c2h, 2c2s, 2h2s, KsQh, KcQh, KdQh",
@@ -247,8 +247,9 @@
           "onenote_url": "onenote:https://d.docs.live.net/ACB7650AF03EF10D/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2dAc&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={41234C98-2E94-474C-B3AD-75D788A8C86A}&end"
         },
         "actions": [
-          "Bet 75%",
-          "Check"
+           "Check",
+          "Bet 50%",
+          "Bet 75%"
         ],
         "ranges": {
           "Bet 75%": "As4s, Ad4d, Ah4h, As3s, Ad3d, Ah3h, As2s, Ah2h",
@@ -267,8 +268,9 @@
           "onenote_url": "onenote:https://d.docs.live.net/ACB7650AF03EF10D/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2d5c&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={9AFE8AAB-BEE1-41D1-B28B-5129FF05DD8D}&end"
         },
         "actions": [
-          "Bet 75%",
-          "Bet 50%"
+           "Check",
+          "Bet 50%",
+          "Bet 75%"
         ],
         "ranges": {
           "Bet 75%": "KsTc, KsTd, KsTh, KcTs, KcTd, KcTh, KdTs, KdTc, KdTh, Ks9c, Ks9d, Ks9h, Kc9s, Kc9d, Kc9h, Kd9s, Kd9c, Kd9h, Ks7c, Ks7d, Ks7h, Kc7s, Kc7d, Kc7h, Kd7s, Kd7c, Kd7h, Ks6c, Ks6d, Ks6h, Kc6s, Kc6d, Kc6h, Kd6s, Kd6c, Kd6h",
