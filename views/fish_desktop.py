@@ -92,6 +92,7 @@ def show():
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap');
 
         .pf-pot-badge-desk { position: absolute; top: 22%; left: 50%; transform: translateX(-50%); z-index: 15; }
+        .pf-street-pot-desk { position: absolute; top: 59%; left: 50%; transform: translateX(-50%); z-index: 18; display: flex; flex-direction: column; align-items: center; gap: 2px; pointer-events: none; }
         .pf-board-desk { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
         
         .desktop-game-area { 
@@ -166,6 +167,14 @@ def show():
         .opp-card-desk.right-desk { margin-left: -8px !important; transform: rotate(10deg) !important; z-index: -1 !important; }
 
         .pot-badge-desk { background: #111; color: #ffc107; font-weight: bold; font-size: 14px; padding: 4px 14px; border-radius: 14px; border: 1.5px solid #ffc107; box-shadow: 0 2px 6px rgba(0,0,0,0.6); }
+        .street-chip-pile-desk { position: relative; width: 70px; height: 24px; }
+        .street-chip-pot-desk { position: absolute; width: 17px; height: 17px; border-radius: 50%; background: repeating-conic-gradient(rgba(255,255,255,0.18) 0deg 18deg, transparent 18deg 36deg), radial-gradient(circle at 35% 30%, #d8eefc, #5e9ec8); border: 1.5px solid rgba(255,255,255,0.38); box-shadow: 0 0 0 1px rgba(0,0,0,0.72), 0 2px 4px rgba(0,0,0,0.65), inset 0 1px 2px rgba(255,255,255,0.35); }
+        .street-chip-pot-desk.c1 { left: 4px; top: 7px; background: repeating-conic-gradient(rgba(255,255,255,0.18) 0deg 18deg, transparent 18deg 36deg), radial-gradient(circle at 35% 30%, #dff7d9, #309c3f); }
+        .street-chip-pot-desk.c2 { left: 16px; top: 2px; background: repeating-conic-gradient(rgba(255,255,255,0.2) 0deg 18deg, transparent 18deg 36deg), radial-gradient(circle at 35% 30%, #ffdedc, #c0182a); }
+        .street-chip-pot-desk.c3 { left: 29px; top: 8px; background: repeating-conic-gradient(rgba(255,255,255,0.16) 0deg 18deg, transparent 18deg 36deg), radial-gradient(circle at 35% 30%, #f7f7f7, #cfd7df); }
+        .street-chip-pot-desk.c4 { left: 40px; top: 1px; background: repeating-conic-gradient(rgba(255,255,255,0.18) 0deg 18deg, transparent 18deg 36deg), radial-gradient(circle at 35% 30%, #d8eefc, #5e9ec8); }
+        .street-chip-pot-desk.c5 { left: 53px; top: 6px; background: repeating-conic-gradient(rgba(255,255,255,0.18) 0deg 18deg, transparent 18deg 36deg), radial-gradient(circle at 35% 30%, #ffdca8, #b8792e); }
+        .street-pot-txt-desk { margin-top: -2px; background: rgba(8,9,12,0.86); border: 1px solid rgba(255,193,7,0.28); color: #f4d384; border-radius: 8px; padding: 1px 7px; font-size: 11px; font-weight: 800; line-height: 1.25; box-shadow: 0 2px 5px rgba(0,0,0,0.6); white-space: nowrap; }
         .board-container-desk { display: flex; gap: 6px; background: rgba(0,0,0,0.4); padding: 8px 16px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .board-card-desk { width: 50px; height: 72px; background: white; border-radius: 4px; position: relative; color: black; box-shadow: 0 2px 5px rgba(0,0,0,0.6); font-family: Arial, sans-serif !important; }
         .bc-tl-desk { position: absolute; top: 3px; left: 4px; font-weight: 900; font-size: 16px; line-height: 1; }
@@ -284,11 +293,23 @@ def show():
                             for runout in runout_data.keys():
                                 full_key = f"{vp}|{tex}|{pos}|{line}|{runout}"
                                 matching_runouts.append((runout, full_key))
+
+            if matching_runouts and st.button("ALL", key="fish_runouts_all_d", use_container_width=True):
+                saved["fish_sel_vpips"] = sel_vpips
+                saved["fish_sel_boards"] = sel_boards
+                saved["fish_sel_pos"] = sel_pos
+                saved["fish_sel_lines"] = sel_lines
+                saved["fish_spots"] = [full_key for _, full_key in matching_runouts]
+                utils.save_user_settings(saved, is_fish=True)
+                st.session_state.fish_hand = None
+                st.rerun()
             
             for runout_name, full_key in matching_runouts:
                 is_checked = (full_key in saved_runouts) if "fish_spots" in saved else True
                 parts = full_key.split('|')
-                short_lbl = f"{runout_name} ({parts[0]} | {parts[3]})"
+                spot_setup = flat_fish_db.get(full_key, {}).get("setup", {})
+                line_lbl = spot_setup.get("spot_label", parts[3])
+                short_lbl = f"{runout_name} ({parts[0]} | {line_lbl})"
                 if st.checkbox(short_lbl, value=is_checked, key=f"fish_chk_d_{full_key}"):
                     sel_spots_keys.append(full_key)
         
@@ -337,8 +358,8 @@ def show():
     chosen_key = st.session_state.fish_current_spot_key
     data = flat_fish_db[chosen_key]
     chosen_parts = chosen_key.split('|')
-    spot_line_name = chosen_parts[3] if len(chosen_parts) > 3 else chosen_key
     setup = data.get("setup", {})
+    spot_line_name = setup.get("spot_label", chosen_parts[3] if len(chosen_parts) > 3 else chosen_key)
     
     hero_pos = setup.get("hero_pos", "BTN")
     villain_pos = setup.get("villain_pos", "BB")
@@ -354,10 +375,22 @@ def show():
     v_size = setup.get("villain_sizing_bb", "")
     is_bet = villain_act and ("BET" in villain_act.upper() or "RAISE" in villain_act.upper() or "ALL-IN" in villain_act.upper())
     
-    display_pot = base_pot
-    if is_bet and v_size:
-        try: display_pot = round(float(base_pot) + float(v_size), 1)
-        except: pass
+    def fmt_bb_value(value):
+        try:
+            numeric_value = float(value)
+            return str(int(numeric_value)) if numeric_value.is_integer() else f"{numeric_value:.1f}"
+        except (TypeError, ValueError):
+            return str(value)
+
+    street_pot = setup.get("street_start_pot_bb", base_pot)
+    display_pot = setup.get("total_pot_bb")
+    if display_pot is None:
+        display_pot = base_pot
+        if is_bet and v_size:
+            try: display_pot = round(float(base_pot) + float(v_size), 1)
+            except (TypeError, ValueError): pass
+    display_pot_str = fmt_bb_value(display_pot)
+    street_pot_str = fmt_bb_value(street_pot)
 
     table_size = setup.get("table_size", 6)
     stacks_data = setup.get("stacks", {})
@@ -651,6 +684,10 @@ def show():
         suit = map_suit(card[-1])
         sc = get_suit_color_class(suit)
         board_html += f'<div class="board-card-desk"><div class="bc-tl-desk {sc}">{rank_str}</div><div class="bc-c-desk {sc}">{suit}</div></div>'
+
+    street_pot_html = ""
+    if street_pot not in (None, ""):
+        street_pot_html = f'<div class="pf-street-pot-desk"><div class="street-chip-pile-desk"><div class="street-chip-pot-desk c1"></div><div class="street-chip-pot-desk c2"></div><div class="street-chip-pot-desk c3"></div><div class="street-chip-pot-desk c4"></div><div class="street-chip-pot-desk c5"></div></div><div class="street-pot-txt-desk">{street_pot_str} bb</div></div>'
         
     mastery_html = f"""<div style="position: absolute; bottom: -60px; left: 20px; z-index: 15; width: 120px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; pointer-events: none;">
         <div style="background: #111; border: 1px solid rgba(255,255,255,0.2); color: #fff; display: inline-flex; align-items: center; gap: 4px; border-radius: 20px; padding: 3px 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.05em;">{m_icon} {m_name}</div>
@@ -664,7 +701,7 @@ def show():
     else:
         hook_html = f'<a href="#" target="_blank" class="info-hook" style="opacity:0.3; cursor:default;" onclick="return false;" title="No link">i</a>'
 
-    html = f'<div class="desktop-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge-desk"><div class="pot-badge-desk">Pot: {display_pot} bb</div></div><div class="pf-board-desk"><div class="board-container-desk">{board_html}</div></div>{hook_html}{mastery_html}{opp_html}{chips_html}<div class="hero-desk">{anim_html}<div class="hero-cards-wrap-desk"><div class="card-desk"><div class="tl-desk {c1}">{r1}<br>{s1}</div><div class="c-desk {c1}">{s1}</div></div><div class="card-desk"><div class="tl-desk {c2}">{r2}<br>{s2}</div><div class="c-desk {c2}">{s2}</div></div><div class="rng-badge-desk">{st.session_state.fish_rng}</div></div><div class="hero-plate-desk"><span class="pos-desk">HERO {hero_pos}</span><span class="stack-desk">{hero_stack}</span></div></div></div>'
+    html = f'<div class="desktop-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge-desk"><div class="pot-badge-desk">Total Pot: {display_pot_str} bb</div></div><div class="pf-board-desk"><div class="board-container-desk">{board_html}</div></div>{street_pot_html}{hook_html}{mastery_html}{opp_html}{chips_html}<div class="hero-desk">{anim_html}<div class="hero-cards-wrap-desk"><div class="card-desk"><div class="tl-desk {c1}">{r1}<br>{s1}</div><div class="c-desk {c1}">{s1}</div></div><div class="card-desk"><div class="tl-desk {c2}">{r2}<br>{s2}</div><div class="c-desk {c2}">{s2}</div></div><div class="rng-badge-desk">{st.session_state.fish_rng}</div></div><div class="hero-plate-desk"><span class="pos-desk">HERO {hero_pos}</span><span class="stack-desk">{hero_stack}</span></div></div></div>'
     
     st.markdown(html, unsafe_allow_html=True)
 
