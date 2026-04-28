@@ -128,7 +128,7 @@ def show():
         .pf-street-pot { position: absolute; top: 53.5%; left: 50%; transform: translateX(-50%); z-index: 18; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 6px; pointer-events: none; }
         .pf-board { position: absolute; top: 40.5%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
         
-        .mobile-game-area { margin-top: 34px !important; margin-bottom: 18px !important; }
+        .mobile-game-area { margin-top: 34px !important; margin-bottom: 84px !important; }
         .rng-hint-wrap { display: none !important; }
         div[data-testid="stHorizontalBlock"] { margin-top: 0px !important; gap: 8px !important; }
 
@@ -147,11 +147,30 @@ def show():
         div.element-container:has(#fish-runouts-all-m-marker) + div.element-container div[data-testid="stButton"] button p { font-size: 10px !important; letter-spacing: 0.05em !important; color: rgba(255,255,255,0.88) !important; }
 
         .mobile-game-area { 
-            position: relative; width: 100%; height: 395px; 
+            position: relative; width: 100%; height: 405px; 
             border: 12px solid #1a1c20; 
-            border-radius: 52% / 48%; 
+            border-radius: 999px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 3px 12px rgba(0,0,0,0.6); 
             transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; 
+        }
+        .mobile-game-area::before {
+            content: '';
+            position: absolute;
+            inset: 14px 18px;
+            border-radius: 999px;
+            border: 1px solid rgba(170,220,175,0.12);
+            box-shadow: inset 0 0 24px rgba(0,0,0,0.34), 0 0 0 1px rgba(0,0,0,0.22);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .mobile-game-area::after {
+            content: '';
+            position: absolute;
+            inset: 34px 28px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.035);
+            pointer-events: none;
+            z-index: 1;
         }
         
         .mobile-game-area.table-glow-correct {
@@ -212,7 +231,7 @@ def show():
         
         .bet-txt { font-size: 10px !important; font-weight: 700 !important; color: rgba(255,235,190,0.9) !important; text-shadow: 0 0 5px rgba(255,195,40,0.5), 0 1px 3px rgba(0,0,0,0.98) !important; letter-spacing: 0.03em !important; white-space: nowrap !important; }
 
-        .hero-mob { position: absolute !important; bottom: 12px !important; left: 50% !important; transform: translateX(-50%) !important; z-index: 30 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 4px !important; width: 120px !important; }
+        .hero-mob { position: absolute !important; bottom: -58px !important; left: 50% !important; transform: translateX(-50%) !important; z-index: 30 !important; display: flex !important; flex-direction: column !important; align-items: center !important; gap: 4px !important; width: 120px !important; }
         .hero-cards-wrap { display: flex !important; gap: 5px !important; position: relative !important; }
         .hero-plate { width: 84px !important; height: 18px !important; background: #141518 !important; border-radius: 4px !important; border: 1.5px solid #ffc107 !important; display: flex !important; justify-content: space-between !important; align-items: center !important; padding: 0 6px !important; box-sizing: border-box !important; font-size: 10px !important; font-weight: bold !important; box-shadow: 0 4px 10px rgba(0,0,0,0.6) !important; transition: border-color 0.3s; }
         
