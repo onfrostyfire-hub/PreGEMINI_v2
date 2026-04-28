@@ -231,8 +231,8 @@
         ],
         "ranges": {
           "Bet 75%": "AhAc, AsAh, AhAd, AhKs, AhKc, AhKd, KcKd, KcKs, KdKs, 8c8d, 8c8s, 8d8s, 2c2h, 2c2s, 2h2s, KsQh, KcQh, KdQh,Ks8s, Ks8c, Ks8d, Kc8s, Kc8c, Kc8d, Kd8s, Kd8c, Kd8d",
-          "Bet 50%": "KsJh, KcJh, KdJh, Ks9h, Kc9h, Kd9h, AcAd, AcAs, AdAs, AcKs, AcKc, AcKd, AdKs, AdKc, AdKd, AsKs, AsKc, AsKd",
-          "Check": "Ks7h, Kc7h, Kd7h, Ks6h, Kc6h, Kd6h, Ks5h, Kc5h, Kd5h, Ks4h, Kc4h, Kd4h, Ks3h, Kc3h, Kd3h, KsQs, KsQc, KsQd, KcQs, KcQc, KcQd, KdQs, KdQc, KdQd, KsJs, KsJc, KsJd, KcJs, KcJc, KcJd, KdJs, KdJc, KdJd, Ks9s, Ks9c, Ks9d, Kc9s, Kc9c, Kc9d, Kd9s, Kd9c, Kd9d, Ks7s, Ks7c, Ks7d, Kc7s, Kc7c, Kc7d, Kd7s, Kd7c, Kd7d"
+          "Bet 50%": "KsJh, KcJh, KdJh, Ks9h, Kc9h, Kd9h, AcAd, AcAs, AdAs, AcKs, AcKc, AcKd, AdKs, AdKc, AdKd, AsKs, AsKc, AsKd, KsQs, KsQc, KsQd, KcQs, KcQc, KcQd, KdQs, KdQc, KdQd",
+          "Check": "Ks7h, Kc7h, Kd7h, Ks6h, Kc6h, Kd6h, Ks5h, Kc5h, Kd5h, Ks4h, Kc4h, Kd4h, Ks3h, Kc3h, Kd3d, KsJs, KsJc, KsJd, KcJs, KcJc, KcJd, KdJs, KdJc, KdJd, Ks9s, Ks9c, Ks9d, Kc9s, Kc9c, Kc9d, Kd9s, Kd9c, Kd9d, Ks7s, Ks7c, Ks7d, Kc7s, Kc7c, Kc7d, Kd7s, Kd7c, Kd7d"
         },
         "training": "AdAc, AsAc, AsAd, AhKs, AhKc, AhKd, KcKd, KcKs, KdKs, 8c8d, 8c8s, 8d8s, 2c2h, 2c2s, 2h2s, KsQh, KcQh, KdQh, KsJh, KcJh, KdJh, Ks9h, Kc9h, Kd9h, AcAd, AcAs, AdAs, AcKs, AcKc, AcKd, AdKs, AdKc, AdKd, AsKs, AsKc, AsKd, Ks7h, Kc7h, Kd7h, Ks6h, Kc6h, Kd6h, Ks5h, Kc5h, Kd5h, Ks4h, Kc4h, Kd4h, Ks3h, Kc3h, Kd3h, KsQs, KsQc, KsQd, KcQs, KcQc, KcQd, KdQs, KdQc, KdQd, KsJs, KsJc, KsJd, KcJs, KcJc, KcJd, KdJs, KdJc, KdJd, Ks9s, Ks9c, Ks9d, Kc9s, Kc9c, Kc9d, Kd9s, Kd9c, Kd9d, Ks8s, Ks8c, Ks8d, Kc8s, Kc8c, Kc8d, Kd8s, Kd8c, Kd8d, Ks7s, Ks7c, Ks7d, Kc7s, Kc7c, Kc7d, Kd7s, Kd7c, Kd7d"
       },
