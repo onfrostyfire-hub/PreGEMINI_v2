@@ -128,7 +128,7 @@ def show():
         .pf-street-pot { position: absolute; top: 52.5%; left: 50%; transform: translateX(-50%); z-index: 18; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 6px; pointer-events: none; }
         .pf-board { position: absolute; top: 39.5%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
         
-        .mobile-game-area { margin: 34px auto 58px auto !important; }
+        .mobile-game-area { margin: 30px auto 48px auto !important; }
         .rng-hint-wrap { display: none !important; }
         div[data-testid="stHorizontalBlock"] { margin-top: 0px !important; gap: 8px !important; }
 
@@ -147,7 +147,7 @@ def show():
         div.element-container:has(#fish-runouts-all-m-marker) + div.element-container div[data-testid="stButton"] button p { font-size: 10px !important; letter-spacing: 0.05em !important; color: rgba(255,255,255,0.88) !important; }
 
         .mobile-game-area { 
-            position: relative; width: min(88vw, 430px); height: 520px; 
+            position: relative; width: min(84vw, 410px); height: 455px; 
             border: 12px solid #1a1c20; 
             border-radius: 999px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 3px 12px rgba(0,0,0,0.6); 
