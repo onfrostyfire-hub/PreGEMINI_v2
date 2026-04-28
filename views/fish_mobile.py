@@ -124,12 +124,12 @@ def show():
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap');
 
-        .pf-pot-badge { position: absolute; top: 23.5%; left: 50%; transform: translateX(-50%); z-index: 15; }
-        .pf-street-pot { position: absolute; top: 59.5%; left: 50%; transform: translateX(-50%); z-index: 18; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 6px; pointer-events: none; }
-        .pf-board { position: absolute; top: 46.5%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
+        .pf-pot-badge { position: absolute; top: 23%; left: 50%; transform: translateX(-50%); z-index: 15; }
+        .pf-street-pot { position: absolute; top: 55.5%; left: 50%; transform: translateX(-50%); z-index: 18; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 6px; pointer-events: none; }
+        .pf-board { position: absolute; top: 42.5%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
         
-        .mobile-game-area { margin-top: 26px !important; margin-bottom: 50px !important; }
-        .rng-hint-wrap { margin-top: 12px !important; margin-bottom: 8px !important; }
+        .mobile-game-area { margin-top: 40px !important; margin-bottom: 34px !important; }
+        .rng-hint-wrap { display: none !important; }
         div[data-testid="stHorizontalBlock"] { margin-top: 0px !important; gap: 8px !important; }
 
         .block-container { padding-top: 0.85rem !important; padding-bottom: 1rem !important; max-width: 100% !important; overflow-x: hidden !important; }
@@ -147,9 +147,9 @@ def show():
         div.element-container:has(#fish-runouts-all-m-marker) + div.element-container div[data-testid="stButton"] button p { font-size: 10px !important; letter-spacing: 0.05em !important; color: rgba(255,255,255,0.88) !important; }
 
         .mobile-game-area { 
-            position: relative; width: 100%; height: 305px; 
+            position: relative; width: 100%; height: 345px; 
             border: 12px solid #1a1c20; 
-            border-radius: 158px; 
+            border-radius: 184px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 3px 12px rgba(0,0,0,0.6); 
             transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; 
         }
@@ -188,11 +188,12 @@ def show():
         .street-chip-pot.c4 { top: 2px; left: 7px; background: repeating-conic-gradient(rgba(255,255,255,0.22) 0deg 16deg, transparent 16deg 34deg), radial-gradient(circle at 36% 30%, #f8fafc, #8d99a8 72%); }
         .street-chip-pot.c5 { top: 0; left: 5px; background: repeating-conic-gradient(rgba(255,255,255,0.22) 0deg 16deg, transparent 16deg 34deg), radial-gradient(circle at 36% 30%, #f7c948, #8a5808 72%); }
         .street-pot-txt { background: rgba(8,9,12,0.92); border: 1px solid rgba(255,193,7,0.32); color: #f4d384; border-radius: 7px; padding: 1px 6px; font-size: 9px; font-weight: 800; line-height: 1.25; box-shadow: 0 2px 4px rgba(0,0,0,0.55); white-space: nowrap; }
-        .spot-mastery-felt { position: absolute; top: 70.5%; left: 50%; transform: translateX(-50%); z-index: 16; min-width: 132px; max-width: 154px; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 4px 8px 5px; border-radius: 12px; pointer-events: none; background: radial-gradient(circle at 50% 0%, rgba(80,135,92,0.18), rgba(9,18,13,0.62) 62%, rgba(5,8,7,0.74)); border: 1px solid rgba(148,210,162,0.16); box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 18px rgba(0,0,0,0.42); backdrop-filter: blur(4px); }
+        .spot-mastery-felt { position: absolute; top: 65.5%; left: 50%; transform: translateX(-50%); z-index: 16; min-width: 132px; max-width: 154px; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 4px 8px 5px; border-radius: 12px; pointer-events: none; background: radial-gradient(circle at 50% 0%, rgba(80,135,92,0.18), rgba(9,18,13,0.62) 62%, rgba(5,8,7,0.74)); border: 1px solid rgba(148,210,162,0.16); box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 18px rgba(0,0,0,0.42); backdrop-filter: blur(4px); }
         .spot-mastery-pill { display: inline-flex; align-items: center; justify-content: center; gap: 4px; max-width: 100%; border-radius: 999px; padding: 2px 8px 2px 7px; font-size: 9px; font-weight: 800; letter-spacing: 0.03em; white-space: nowrap; background: rgba(5,8,7,0.72); border: 1px solid rgba(255,255,255,0.14); color: rgba(255,255,255,0.94); text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
         .spot-mastery-meter { width: 72px; height: 2px; border-radius: 999px; overflow: hidden; background: rgba(255,255,255,0.08); box-shadow: inset 0 1px 2px rgba(0,0,0,0.7); }
         .spot-mastery-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #1ac8d9, #58f0b0); box-shadow: 0 0 8px rgba(32,220,190,0.45); }
         .spot-mastery-remaining { font-size: 8.5px; font-weight: 700; letter-spacing: 0.02em; line-height: 1; color: rgba(230,238,235,0.76); white-space: nowrap; }
+        .spot-line-felt { position: absolute; top: 80%; left: 50%; transform: translateX(-50%); z-index: 14; width: 80%; text-align: center; pointer-events: none; color: rgba(215,224,218,0.34); font-family: 'Roboto', sans-serif; font-size: 13px; font-weight: 800; letter-spacing: 0.04em; line-height: 1; text-shadow: 0 1px 5px rgba(0,0,0,0.65); white-space: nowrap; }
         .board-container-mob { display: flex; gap: 4px; background: rgba(0,0,0,0.4); padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 2px 10px rgba(0,0,0,0.4); }
         .board-card-mob { width: 38px; height: 54px; background: white; border-radius: 3px; position: relative; color: black; box-shadow: 0 1px 3px rgba(0,0,0,0.5); font-family: Arial, sans-serif !important; }
         .bc-tl-mob { position: absolute; top: 2px; left: 3px; font-weight: bold; font-size: 12px; line-height: 1; }
@@ -656,7 +657,7 @@ def show():
         return {
             1: "top: 75%; left: -2%; transform: translateY(-50%);", 
             2: "top: 8%; left: 2%;", 
-            3: "top: -17%; left: 50%; transform: translateX(-50%);", 
+            3: "top: -9%; left: 50%; transform: translateX(-50%);", 
             4: "top: 8%; right: 2%;", 
             5: "top: 75%; right: -2%; transform: translateY(-50%);"
         }.get(idx, "")
@@ -768,13 +769,15 @@ def show():
         <div class="spot-mastery-remaining">{hands_left_text}</div>
     </div>"""
 
+    spot_line_html = f'<div class="spot-line-felt">{spot_line_name}</div>'
+
     onenote = setup.get("info_link", setup.get("onenote_url", ""))
     if onenote:
         hook_html = f'<a href="{onenote}" class="info-hook" title="Open in App">i</a>'
     else:
         hook_html = f'<a href="#" class="info-hook" style="opacity:0.3; cursor:default;" onclick="return false;" title="No link">i</a>'
 
-    html = f'<div class="mobile-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge"><div class="pot-badge-mob">Total Pot: {display_pot_str} bb</div></div><div class="pf-board"><div class="board-container-mob">{board_html}</div></div>{street_pot_html}{hook_html}{mastery_html}{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{st.session_state.fish_rng}</div></div><div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div></div></div>'
+    html = f'<div class="mobile-game-area {combo_cls} {table_status_class}">{shatter_html}<div class="pf-pot-badge"><div class="pot-badge-mob">Total Pot: {display_pot_str} bb</div></div><div class="pf-board"><div class="board-container-mob">{board_html}</div></div>{street_pot_html}{hook_html}{mastery_html}{spot_line_html}{opp_html}{chips_html}<div class="hero-mob">{anim_html}<div class="hero-cards-wrap"><div class="card-mob"><div class="tl-mob {c1}">{r1}<br>{s1}</div><div class="c-mob {c1}">{s1}</div></div><div class="card-mob"><div class="tl-mob {c2}">{r2}<br>{s2}</div><div class="c-mob {c2}">{s2}</div></div><div class="rng-badge">{st.session_state.fish_rng}</div></div><div class="hero-plate"><span class="pos">HERO {hero_pos}</span><span class="stack">{hero_stack}</span></div></div></div>'
     
     st.markdown(html, unsafe_allow_html=True)
 
