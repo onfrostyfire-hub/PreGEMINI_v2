@@ -38,14 +38,15 @@ def main():
             flex-direction: row !important;
             flex-wrap: nowrap !important;
             align-items: center !important;
-            width: 100% !important;
-            max-width: 560px !important;
+            width: min(100%, 640px) !important;
+            max-width: 640px !important;
             background: #1a1c20 !important;
-            padding: 3px !important;
-            border-radius: 10px !important;
-            border: 1px solid #333 !important;
-            gap: 3px !important;
-            margin: -6px 0 4px 0 !important;
+            padding: 4px !important;
+            border-radius: 12px !important;
+            border: 1px solid rgba(255,255,255,0.12) !important;
+            gap: 4px !important;
+            margin: -6px 0 10px 0 !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.26), inset 0 1px 0 rgba(255,255,255,0.04) !important;
             overflow: hidden !important;
         }
         div[role="radiogroup"][aria-label="Nav"] label {
@@ -54,9 +55,9 @@ def main():
             display: inline-flex !important;
             justify-content: center !important;
             align-items: center !important;
-            padding: 5px 6px !important;
+            padding: 7px 8px !important;
             background: transparent !important;
-            border-radius: 7px !important;
+            border-radius: 8px !important;
             cursor: pointer !important;
             margin: 0 !important;
             border: none !important;
@@ -65,7 +66,7 @@ def main():
         div[role="radiogroup"][aria-label="Nav"] label > div:first-child { display: none !important; }
         div[role="radiogroup"][aria-label="Nav"] label p {
             color: #9aa0aa !important;
-            font-size: 12px !important;
+            font-size: 12.5px !important;
             font-weight: 800 !important;
             line-height: 1 !important;
             margin: 0 !important;
@@ -85,13 +86,15 @@ def main():
         }
         @media (max-width: 640px) {
             div[role="radiogroup"][aria-label="Nav"] {
-                max-width: 100% !important;
+                width: calc(100vw - 28px) !important;
+                max-width: none !important;
                 gap: 2px !important;
-                padding: 2px !important;
+                padding: 4px !important;
                 margin-top: -10px !important;
+                margin-bottom: 10px !important;
             }
-            div[role="radiogroup"][aria-label="Nav"] label { padding: 5px 3px !important; }
-            div[role="radiogroup"][aria-label="Nav"] label p { font-size: 10.5px !important; }
+            div[role="radiogroup"][aria-label="Nav"] label { padding: 7px 4px !important; }
+            div[role="radiogroup"][aria-label="Nav"] label p { font-size: 10.8px !important; }
         }
         
         div[data-testid="stVerticalBlock"] > div { padding-bottom: 0 !important; margin-bottom: 0 !important; }
