@@ -45,7 +45,7 @@ def main():
             border-radius: 12px !important;
             border: 1px solid rgba(255,255,255,0.12) !important;
             gap: 4px !important;
-            margin: -6px 0 10px 0 !important;
+            margin: -6px 0 4px 0 !important;
             box-shadow: 0 2px 10px rgba(0,0,0,0.26), inset 0 1px 0 rgba(255,255,255,0.04) !important;
             overflow: hidden !important;
         }
@@ -91,7 +91,7 @@ def main():
                 gap: 2px !important;
                 padding: 4px !important;
                 margin-top: -10px !important;
-                margin-bottom: 10px !important;
+                margin-bottom: 2px !important;
             }
             div[role="radiogroup"][aria-label="Nav"] label { padding: 7px 4px !important; }
             div[role="radiogroup"][aria-label="Nav"] label p { font-size: 10.8px !important; }
