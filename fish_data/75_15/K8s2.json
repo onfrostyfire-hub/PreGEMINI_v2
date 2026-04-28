@@ -5,11 +5,30 @@
         "setup": {
           "hero_pos": "BTN",
           "villain_pos": "BB",
-          "pot_size": 5.5,
-          "board_cards": ["Kh", "8h", "2d", "Ac"],
+          "pot_size": 9.1,
+          "board_cards": [
+            "Kh",
+            "8h",
+            "2d",
+            "Ac"
+          ],
           "villain_action": "CHECK",
-          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
-          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#33%25%20-%20XB%20-%20Faced%20bet&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={5564DFE4-78C2-4489-8CDB-564CE85F7878}&end"
+          "stacks": {
+            "EP": 100,
+            "MP": 100,
+            "CO": 100,
+            "BTN": 95.7,
+            "SB": 99.5,
+            "BB": 95.7
+          },
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#33%25%20-%20XB%20-%20Faced%20bet&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={5564DFE4-78C2-4489-8CDB-564CE85F7878}&end",
+          "active_players": [
+            "BTN",
+            "BB"
+          ],
+          "btn_pos": "BTN",
+          "street_start_pot_bb": 9.1,
+          "total_pot_bb": 9.1
         },
         "actions": [
           "Check",
@@ -27,12 +46,34 @@
         "setup": {
           "hero_pos": "BTN",
           "villain_pos": "BB",
-          "pot_size": 5.4,
-          "board_cards": ["Kh", "8h", "2d", "Th", "6h"],
+          "pot_size": 9.1,
+          "board_cards": [
+            "Kh",
+            "8h",
+            "2d",
+            "Th",
+            "6h"
+          ],
           "villain_action": "BET",
-          "villain_sizing_bb": 2.7,
-          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
-          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2dTh6h&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={2C8CA3B0-355E-44AC-9A0E-F4C3A106138E}&end"
+          "villain_sizing_bb": 4.5,
+          "stacks": {
+            "EP": 100,
+            "MP": 100,
+            "CO": 100,
+            "BTN": 95.7,
+            "SB": 99.5,
+            "BB": 91.2
+          },
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2dTh6h&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={2C8CA3B0-355E-44AC-9A0E-F4C3A106138E}&end",
+          "active_players": [
+            "BTN",
+            "BB"
+          ],
+          "btn_pos": "BTN",
+          "street_start_pot_bb": 9.1,
+          "total_pot_bb": 13.6,
+          "faced_bet_pct": 50,
+          "spot_label": "33% - XB - Faced bet 50%"
         },
         "actions": [
           "Fold",
@@ -48,12 +89,34 @@
         "setup": {
           "hero_pos": "BTN",
           "villain_pos": "BB",
-          "pot_size": 5.4,
-          "board_cards": ["Kh", "8h", "2d", "Th", "Ac"],
+          "pot_size": 9.1,
+          "board_cards": [
+            "Kh",
+            "8h",
+            "2d",
+            "Th",
+            "Ac"
+          ],
           "villain_action": "BET",
-          "villain_sizing_bb": 4.1,
-          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
-          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2dThAc&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={07D2EAF6-CC1F-43D1-B15D-E86916E08B87}&end"
+          "villain_sizing_bb": 6.8,
+          "stacks": {
+            "EP": 100,
+            "MP": 100,
+            "CO": 100,
+            "BTN": 95.7,
+            "SB": 99.5,
+            "BB": 88.9
+          },
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2dThAc&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={07D2EAF6-CC1F-43D1-B15D-E86916E08B87}&end",
+          "active_players": [
+            "BTN",
+            "BB"
+          ],
+          "btn_pos": "BTN",
+          "street_start_pot_bb": 9.1,
+          "total_pot_bb": 15.9,
+          "faced_bet_pct": 75,
+          "spot_label": "33% - XB - Faced bet 75%"
         },
         "actions": [
           "Fold",
@@ -69,12 +132,34 @@
         "setup": {
           "hero_pos": "BTN",
           "villain_pos": "BB",
-          "pot_size": 5.4,
-          "board_cards": ["Kh", "8h", "2d", "Th", "4c"],
+          "pot_size": 9.1,
+          "board_cards": [
+            "Kh",
+            "8h",
+            "2d",
+            "Th",
+            "4c"
+          ],
           "villain_action": "BET",
-          "villain_sizing_bb": 4.1,
-          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
-          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2dTh4d&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={18E980AF-4BD2-4876-9B28-E343A181B754}&end"
+          "villain_sizing_bb": 6.8,
+          "stacks": {
+            "EP": 100,
+            "MP": 100,
+            "CO": 100,
+            "BTN": 95.7,
+            "SB": 99.5,
+            "BB": 88.9
+          },
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2dTh4d&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={18E980AF-4BD2-4876-9B28-E343A181B754}&end",
+          "active_players": [
+            "BTN",
+            "BB"
+          ],
+          "btn_pos": "BTN",
+          "street_start_pot_bb": 9.1,
+          "total_pot_bb": 15.9,
+          "faced_bet_pct": 75,
+          "spot_label": "33% - XB - Faced bet 75%"
         },
         "actions": [
           "Fold",
@@ -90,12 +175,34 @@
         "setup": {
           "hero_pos": "BTN",
           "villain_pos": "BB",
-          "pot_size": 5.4,
-          "board_cards": ["Kh", "8h", "2d", "5c", "Qc"],
+          "pot_size": 9.1,
+          "board_cards": [
+            "Kh",
+            "8h",
+            "2d",
+            "5c",
+            "Qc"
+          ],
           "villain_action": "BET",
-          "villain_sizing_bb": 4.1,
-          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
-          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2d5cQc&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={2D402F19-4258-44D0-A355-FE783F5FFE26}&end"
+          "villain_sizing_bb": 6.8,
+          "stacks": {
+            "EP": 100,
+            "MP": 100,
+            "CO": 100,
+            "BTN": 95.7,
+            "SB": 99.5,
+            "BB": 88.9
+          },
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2d5cQc&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={2D402F19-4258-44D0-A355-FE783F5FFE26}&end",
+          "active_players": [
+            "BTN",
+            "BB"
+          ],
+          "btn_pos": "BTN",
+          "street_start_pot_bb": 9.1,
+          "total_pot_bb": 15.9,
+          "faced_bet_pct": 75,
+          "spot_label": "33% - XB - Faced bet 75%"
         },
         "actions": [
           "Fold",
@@ -111,12 +218,34 @@
         "setup": {
           "hero_pos": "BTN",
           "villain_pos": "BB",
-          "pot_size": 5.4,
-          "board_cards": ["Kh", "8h", "2d", "5c", "5d"],
+          "pot_size": 9.1,
+          "board_cards": [
+            "Kh",
+            "8h",
+            "2d",
+            "5c",
+            "5d"
+          ],
           "villain_action": "BET",
-          "villain_sizing_bb": 4.1,
-          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
-          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2d5c5d&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={1CD5FA0A-89DD-44A2-A531-E11D805BC73D}&end"
+          "villain_sizing_bb": 6.8,
+          "stacks": {
+            "EP": 100,
+            "MP": 100,
+            "CO": 100,
+            "BTN": 95.7,
+            "SB": 99.5,
+            "BB": 88.9
+          },
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2d5c5d&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={1CD5FA0A-89DD-44A2-A531-E11D805BC73D}&end",
+          "active_players": [
+            "BTN",
+            "BB"
+          ],
+          "btn_pos": "BTN",
+          "street_start_pot_bb": 9.1,
+          "total_pot_bb": 15.9,
+          "faced_bet_pct": 75,
+          "spot_label": "33% - XB - Faced bet 75%"
         },
         "actions": [
           "Fold",
@@ -132,12 +261,34 @@
         "setup": {
           "hero_pos": "BTN",
           "villain_pos": "BB",
-          "pot_size": 5.4,
-          "board_cards": ["Kh", "8h", "2d", "5c", "9h"],
+          "pot_size": 9.1,
+          "board_cards": [
+            "Kh",
+            "8h",
+            "2d",
+            "5c",
+            "9h"
+          ],
           "villain_action": "BET",
-          "villain_sizing_bb": 4.1,
-          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
-          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2d5c9s&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={1C4C4A5B-1C10-44D3-9A45-1E45272A8957}&end"
+          "villain_sizing_bb": 6.8,
+          "stacks": {
+            "EP": 100,
+            "MP": 100,
+            "CO": 100,
+            "BTN": 95.7,
+            "SB": 99.5,
+            "BB": 88.9
+          },
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2d5c9s&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={1C4C4A5B-1C10-44D3-9A45-1E45272A8957}&end",
+          "active_players": [
+            "BTN",
+            "BB"
+          ],
+          "btn_pos": "BTN",
+          "street_start_pot_bb": 9.1,
+          "total_pot_bb": 15.9,
+          "faced_bet_pct": 75,
+          "spot_label": "33% - XB - Faced bet 75%"
         },
         "actions": [
           "Fold",
@@ -153,12 +304,34 @@
         "setup": {
           "hero_pos": "BTN",
           "villain_pos": "BB",
-          "pot_size": 5.4,
-          "board_cards": ["Kh", "8h", "2d", "Ac", "Qc"],
+          "pot_size": 9.1,
+          "board_cards": [
+            "Kh",
+            "8h",
+            "2d",
+            "Ac",
+            "Qc"
+          ],
           "villain_action": "BET",
-          "villain_sizing_bb": 4.1,
-          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
-          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2dAcQc&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={7C798790-18A8-45C8-86F7-C839B3D9C9E9}&end"
+          "villain_sizing_bb": 6.8,
+          "stacks": {
+            "EP": 100,
+            "MP": 100,
+            "CO": 100,
+            "BTN": 95.7,
+            "SB": 99.5,
+            "BB": 88.9
+          },
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2dAcQc&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={7C798790-18A8-45C8-86F7-C839B3D9C9E9}&end",
+          "active_players": [
+            "BTN",
+            "BB"
+          ],
+          "btn_pos": "BTN",
+          "street_start_pot_bb": 9.1,
+          "total_pot_bb": 15.9,
+          "faced_bet_pct": 75,
+          "spot_label": "33% - XB - Faced bet 75%"
         },
         "actions": [
           "Fold",
@@ -174,12 +347,34 @@
         "setup": {
           "hero_pos": "BTN",
           "villain_pos": "BB",
-          "pot_size": 5.4,
-          "board_cards": ["Kh", "8h", "2d", "Ac", "9h"],
+          "pot_size": 9.1,
+          "board_cards": [
+            "Kh",
+            "8h",
+            "2d",
+            "Ac",
+            "9h"
+          ],
           "villain_action": "BET",
-          "villain_sizing_bb": 4.1,
-          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
-          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2dAc9h&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={E4814A9E-C09D-4F7E-B406-DA68E865A7C7}&end"
+          "villain_sizing_bb": 6.8,
+          "stacks": {
+            "EP": 100,
+            "MP": 100,
+            "CO": 100,
+            "BTN": 95.7,
+            "SB": 99.5,
+            "BB": 88.9
+          },
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2dAc9h&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={E4814A9E-C09D-4F7E-B406-DA68E865A7C7}&end",
+          "active_players": [
+            "BTN",
+            "BB"
+          ],
+          "btn_pos": "BTN",
+          "street_start_pot_bb": 9.1,
+          "total_pot_bb": 15.9,
+          "faced_bet_pct": 75,
+          "spot_label": "33% - XB - Faced bet 75%"
         },
         "actions": [
           "Fold",
@@ -195,12 +390,34 @@
         "setup": {
           "hero_pos": "BTN",
           "villain_pos": "BB",
-          "pot_size": 5.4,
-          "board_cards": ["Kh", "8h", "2d", "Ac", "4d"],
+          "pot_size": 9.1,
+          "board_cards": [
+            "Kh",
+            "8h",
+            "2d",
+            "Ac",
+            "4d"
+          ],
           "villain_action": "BET",
-          "villain_sizing_bb": 4.1,
-          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
-          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2dAc4d&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={9C3F14ED-1226-4595-8414-97AA464867B5}&end"
+          "villain_sizing_bb": 6.8,
+          "stacks": {
+            "EP": 100,
+            "MP": 100,
+            "CO": 100,
+            "BTN": 95.7,
+            "SB": 99.5,
+            "BB": 88.9
+          },
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2dAc4d&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={9C3F14ED-1226-4595-8414-97AA464867B5}&end",
+          "active_players": [
+            "BTN",
+            "BB"
+          ],
+          "btn_pos": "BTN",
+          "street_start_pot_bb": 9.1,
+          "total_pot_bb": 15.9,
+          "faced_bet_pct": 75,
+          "spot_label": "33% - XB - Faced bet 75%"
         },
         "actions": [
           "Fold",
@@ -211,18 +428,45 @@
           "Fold": "3s2s, 3c2c, 3h2h, 5s2s, 5c2c, 5h2h, Qs2s, Qc2c, Qh2h, 3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h"
         },
         "training": "5s5c, 5s5d, 5s5h, 5c5d, 5c5h, 5d5h, 6s6c, 6s6d, 6s6h, 6c6d, 6c6h, 6d6h, 7s7c, 7s7d, 7s7h, 7c7d, 7c7h, 7d7h, 8s5s, 8c5c, 8s6s, 8c6c, 3s2s, 3c2c, 3h2h, 5s2s, 5c2c, 5h2h, Qs2s, Qc2c, Qh2h, 3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h"
-        }
+      }
     },
     "75% - Turn": {
       "Kh8h2dTh": {
         "setup": {
           "hero_pos": "BTN",
           "villain_pos": "BB",
-          "pot_size": 9.6,
-          "board_cards": ["Kh", "8h", "2d", "Th"],
+          "pot_size": 13.7,
+          "board_cards": [
+            "Kh",
+            "8h",
+            "2d",
+            "Th"
+          ],
           "villain_action": "CHECK",
-          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
-          "onenote_url": "onenote:https://d.docs.live.net/ACB7650AF03EF10D/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2dTh&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={1D49C3E6-3054-42F9-B114-426314CC7CF9}&end"
+          "stacks": {
+            "EP": 100,
+            "MP": 100,
+            "CO": 100,
+            "BTN": 93.4,
+            "SB": 99.5,
+            "BB": 93.4
+          },
+          "onenote_url": "onenote:https://d.docs.live.net/ACB7650AF03EF10D/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2dTh&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={1D49C3E6-3054-42F9-B114-426314CC7CF9}&end",
+          "active_players": [
+            "BTN",
+            "BB"
+          ],
+          "btn_pos": "BTN",
+          "street_start_pot_bb": 13.7,
+          "total_pot_bb": 13.7,
+          "turn_bet_sizings_bb": {
+            "Bet 50%": 6.8,
+            "Bet 75%": 10.2
+          },
+          "turn_pot_after_hero_bet_bb": {
+            "Bet 50%": 20.5,
+            "Bet 75%": 23.9
+          }
         },
         "actions": [
           "Check",
@@ -230,24 +474,51 @@
           "Bet 75%"
         ],
         "ranges": {
-          "Bet 75%": "AhAc, AsAh, AhAd, AhKs, AhKc, AhKd, KcKd, KcKs, KdKs, 8c8d, 8c8s, 8d8s, 2c2h, 2c2s, 2h2s, KsQh, KcQh, KdQh,Ks8s, Ks8c, Ks8d, Kc8s, Kc8c, Kc8d, Kd8s, Kd8c, Kd8d",
+          "Bet 75%": "AhAc, AsAh, AhAd, AhKs, AhKc, AhKd, KcKd, KcKs, KdKs, 8c8d, 8c8s, 8d8s, 2c2h, 2c2s, 2h2s, KsQh, KcQh, KdQh, Ks8s, Ks8c, Ks8d, Kc8s, Kc8c, Kc8d, Kd8s, Kd8c, Kd8d",
           "Bet 50%": "KsJh, KcJh, KdJh, Ks9h, Kc9h, Kd9h, AcAd, AcAs, AdAs, AcKs, AcKc, AcKd, AdKs, AdKc, AdKd, AsKs, AsKc, AsKd, KsQs, KsQc, KsQd, KcQs, KcQc, KcQd, KdQs, KdQc, KdQd",
           "Check": "Ks7h, Kc7h, Kd7h, Ks6h, Kc6h, Kd6h, Ks5h, Kc5h, Kd5h, Ks4h, Kc4h, Kd4h, Ks3h, Kc3h, Kd3d, KsJs, KsJc, KsJd, KcJs, KcJc, KcJd, KdJs, KdJc, KdJd, Ks9s, Ks9c, Ks9d, Kc9s, Kc9c, Kc9d, Kd9s, Kd9c, Kd9d, Ks7s, Ks7c, Ks7d, Kc7s, Kc7c, Kc7d, Kd7s, Kd7c, Kd7d"
         },
-        "training": "AdAc, AsAc, AsAd, AhKs, AhKc, AhKd, KcKd, KcKs, KdKs, 8c8d, 8c8s, 8d8s, 2c2h, 2c2s, 2h2s, KsQh, KcQh, KdQh, KsJh, KcJh, KdJh, Ks9h, Kc9h, Kd9h, AcAd, AcAs, AdAs, AcKs, AcKc, AcKd, AdKs, AdKc, AdKd, AsKs, AsKc, AsKd, Ks7h, Kc7h, Kd7h, Ks6h, Kc6h, Kd6h, Ks5h, Kc5h, Kd5h, Ks4h, Kc4h, Kd4h, Ks3h, Kc3h, Kd3h, KsQs, KsQc, KsQd, KcQs, KcQc, KcQd, KdQs, KdQc, KdQd, KsJs, KsJc, KsJd, KcJs, KcJc, KcJd, KdJs, KdJc, KdJd, Ks9s, Ks9c, Ks9d, Kc9s, Kc9c, Kc9d, Kd9s, Kd9c, Kd9d, Ks8s, Ks8c, Ks8d, Kc8s, Kc8c, Kc8d, Kd8s, Kd8c, Kd8d, Ks7s, Ks7c, Ks7d, Kc7s, Kc7c, Kc7d, Kd7s, Kd7c, Kd7d"
+        "training": "AhAc, AsAh, AhAd, AhKs, AhKc, AhKd, KcKd, KcKs, KdKs, 8c8d, 8c8s, 8d8s, 2c2h, 2c2s, 2h2s, KsQh, KcQh, KdQh, Ks8s, Ks8c, Ks8d, Kc8s, Kc8c, Kc8d, Kd8s, Kd8c, Kd8d, KsJh, KcJh, KdJh, Ks9h, Kc9h, Kd9h, AcAd, AcAs, AdAs, AcKs, AcKc, AcKd, AdKs, AdKc, AdKd, AsKs, AsKc, AsKd, KsQs, KsQc, KsQd, KcQs, KcQc, KcQd, KdQs, KdQc, KdQd, Ks7h, Kc7h, Kd7h, Ks6h, Kc6h, Kd6h, Ks5h, Kc5h, Kd5h, Ks4h, Kc4h, Kd4h, Ks3h, Kc3h, Kd3d, KsJs, KsJc, KsJd, KcJs, KcJc, KcJd, KdJs, KdJc, KdJd, Ks9s, Ks9c, Ks9d, Kc9s, Kc9c, Kc9d, Kd9s, Kd9c, Kd9d, Ks7s, Ks7c, Ks7d, Kc7s, Kc7c, Kc7d, Kd7s, Kd7c, Kd7d"
       },
       "Kh8h2dAc": {
         "setup": {
           "hero_pos": "BTN",
           "villain_pos": "BB",
-          "pot_size": 9.6,
-          "board_cards": ["Kh", "8h", "2d", "Ac"],
+          "pot_size": 13.7,
+          "board_cards": [
+            "Kh",
+            "8h",
+            "2d",
+            "Ac"
+          ],
           "villain_action": "CHECK",
-          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
-          "onenote_url": "onenote:https://d.docs.live.net/ACB7650AF03EF10D/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2dAc&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={41234C98-2E94-474C-B3AD-75D788A8C86A}&end"
+          "stacks": {
+            "EP": 100,
+            "MP": 100,
+            "CO": 100,
+            "BTN": 93.4,
+            "SB": 99.5,
+            "BB": 93.4
+          },
+          "onenote_url": "onenote:https://d.docs.live.net/ACB7650AF03EF10D/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2dAc&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={41234C98-2E94-474C-B3AD-75D788A8C86A}&end",
+          "active_players": [
+            "BTN",
+            "BB"
+          ],
+          "btn_pos": "BTN",
+          "street_start_pot_bb": 13.7,
+          "total_pot_bb": 13.7,
+          "turn_bet_sizings_bb": {
+            "Bet 50%": 6.8,
+            "Bet 75%": 10.2
+          },
+          "turn_pot_after_hero_bet_bb": {
+            "Bet 50%": 20.5,
+            "Bet 75%": 23.9
+          }
         },
         "actions": [
-           "Check",
+          "Check",
           "Bet 50%",
           "Bet 75%"
         ],
@@ -261,14 +532,41 @@
         "setup": {
           "hero_pos": "BTN",
           "villain_pos": "BB",
-          "pot_size": 9.6,
-          "board_cards": ["Kh", "8h", "2d", "5c"],
+          "pot_size": 13.7,
+          "board_cards": [
+            "Kh",
+            "8h",
+            "2d",
+            "5c"
+          ],
           "villain_action": "CHECK",
-          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 97.5, "SB": 99.5, "BB": 97.5},
-          "onenote_url": "onenote:https://d.docs.live.net/ACB7650AF03EF10D/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2d5c&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={9AFE8AAB-BEE1-41D1-B28B-5129FF05DD8D}&end"
+          "stacks": {
+            "EP": 100,
+            "MP": 100,
+            "CO": 100,
+            "BTN": 93.4,
+            "SB": 99.5,
+            "BB": 93.4
+          },
+          "onenote_url": "onenote:https://d.docs.live.net/ACB7650AF03EF10D/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2d5c&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={9AFE8AAB-BEE1-41D1-B28B-5129FF05DD8D}&end",
+          "active_players": [
+            "BTN",
+            "BB"
+          ],
+          "btn_pos": "BTN",
+          "street_start_pot_bb": 13.7,
+          "total_pot_bb": 13.7,
+          "turn_bet_sizings_bb": {
+            "Bet 50%": 6.8,
+            "Bet 75%": 10.2
+          },
+          "turn_pot_after_hero_bet_bb": {
+            "Bet 50%": 20.5,
+            "Bet 75%": 23.9
+          }
         },
         "actions": [
-           "Check",
+          "Check",
           "Bet 50%",
           "Bet 75%"
         ],
