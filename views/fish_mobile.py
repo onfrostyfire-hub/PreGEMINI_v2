@@ -124,16 +124,16 @@ def show():
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap');
 
-        .pf-pot-badge { position: absolute; top: 26%; left: 50%; transform: translateX(-50%); z-index: 15; }
-        .pf-street-pot { position: absolute; top: 65%; left: 50%; transform: translateX(-50%); z-index: 18; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 6px; pointer-events: none; }
-        .pf-board { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
+        .pf-pot-badge { position: absolute; top: 23.5%; left: 50%; transform: translateX(-50%); z-index: 15; }
+        .pf-street-pot { position: absolute; top: 59.5%; left: 50%; transform: translateX(-50%); z-index: 18; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 6px; pointer-events: none; }
+        .pf-board { position: absolute; top: 46.5%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
         
-        .mobile-game-area { margin-top: 50px !important; margin-bottom: 55px !important; }
+        .mobile-game-area { margin-top: 26px !important; margin-bottom: 50px !important; }
         .rng-hint-wrap { margin-top: 12px !important; margin-bottom: 8px !important; }
         div[data-testid="stHorizontalBlock"] { margin-top: 0px !important; gap: 8px !important; }
 
-        .block-container { padding-top: 1.5rem !important; padding-bottom: 1rem !important; max-width: 100% !important; overflow-x: hidden !important; }
-        [data-testid="stExpander"] { margin-top: -5px !important; }
+        .block-container { padding-top: 0.85rem !important; padding-bottom: 1rem !important; max-width: 100% !important; overflow-x: hidden !important; }
+        [data-testid="stExpander"] { margin-top: -12px !important; margin-bottom: 4px !important; }
         
         div[data-testid="stHorizontalBlock"] { display: grid !important; grid-template-columns: repeat(auto-fit, minmax(10px, 1fr)) !important; width: 100% !important; }
         div[data-testid="column"] { width: 100% !important; min-width: 0 !important; max-width: 100% !important; margin-bottom: 0 !important; }
@@ -147,9 +147,9 @@ def show():
         div.element-container:has(#fish-runouts-all-m-marker) + div.element-container div[data-testid="stButton"] button p { font-size: 10px !important; letter-spacing: 0.05em !important; color: rgba(255,255,255,0.88) !important; }
 
         .mobile-game-area { 
-            position: relative; width: 100%; height: 280px; 
+            position: relative; width: 100%; height: 305px; 
             border: 12px solid #1a1c20; 
-            border-radius: 135px; 
+            border-radius: 158px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 3px 12px rgba(0,0,0,0.6); 
             transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; 
         }
@@ -188,6 +188,11 @@ def show():
         .street-chip-pot.c4 { top: 2px; left: 7px; background: repeating-conic-gradient(rgba(255,255,255,0.22) 0deg 16deg, transparent 16deg 34deg), radial-gradient(circle at 36% 30%, #f8fafc, #8d99a8 72%); }
         .street-chip-pot.c5 { top: 0; left: 5px; background: repeating-conic-gradient(rgba(255,255,255,0.22) 0deg 16deg, transparent 16deg 34deg), radial-gradient(circle at 36% 30%, #f7c948, #8a5808 72%); }
         .street-pot-txt { background: rgba(8,9,12,0.92); border: 1px solid rgba(255,193,7,0.32); color: #f4d384; border-radius: 7px; padding: 1px 6px; font-size: 9px; font-weight: 800; line-height: 1.25; box-shadow: 0 2px 4px rgba(0,0,0,0.55); white-space: nowrap; }
+        .spot-mastery-felt { position: absolute; top: 70.5%; left: 50%; transform: translateX(-50%); z-index: 16; min-width: 132px; max-width: 154px; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 4px 8px 5px; border-radius: 12px; pointer-events: none; background: radial-gradient(circle at 50% 0%, rgba(80,135,92,0.18), rgba(9,18,13,0.62) 62%, rgba(5,8,7,0.74)); border: 1px solid rgba(148,210,162,0.16); box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 18px rgba(0,0,0,0.42); backdrop-filter: blur(4px); }
+        .spot-mastery-pill { display: inline-flex; align-items: center; justify-content: center; gap: 4px; max-width: 100%; border-radius: 999px; padding: 2px 8px 2px 7px; font-size: 9px; font-weight: 800; letter-spacing: 0.03em; white-space: nowrap; background: rgba(5,8,7,0.72); border: 1px solid rgba(255,255,255,0.14); color: rgba(255,255,255,0.94); text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
+        .spot-mastery-meter { width: 72px; height: 2px; border-radius: 999px; overflow: hidden; background: rgba(255,255,255,0.08); box-shadow: inset 0 1px 2px rgba(0,0,0,0.7); }
+        .spot-mastery-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #1ac8d9, #58f0b0); box-shadow: 0 0 8px rgba(32,220,190,0.45); }
+        .spot-mastery-remaining { font-size: 8.5px; font-weight: 700; letter-spacing: 0.02em; line-height: 1; color: rgba(230,238,235,0.76); white-space: nowrap; }
         .board-container-mob { display: flex; gap: 4px; background: rgba(0,0,0,0.4); padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 2px 10px rgba(0,0,0,0.4); }
         .board-card-mob { width: 38px; height: 54px; background: white; border-radius: 3px; position: relative; color: black; box-shadow: 0 1px 3px rgba(0,0,0,0.5); font-family: Arial, sans-serif !important; }
         .bc-tl-mob { position: absolute; top: 2px; left: 3px; font-weight: bold; font-size: 12px; line-height: 1; }
@@ -225,12 +230,12 @@ def show():
         .rng-badge { position: absolute !important; top: 50% !important; right: -30px !important; transform: translateY(-50%) !important; width: 24px !important; height: 24px !important; border-radius: 50% !important; font-weight: bold !important; font-size: 10px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 2px 5px rgba(0,0,0,0.5) !important; z-index: 40 !important; }
         .rng-hint-wrap { text-align: center; color: #6c757d; font-size: 11px; font-family: 'Roboto', sans-serif; font-weight: 500; letter-spacing: 0.5px; }
 
-        .cn-mob-header { margin-top: -15px; margin-bottom: 2px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; -webkit-font-smoothing: antialiased; border-radius: 14px; overflow: hidden; position: relative; background: linear-gradient(165deg, rgba(18,22,28,0.92) 0%, rgba(8,10,14,0.96) 100%); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+        .cn-mob-header { margin-top: -18px; margin-bottom: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; -webkit-font-smoothing: antialiased; border-radius: 14px; overflow: hidden; position: relative; background: linear-gradient(165deg, rgba(18,22,28,0.92) 0%, rgba(8,10,14,0.96) 100%); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
         .cn-mob-header::before { content: ''; position: absolute; inset: 0; border-radius: 14px; pointer-events: none; background: linear-gradient(125deg, rgba(255,255,255,0.07) 0%, transparent 42%, transparent 58%, rgba(255,255,255,0.03) 100%); z-index: 0; }
-        .cn-mob-wr-track { height: 3px; width: 100%; background: rgba(0,0,0,0.45); position: relative; z-index: 1; }
+        .cn-mob-wr-track { height: 2px; width: 100%; background: rgba(0,0,0,0.45); position: relative; z-index: 1; }
         .cn-mob-wr-fill { height: 100%; transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 12px currentColor; }
-        .cn-mob-inner { position: relative; z-index: 1; padding: 8px 10px 9px; }
-        .cn-mob-row1 { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+        .cn-mob-inner { position: relative; z-index: 1; padding: 7px 10px 8px; }
+        .cn-mob-row1 { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 5px; }
         .cn-mob-rank { font-size: 11px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: rgba(255,214,120,0.95); text-shadow: 0 0 20px rgba(255,200,80,0.25); line-height: 1.15; }
         .cn-mob-xp-meta { font-size: 9px; font-weight: 700; font-variant-numeric: tabular-nums; color: rgba(180,190,205,0.85); white-space: nowrap; letter-spacing: 0.02em; }
         .cn-mob-xp-bar-wrap { flex: 1; min-width: 0; margin-top: 3px; }
@@ -246,7 +251,7 @@ def show():
         .cn-mob-combo-fire { font-size: 14px; font-weight: 900; color: #fff; text-shadow: 0 0 18px rgba(255,120,40,0.55); letter-spacing: -0.03em; }
         .cn-mob-shield { font-size: 11px; margin-left: 2px; font-weight: 800; color: rgba(120,230,255,0.95); filter: drop-shadow(0 0 6px rgba(0,200,255,0.55)); align-items: center; gap: 2px; }
 
-        .rage-bar-container { width: 100%; max-width: 700px; margin: 0 auto 5px auto; height: 26px; border-radius: 999px; position: relative; display: flex; align-items: stretch; padding: 3px; background: linear-gradient(180deg, rgba(12,14,20,0.95) 0%, rgba(6,8,12,0.98) 100%); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65), inset 0 -1px 0 rgba(255,255,255,0.05); overflow: hidden; }
+        .rage-bar-container { width: 100%; max-width: 700px; margin: 0 auto 1px auto; height: 20px; border-radius: 999px; position: relative; display: flex; align-items: stretch; padding: 2px; background: linear-gradient(180deg, rgba(12,14,20,0.95) 0%, rgba(6,8,12,0.98) 100%); border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65), inset 0 -1px 0 rgba(255,255,255,0.05); overflow: hidden; }
         .rage-bar-container::before { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.04) 50%, transparent 100%); z-index: 3; }
         .rage-bar-fill { height: 100%; border-radius: 999px; transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; min-width: 0; box-shadow: inset 0 2px 8px rgba(255,255,255,0.35), inset 0 -3px 8px rgba(0,0,0,0.45), 0 0 20px rgba(255,255,255,0.12); }
         .rage-bar-fill::before, .rage-bar-fill::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: radial-gradient(circle, rgba(255,255,255,0.85) 1px, transparent 2px), radial-gradient(circle, rgba(255,255,255,0.45) 2px, transparent 3px), radial-gradient(circle, rgba(255,255,255,0.35) 1px, transparent 2px); z-index: 1; pointer-events: none; }
@@ -254,7 +259,7 @@ def show():
         .rage-bar-fill::after { background-size: 22px 28px, 40px 46px, 20px 24px; animation: bubbleRise2 1.65s infinite linear; opacity: 0.45; }
         @keyframes bubbleRise1 { 0% { background-position: 0px 22px, 0px 36px, 0px 18px; } 50% { background-position: 5px 11px, -5px 18px, 3px 9px; } 100% { background-position: 0px 0px, 0px 0px, 0px 0px; } }
         @keyframes bubbleRise2 { 0% { background-position: 0px 28px, 0px 46px, 0px 24px; } 50% { background-position: -6px 14px, 6px 22px, -4px 12px; } 100% { background-position: 0px 0px, 0px 0px, 0px 0px; } }
-        .rage-labels { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); display: flex; justify-content: space-between; align-items: center; padding: 0 14px; pointer-events: none; z-index: 4; font-family: 'Inter', system-ui, sans-serif; font-weight: 800; font-size: 11px; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; color: rgba(255,255,255,0.98); text-shadow: 0 1px 2px rgba(0,0,0,0.95), 0 0 12px rgba(0,0,0,0.8), 0 0 1px rgba(0,0,0,1); }
+        .rage-labels { position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); display: flex; justify-content: space-between; align-items: center; padding: 0 12px; pointer-events: none; z-index: 4; font-family: 'Inter', system-ui, sans-serif; font-weight: 800; font-size: 10px; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; color: rgba(255,255,255,0.98); text-shadow: 0 1px 2px rgba(0,0,0,0.95), 0 0 12px rgba(0,0,0,0.8), 0 0 1px rgba(0,0,0,1); }
         .rage-pulse { animation: ragePulseNeon 0.45s ease-in-out infinite alternate; }
         @keyframes ragePulseNeon { 0% { filter: brightness(1) saturate(1); box-shadow: inset 0 2px 8px rgba(255,255,255,0.3), 0 0 8px rgba(255,60,80,0.35); } 100% { filter: brightness(1.15) saturate(1.2); box-shadow: inset 0 2px 12px rgba(255,255,255,0.5), 0 0 22px rgba(255,80,100,0.65), 0 0 40px rgba(255,40,60,0.25); } }
         .rage-flash { animation: rageTubeFlash 0.65s ease-out; }
@@ -757,10 +762,10 @@ def show():
     if street_pot not in (None, ""):
         street_pot_html = f'<div class="pf-street-pot"><div class="street-chip-pile"><div class="street-chip-pot c1"></div><div class="street-chip-pot c2"></div><div class="street-chip-pot c3"></div><div class="street-chip-pot c4"></div><div class="street-chip-pot c5"></div></div><div class="street-pot-txt">{street_pot_str} bb</div></div>'
         
-    mastery_html = f"""<div style="position: absolute; bottom: -98px; left: 10px; z-index: 15; width: 130px; display: flex; flex-direction: column; align-items: center; gap: 3px; pointer-events: none;">
-        <div style="display: inline-flex; align-items: center; gap: 4px; border-radius: 20px; padding: 2px 9px 2px 7px; font-size: 9.5px; font-weight: 700; letter-spacing: 0.05em; white-space: nowrap; background: #111; border: 1px solid rgba(255,255,255,0.2); color: #fff; text-shadow: 0 0 6px rgba(0,0,0,0.4);">{m_icon} {m_name}</div>
-        <div style="width: 100%; display: flex; justify-content: center;"><div style="width: 60px; height: 2px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden;"><div style="height: 100%; border-radius: 2px; background: #0dcaf0; width: {m_pct}%;"></div></div></div>
-        <div style="width: 100%; font-size: 9px !important; transform: scale(0.6); transform-origin: center top; letter-spacing: 0.05em !important; margin-top: 2px !important; color: rgba(255,255,255,0.7) !important; text-align: center !important; white-space: nowrap !important;">{hands_left_text}</div>
+    mastery_html = f"""<div class="spot-mastery-felt">
+        <div class="spot-mastery-pill">{m_icon}<span>{m_name}</span></div>
+        <div class="spot-mastery-meter"><div class="spot-mastery-fill" style="width: {m_pct}%;"></div></div>
+        <div class="spot-mastery-remaining">{hands_left_text}</div>
     </div>"""
 
     onenote = setup.get("info_link", setup.get("onenote_url", ""))
