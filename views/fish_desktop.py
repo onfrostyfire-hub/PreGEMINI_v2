@@ -92,7 +92,7 @@ def show():
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap');
 
         .pf-pot-badge-desk { position: absolute; top: 22%; left: 50%; transform: translateX(-50%); z-index: 15; }
-        .pf-street-pot-desk { position: absolute; top: 59%; left: 50%; transform: translateX(-50%); z-index: 18; display: flex; flex-direction: column; align-items: center; gap: 2px; pointer-events: none; }
+        .pf-street-pot-desk { position: absolute; top: 60%; left: 50%; transform: translateX(-50%); z-index: 18; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px; pointer-events: none; }
         .pf-board-desk { position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
         
         .desktop-game-area { 
@@ -113,6 +113,10 @@ def show():
         div[data-testid="stButton"] button { width: 100% !important; height: 60px !important; padding: 0 !important; border-radius: 14px !important; border: none !important; transition: transform 0.1s !important; background: #343a40 !important; color: #fff !important; box-shadow: 0 5px 0 #1d2124 !important; }
         div[data-testid="stButton"] button:active { transform: translateY(5px) !important; box-shadow: 0 0 0 transparent !important; }
         div[data-testid="stButton"] button p { font-family: 'Roboto', sans-serif !important; font-size: 18px !important; font-weight: 900 !important; margin: 0 !important; letter-spacing: 1px !important; text-transform: uppercase !important; }
+        div.element-container:has(#fish-runouts-all-d-marker) + div.element-container div[data-testid="stButton"] { width: 54px !important; margin-left: auto !important; }
+        div.element-container:has(#fish-runouts-all-d-marker) + div.element-container div[data-testid="stButton"] button { width: 54px !important; height: 26px !important; min-height: 26px !important; padding: 0 !important; border-radius: 8px !important; background: #242932 !important; border: 1px solid rgba(255,255,255,0.18) !important; box-shadow: none !important; }
+        div.element-container:has(#fish-runouts-all-d-marker) + div.element-container div[data-testid="stButton"] button:active { transform: translateY(1px) !important; }
+        div.element-container:has(#fish-runouts-all-d-marker) + div.element-container div[data-testid="stButton"] button p { font-size: 11px !important; letter-spacing: 0.06em !important; color: rgba(255,255,255,0.88) !important; }
 
         .cn-desk-header { max-width: 850px; margin: 0 auto 10px auto; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; -webkit-font-smoothing: antialiased; border-radius: 16px; overflow: hidden; position: relative; background: linear-gradient(165deg, rgba(18,22,28,0.92) 0%, rgba(8,10,14,0.96) 100%); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.4); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
         .cn-desk-header::before { content: ''; position: absolute; inset: 0; border-radius: 16px; pointer-events: none; background: linear-gradient(125deg, rgba(255,255,255,0.07) 0%, transparent 42%, transparent 58%, rgba(255,255,255,0.03) 100%); z-index: 0; }
@@ -167,14 +171,14 @@ def show():
         .opp-card-desk.right-desk { margin-left: -8px !important; transform: rotate(10deg) !important; z-index: -1 !important; }
 
         .pot-badge-desk { background: #111; color: #ffc107; font-weight: bold; font-size: 14px; padding: 4px 14px; border-radius: 14px; border: 1.5px solid #ffc107; box-shadow: 0 2px 6px rgba(0,0,0,0.6); }
-        .street-chip-pile-desk { position: relative; width: 70px; height: 24px; }
-        .street-chip-pot-desk { position: absolute; width: 17px; height: 17px; border-radius: 50%; background: repeating-conic-gradient(rgba(255,255,255,0.18) 0deg 18deg, transparent 18deg 36deg), radial-gradient(circle at 35% 30%, #d8eefc, #5e9ec8); border: 1.5px solid rgba(255,255,255,0.38); box-shadow: 0 0 0 1px rgba(0,0,0,0.72), 0 2px 4px rgba(0,0,0,0.65), inset 0 1px 2px rgba(255,255,255,0.35); }
-        .street-chip-pot-desk.c1 { left: 4px; top: 7px; background: repeating-conic-gradient(rgba(255,255,255,0.18) 0deg 18deg, transparent 18deg 36deg), radial-gradient(circle at 35% 30%, #dff7d9, #309c3f); }
-        .street-chip-pot-desk.c2 { left: 16px; top: 2px; background: repeating-conic-gradient(rgba(255,255,255,0.2) 0deg 18deg, transparent 18deg 36deg), radial-gradient(circle at 35% 30%, #ffdedc, #c0182a); }
-        .street-chip-pot-desk.c3 { left: 29px; top: 8px; background: repeating-conic-gradient(rgba(255,255,255,0.16) 0deg 18deg, transparent 18deg 36deg), radial-gradient(circle at 35% 30%, #f7f7f7, #cfd7df); }
-        .street-chip-pot-desk.c4 { left: 40px; top: 1px; background: repeating-conic-gradient(rgba(255,255,255,0.18) 0deg 18deg, transparent 18deg 36deg), radial-gradient(circle at 35% 30%, #d8eefc, #5e9ec8); }
-        .street-chip-pot-desk.c5 { left: 53px; top: 6px; background: repeating-conic-gradient(rgba(255,255,255,0.18) 0deg 18deg, transparent 18deg 36deg), radial-gradient(circle at 35% 30%, #ffdca8, #b8792e); }
-        .street-pot-txt-desk { margin-top: -2px; background: rgba(8,9,12,0.86); border: 1px solid rgba(255,193,7,0.28); color: #f4d384; border-radius: 8px; padding: 1px 7px; font-size: 11px; font-weight: 800; line-height: 1.25; box-shadow: 0 2px 5px rgba(0,0,0,0.6); white-space: nowrap; }
+        .street-chip-pile-desk { position: relative; width: 34px; height: 28px; filter: drop-shadow(0 4px 5px rgba(0,0,0,0.65)); }
+        .street-chip-pot-desk { position: absolute; left: 2px; width: 30px; height: 9px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.34); background: radial-gradient(ellipse at 50% 28%, rgba(255,255,255,0.95) 0 17%, transparent 18%), linear-gradient(90deg, rgba(255,255,255,0.72) 0 10%, transparent 10% 21%, rgba(255,255,255,0.72) 21% 31%, transparent 31% 69%, rgba(255,255,255,0.72) 69% 79%, transparent 79% 90%, rgba(255,255,255,0.72) 90% 100%), linear-gradient(180deg, #f05f62 0%, #c82238 52%, #7e1022 100%); box-shadow: inset 0 1px 1px rgba(255,255,255,0.45), inset 0 -2px 2px rgba(0,0,0,0.32), 0 1px 0 rgba(0,0,0,0.7); }
+        .street-chip-pot-desk.c1 { top: 18px; background-color: #b91c1c; }
+        .street-chip-pot-desk.c2 { top: 14px; background: radial-gradient(ellipse at 50% 28%, rgba(255,255,255,0.95) 0 17%, transparent 18%), linear-gradient(90deg, rgba(255,255,255,0.72) 0 10%, transparent 10% 21%, rgba(255,255,255,0.72) 21% 31%, transparent 31% 69%, rgba(255,255,255,0.72) 69% 79%, transparent 79% 90%, rgba(255,255,255,0.72) 90% 100%), linear-gradient(180deg, #5ea7ff 0%, #1d5fc4 54%, #123a7a 100%); }
+        .street-chip-pot-desk.c3 { top: 10px; background: radial-gradient(ellipse at 50% 28%, rgba(255,255,255,0.95) 0 17%, transparent 18%), linear-gradient(90deg, rgba(255,255,255,0.72) 0 10%, transparent 10% 21%, rgba(255,255,255,0.72) 21% 31%, transparent 31% 69%, rgba(255,255,255,0.72) 69% 79%, transparent 79% 90%, rgba(255,255,255,0.72) 90% 100%), linear-gradient(180deg, #f7d36c 0%, #c48714 54%, #7a5108 100%); }
+        .street-chip-pot-desk.c4 { top: 6px; background: radial-gradient(ellipse at 50% 28%, rgba(255,255,255,0.95) 0 17%, transparent 18%), linear-gradient(90deg, rgba(255,255,255,0.72) 0 10%, transparent 10% 21%, rgba(255,255,255,0.72) 21% 31%, transparent 31% 69%, rgba(255,255,255,0.72) 69% 79%, transparent 79% 90%, rgba(255,255,255,0.72) 90% 100%), linear-gradient(180deg, #5bdc83 0%, #188544 54%, #0e4f2b 100%); }
+        .street-chip-pot-desk.c5 { top: 2px; background: radial-gradient(ellipse at 50% 28%, rgba(255,255,255,0.95) 0 17%, transparent 18%), linear-gradient(90deg, rgba(255,255,255,0.72) 0 10%, transparent 10% 21%, rgba(255,255,255,0.72) 21% 31%, transparent 31% 69%, rgba(255,255,255,0.72) 69% 79%, transparent 79% 90%, rgba(255,255,255,0.72) 90% 100%), linear-gradient(180deg, #f5f7fb 0%, #bfc8d3 54%, #778392 100%); }
+        .street-pot-txt-desk { background: rgba(8,9,12,0.9); border: 1px solid rgba(255,193,7,0.35); color: #f4d384; border-radius: 9px; padding: 2px 8px; font-size: 11px; font-weight: 800; line-height: 1.25; box-shadow: 0 2px 5px rgba(0,0,0,0.6); white-space: nowrap; }
         .board-container-desk { display: flex; gap: 6px; background: rgba(0,0,0,0.4); padding: 8px 16px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .board-card-desk { width: 50px; height: 72px; background: white; border-radius: 4px; position: relative; color: black; box-shadow: 0 2px 5px rgba(0,0,0,0.6); font-family: Arial, sans-serif !important; }
         .bc-tl-desk { position: absolute; top: 3px; left: 4px; font-weight: 900; font-size: 16px; line-height: 1; }
@@ -280,7 +284,6 @@ def show():
         
         sel_spots_keys = []
         if sel_lines:
-            st.markdown("**5. Runouts:**")
             saved_runouts = saved.get("fish_spots", [])
             
             matching_runouts = []
@@ -294,18 +297,33 @@ def show():
                                 full_key = f"{vp}|{tex}|{pos}|{line}|{runout}"
                                 matching_runouts.append((runout, full_key))
 
-            if matching_runouts and st.button("ALL", key="fish_runouts_all_d", use_container_width=True):
-                saved["fish_sel_vpips"] = sel_vpips
-                saved["fish_sel_boards"] = sel_boards
-                saved["fish_sel_pos"] = sel_pos
-                saved["fish_sel_lines"] = sel_lines
-                saved["fish_spots"] = [full_key for _, full_key in matching_runouts]
-                utils.save_user_settings(saved, is_fish=True)
-                st.session_state.fish_hand = None
-                st.rerun()
+            def runout_is_checked(full_key):
+                widget_key = f"fish_chk_d_{full_key}"
+                if widget_key in st.session_state:
+                    return bool(st.session_state[widget_key])
+                return (full_key in saved_runouts) if "fish_spots" in saved else True
+
+            all_runouts_selected = bool(matching_runouts) and all(runout_is_checked(full_key) for _, full_key in matching_runouts)
+            title_col, all_col = st.columns([0.78, 0.22])
+            with title_col:
+                st.markdown("**5. Runouts:**")
+            with all_col:
+                st.markdown('<span id="fish-runouts-all-d-marker"></span>', unsafe_allow_html=True)
+                if matching_runouts and st.button("ALL", key="fish_runouts_all_d", use_container_width=False):
+                    target_state = not all_runouts_selected
+                    for _, full_key in matching_runouts:
+                        st.session_state[f"fish_chk_d_{full_key}"] = target_state
+                    saved["fish_sel_vpips"] = sel_vpips
+                    saved["fish_sel_boards"] = sel_boards
+                    saved["fish_sel_pos"] = sel_pos
+                    saved["fish_sel_lines"] = sel_lines
+                    saved["fish_spots"] = [full_key for _, full_key in matching_runouts] if target_state else []
+                    utils.save_user_settings(saved, is_fish=True)
+                    st.session_state.fish_hand = None
+                    st.rerun()
             
             for runout_name, full_key in matching_runouts:
-                is_checked = (full_key in saved_runouts) if "fish_spots" in saved else True
+                is_checked = runout_is_checked(full_key)
                 parts = full_key.split('|')
                 spot_setup = flat_fish_db.get(full_key, {}).get("setup", {})
                 line_lbl = spot_setup.get("spot_label", parts[3])
