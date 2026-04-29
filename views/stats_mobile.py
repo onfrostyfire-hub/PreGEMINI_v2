@@ -401,11 +401,16 @@ def render_filter_chip_group(title, items, state_key, key_prefix, columns_per_ro
 
     for start_idx in range(0, len(ordered_items), columns_per_row):
         row_items = ordered_items[start_idx:start_idx + columns_per_row]
-        row_cols = st.columns(len(row_items))
-        for item_idx, (col, item) in enumerate(zip(row_cols, row_items)):
+        row_cols = st.columns(columns_per_row)
+        for item_idx, col in enumerate(row_cols):
             with col:
                 if item_idx == 0:
                     st.markdown("<div class='filter-row-marker-mob'></div>", unsafe_allow_html=True)
+                if item_idx >= len(row_items):
+                    st.markdown("<div class='filter-chip-spacer-mob'></div>", unsafe_allow_html=True)
+                    continue
+
+                item = row_items[item_idx]
                 is_active = item in selected
                 if st.button(
                     item,
@@ -698,19 +703,23 @@ def show():
         }
 
         .filter-group-title {
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 800;
             color: #adb5bd;
             text-transform: uppercase;
-            letter-spacing: 0.10em;
-            margin: 10px 0 8px 0;
+            letter-spacing: 0.14em;
+            margin: 9px 0 6px 0;
         }
 
         .filter-row-marker-mob { display: none; }
+        .filter-chip-spacer-mob {
+            height: 28px;
+            pointer-events: none;
+        }
 
         div[data-testid="stHorizontalBlock"]:has(.filter-row-marker-mob) {
-            gap: 6px !important;
-            margin-bottom: 6px !important;
+            gap: 5px !important;
+            margin-bottom: 5px !important;
         }
 
         div[data-testid="stHorizontalBlock"]:has(.filter-row-marker-mob) > div[data-testid="column"] {
@@ -721,28 +730,30 @@ def show():
 
         div[data-testid="stHorizontalBlock"]:has(.filter-row-marker-mob) div[data-testid="stButton"] button {
             width: 100% !important;
-            height: 34px !important;
-            min-height: 34px !important;
-            padding: 0 10px !important;
+            height: 28px !important;
+            min-height: 28px !important;
+            padding: 0 7px !important;
             border-radius: 999px !important;
-            font-size: 10px !important;
+            font-size: 8.5px !important;
             font-weight: 800 !important;
             line-height: 1 !important;
             white-space: nowrap !important;
             overflow: hidden !important;
             text-overflow: ellipsis !important;
+            letter-spacing: 0 !important;
         }
 
         div[data-testid="stHorizontalBlock"]:has(.filter-row-marker-mob) div[data-testid="stButton"] button[kind="secondary"] {
-            background: rgba(255, 255, 255, 0.05) !important;
-            border: 1px solid rgba(255, 255, 255, 0.12) !important;
-            color: #cfd6dd !important;
+            background: linear-gradient(180deg, rgba(31, 34, 41, 0.98) 0%, rgba(21, 23, 29, 0.98) 100%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.11) !important;
+            color: #b9c0c8 !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
         }
 
         div[data-testid="stHorizontalBlock"]:has(.filter-row-marker-mob) div[data-testid="stButton"] button[kind="primary"] {
-            background: linear-gradient(180deg, #2b5876 0%, #1f3447 100%) !important;
-            border: 1px solid rgba(255, 193, 7, 0.55) !important;
-            box-shadow: 0 0 0 1px rgba(255, 193, 7, 0.15), 0 0 12px rgba(255, 193, 7, 0.12) !important;
+            background: linear-gradient(180deg, #ff5964 0%, #f54250 100%) !important;
+            border: 1px solid rgba(255, 118, 127, 0.72) !important;
+            box-shadow: 0 0 0 1px rgba(255, 89, 100, 0.18), 0 6px 14px rgba(245, 66, 80, 0.24) !important;
             color: #ffffff !important;
         }
 
@@ -842,12 +853,19 @@ def show():
 
     filter_groups = build_filter_groups(catalog, is_postflop, is_fish=is_fish)
     for group in filter_groups:
+        if is_fish and group["title"] == "Action Line":
+            columns_per_row = 2
+        elif group["title"] in {"Scenario", "Board", "Position", "Hero", "Street"}:
+            columns_per_row = 4
+        else:
+            columns_per_row = 3
+
         render_filter_chip_group(
             title=group["title"],
             items=group["items"],
             state_key=group["state_key"],
             key_prefix=f"mob_{mode.lower()}_{group['title'].lower()}",
-            columns_per_row=min(len(group["items"]) or 1, 3 if group["title"] == "Scenario" else 2),
+            columns_per_row=columns_per_row,
         )
 
     st.markdown("</div>", unsafe_allow_html=True)
