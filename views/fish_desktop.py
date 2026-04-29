@@ -258,54 +258,71 @@ def show():
 
     with st.sidebar:
         st.markdown("### ⚙️ View & Fish Filters")
-        c_v1, c_v2 = st.columns(2)
-        with c_v1:
-            if st.button("📱 Mobile", key="mv_btn"): st.session_state.actual_view_type = "📱 Mobile"; st.rerun()
-        with c_v2:
-            if st.button("💻 Desktop", key="dv_btn"): st.session_state.actual_view_type = "💻 Desktop"; st.rerun()
-        st.markdown("<hr style='margin: 5px 0;'>", unsafe_allow_html=True)
-
         saved = utils.load_user_settings(is_fish=True)
+        due_mode = bool(saved.get("fish_due_mode", False))
+
+        c_v1, c_v2, c_due = st.columns([0.27, 0.31, 0.42])
+        with c_v1:
+            if st.button("Mobile", key="mv_btn", use_container_width=True): st.session_state.actual_view_type = "📱 Mobile"; st.rerun()
+        with c_v2:
+            if st.button("Desktop", key="dv_btn", use_container_width=True): st.session_state.actual_view_type = "💻 Desktop"; st.rerun()
+        with c_due:
+            due_label = "Due ON" if due_mode else "Due OFF"
+            if st.button(due_label, key="fish_due_mode_d", use_container_width=True):
+                saved["fish_due_mode"] = not due_mode
+                utils.save_user_settings(saved, is_fish=True)
+                st.session_state.fish_hand = None
+                st.rerun()
+        st.markdown("<hr style='margin: 5px 0;'>", unsafe_allow_html=True)
         
         all_vpips = sorted(list(fish_db.keys()))
-        sel_vpips = st.multiselect("1. VPIP", all_vpips, default=[x for x in saved.get("fish_sel_vpips", []) if x in all_vpips])
+        sel_vpips = st.multiselect("1. VPIP", all_vpips, default=all_vpips if due_mode else [x for x in saved.get("fish_sel_vpips", []) if x in all_vpips])
+        vpips_for_filters = all_vpips if due_mode else (sel_vpips or all_vpips)
         
         avail_pos = set(); avail_boards = set()
-        for vp in (sel_vpips or all_vpips):
+        for vp in vpips_for_filters:
             for tex, pos_data in fish_db.get(vp, {}).items():
                 avail_boards.add(tex)
                 for pos in pos_data.keys(): avail_pos.add(pos)
 
-        sel_boards = st.multiselect("2. Board", sorted(list(avail_boards)), default=[x for x in saved.get("fish_sel_boards", []) if x in avail_boards])
-        sel_pos = st.multiselect("3. Position", sorted(list(avail_pos)), default=[x for x in saved.get("fish_sel_pos", []) if x in avail_pos])
+        avail_boards_sorted = sorted(list(avail_boards))
+        avail_pos_sorted = sorted(list(avail_pos))
+        sel_boards = st.multiselect("2. Board", avail_boards_sorted, default=avail_boards_sorted if due_mode else [x for x in saved.get("fish_sel_boards", []) if x in avail_boards])
+        sel_pos = st.multiselect("3. Position", avail_pos_sorted, default=avail_pos_sorted if due_mode else [x for x in saved.get("fish_sel_pos", []) if x in avail_pos])
+        boards_for_filters = avail_boards_sorted if due_mode else (sel_boards or avail_boards_sorted)
+        pos_for_filters = set(avail_pos_sorted if due_mode else sel_pos)
         
         avail_lines = set(); avail_runouts = set()
-        for vp in (sel_vpips or all_vpips):
-            for tex in (sel_boards or list(avail_boards)):
+        for vp in vpips_for_filters:
+            for tex in boards_for_filters:
                 for pos, line_data in fish_db.get(vp, {}).get(tex, {}).items():
-                    if sel_pos and pos not in sel_pos: continue
+                    if pos_for_filters and pos not in pos_for_filters: continue
                     for line, runout_data in line_data.items():
                         avail_lines.add(line)
                         for runout in runout_data.keys(): avail_runouts.add(runout)
 
-        sel_lines = st.multiselect("4. Action Line", sorted(list(avail_lines)), default=[x for x in saved.get("fish_sel_lines", []) if x in avail_lines])
+        avail_lines_sorted = sorted(list(avail_lines))
+        sel_lines = st.multiselect("4. Action Line", avail_lines_sorted, default=avail_lines_sorted if due_mode else [x for x in saved.get("fish_sel_lines", []) if x in avail_lines])
+        lines_for_filters = avail_lines_sorted if due_mode else sel_lines
         
         sel_spots_keys = []
-        if sel_lines:
+        if lines_for_filters:
             saved_runouts = saved.get("fish_spots", [])
             
             matching_runouts = []
-            for vp in (sel_vpips or all_vpips):
-                for tex in (sel_boards or list(avail_boards)):
+            for vp in vpips_for_filters:
+                for tex in boards_for_filters:
                     for pos, line_data in fish_db.get(vp, {}).get(tex, {}).items():
-                        if sel_pos and pos not in sel_pos: continue
+                        if pos_for_filters and pos not in pos_for_filters: continue
                         for line, runout_data in line_data.items():
-                            if sel_lines and line not in sel_lines: continue
+                            if lines_for_filters and line not in lines_for_filters: continue
                             for runout in runout_data.keys():
                                 full_key = f"{vp}|{tex}|{pos}|{line}|{runout}"
                                 matching_runouts.append((runout, full_key))
 
             def runout_is_checked(full_key):
+                if due_mode:
+                    return True
                 widget_key = f"fish_chk_d_{full_key}"
                 if widget_key in st.session_state:
                     return bool(st.session_state[widget_key])
@@ -349,7 +366,7 @@ def show():
             st.session_state.fish_hand = None
             st.rerun()
 
-    pool = sel_spots_keys
+    pool = sorted([key for key, spot in flat_fish_db.items() if str(spot.get("training", "")).strip()]) if due_mode else sel_spots_keys
     if not pool:
         st.warning("⚠️ Выбери фильтры в боковом меню.")
         st.stop()
@@ -369,7 +386,10 @@ def show():
     if 'fish_last_error' not in st.session_state: st.session_state.fish_last_error = False
     
     if st.session_state.fish_hand is None or st.session_state.fish_current_spot_key is None or st.session_state.fish_current_spot_key not in pool:
-        chosen_key = random.choice(pool)
+        if due_mode:
+            chosen_key = utils.pick_due_fish_spot(pool, stats_data_init.get("spot_mastery", {})) or random.choice(pool)
+        else:
+            chosen_key = random.choice(pool)
         st.session_state.fish_current_spot_key = chosen_key
         data = flat_fish_db[chosen_key]
         t_range = data.get("training", "")
@@ -453,14 +473,14 @@ def show():
     wr = int((scorr / sh * 100)) if sh > 0 else 0
     wr_color = '#28a745' if wr >= 90 else '#ffc107' if wr >= 80 else '#dc3545'
 
-    try: mastery = utils.get_spot_mastery_info(stats_data.get("spot_mastery", {}).get(chosen_key, {}))
+    try: mastery = utils.get_spot_mastery_info(stats_data.get("spot_mastery", {}).get(chosen_key, {}), is_fish=True)
     except: mastery = {"rank": 0, "name": "Sandbox", "icon": "⚪", "color": "#6c757d", "is_rusty": False, "prog_pct": 0, "total": 0, "next": 100, "svg": ""}
 
     m_rust = mastery.get("is_rusty", False)
     m_pct = mastery.get("prog_pct", 0)
     m_total = mastery.get("total", 0)
     m_next = mastery.get("next", 100)
-    if mastery.get("rank", 0) >= 5: hands_left_text = "MAX RANK"
+    if mastery.get("rank", 0) >= 5 and m_total >= m_next: hands_left_text = "MAX RANK"
     else: hands_left_text = f"Remaining: {max(0, m_next - m_total)} hands"
 
     visual_rank = mastery.get("rank", 0)
