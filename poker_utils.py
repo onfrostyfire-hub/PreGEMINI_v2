@@ -174,7 +174,7 @@ def generate_dailies():
         {"id": "combo", "desc": "Combo x15", "target": 15, "progress": 0, "done": False, "xp": 1000}
     ]
 
-def get_spot_mastery_info(spot_data_dict):
+def get_spot_mastery_info(spot_data_dict, is_fish=False):
     if not isinstance(spot_data_dict, dict):
         spot_data_dict = {}
 
@@ -190,16 +190,23 @@ def get_spot_mastery_info(spot_data_dict):
         except: pass
 
     is_rusty = days_missed > 7
-    penalty = 1 if days_missed > 14 else 0
+    penalty = 0 if is_fish else (1 if days_missed > 14 else 0)
 
     wr_100 = (hist.count('1') / len(hist) * 100) if len(hist) > 0 else 0.0
 
     rank = 0
-    if total >= 5000 and wr_100 >= 95: rank = 5
-    elif total >= 3000 and wr_100 >= 92: rank = 4
-    elif total >= 1500 and wr_100 >= 88: rank = 3
-    elif total >= 500 and wr_100 >= 82: rank = 2
-    elif total >= 100 and wr_100 >= 75: rank = 1
+    if is_fish:
+        if total >= 1001: rank = 5
+        elif total >= 751: rank = 4
+        elif total >= 501: rank = 3
+        elif total >= 201: rank = 2
+        elif total >= 101: rank = 1
+    else:
+        if total >= 5000 and wr_100 >= 95: rank = 5
+        elif total >= 3000 and wr_100 >= 92: rank = 4
+        elif total >= 1500 and wr_100 >= 88: rank = 3
+        elif total >= 500 and wr_100 >= 82: rank = 2
+        elif total >= 100 and wr_100 >= 75: rank = 1
 
     rank = max(0, rank - penalty)
 
@@ -247,18 +254,28 @@ def get_spot_mastery_info(spot_data_dict):
       <circle cx="50" cy="50" r="6" fill="#111"/>
     </svg>'''
 
-    ranks_info = [
-        {"n": "Sandbox", "i": "⚪", "c": "#6c757d", "nt": 100, "req_wr": 75, "svg": ""},
-        {"n": "Basic", "i": "🟢", "c": "#28a745", "nt": 500, "req_wr": 82, "svg": svg_basic},
-        {"n": "Solid", "i": "🔵", "c": "#0dcaf0", "nt": 1500, "req_wr": 88, "svg": svg_solid},
-        {"n": "Unexploitable", "i": "🟣", "c": "#6f42c1", "nt": 3000, "req_wr": 92, "svg": svg_unexp},
-        {"n": "Elite", "i": "🔴", "c": "#dc3545", "nt": 5000, "req_wr": 95, "svg": svg_elite},
-        {"n": "Solver", "i": "☢️", "c": "#ffc107", "nt": 5000, "req_wr": 100, "svg": svg_solver},
-    ]
+    if is_fish:
+        ranks_info = [
+            {"n": "Sandbox", "i": "⚪", "c": "#6c757d", "nt": 101, "req_wr": 0, "svg": ""},
+            {"n": "Basic", "i": "🌱", "c": "#28a745", "nt": 201, "req_wr": 0, "svg": svg_basic},
+            {"n": "Solid", "i": "💎", "c": "#0dcaf0", "nt": 501, "req_wr": 0, "svg": svg_solid},
+            {"n": "Unexploitable", "i": "🔥", "c": "#6f42c1", "nt": 751, "req_wr": 0, "svg": svg_unexp},
+            {"n": "Elite", "i": "⚡", "c": "#dc3545", "nt": 1001, "req_wr": 0, "svg": svg_elite},
+            {"n": "Solver", "i": "☢️", "c": "#ffc107", "nt": 1500, "req_wr": 0, "svg": svg_solver},
+        ]
+    else:
+        ranks_info = [
+            {"n": "Sandbox", "i": "⚪", "c": "#6c757d", "nt": 100, "req_wr": 75, "svg": ""},
+            {"n": "Basic", "i": "🟢", "c": "#28a745", "nt": 500, "req_wr": 82, "svg": svg_basic},
+            {"n": "Solid", "i": "🔵", "c": "#0dcaf0", "nt": 1500, "req_wr": 88, "svg": svg_solid},
+            {"n": "Unexploitable", "i": "🟣", "c": "#6f42c1", "nt": 3000, "req_wr": 92, "svg": svg_unexp},
+            {"n": "Elite", "i": "🔴", "c": "#dc3545", "nt": 5000, "req_wr": 95, "svg": svg_elite},
+            {"n": "Solver", "i": "☢️", "c": "#ffc107", "nt": 5000, "req_wr": 100, "svg": svg_solver},
+        ]
     
     info = ranks_info[rank]
 
-    if rank == 5:
+    if rank == 5 and not is_fish:
         prog_pct = 100
     else:
         target_hands = info["nt"]
@@ -286,6 +303,54 @@ def get_spot_mastery_info(spot_data_dict):
         "is_rusty": is_rusty, "prog_pct": prog_pct, "total": total, "next": info["nt"], "svg": info["svg"]
     }
 
+def get_fish_due_interval_days(spot_data_dict):
+    info = get_spot_mastery_info(spot_data_dict, is_fish=True)
+    rank = info.get("rank", 0)
+    total = info.get("total", 0)
+    intervals = {0: 1, 1: 4, 2: 10, 3: 30, 4: 60, 5: 180}
+    if rank >= 5 and total >= 1500:
+        return 360
+    return intervals.get(rank, 1)
+
+def get_fish_due_score(spot_data_dict):
+    if not isinstance(spot_data_dict, dict):
+        spot_data_dict = {}
+
+    interval = max(1, get_fish_due_interval_days(spot_data_dict))
+    last_date_str = spot_data_dict.get("d", "")
+    total = int(spot_data_dict.get("t", 0) or 0)
+    hist = spot_data_dict.get("h", "")
+
+    if last_date_str:
+        try:
+            last_date = datetime.strptime(last_date_str, "%Y-%m-%d").date()
+            days_since = max(0, (datetime.now().date() - last_date).days)
+        except Exception:
+            days_since = interval * 2
+    else:
+        days_since = interval * 6
+
+    score = max(0.05, days_since / interval)
+    if not last_date_str or total == 0:
+        score += 6.0
+
+    if hist:
+        recent = hist[-50:]
+        wr = recent.count('1') / len(recent)
+        score *= 1.0 + ((1.0 - wr) * 0.35)
+
+    return max(0.05, score)
+
+def pick_due_fish_spot(spot_keys, spot_mastery):
+    if not spot_keys:
+        return None
+    if not isinstance(spot_mastery, dict):
+        spot_mastery = {}
+    weights = [get_fish_due_score(spot_mastery.get(key, {})) for key in spot_keys]
+    if sum(weights) <= 0:
+        weights = [1 for _ in spot_keys]
+    return random.choices(spot_keys, weights=weights, k=1)[0]
+
 def process_gamification(is_correct, combo, session_total_hands, spot_key=None, shield_used=False, is_postflop=False, is_fish=False):
     stats = load_user_stats(is_postflop=is_postflop, is_fish=is_fish)
     now_date = datetime.now().date()
@@ -295,7 +360,7 @@ def process_gamification(is_correct, combo, session_total_hands, spot_key=None, 
     m_rank = 0
     if spot_key:
         s_data = stats.get("spot_mastery", {}).get(spot_key, {})
-        m_info = get_spot_mastery_info(s_data)
+        m_info = get_spot_mastery_info(s_data, is_fish=is_fish)
         m_rank = m_info["rank"]
 
     multiplier = 1.0
