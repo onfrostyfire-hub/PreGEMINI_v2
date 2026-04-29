@@ -153,6 +153,20 @@ def show():
         @keyframes ragePulseNeon { 0% { filter: brightness(1) saturate(1); box-shadow: inset 0 2px 8px rgba(255,255,255,0.3), 0 0 8px rgba(255,60,80,0.35); } 100% { filter: brightness(1.15) saturate(1.2); box-shadow: inset 0 2px 12px rgba(255,255,255,0.5), 0 0 22px rgba(255,80,100,0.65), 0 0 40px rgba(255,40,60,0.25); } }
         @keyframes rageTubeFlash { 0% { box-shadow: 0 0 0 1px rgba(255,255,255,0.9), 0 0 40px rgba(255,255,255,0.8), inset 0 0 30px rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.65); } 100% { box-shadow: 0 4px 20px rgba(0,0,0,0.55), inset 0 2px 6px rgba(0,0,0,0.65); border-color: rgba(255,255,255,0.1); } }
 
+        .stApp:has(.desktop-game-area.due-mode) {
+            background-image:
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='84' height='84' viewBox='0 0 84 84'%3E%3Cg opacity='.15' stroke='%23b7c9bf' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M28 23 L57 52'/%3E%3Cpath d='M56 23 L27 52'/%3E%3Cpath d='M23 18 L33 28'/%3E%3Cpath d='M61 18 L51 28'/%3E%3Cpath d='M34 56 L26 64'/%3E%3Cpath d='M50 56 L58 64'/%3E%3C/g%3E%3Cg opacity='.11' fill='%23f2d27b'%3E%3Ccircle cx='42' cy='42' r='2.4'/%3E%3C/g%3E%3C/svg%3E"),
+                linear-gradient(rgba(185, 214, 202, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(185, 214, 202, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 50% 35%, rgba(28, 92, 58, 0.14), transparent 56%),
+                #070a10 !important;
+            background-size: 84px 84px, 84px 84px, 84px 84px, 100% 100%, auto !important;
+            background-position: 0 0, 0 0, 0 0, center, center !important;
+        }
+        .desktop-game-area.due-mode {
+            box-shadow: 0 0 0 1px rgba(212, 190, 112, 0.10), 0 20px 60px rgba(0,0,0,0.72), 0 0 36px rgba(46, 158, 104, 0.10), inset 0 0 34px rgba(0,0,0,0.3) !important;
+        }
+
         .desktop-game-area.table-glow-correct { border-color: #198754 !important; box-shadow: 0 0 35px rgba(25,135,84,0.6), inset 0 0 25px rgba(25,135,84,0.4) !important; }
         .desktop-game-area.table-glow-incorrect { border-color: #dc3545 !important; box-shadow: 0 0 35px rgba(220,53,69,0.6), inset 0 0 25px rgba(220,53,69,0.4) !important; }
 
@@ -502,11 +516,11 @@ def show():
     elif c >= 5: combo_cls = "combo-glow-5"
 
     is_flashing_correct = st.session_state.get("fish_flash_correct", False)
-    table_status_class = ""
+    table_status_class = "due-mode" if due_mode else ""
     if is_flashing_correct:
-        table_status_class = "table-glow-correct"
+        table_status_class += " table-glow-correct"
     elif st.session_state.fish_last_error:
-        table_status_class = "table-glow-incorrect"
+        table_status_class += " table-glow-incorrect"
 
     tiers = [(0, 1.0), (10, 1.5), (25, 2.0), (50, 3.0), (100, 4.0), (250, 5.0), (500, 10.0)]
     curr_mult = 1.0; next_mult = 1.5; prev_req = 0; next_req = 10
