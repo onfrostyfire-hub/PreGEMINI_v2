@@ -396,39 +396,22 @@ def render_filter_chip_group(title, items, state_key, key_prefix, columns_per_ro
         return
 
     st.markdown(f"<div class='filter-group-title'>{title}</div>", unsafe_allow_html=True)
-    selected = set(st.session_state.get(state_key, []))
     ordered_items = list(items)
 
-    for start_idx in range(0, len(ordered_items), columns_per_row):
-        row_items = ordered_items[start_idx:start_idx + columns_per_row]
-        row_cols = st.columns(columns_per_row)
-        for item_idx, col in enumerate(row_cols):
-            with col:
-                if item_idx == 0:
-                    st.markdown("<div class='filter-row-marker-mob'></div>", unsafe_allow_html=True)
-                if item_idx >= len(row_items):
-                    st.markdown("<div class='filter-chip-spacer-mob'></div>", unsafe_allow_html=True)
-                    continue
+    current_values = st.session_state.get(state_key, [])
+    if not isinstance(current_values, list):
+        current_values = list(current_values) if current_values else []
+    current_values = [value for value in current_values if value in ordered_items]
+    st.session_state[state_key] = current_values
 
-                item = row_items[item_idx]
-                is_active = item in selected
-                if st.button(
-                    item,
-                    key=f"{key_prefix}_{_slugify(item)}",
-                    use_container_width=True,
-                    type="primary" if is_active else "secondary",
-                ):
-                    new_values = set(selected)
-                    if item in new_values:
-                        new_values.remove(item)
-                    else:
-                        new_values.add(item)
-
-                    if state_key in {"stats_pre_filter_scenario", "stats_fish_filter_scenario"}:
-                        st.session_state[state_key] = sorted(new_values, key=_scenario_sort_key)
-                    else:
-                        st.session_state[state_key] = sorted(new_values, key=lambda value: value.lower())
-                    st.rerun()
+    st.pills(
+        f"{title} filter",
+        ordered_items,
+        selection_mode="multi",
+        key=state_key,
+        label_visibility="collapsed",
+        width="stretch",
+    )
 
 
 def _normalize_fish_history_df(df):
@@ -711,50 +694,49 @@ def show():
             margin: 9px 0 6px 0;
         }
 
-        .filter-row-marker-mob { display: none; }
-        .filter-chip-spacer-mob {
-            height: 28px;
-            pointer-events: none;
+        div[data-testid="stPills"] {
+            margin: -8px 0 8px 0 !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has(.filter-row-marker-mob) {
-            gap: 5px !important;
-            margin-bottom: 5px !important;
+        div[data-testid="stPills"] [role="group"] {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            align-items: center !important;
+            gap: 6px !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has(.filter-row-marker-mob) > div[data-testid="column"] {
-            min-width: 0 !important;
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-        }
-
-        div[data-testid="stHorizontalBlock"]:has(.filter-row-marker-mob) div[data-testid="stButton"] button {
-            width: 100% !important;
-            height: 28px !important;
-            min-height: 28px !important;
-            padding: 0 7px !important;
+        div[data-testid="stPills"] button,
+        div[data-testid="stPills"] div[role="button"],
+        div[data-testid="stPills"] [data-baseweb="tag"] {
+            width: auto !important;
+            max-width: 100% !important;
+            height: 26px !important;
+            min-height: 26px !important;
+            padding: 0 10px !important;
             border-radius: 999px !important;
-            font-size: 8.5px !important;
+            font-size: 10px !important;
             font-weight: 800 !important;
             line-height: 1 !important;
             white-space: nowrap !important;
             overflow: hidden !important;
             text-overflow: ellipsis !important;
-            letter-spacing: 0 !important;
+            letter-spacing: 0.01em !important;
+            background: linear-gradient(180deg, rgba(31, 34, 41, 0.98) 0%, rgba(18, 20, 25, 0.98) 100%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.13) !important;
+            color: #cfd5dc !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 1px 3px rgba(0, 0, 0, 0.18) !important;
         }
 
-        div[data-testid="stHorizontalBlock"]:has(.filter-row-marker-mob) div[data-testid="stButton"] button[kind="secondary"] {
-            background: linear-gradient(180deg, rgba(31, 34, 41, 0.98) 0%, rgba(21, 23, 29, 0.98) 100%) !important;
-            border: 1px solid rgba(255, 255, 255, 0.11) !important;
-            color: #b9c0c8 !important;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
-        }
-
-        div[data-testid="stHorizontalBlock"]:has(.filter-row-marker-mob) div[data-testid="stButton"] button[kind="primary"] {
+        div[data-testid="stPills"] button[aria-checked="true"],
+        div[data-testid="stPills"] button[aria-selected="true"],
+        div[data-testid="stPills"] div[role="button"][aria-checked="true"],
+        div[data-testid="stPills"] div[role="button"][aria-selected="true"],
+        div[data-testid="stPills"] [data-baseweb="tag"][aria-checked="true"],
+        div[data-testid="stPills"] [data-baseweb="tag"][aria-selected="true"] {
             background: linear-gradient(180deg, #ff5964 0%, #f54250 100%) !important;
-            border: 1px solid rgba(255, 118, 127, 0.72) !important;
-            box-shadow: 0 0 0 1px rgba(255, 89, 100, 0.18), 0 6px 14px rgba(245, 66, 80, 0.24) !important;
+            border-color: rgba(255, 118, 127, 0.78) !important;
             color: #ffffff !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 5px 12px rgba(245, 66, 80, 0.28) !important;
         }
 
         .train-btn div[data-testid="stButton"] button {
@@ -853,19 +835,11 @@ def show():
 
     filter_groups = build_filter_groups(catalog, is_postflop, is_fish=is_fish)
     for group in filter_groups:
-        if is_fish and group["title"] == "Action Line":
-            columns_per_row = 2
-        elif group["title"] in {"Scenario", "Board", "Position", "Hero", "Street"}:
-            columns_per_row = 4
-        else:
-            columns_per_row = 3
-
         render_filter_chip_group(
             title=group["title"],
             items=group["items"],
             state_key=group["state_key"],
             key_prefix=f"mob_{mode.lower()}_{group['title'].lower()}",
-            columns_per_row=columns_per_row,
         )
 
     st.markdown("</div>", unsafe_allow_html=True)
