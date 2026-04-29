@@ -148,6 +148,20 @@ def show():
         div.element-container:has(#fish-runouts-all-m-marker) + div.element-container div[data-testid="stButton"] button:active { transform: translateY(1px) !important; }
         div.element-container:has(#fish-runouts-all-m-marker) + div.element-container div[data-testid="stButton"] button p { font-size: 10px !important; letter-spacing: 0.05em !important; color: rgba(255,255,255,0.88) !important; }
 
+        .stApp:has(.mobile-game-area.due-mode) {
+            background-image:
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg opacity='.16' stroke='%23b7c9bf' stroke-width='2.1' stroke-linecap='round'%3E%3Cpath d='M24 20 L49 45'/%3E%3Cpath d='M48 20 L23 45'/%3E%3Cpath d='M19 15 L28 24'/%3E%3Cpath d='M53 15 L44 24'/%3E%3Cpath d='M29 48 L22 55'/%3E%3Cpath d='M43 48 L50 55'/%3E%3C/g%3E%3Cg opacity='.12' fill='%23f2d27b'%3E%3Ccircle cx='36' cy='36' r='2.2'/%3E%3C/g%3E%3C/svg%3E"),
+                linear-gradient(rgba(185, 214, 202, 0.032) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(185, 214, 202, 0.032) 1px, transparent 1px),
+                radial-gradient(circle at 50% 35%, rgba(28, 92, 58, 0.16), transparent 56%),
+                #070a10 !important;
+            background-size: 72px 72px, 72px 72px, 72px 72px, 100% 100%, auto !important;
+            background-position: 0 0, 0 0, 0 0, center, center !important;
+        }
+        .mobile-game-area.due-mode {
+            box-shadow: 0 0 0 1px rgba(212, 190, 112, 0.10), 0 18px 52px rgba(0,0,0,0.72), 0 0 34px rgba(46, 158, 104, 0.10), inset 0 0 34px rgba(0,0,0,0.28) !important;
+        }
+
         .mobile-game-area { 
             position: relative; width: min(84vw, 410px); height: 430px; 
             border: 12px solid #1a1c20; 
@@ -570,11 +584,11 @@ def show():
     elif c >= 5: combo_cls = "combo-glow-5"
 
     is_flashing_correct = st.session_state.get("fish_flash_correct", False)
-    table_status_class = ""
+    table_status_class = "due-mode" if due_mode else ""
     if is_flashing_correct:
-        table_status_class = "table-glow-correct"
+        table_status_class += " table-glow-correct"
     elif st.session_state.fish_last_error:
-        table_status_class = "table-glow-incorrect"
+        table_status_class += " table-glow-incorrect"
 
     tiers = [(0, 1.0), (10, 1.5), (25, 2.0), (50, 3.0), (100, 4.0), (250, 5.0), (500, 10.0)]
     curr_mult = 1.0; next_mult = 1.5; prev_req = 0; next_req = 10
