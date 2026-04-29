@@ -1,46 +1,4 @@
 {
-  "IP": {
-    "33% -> Turn": {
-      "K8s2Ac": {
-        "setup": {
-          "hero_pos": "BTN",
-          "villain_pos": "BB",
-          "pot_size": 9.1,
-          "board_cards": [
-            "Kh",
-            "8h",
-            "2d",
-            "Ac"
-          ],
-          "villain_action": "CHECK",
-          "stacks": {
-            "EP": 100,
-            "MP": 100,
-            "CO": 100,
-            "BTN": 95.7,
-            "SB": 99.5,
-            "BB": 95.7
-          },
-          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#33%25%20-%20XB%20-%20Faced%20bet&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={5564DFE4-78C2-4489-8CDB-564CE85F7878}&end",
-          "active_players": [
-            "BTN",
-            "BB"
-          ],
-          "btn_pos": "BTN",
-          "street_start_pot_bb": 9.1,
-          "total_pot_bb": 9.1
-        },
-        "actions": [
-          "Check",
-          "Bet 33%"
-        ],
-        "ranges": {
-          "Check": "Qh8h, Qs8c, Qd8s, Jh8h, Js8c, Jd8s, Th8h, Ts8c, Td8s, 9h8h, 9s8c, 9d8s",
-          "Bet 33%": "QhQc, QsQd, QhQs, JhJc, JsJd, JhJs, ThTc, TsTd, ThTs, 9h9c, 9s9d, 9h9s, Ah8c, As8d, Ac8h"
-        },
-        "training": "Qh8h, Qs8c, Qd8s, Jh8h, Js8c, Jd8s, Th8h, Ts8c, Td8s, 9h8h, 9s8c, 9d8s, QhQc, QsQd, QhQs, JhJc, JsJd, JhJs, ThTc, TsTd, ThTs, 9h9c, 9s9d, 9h9s, Ah8c, As8d, Ac8h"
-      }
-    },
     "33% - XB - Faced bet": {
       "Kh8h2dTh6h": {
         "setup": {
