@@ -480,54 +480,6 @@
         },
         "training": "AhAc, AsAh, AhAd, AhKs, AhKc, AhKd, KcKd, KcKs, KdKs, 8c8d, 8c8s, 8d8s, 2c2h, 2c2s, 2h2s, KsQh, KcQh, KdQh, Ks8s, Ks8c, Ks8d, Kc8s, Kc8c, Kc8d, Kd8s, Kd8c, Kd8d, KsJh, KcJh, KdJh, Ks9h, Kc9h, Kd9h, AcAd, AcAs, AdAs, AcKs, AcKc, AcKd, AdKs, AdKc, AdKd, AsKs, AsKc, AsKd, KsQs, KsQc, KsQd, KcQs, KcQc, KcQd, KdQs, KdQc, KdQd, Ks7h, Kc7h, Kd7h, Ks6h, Kc6h, Kd6h, Ks5h, Kc5h, Kd5h, Ks4h, Kc4h, Kd4h, Ks3h, Kc3h, Kd3d, KsJs, KsJc, KsJd, KcJs, KcJc, KcJd, KdJs, KdJc, KdJd, Ks9s, Ks9c, Ks9d, Kc9s, Kc9c, Kc9d, Kd9s, Kd9c, Kd9d, Ks7s, Ks7c, Ks7d, Kc7s, Kc7c, Kc7d, Kd7s, Kd7c, Kd7d"
       },
-      "Kh8h2dAc": {
-        "setup": {
-          "hero_pos": "BTN",
-          "villain_pos": "BB",
-          "pot_size": 13.7,
-          "board_cards": [
-            "Kh",
-            "8h",
-            "2d",
-            "Ac"
-          ],
-          "villain_action": "CHECK",
-          "stacks": {
-            "EP": 100,
-            "MP": 100,
-            "CO": 100,
-            "BTN": 93.4,
-            "SB": 99.5,
-            "BB": 93.4
-          },
-          "onenote_url": "onenote:https://d.docs.live.net/ACB7650AF03EF10D/Документы/Записная%20книжка%20пользователя%20Paul/FISH_NEW/K8s2.one#Kh8h2dAc&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={41234C98-2E94-474C-B3AD-75D788A8C86A}&end",
-          "active_players": [
-            "BTN",
-            "BB"
-          ],
-          "btn_pos": "BTN",
-          "street_start_pot_bb": 13.7,
-          "total_pot_bb": 13.7,
-          "turn_bet_sizings_bb": {
-            "Bet 50%": 6.8,
-            "Bet 75%": 10.2
-          },
-          "turn_pot_after_hero_bet_bb": {
-            "Bet 50%": 20.5,
-            "Bet 75%": 23.9
-          }
-        },
-        "actions": [
-          "Check",
-          "Bet 50%",
-          "Bet 75%"
-        ],
-        "ranges": {
-          "Bet 75%": "As4s, Ad4d, Ah4h, As3s, Ad3d, Ah3h, As2s, Ah2h",
-          "Check": "KsQc, KsQd, KsQh, KcQs, KcQd, KcQh, KdQs, KdQc, KdQh, KsJc, KsJd, KsJh, KcJs, KcJd, KcJh, KdJs, KdJc, KdJh, KsTc, KsTd, KsTh, KcTs, KcTd, KcTh, KdTs, KdTc, KdTh, Ks9c, Ks9d, Ks9h, Kc9s, Kc9d, Kc9h, Kd9s, Kd9c, Kd9h, Ks7c, Ks7d, Ks7h, Kc7s, Kc7d, Kc7h, Kd7s, Kd7c, Kd7h"
-        },
-        "training": "As4s, Ad4d, Ah4h, As3s, Ad3d, Ah3h, As2s, Ah2h, KsQc, KsQd, KsQh, KcQs, KcQd, KcQh, KdQs, KdQc, KdQh, KsJc, KsJd, KsJh, KcJs, KcJd, KcJh, KdJs, KdJc, KdJh, KsTc, KsTd, KsTh, KcTs, KcTd, KcTh, KdTs, KdTc, KdTh, Ks9c, Ks9d, Ks9h, Kc9s, Kc9d, Kc9h, Kd9s, Kd9c, Kd9h, Ks7c, Ks7d, Ks7h, Kc7s, Kc7d, Kc7h, Kd7s, Kd7c, Kd7h"
-      },
       "Kh8h2d5c": {
         "setup": {
           "hero_pos": "BTN",
