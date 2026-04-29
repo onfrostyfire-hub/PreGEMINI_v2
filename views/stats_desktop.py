@@ -36,6 +36,20 @@ PRE_SCENARIO_ORDER = [
     "HU",
 ]
 
+FISH_HISTORY_COLUMNS = [
+    "Date",
+    "Fish_Type",
+    "Position",
+    "Action_Line",
+    "Texture",
+    "Runout",
+    "Hand",
+    "UserAction",
+    "CorrectAction",
+    "Result",
+    "XP",
+]
+
 
 def _normalize_text(value):
     return " ".join(str(value or "").replace("\xa0", " ").split()).strip()
@@ -58,8 +72,16 @@ def _scenario_sort_key(name):
     return (len(PRE_SCENARIO_ORDER), norm.lower())
 
 
-def _spot_sort_key(spot_name, catalog, is_postflop):
+def _spot_sort_key(spot_name, catalog, is_postflop, is_fish=False):
     meta = catalog.get(spot_name, {})
+    if is_fish:
+        return (
+            _scenario_sort_key(meta.get("scenario", "")),
+            _normalize_text(meta.get("texture", "")),
+            _normalize_text(meta.get("position", "")),
+            _normalize_text(meta.get("action_line", "")),
+            _normalize_text(meta.get("runout", "")),
+        )
     if is_postflop:
         return (
             _normalize_text(meta.get("spot", "")),
@@ -149,18 +171,89 @@ def load_postflop_catalog():
     return catalog, aliases
 
 
-def get_spot_catalog(is_postflop):
+def _fish_spot_key(fish_type, texture, position, action_line, runout):
+    return "|".join(
+        [
+            _normalize_text(fish_type),
+            _normalize_text(texture),
+            _normalize_text(position),
+            _normalize_text(action_line),
+            _normalize_text(runout),
+        ]
+    )
+
+
+@st.cache_data(ttl=0)
+def load_fish_catalog():
+    catalog = {}
+    aliases = {}
+    fish_db = utils.load_fish_data()
+
+    for fish_type, texture_data in fish_db.items():
+        for texture, position_data in texture_data.items():
+            for position, line_data in position_data.items():
+                for action_line, runout_data in line_data.items():
+                    for runout, spot_info in runout_data.items():
+                        setup = spot_info.get("setup", {}) if isinstance(spot_info, dict) else {}
+                        label = _normalize_text(setup.get("spot_label", action_line))
+                        key = _fish_spot_key(fish_type, texture, position, action_line, runout)
+                        label_key = _fish_spot_key(fish_type, texture, position, label, runout)
+                        display_name = f"{_normalize_text(runout)} ({_normalize_text(fish_type)} | {label})"
+                        catalog[key] = {
+                            "display_name": display_name,
+                            "source": _normalize_text(fish_type),
+                            "scenario": _normalize_text(fish_type),
+                            "spot": _normalize_text(runout),
+                            "texture": _normalize_text(texture),
+                            "position": _normalize_text(position),
+                            "action_line": _normalize_text(action_line),
+                            "line_label": label,
+                            "runout": _normalize_text(runout),
+                        }
+                        aliases[key.lower()] = key
+                        aliases[label_key.lower()] = key
+                        aliases[display_name.lower()] = key
+
+    return catalog, aliases
+
+
+def get_spot_catalog(is_postflop, is_fish=False):
+    if is_fish:
+        return load_fish_catalog()
     if is_postflop:
         return load_postflop_catalog()
     return load_preflop_catalog()
 
 
-def canonicalize_history_spots(df, is_postflop):
-    if df.empty or "Spot" not in df.columns:
-        return df
+def canonicalize_history_spots(df, is_postflop, is_fish=False):
+    if df.empty:
+        mapped_df = df.copy()
+        if is_fish and "Spot" not in mapped_df.columns:
+            mapped_df["Spot"] = pd.Series(dtype=str)
+        return mapped_df
 
-    _, aliases = get_spot_catalog(is_postflop)
+    _, aliases = get_spot_catalog(is_postflop, is_fish=is_fish)
     mapped_df = df.copy()
+
+    if is_fish:
+        if "Spot" not in mapped_df.columns:
+            mapped_df["Spot"] = mapped_df.apply(
+                lambda row: _fish_spot_key(
+                    row.get("Fish_Type", ""),
+                    row.get("Texture", ""),
+                    row.get("Position", ""),
+                    row.get("Action_Line", ""),
+                    row.get("Runout", ""),
+                ),
+                axis=1,
+            )
+        mapped_df["Spot"] = mapped_df["Spot"].apply(
+            lambda value: aliases.get(_normalize_text(value).lower(), _normalize_text(value))
+        )
+        return mapped_df
+
+    if "Spot" not in mapped_df.columns:
+        return mapped_df
 
     def _to_canonical(value):
         clean_value = _normalize_text(value)
@@ -174,7 +267,14 @@ def canonicalize_history_spots(df, is_postflop):
     return mapped_df
 
 
-def get_filter_state_keys(is_postflop):
+def get_filter_state_keys(is_postflop, is_fish=False):
+    if is_fish:
+        return {
+            "scenario": "stats_fish_filter_scenario",
+            "texture": "stats_fish_filter_texture",
+            "position": "stats_fish_filter_position",
+            "action_line": "stats_fish_filter_action_line",
+        }
     if is_postflop:
         return {
             "spot": "stats_pf_filter_spot",
@@ -185,10 +285,10 @@ def get_filter_state_keys(is_postflop):
     return {"scenario": "stats_pre_filter_scenario"}
 
 
-def get_active_filters(is_postflop):
+def get_active_filters(is_postflop, is_fish=False):
     return {
         key: set(st.session_state.get(state_key, []))
-        for key, state_key in get_filter_state_keys(is_postflop).items()
+        for key, state_key in get_filter_state_keys(is_postflop, is_fish=is_fish).items()
     }
 
 
@@ -196,8 +296,8 @@ def has_active_filters(active_filters):
     return any(values for values in active_filters.values())
 
 
-def clear_active_filters(is_postflop):
-    for state_key in get_filter_state_keys(is_postflop).values():
+def clear_active_filters(is_postflop, is_fish=False):
+    for state_key in get_filter_state_keys(is_postflop, is_fish=is_fish).values():
         st.session_state[state_key] = []
 
 
@@ -209,7 +309,31 @@ def _sorted_unique(values, sorter=None):
     return sorted(unique_values, key=lambda item: item.lower())
 
 
-def build_filter_groups(catalog, is_postflop):
+def build_filter_groups(catalog, is_postflop, is_fish=False):
+    if is_fish:
+        return [
+            {
+                "title": "Scenario",
+                "state_key": "stats_fish_filter_scenario",
+                "items": _sorted_unique([meta.get("scenario", "") for meta in catalog.values()], sorter=_scenario_sort_key),
+            },
+            {
+                "title": "Board",
+                "state_key": "stats_fish_filter_texture",
+                "items": _sorted_unique([meta.get("texture", "") for meta in catalog.values()]),
+            },
+            {
+                "title": "Position",
+                "state_key": "stats_fish_filter_position",
+                "items": _sorted_unique([meta.get("position", "") for meta in catalog.values()]),
+            },
+            {
+                "title": "Action Line",
+                "state_key": "stats_fish_filter_action_line",
+                "items": _sorted_unique([meta.get("action_line", "") for meta in catalog.values()]),
+            },
+        ]
+
     if is_postflop:
         return [
             {
@@ -243,11 +367,19 @@ def build_filter_groups(catalog, is_postflop):
     ]
 
 
-def spot_matches_filters(spot_name, catalog, active_filters, is_postflop):
+def spot_matches_filters(spot_name, catalog, active_filters, is_postflop, is_fish=False):
     if not has_active_filters(active_filters):
         return True
 
     meta = catalog.get(spot_name, {})
+    if is_fish:
+        return (
+            (not active_filters.get("scenario") or meta.get("scenario") in active_filters["scenario"])
+            and (not active_filters.get("texture") or meta.get("texture") in active_filters["texture"])
+            and (not active_filters.get("position") or meta.get("position") in active_filters["position"])
+            and (not active_filters.get("action_line") or meta.get("action_line") in active_filters["action_line"])
+        )
+
     if is_postflop:
         return (
             (not active_filters.get("spot") or meta.get("spot") in active_filters["spot"])
@@ -287,15 +419,64 @@ def render_filter_chip_group(title, items, state_key, key_prefix, columns_per_ro
                     else:
                         new_values.add(item)
 
-                    if state_key == "stats_pre_filter_scenario":
+                    if state_key in {"stats_pre_filter_scenario", "stats_fish_filter_scenario"}:
                         st.session_state[state_key] = sorted(new_values, key=_scenario_sort_key)
                     else:
                         st.session_state[state_key] = sorted(new_values, key=lambda value: value.lower())
                     st.rerun()
 
 
-def fetch_history(is_postflop):
+def _normalize_fish_history_df(df):
+    if df.empty:
+        return pd.DataFrame(columns=FISH_HISTORY_COLUMNS)
+
+    rename_map = {
+        "Action_Taken": "UserAction",
+        "Correct_Action": "CorrectAction",
+        "FishType": "Fish_Type",
+        "Fish Type": "Fish_Type",
+        "Action Line": "Action_Line",
+    }
+    df = df.rename(columns=rename_map).copy()
+    for column in FISH_HISTORY_COLUMNS:
+        if column not in df.columns:
+            df[column] = ""
+    return df[FISH_HISTORY_COLUMNS]
+
+
+def fetch_history(is_postflop, is_fish=False):
     sheets = utils.get_worksheets()
+    if is_fish:
+        df_fish = pd.DataFrame(columns=FISH_HISTORY_COLUMNS)
+        if "FishHistory" in sheets:
+            try:
+                vals = sheets["FishHistory"].get_all_values()
+                if vals:
+                    first_row = [_normalize_text(value) for value in vals[0]]
+                    if first_row and first_row[0] == "Date":
+                        headers = vals[0]
+                        rows = vals[1:]
+                    else:
+                        headers = FISH_HISTORY_COLUMNS
+                        rows = vals
+                    width = len(headers)
+                    normalized_rows = [(row + [""] * width)[:width] for row in rows]
+                    df_fish = pd.DataFrame(normalized_rows, columns=headers)
+            except Exception:
+                pass
+        elif os.path.exists("fish_history.csv"):
+            try:
+                df_fish = pd.read_csv("fish_history.csv", header=None)
+                if not df_fish.empty and _normalize_text(df_fish.iloc[0, 0]) == "Date":
+                    df_fish.columns = df_fish.iloc[0]
+                    df_fish = df_fish[1:]
+                else:
+                    df_fish = df_fish.iloc[:, :len(FISH_HISTORY_COLUMNS)]
+                    df_fish.columns = FISH_HISTORY_COLUMNS[: len(df_fish.columns)]
+            except Exception:
+                pass
+        return _normalize_fish_history_df(df_fish)
+
     if is_postflop:
         df_pf = pd.DataFrame(columns=["Date", "Spot", "Hand", "Result", "CorrectAction", "UserAction"])
         if "PostflopHistory" in sheets:
@@ -360,13 +541,41 @@ def custom_delete_history(days=None):
                 cutoff = datetime.now() - timedelta(days=days)
                 df_new = df[df["Date"] >= cutoff]
                 df_new.to_csv("postflop_history.csv", index=False, header=True)
+
+        if "FishHistory" in sheets:
+            if days is None:
+                sheets["FishHistory"].clear()
+                sheets["FishHistory"].append_row(FISH_HISTORY_COLUMNS)
+            else:
+                vals = sheets["FishHistory"].get_all_values()
+                if vals and len(vals) > 1:
+                    df = pd.DataFrame(vals[1:], columns=vals[0])
+                    df = _normalize_fish_history_df(df)
+                    df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+                    cutoff = datetime.now() - timedelta(days=days)
+                    df_new = df[df["Date"] >= cutoff]
+                    sheets["FishHistory"].clear()
+                    rows = [FISH_HISTORY_COLUMNS] + df_new.astype(str).values.tolist()
+                    sheets["FishHistory"].update(values=rows, range_name="A1")
+
+        if os.path.exists("fish_history.csv"):
+            if days is None:
+                os.remove("fish_history.csv")
+            else:
+                df = pd.read_csv("fish_history.csv", names=FISH_HISTORY_COLUMNS)
+                if _normalize_text(df.iloc[0]["Date"]) == "Date":
+                    df = df[1:]
+                df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+                cutoff = datetime.now() - timedelta(days=days)
+                df_new = df[df["Date"] >= cutoff]
+                df_new.to_csv("fish_history.csv", index=False, header=True)
     except Exception:
         pass
 
     utils.load_history.clear()
 
 
-def start_training(selected_spots, is_postflop):
+def start_training(selected_spots, is_postflop, is_fish=False):
     if not selected_spots:
         st.warning("Select spots first.")
         return
@@ -375,7 +584,29 @@ def start_training(selected_spots, is_postflop):
         if key.startswith("chk_") or key.startswith("pf_chk_") or key.startswith("sel_") or key.startswith("pf_sel_"):
             del st.session_state[key]
 
-    if is_postflop:
+    if is_fish:
+        settings = utils.load_user_settings(is_fish=True)
+        fish_types, textures, positions, action_lines = set(), set(), set(), set()
+
+        for key in selected_spots:
+            parts = [part.strip() for part in key.split("|")]
+            if len(parts) >= 5:
+                fish_types.add(parts[0])
+                textures.add(parts[1])
+                positions.add(parts[2])
+                action_lines.add(parts[3])
+
+        settings["fish_sel_vpips"] = sorted(fish_types)
+        settings["fish_sel_boards"] = sorted(textures)
+        settings["fish_sel_pos"] = sorted(positions)
+        settings["fish_sel_lines"] = sorted(action_lines)
+        settings["fish_spots"] = selected_spots
+
+        utils.save_user_settings(settings, is_fish=True)
+        st.session_state.actual_app_mode = "Fish"
+        st.session_state.fish_hand = None
+        st.session_state.fish_current_spot_key = None
+    elif is_postflop:
         settings = utils.load_user_settings(is_postflop=True)
         pf_spots, pf_heroes, pf_streets, pf_branches = set(), set(), set(), set()
 
@@ -618,16 +849,24 @@ def show():
 
     st.markdown("## Statistics Hub")
 
-    mode = st.radio("Section:", ["Preflop", "Postflop"], horizontal=True, label_visibility="collapsed")
+    mode = st.radio("Section:", ["Preflop", "Postflop", "Fish"], horizontal=True, label_visibility="collapsed")
     is_postflop = mode == "Postflop"
+    is_fish = mode == "Fish"
 
-    raw_df = fetch_history(is_postflop)
+    raw_df = fetch_history(is_postflop, is_fish=is_fish)
+    catalog, _ = get_spot_catalog(is_postflop, is_fish=is_fish)
     if raw_df.empty or "Date" not in raw_df.columns or "Result" not in raw_df.columns:
-        st.info(f"History for {mode} is empty. Go train.")
+        if is_fish:
+            raw_df = pd.DataFrame(columns=FISH_HISTORY_COLUMNS)
+        else:
+            st.info(f"History for {mode} is empty. Go train.")
+            return
+
+    if not catalog:
+        st.info(f"Catalog for {mode} is empty.")
         return
 
-    catalog, _ = get_spot_catalog(is_postflop)
-    df = canonicalize_history_spots(raw_df, is_postflop)
+    df = canonicalize_history_spots(raw_df, is_postflop, is_fish=is_fish)
     df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
     df = df.dropna(subset=["Date"])
     df["Result"] = pd.to_numeric(df["Result"], errors="coerce").fillna(0).astype(int)
@@ -652,31 +891,39 @@ def show():
     toolbar_col_1, toolbar_col_2 = st.columns([5, 1.2])
     with toolbar_col_2:
         if st.button("RESET FILTERS", key=f"reset_filters_{mode.lower()}", use_container_width=True):
-            clear_active_filters(is_postflop)
+            clear_active_filters(is_postflop, is_fish=is_fish)
             st.rerun()
 
-    filter_groups = build_filter_groups(catalog, is_postflop)
+    filter_groups = build_filter_groups(catalog, is_postflop, is_fish=is_fish)
     for group in filter_groups:
         render_filter_chip_group(
             title=group["title"],
             items=group["items"],
             state_key=group["state_key"],
             key_prefix=f"{mode.lower()}_{group['title'].lower()}",
-            columns_per_row=4,
+            columns_per_row=min(len(group["items"]) or 1, 7 if group["title"] == "Scenario" else 4),
         )
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    active_filters = get_active_filters(is_postflop)
+    active_filters = get_active_filters(is_postflop, is_fish=is_fish)
     filtered_catalog_spots = {
         spot_name
         for spot_name in catalog.keys()
-        if spot_matches_filters(spot_name, catalog, active_filters, is_postflop)
+        if spot_matches_filters(spot_name, catalog, active_filters, is_postflop, is_fish=is_fish)
     }
-    filtered_df = df[df["Spot"].apply(lambda spot_name: spot_matches_filters(spot_name, catalog, active_filters, is_postflop))].copy()
+    filtered_df = df[df["Spot"].apply(lambda spot_name: spot_matches_filters(spot_name, catalog, active_filters, is_postflop, is_fish=is_fish))].copy()
 
     st.markdown("### Spot Mastery")
     stats = filtered_df.groupby("Spot")["Result"].agg(["count", "sum", "mean"]).reset_index()
+    if is_fish:
+        missing_rows = [
+            {"Spot": spot_name, "count": 0, "sum": 0, "mean": 0.0}
+            for spot_name in filtered_catalog_spots
+            if spot_name not in set(stats["Spot"])
+        ]
+        if missing_rows:
+            stats = pd.concat([stats, pd.DataFrame(missing_rows)], ignore_index=True)
     stats["Errors"] = stats["count"] - stats["sum"]
     stats["Accuracy"] = (stats["mean"] * 100).round().astype(int).astype(str) + "%"
     stats["DisplaySpot"] = stats["Spot"].apply(lambda name: catalog.get(name, {}).get("display_name", name))
@@ -693,12 +940,24 @@ def show():
             hide_index=True,
         )
 
+    road_target = 1000 if is_fish else 5000
+    road_label = "1k" if is_fish else "5k"
+
     st.divider()
-    st.markdown("### Road to Mastery (5k Hands)")
+    st.markdown(f"### Road to Mastery ({road_label} Hands)")
     st.caption("Check spots and click TRAIN SELECTED, or launch one spot directly.")
 
     spot_counts = filtered_df["Spot"].value_counts().to_dict()
-    sorted_spots = sorted(spot_counts.items(), key=lambda item: (-item[1], _spot_sort_key(item[0], catalog, is_postflop)))
+    if is_fish:
+        sorted_spots = sorted(
+            [(spot_name, spot_counts.get(spot_name, 0)) for spot_name in filtered_catalog_spots],
+            key=lambda item: (-item[1], _spot_sort_key(item[0], catalog, is_postflop, is_fish=True)),
+        )
+    else:
+        sorted_spots = sorted(
+            spot_counts.items(),
+            key=lambda item: (-item[1], _spot_sort_key(item[0], catalog, is_postflop)),
+        )
 
     if not sorted_spots:
         st.info("No spots match the active filters in Road to Mastery.")
@@ -706,20 +965,20 @@ def show():
         train_col, _ = st.columns([1, 2])
         with train_col:
             if st.button("TRAIN SELECTED", key=f"train_selected_{mode.lower()}", use_container_width=True, type="primary"):
-                selected_spots = [spot_name for spot_name, _ in sorted_spots if st.session_state.get(f"sel_{spot_name}", False)]
-                start_training(selected_spots, is_postflop)
+                selected_spots = [spot_name for spot_name, _ in sorted_spots if st.session_state.get(f"sel_{mode.lower()}_{spot_name}", False)]
+                start_training(selected_spots, is_postflop, is_fish=is_fish)
 
         for spot_name, count in sorted_spots:
-            pct = min(100, (count / 5000) * 100)
-            if count < 100:
+            pct = min(100, (count / road_target) * 100)
+            if count < road_target * 0.02:
                 gradient, glow = "linear-gradient(90deg, #6c757d, #495057)", "rgba(108, 117, 125, 0.3)"
-            elif count < 500:
+            elif count < road_target * 0.10:
                 gradient, glow = "linear-gradient(90deg, #198754, #20c997)", "rgba(32, 201, 151, 0.4)"
-            elif count < 1500:
+            elif count < road_target * 0.30:
                 gradient, glow = "linear-gradient(90deg, #0dcaf0, #0d6efd)", "rgba(13, 202, 240, 0.5)"
-            elif count < 3000:
+            elif count < road_target * 0.60:
                 gradient, glow = "linear-gradient(90deg, #6f42c1, #d63384)", "rgba(214, 51, 132, 0.5)"
-            elif count < 5000:
+            elif count < road_target:
                 gradient, glow = "linear-gradient(90deg, #dc3545, #fd7e14)", "rgba(253, 126, 20, 0.6)"
             else:
                 gradient, glow = "linear-gradient(90deg, #ffc107, #ffef96)", "rgba(255, 193, 7, 0.8)"
@@ -728,10 +987,10 @@ def show():
 
             with row_col_1:
                 st.markdown("<div class='spot-row-marker-desk'></div>", unsafe_allow_html=True)
-                st.checkbox("", key=f"sel_{spot_name}", label_visibility="collapsed")
+                st.checkbox("", key=f"sel_{mode.lower()}_{spot_name}", label_visibility="collapsed")
             with row_col_2:
-                if st.button("TRAIN", key=f"go_{spot_name}", use_container_width=True):
-                    start_training([spot_name], is_postflop)
+                if st.button("TRAIN", key=f"go_{mode.lower()}_{spot_name}", use_container_width=True):
+                    start_training([spot_name], is_postflop, is_fish=is_fish)
             with row_col_3:
                 display_name = catalog.get(spot_name, {}).get("display_name", spot_name)
                 st.markdown(
@@ -750,7 +1009,7 @@ def show():
                     unsafe_allow_html=True,
                 )
             with row_col_6:
-                st.markdown("<div class='mastery-max'>5000</div>", unsafe_allow_html=True)
+                st.markdown(f"<div class='mastery-max'>{road_target}</div>", unsafe_allow_html=True)
 
     st.divider()
     with st.expander("Raw History Log"):
@@ -782,18 +1041,18 @@ def show():
                     new_mastery[spot_name]["h"] = new_mastery[spot_name]["h"][-100:]
                 new_mastery[spot_name]["d"] = row["Date"].strftime("%Y-%m-%d")
 
-            stats_dict = utils.load_user_stats(is_postflop=is_postflop)
+            stats_dict = utils.load_user_stats(is_postflop=is_postflop, is_fish=is_fish)
             stats_dict["xp"] = int(total_correct_hist * 10)
             stats_dict["total_hands"] = len(df_hist)
             stats_dict["spot_mastery"] = new_mastery
 
-            utils.save_user_stats(stats_dict, is_postflop=is_postflop)
+            utils.save_user_stats(stats_dict, is_postflop=is_postflop, is_fish=is_fish)
             st.success("Recovery complete. Refresh applied.")
             st.rerun()
 
     st.markdown("### Danger Zone")
     with st.expander("Clear History", expanded=False):
-        st.warning("Warning: clears ALL history globally (Preflop and Postflop).")
+        st.warning("Warning: clears ALL history globally (Preflop, Postflop and Fish).")
         del_col_1, del_col_2, del_col_3, del_col_4 = st.columns(4)
         if del_col_1.button("Delete: 24 Hours", use_container_width=True):
             custom_delete_history(days=1)
