@@ -487,6 +487,203 @@
         },
         "training": "KsTc, KsTd, KsTh, KcTs, KcTd, KcTh, KdTs, KdTc, KdTh, Ks9c, Ks9d, Ks9h, Kc9s, Kc9d, Kc9h, Kd9s, Kd9c, Kd9h, Ks7c, Ks7d, Ks7h, Kc7s, Kc7d, Kc7h, Kd7s, Kd7c, Kd7h, Ks6c, Ks6d, Ks6h, Kc6s, Kc6d, Kc6h, Kd6s, Kd6c, Kd6h, Ks4c, Ks4d, Ks4h, Kc4s, Kc4d, Kc4h, Kd4s, Kd4c, Kd4h, Ks3c, Ks3d, Ks3h, Kc3s, Kc3d, Kc3h, Kd3s, Kd3c, Kd3h"
       }
+    },
+    "75% - 75% - River": {
+      "Kh8h2dThAc": {
+        "setup": {
+          "hero_pos": "BTN",
+          "villain_pos": "BB",
+          "pot_size": 34.1,
+          "board_cards": ["Kh", "8h", "2d", "Th", "Ac"],
+          "villain_action": "CHECK",
+          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 83.2, "SB": 99.5, "BB": 83.2},
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B/%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D0%BD%D0%B0%D1%8F%20%D0%BA%D0%BD%D0%B8%D0%B6%D0%BA%D0%B0%20%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8F%20Paul/FISH_NEW/K8s2.one#Kh8h2dThAc&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={D80B7BBA-5552-43AA-B916-43AEF1C1935A}&end",
+          "active_players": ["BTN", "BB"],
+          "btn_pos": "BTN",
+          "street_start_pot_bb": 34.1,
+          "total_pot_bb": 34.1,
+          "river_bet_sizings_bb": {"Bet 50%": 17.1, "Bet 75%": 25.6},
+          "river_pot_after_hero_bet_bb": {"Bet 50%": 51.2, "Bet 75%": 59.7},
+          "spot_label": "75% - 75% - River"
+        },
+        "actions": ["Check", "Bet 50%", "Bet 75%"],
+        "ranges": {
+          "Check": "Kc2s, Kd2c, Ks2h, Kc8s, Kd8c, Ks8d, KcTs, KdTc, KsTd",
+          "Bet 50%": "AhKc, AhKd, AhKs",
+          "Bet 75%": "AhAd, AhAs, AdAs, KcKd, KcKs, KdKs, 8c8d, 8c8s, 8d8s, 2c2h, 2c2s, 2h2s"
+        },
+        "training": "Kc2s, Kd2c, Ks2h, Kc8s, Kd8c, Ks8d, KcTs, KdTc, KsTd, AhKc, AhKd, AhKs, AhAd, AhAs, AdAs, KcKd, KcKs, KdKs, 8c8d, 8c8s, 8d8s, 2c2h, 2c2s, 2h2s"
+      },
+      "Kh8h2dTh4d": {
+        "setup": {
+          "hero_pos": "BTN",
+          "villain_pos": "BB",
+          "pot_size": 34.1,
+          "board_cards": ["Kh", "8h", "2d", "Th", "4d"],
+          "villain_action": "CHECK",
+          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 83.2, "SB": 99.5, "BB": 83.2},
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B/%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D0%BD%D0%B0%D1%8F%20%D0%BA%D0%BD%D0%B8%D0%B6%D0%BA%D0%B0%20%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8F%20Paul/FISH_NEW/K8s2.one#Kh8h2dTh4d&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={0FBB6B33-B9C0-42C7-9563-8AD400F6FD2B}&end",
+          "active_players": ["BTN", "BB"],
+          "btn_pos": "BTN",
+          "street_start_pot_bb": 34.1,
+          "total_pot_bb": 34.1,
+          "river_bet_sizings_bb": {"Bet 50%": 17.1, "Bet 75%": 25.6},
+          "river_pot_after_hero_bet_bb": {"Bet 50%": 51.2, "Bet 75%": 59.7},
+          "spot_label": "75% - 75% - River"
+        },
+        "actions": ["Check", "Bet 50%", "Bet 75%"],
+        "ranges": {
+          "Check": "AhAc, AhAd, AhAs, AsKc, AsKd, AsKs, KcQh, KdQh, KsQh",
+          "Bet 50%": "Kc2s, Kd2c, Ks2h",
+          "Bet 75%": "KcKd, KcKs, KdKs, 8c8d, 8c8s, 8d8s, 2c2h, 2c2s, 2h2s, KcTs, KdTc, KsTd, Kc8s, Kd8c, Ks8d"
+        },
+        "training": "AhAc, AhAd, AhAs, AsKc, AsKd, AsKs, KcQh, KdQh, KsQh, Kc2s, Kd2c, Ks2h, KcKd, KcKs, KdKs, 8c8d, 8c8s, 8d8s, 2c2h, 2c2s, 2h2s, KcTs, KdTc, KsTd, Kc8s, Kd8c, Ks8d"
+      },
+      "Kh8h2dAcQc": {
+        "setup": {
+          "hero_pos": "BTN",
+          "villain_pos": "BB",
+          "pot_size": 34.1,
+          "board_cards": ["Kh", "8h", "2d", "Ac", "Qc"],
+          "villain_action": "CHECK",
+          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 83.2, "SB": 99.5, "BB": 83.2},
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B/%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D0%BD%D0%B0%D1%8F%20%D0%BA%D0%BD%D0%B8%D0%B6%D0%BA%D0%B0%20%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8F%20Paul/FISH_NEW/K8s2.one#Kh8h2dAcQc&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={923AE33C-A05D-473C-812A-A7D45896FB39}&end",
+          "active_players": ["BTN", "BB"],
+          "btn_pos": "BTN",
+          "street_start_pot_bb": 34.1,
+          "total_pot_bb": 34.1,
+          "river_bet_sizings_bb": {"Bet 50%": 17.1, "Bet 75%": 25.6},
+          "river_pot_after_hero_bet_bb": {"Bet 50%": 51.2, "Bet 75%": 59.7},
+          "spot_label": "75% - 75% - River"
+        },
+        "actions": ["Check", "Bet 50%", "Bet 75%"],
+        "ranges": {
+          "Check": "AhJh, AhTh",
+          "Bet 75%": "Kc2s, Kd2c, Ks2h, Kc8s, Kd8c, Ks8d"
+        },
+        "training": "AhJh, AhTh, Kc2s, Kd2c, Ks2h, Kc8s, Kd8c, Ks8d"
+      },
+      "Kh8h2dAc9h": {
+        "setup": {
+          "hero_pos": "BTN",
+          "villain_pos": "BB",
+          "pot_size": 34.1,
+          "board_cards": ["Kh", "8h", "2d", "Ac", "9h"],
+          "villain_action": "CHECK",
+          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 83.2, "SB": 99.5, "BB": 83.2},
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B/%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D0%BD%D0%B0%D1%8F%20%D0%BA%D0%BD%D0%B8%D0%B6%D0%BA%D0%B0%20%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8F%20Paul/FISH_NEW/K8s2.one#Kh8h2dAc9h&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={0EEFCBBF-1CD9-486D-B382-824AE30A703A}&end",
+          "active_players": ["BTN", "BB"],
+          "btn_pos": "BTN",
+          "street_start_pot_bb": 34.1,
+          "total_pot_bb": 34.1,
+          "river_bet_sizings_bb": {"Bet 50%": 17.1, "Bet 75%": 25.6},
+          "river_pot_after_hero_bet_bb": {"Bet 50%": 51.2, "Bet 75%": 59.7},
+          "spot_label": "75% - 75% - River"
+        },
+        "actions": ["Check", "Bet 50%", "Bet 75%"],
+        "ranges": {
+          "Check": "AhAd, AhAs, KcKd, KcKs, KdKs, 8c8d, 8c8s, 8d8s, 2c2h, 2c2s, 2h2s, AhKc, AhKd, AhKs, Kc8s, Kd8c, Ks8d, Kc2s, Kd2c, Ks2h"
+        },
+        "training": "AhAd, AhAs, KcKd, KcKs, KdKs, 8c8d, 8c8s, 8d8s, 2c2h, 2c2s, 2h2s, AhKc, AhKd, AhKs, Kc8s, Kd8c, Ks8d, Kc2s, Kd2c, Ks2h"
+      },
+      "Kh8h2dAc4d": {
+        "setup": {
+          "hero_pos": "BTN",
+          "villain_pos": "BB",
+          "pot_size": 34.1,
+          "board_cards": ["Kh", "8h", "2d", "Ac", "4d"],
+          "villain_action": "CHECK",
+          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 83.2, "SB": 99.5, "BB": 83.2},
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B/%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D0%BD%D0%B0%D1%8F%20%D0%BA%D0%BD%D0%B8%D0%B6%D0%BA%D0%B0%20%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8F%20Paul/FISH_NEW/K8s2.one#Kh8h2dAc4d&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={1255D7B2-A786-4938-AEA7-107CA101267D}&end",
+          "active_players": ["BTN", "BB"],
+          "btn_pos": "BTN",
+          "street_start_pot_bb": 34.1,
+          "total_pot_bb": 34.1,
+          "river_bet_sizings_bb": {"Bet 50%": 17.1, "Bet 75%": 25.6},
+          "river_pot_after_hero_bet_bb": {"Bet 50%": 51.2, "Bet 75%": 59.7},
+          "spot_label": "75% - 75% - River"
+        },
+        "actions": ["Check", "Bet 50%", "Bet 75%"],
+        "ranges": {
+          "Bet 50%": "AhJh, AhTh, Ah9h, Ah7h, Ah6h, Ah5h, Ah3h",
+          "Bet 75%": "AhQh"
+        },
+        "training": "AhJh, AhTh, Ah9h, Ah7h, Ah6h, Ah5h, Ah3h, AhQh"
+      },
+      "Kh8h2d5c9h": {
+        "setup": {
+          "hero_pos": "BTN",
+          "villain_pos": "BB",
+          "pot_size": 34.1,
+          "board_cards": ["Kh", "8h", "2d", "5c", "9h"],
+          "villain_action": "CHECK",
+          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 83.2, "SB": 99.5, "BB": 83.2},
+          "onenote_url": "onenote:https://d.docs.live.net/acb7650af03ef10d/%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B/%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D0%BD%D0%B0%D1%8F%20%D0%BA%D0%BD%D0%B8%D0%B6%D0%BA%D0%B0%20%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8F%20Paul/FISH_NEW/K8s2.one#Kh8h2d5c9s&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={CEE9617D-70CF-4562-B39B-1A8B40888374}&end",
+          "active_players": ["BTN", "BB"],
+          "btn_pos": "BTN",
+          "street_start_pot_bb": 34.1,
+          "total_pot_bb": 34.1,
+          "river_bet_sizings_bb": {"Bet 50%": 17.1, "Bet 75%": 25.6},
+          "river_pot_after_hero_bet_bb": {"Bet 50%": 51.2, "Bet 75%": 59.7},
+          "spot_label": "75% - 75% - River"
+        },
+        "actions": ["Check", "Bet 50%", "Bet 75%"],
+        "ranges": {
+          "Check": "KcKd, KcKs, KdKs, Kc9s, Kd9c, Ks9d, Kc8s, Kd8c, Ks8d, Kc5s, Kd5d, Ks5h, Kc2s, Kd2c, Ks2h, AhAc, AsAh, AhAd, AhKc, AsKd, AdKs",
+          "Bet 50%": "8c8d, 8c8s, 8d8s",
+          "Bet 75%": "2c2h, 2c2s, 2h2s"
+        },
+        "training": "KcKd, KcKs, KdKs, Kc9s, Kd9c, Ks9d, Kc8s, Kd8c, Ks8d, Kc5s, Kd5d, Ks5h, Kc2s, Kd2c, Ks2h, AhAc, AsAh, AhAd, AhKc, AsKd, AdKs, 8c8d, 8c8s, 8d8s, 2c2h, 2c2s, 2h2s"
+      },
+      "Kh8h2d5cQd": {
+        "setup": {
+          "hero_pos": "BTN",
+          "villain_pos": "BB",
+          "pot_size": 34.1,
+          "board_cards": ["Kh", "8h", "2d", "5c", "Qd"],
+          "villain_action": "CHECK",
+          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 83.2, "SB": 99.5, "BB": 83.2},
+          "onenote_url": "onenote:https://d.docs.live.net/ACB7650AF03EF10D/%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B/%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D0%BD%D0%B0%D1%8F%20%D0%BA%D0%BD%D0%B8%D0%B6%D0%BA%D0%B0%20%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8F%20Paul/FISH_NEW/K8s2.one#Kh8h2d5cQc&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={291FA640-F0A5-46C6-8E5A-586DD0441D81}&end",
+          "active_players": ["BTN", "BB"],
+          "btn_pos": "BTN",
+          "street_start_pot_bb": 34.1,
+          "total_pot_bb": 34.1,
+          "river_bet_sizings_bb": {"Bet 50%": 17.1, "Bet 75%": 25.6},
+          "river_pot_after_hero_bet_bb": {"Bet 50%": 51.2, "Bet 75%": 59.7},
+          "spot_label": "75% - 75% - River"
+        },
+        "actions": ["Check", "Bet 50%", "Bet 75%"],
+        "ranges": {
+          "Check": "Kc7s, Kd7c, Ks7d, Kc6s, Kd6c, Ks6d, Kc4s, Kd4c, Ks4d, Kc3s, Kd3c, Ks3d",
+          "Bet 50%": "KcTs, KdTc, KsTd, Kc9s, Kd9c, Ks9d",
+          "Bet 75%": "AhAc, AsAh, AhAd, AhKc, AsKd, AdKs, KcJs, KdJc, KsJd"
+        },
+        "training": "Kc7s, Kd7c, Ks7d, Kc6s, Kd6c, Ks6d, Kc4s, Kd4c, Ks4d, Kc3s, Kd3c, Ks3d, KcTs, KdTc, KsTd, Kc9s, Kd9c, Ks9d, AhAc, AsAh, AhAd, AhKc, AsKd, AdKs, KcJs, KdJc, KsJd"
+      },
+      "Kh8h2d5c5d": {
+        "setup": {
+          "hero_pos": "BTN",
+          "villain_pos": "BB",
+          "pot_size": 34.1,
+          "board_cards": ["Kh", "8h", "2d", "5c", "5d"],
+          "villain_action": "CHECK",
+          "stacks": {"EP": 100, "MP": 100, "CO": 100, "BTN": 83.2, "SB": 99.5, "BB": 83.2},
+          "onenote_url": "onenote:https://d.docs.live.net/ACB7650AF03EF10D/%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D1%8B/%D0%97%D0%B0%D0%BF%D0%B8%D1%81%D0%BD%D0%B0%D1%8F%20%D0%BA%D0%BD%D0%B8%D0%B6%D0%BA%D0%B0%20%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8F%20Paul/FISH_NEW/K8s2.one#Kh8h2d5c5d&section-id={67556F11-8243-47F4-9DB3-D0CEC2741360}&page-id={EA20F4BE-8F27-4F08-AF11-B357B7B6403F}&end",
+          "active_players": ["BTN", "BB"],
+          "btn_pos": "BTN",
+          "street_start_pot_bb": 34.1,
+          "total_pot_bb": 34.1,
+          "river_bet_sizings_bb": {"Bet 50%": 17.1, "Bet 75%": 25.6},
+          "river_pot_after_hero_bet_bb": {"Bet 50%": 51.2, "Bet 75%": 59.7},
+          "spot_label": "75% - 75% - River"
+        },
+        "actions": ["Check", "Bet 50%", "Bet 75%"],
+        "ranges": {
+          "Bet 50%": "Kc7c, Kd7d, Ks7s, Kc6c, Kd6d, Ks6s, Kc4c, Kd4d, Ks4s, Kc3c, Kd3d, Ks3s, Kc2c, Ks2s",
+          "Bet 75%": "KcQs, KdQc, KsQd, KcJs, KdJc, KsJd, KcTs, KdTc, KsTd, Kc9s, Kd9c, Ks9d"
+        },
+        "training": "Kc7c, Kd7d, Ks7s, Kc6c, Kd6d, Ks6s, Kc4c, Kd4d, Ks4s, Kc3c, Kd3d, Ks3s, Kc2c, Ks2s, KcQs, KdQc, KsQd, KcJs, KdJc, KsJd, KcTs, KdTc, KsTd, Kc9s, Kd9c, Ks9d"
+      }
     }
   }
 }
