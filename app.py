@@ -123,7 +123,7 @@ def main():
         st.rerun()
 
     if st.session_state.actual_app_mode == "Review":
-        if st.session_state.actual_view_type == "рџ“± Mobile":
+        if st.session_state.actual_view_type == "📱 Mobile":
             review_mobile.show()
         else:
             review_desktop.show()
