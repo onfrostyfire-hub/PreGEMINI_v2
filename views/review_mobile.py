@@ -12,7 +12,7 @@ def _css():
         font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
     .review-kicker-m {
-        margin-top: -28px;
+        margin-top: -44px;
         color: #59f0a6;
         font-size: 11px;
         font-weight: 950;
@@ -188,6 +188,27 @@ def _css():
         text-transform: uppercase;
         margin: 10px 0 6px 2px;
     }
+    .priority-title-m {
+        margin: 14px 0 10px;
+        font-size: 22px;
+        line-height: 1.05;
+        font-weight: 950;
+        letter-spacing: 0;
+    }
+    div[data-testid="stHorizontalBlock"] {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 8px !important;
+        align-items: stretch !important;
+        width: 100% !important;
+    }
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"],
+    div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {
+        flex: 1 1 0 !important;
+        width: 0 !important;
+        min-width: 0 !important;
+    }
     div[role="radiogroup"][aria-label="Review period mobile"],
     div[role="radiogroup"][aria-label="Review sections mobile"] {
         display: flex !important;
@@ -242,14 +263,6 @@ def _css():
     div[role="radiogroup"][aria-label="Review period mobile"] label:has(input:checked) p,
     div[role="radiogroup"][aria-label="Review sections mobile"] label:has(input:checked) p {
         color: #fff !important;
-    }
-    .queue-shell-m {
-        border: 1px solid rgba(255,255,255,.12);
-        background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.02)), #171a21;
-        border-radius: 16px;
-        padding: 15px 14px 4px;
-        box-shadow: 0 14px 32px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.05);
-        margin-top: 12px;
     }
     .line-track-m {
         height: 7px;
@@ -453,11 +466,11 @@ def show():
 
     st.markdown('<div class="review-mobile">', unsafe_allow_html=True)
     st.markdown("""
-    <div class="review-kicker-m">Repeat Queue</div>
+    <div class="review-kicker-m">Review</div>
     <div class="review-title-m">Today's Review</div>
     """, unsafe_allow_html=True)
 
-    c1, c2, c3 = st.columns(3)
+    c1, c2, c3 = st.columns(3, gap="small")
     with c1:
         st.markdown('<div class="primary-review-btn">', unsafe_allow_html=True)
         if st.button("Today", use_container_width=True, key="review_train_today_m"):
@@ -484,7 +497,9 @@ def show():
         visible_spots = rc.filter_spots(spots, sections, "Active Spots", search)
         st.caption(f"No exact {period} matches, showing Active Spots.")
 
-    st.markdown('<div class="queue-shell-m"><div class="panel-title-m">Smart Priority Queue</div></div>', unsafe_allow_html=True)
+    _calendar(spots)
+
+    st.markdown('<div class="priority-title-m">Priority List</div>', unsafe_allow_html=True)
     selected_items = []
     if not visible_spots:
         st.info("No Review spots match the current filters.")
@@ -498,5 +513,4 @@ def show():
         if st.button(f"Train Selected ({len(selected_items)})", key="train_selected_review_m", use_container_width=True):
             rc.request_grouped_launch("Selected Review Spots", selected_items)
         st.markdown("</div>", unsafe_allow_html=True)
-    _calendar(spots)
     st.markdown("</div>", unsafe_allow_html=True)
