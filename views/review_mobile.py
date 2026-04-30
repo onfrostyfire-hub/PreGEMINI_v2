@@ -6,13 +6,13 @@ from views import review_common as rc
 def _css():
     st.markdown("""
     <style>
-    .block-container { padding-left: 1rem !important; padding-right: 1rem !important; padding-top: .75rem !important; }
+    .block-container { padding-left: 1rem !important; padding-right: 1rem !important; padding-top: .25rem !important; }
     .review-mobile {
         color: #f7f9ff;
         font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
     .review-kicker-m {
-        margin-top: 14px;
+        margin-top: -28px;
         color: #59f0a6;
         font-size: 11px;
         font-weight: 950;
@@ -20,23 +20,18 @@ def _css():
         text-transform: uppercase;
     }
     .review-title-m {
-        margin: 10px 0 8px;
+        margin: 8px 0 10px;
         font-size: 34px;
-        line-height: .98;
+        line-height: 1.02;
         font-weight: 950;
         letter-spacing: 0;
     }
-    .review-copy-m {
-        color: #aab8d8;
-        font-size: 14px;
-        font-weight: 600;
-        margin-bottom: 14px;
-    }
     .metric-grid-m {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 9px;
-        margin: 10px 0 14px;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px;
+        margin: 12px 0 12px;
+        width: 100% !important;
     }
     .metric-card-m, .review-panel-m, .queue-item-m {
         border: 1px solid rgba(255,255,255,.12);
@@ -45,31 +40,36 @@ def _css():
         box-shadow: 0 14px 32px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.05);
     }
     .metric-card-m {
-        padding: 14px 13px;
-        min-height: 86px;
+        padding: 13px 13px 12px;
+        min-height: 78px;
+        min-width: 0 !important;
+        overflow: hidden;
     }
     .metric-label-m {
         color: #a8b9da;
-        font-size: 10px;
+        font-size: 10.5px;
         font-weight: 950;
-        letter-spacing: .12em;
+        letter-spacing: .06em;
         text-transform: uppercase;
+        white-space: nowrap;
     }
     .metric-value-m {
-        margin-top: 12px;
-        font-size: 30px;
+        margin-top: 8px;
+        font-size: 29px;
         line-height: 1;
         font-weight: 950;
     }
     .metric-foot-m {
-        margin-top: 8px;
+        margin-top: 7px;
         color: #8797b4;
-        font-size: 11px;
+        font-size: 11.5px;
         font-weight: 800;
+        white-space: nowrap;
     }
     .review-panel-m {
-        padding: 16px;
+        padding: 15px 14px;
         margin: 10px 0;
+        min-height: 0 !important;
     }
     .panel-title-m {
         font-size: 21px;
@@ -79,16 +79,17 @@ def _css():
     .calendar-week-m {
         display: grid;
         grid-template-columns: repeat(7, minmax(0,1fr));
-        gap: 5px;
-        margin-bottom: 14px;
+        gap: 6px;
+        margin-bottom: 12px;
     }
     .day-cell-m {
         border: 1px solid rgba(255,255,255,.10);
         background: #20242d;
         border-radius: 12px;
-        min-height: 64px;
-        padding: 8px 4px;
+        min-height: 58px;
+        padding: 7px 3px 6px;
         text-align: center;
+        min-width: 0;
     }
     .day-cell-m.today {
         border-color: rgba(255,75,85,.72);
@@ -96,15 +97,25 @@ def _css():
     }
     .day-name-m {
         color: #9fb0d0;
-        font-size: 9px;
+        font-size: 8.5px;
         font-weight: 950;
         text-transform: uppercase;
+        white-space: nowrap;
+    }
+    .day-date-m {
+        margin-top: 2px;
+        color: rgba(255,255,255,.52);
+        font-size: 9px;
+        font-weight: 900;
+        white-space: nowrap;
     }
     .day-count-m {
-        margin-top: 12px;
+        margin-top: 6px;
         color: #fff;
-        font-size: 21px;
+        font-size: 20px;
         font-weight: 950;
+        line-height: 1;
+        white-space: nowrap;
     }
     .queue-item-m {
         padding: 15px 14px;
@@ -161,10 +172,10 @@ def _css():
     }
     .section-row-m {
         display: grid;
-        grid-template-columns: 70px 1fr 38px;
+        grid-template-columns: 70px 1fr 34px;
         gap: 9px;
         align-items: center;
-        margin: 10px 0;
+        margin: 9px 0;
         color: #dce7ff;
         font-size: 13px;
         font-weight: 900;
@@ -175,7 +186,7 @@ def _css():
         font-weight: 950;
         letter-spacing: .12em;
         text-transform: uppercase;
-        margin: 12px 0 7px 2px;
+        margin: 10px 0 6px 2px;
     }
     div[role="radiogroup"][aria-label="Review period mobile"],
     div[role="radiogroup"][aria-label="Review sections mobile"] {
@@ -188,7 +199,7 @@ def _css():
         padding: 4px !important;
         border-radius: 13px !important;
         border: 1px solid rgba(255,255,255,0.13) !important;
-        gap: 3px !important;
+        gap: 4px !important;
         box-shadow: 0 8px 22px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.05) !important;
         overflow: hidden !important;
     }
@@ -199,7 +210,7 @@ def _css():
         display: inline-flex !important;
         justify-content: center !important;
         align-items: center !important;
-        padding: 10px 3px !important;
+        padding: 10px 5px !important;
         margin: 0 !important;
         border-radius: 9px !important;
         cursor: pointer !important;
@@ -215,7 +226,7 @@ def _css():
     div[role="radiogroup"][aria-label="Review sections mobile"] label p {
         margin: 0 !important;
         color: #a9b5c9 !important;
-        font-size: 9.3px !important;
+        font-size: 9.7px !important;
         font-weight: 900 !important;
         line-height: 1 !important;
         letter-spacing: 0 !important;
@@ -249,7 +260,15 @@ def _css():
     .line-fill-m {
         height: 100%;
         border-radius: inherit;
-        background: linear-gradient(90deg, #47e18f, #e7d928);
+    }
+    .fill-preflop { background: linear-gradient(90deg, #52e18f, #d8ee35); }
+    .fill-postflop { background: linear-gradient(90deg, #44d8ff, #7e6dff); }
+    .fill-fish { background: linear-gradient(90deg, #ff5a68, #ffd34f); }
+    .calendar-note-m {
+        color: rgba(170,184,216,.72);
+        font-size: 10.5px;
+        font-weight: 800;
+        margin: 2px 0 9px;
     }
     div[data-testid="stButton"] > button {
         border-radius: 13px !important;
@@ -257,7 +276,7 @@ def _css():
         background: linear-gradient(180deg, #242832, #171b23) !important;
         color: #f7f9ff !important;
         font-weight: 900 !important;
-        min-height: 42px !important;
+        min-height: 38px !important;
         box-shadow: 0 8px 20px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.06) !important;
     }
     .primary-review-btn button {
@@ -292,22 +311,22 @@ def _metric_cards(counts, sec_counts):
       <div class="metric-card-m">
         <div class="metric-label-m">Today</div>
         <div class="metric-value-m">{counts.get("Today", 0)}</div>
-        <div class="metric-foot-m">Due now</div>
+        <div class="metric-foot-m">Due today</div>
       </div>
       <div class="metric-card-m">
         <div class="metric-label-m">Late</div>
         <div class="metric-value-m" style="color:#ff5a68;">{counts.get("Late", 0)}</div>
-        <div class="metric-foot-m">Highest priority</div>
+        <div class="metric-foot-m">Overdue</div>
       </div>
       <div class="metric-card-m">
-        <div class="metric-label-m">Next 7 Days</div>
+        <div class="metric-label-m">Next 7D</div>
         <div class="metric-value-m">{counts.get("Next 7 Days", 0)}</div>
         <div class="metric-foot-m">Coming up</div>
       </div>
       <div class="metric-card-m">
-        <div class="metric-label-m">Active Spots</div>
+        <div class="metric-label-m">Active</div>
         <div class="metric-value-m">{counts.get("Active Spots", 0)}</div>
-        <div class="metric-foot-m">{sec_counts.get("Fish", 0)} Fish</div>
+        <div class="metric-foot-m">100+ hands</div>
       </div>
     </div>
     """, unsafe_allow_html=True)
@@ -318,23 +337,28 @@ def _calendar(spots):
     cells = []
     for i, day in enumerate(days):
         cls = "day-cell-m today" if i == 0 else "day-cell-m"
+        day_number = day["date"].strftime("%d").lstrip("0")
         cells.append(
             f'<div class="{cls}"><div class="day-name-m">{rc.esc(day["label"])}</div>'
+            f'<div class="day-date-m">{day_number}</div>'
             f'<div class="day-count-m">{day["count"]}</div></div>'
         )
     section_counts = rc.section_counts(spots)
     max_value = max(max(section_counts.values()), 1)
     rows = []
+    fill_classes = {"Preflop": "fill-preflop", "Postflop": "fill-postflop", "Fish": "fill-fish"}
     for label, value in section_counts.items():
         width = int((value / max_value) * 100)
+        fill_class = fill_classes.get(label, "fill-preflop")
         rows.append(
             f'<div class="section-row-m"><div>{label}</div>'
-            f'<div class="line-track-m"><div class="line-fill-m" style="width:{width}%"></div></div>'
+            f'<div class="line-track-m"><div class="line-fill-m {fill_class}" style="width:{width}%"></div></div>'
             f'<div>{value}</div></div>'
         )
     st.markdown(f"""
     <div class="review-panel-m">
       <div class="panel-title-m">Review Calendar</div>
+      <div class="calendar-note-m">Large number = spots due that day. Bars = active spot mix by section.</div>
       <div class="calendar-week-m">{''.join(cells)}</div>
       {''.join(rows)}
     </div>
@@ -362,12 +386,14 @@ def _period_filter(default_period):
     current = st.session_state.get("review_period_choice_m", default_period)
     if current not in rc.PERIODS:
         current = default_period
+    labels = {"Today": "Today", "Late": "Late", "Next 7 Days": "Next 7", "Active Spots": "All"}
     period = st.radio(
         "Review period mobile",
         rc.PERIODS,
         index=rc.PERIODS.index(current),
         horizontal=True,
         label_visibility="collapsed",
+        format_func=lambda x: labels.get(x, x),
     )
     st.session_state.review_period_choice_m = period
     return period
@@ -378,12 +404,14 @@ def _section_filter():
     current = st.session_state.get("review_section_choice_m", "All")
     if current not in options:
         current = "All"
+    labels = {"All": "All", "Preflop": "Pre", "Postflop": "Post", "Fish": "Fish"}
     choice = st.radio(
         "Review sections mobile",
         options,
         index=options.index(current),
         horizontal=True,
         label_visibility="collapsed",
+        format_func=lambda x: labels.get(x, x),
     )
     st.session_state.review_section_choice_m = choice
     return rc.SECTIONS if choice == "All" else [choice]
@@ -426,31 +454,30 @@ def show():
     st.markdown('<div class="review-mobile">', unsafe_allow_html=True)
     st.markdown("""
     <div class="review-kicker-m">Repeat Queue</div>
-    <div class="review-title-m">Today's Review Queue</div>
-    <div class="review-copy-m">Late, due today, and upcoming spots. Only spots with 100+ hands are shown.</div>
+    <div class="review-title-m">Today's Review</div>
     """, unsafe_allow_html=True)
 
-    _settings_panel()
-
-    c1, c2 = st.columns(2)
+    c1, c2, c3 = st.columns(3)
     with c1:
         st.markdown('<div class="primary-review-btn">', unsafe_allow_html=True)
-        if st.button("Train Today", use_container_width=True, key="review_train_today_m"):
+        if st.button("Today", use_container_width=True, key="review_train_today_m"):
             rc.request_grouped_launch("Today", [s for s in spots if s["bucket"] == "Today"])
         st.markdown("</div>", unsafe_allow_html=True)
     with c2:
-        if st.button("Train Late", use_container_width=True, key="review_train_late_m"):
+        if st.button("Late", use_container_width=True, key="review_train_late_m"):
             rc.request_grouped_launch("Late", [s for s in spots if s["bucket"] == "Late"])
-    if st.button("Train Next 7 Days", use_container_width=True, key="review_train_next_m"):
-        rc.request_grouped_launch("Next 7 Days", [s for s in spots if s["bucket"] == "Next 7 Days"])
+    with c3:
+        if st.button("Next 7", use_container_width=True, key="review_train_next_m"):
+            rc.request_grouped_launch("Next 7 Days", [s for s in spots if s["bucket"] == "Next 7 Days"])
 
     _metric_cards(counts, sec_counts)
     _render_launch_choice()
-    st.markdown('<div class="review-filter-label-m">Queue</div>', unsafe_allow_html=True)
+    st.markdown('<div class="review-filter-label-m">Repeat list</div>', unsafe_allow_html=True)
     period = _period_filter(default_period)
     st.markdown('<div class="review-filter-label-m">Sections</div>', unsafe_allow_html=True)
     sections = _section_filter()
     search = st.text_input("Search spots", placeholder="Board, line, scenario...")
+    _settings_panel()
 
     visible_spots = rc.filter_spots(spots, sections, period, search)
     if not visible_spots and period != "Active Spots":
