@@ -195,35 +195,6 @@ def _css():
         font-weight: 950;
         letter-spacing: 0;
     }
-    div.element-container:has(#review-quick-actions-m-marker) + div[data-testid="stHorizontalBlock"],
-    div.element-container:has(#review-quick-actions-m-marker) + div.element-container div[data-testid="stHorizontalBlock"] {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-        gap: 8px !important;
-        align-items: stretch !important;
-        width: 100% !important;
-    }
-    div.element-container:has(#review-quick-actions-m-marker) + div[data-testid="stHorizontalBlock"] > div[data-testid="column"],
-    div.element-container:has(#review-quick-actions-m-marker) + div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"],
-    div.element-container:has(#review-quick-actions-m-marker) + div.element-container div[data-testid="stHorizontalBlock"] > div[data-testid="column"],
-    div.element-container:has(#review-quick-actions-m-marker) + div.element-container div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {
-        flex: 1 1 0 !important;
-        width: 0 !important;
-        min-width: 0 !important;
-    }
-    div.element-container:has(#review-quick-actions-m-marker) + div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] button,
-    div.element-container:has(#review-quick-actions-m-marker) + div.element-container div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] button {
-        min-height: 34px !important;
-        height: 34px !important;
-        padding: 0 6px !important;
-    }
-    div.element-container:has(#review-quick-actions-m-marker) + div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] button p,
-    div.element-container:has(#review-quick-actions-m-marker) + div.element-container div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] button p {
-        font-size: 11px !important;
-        line-height: 1 !important;
-        white-space: nowrap !important;
-    }
     div[role="radiogroup"][aria-label="Review period mobile"],
     div[role="radiogroup"][aria-label="Review sections mobile"] {
         display: flex !important;
@@ -371,7 +342,8 @@ def _calendar(spots):
             f'<div class="day-date-m">{day_number}</div>'
             f'<div class="day-count-m">{day["count"]}</div></div>'
         )
-    section_counts = rc.section_counts(spots)
+    next_week_spots = [s for s in spots if 0 <= int(s.get("days_until", 9999)) <= 7]
+    section_counts = rc.section_counts(next_week_spots)
     max_value = max(max(section_counts.values()), 1)
     rows = []
     fill_classes = {"Preflop": "fill-preflop", "Postflop": "fill-postflop", "Fish": "fill-fish"}
@@ -386,7 +358,7 @@ def _calendar(spots):
     st.markdown(f"""
     <div class="review-panel-m">
       <div class="panel-title-m">Review Calendar</div>
-      <div class="calendar-note-m">Large number = spots due that day. Bars = active spot mix by section.</div>
+      <div class="calendar-note-m">Big number = spots due that day. Bars = due spots by section for the next 7 days.</div>
       <div class="calendar-week-m">{''.join(cells)}</div>
       {''.join(rows)}
     </div>
@@ -414,6 +386,7 @@ def _period_filter(default_period):
     current = st.session_state.get("review_period_choice_m", default_period)
     if current not in rc.PERIODS:
         current = default_period
+    st.session_state.review_period_choice_m = current
     labels = {"Today": "Today", "Late": "Late", "Next 7 Days": "Next 7", "Active Spots": "All"}
     period = st.radio(
         "Review period mobile",
@@ -421,9 +394,9 @@ def _period_filter(default_period):
         index=rc.PERIODS.index(current),
         horizontal=True,
         label_visibility="collapsed",
+        key="review_period_choice_m",
         format_func=lambda x: labels.get(x, x),
     )
-    st.session_state.review_period_choice_m = period
     return period
 
 
@@ -432,6 +405,7 @@ def _section_filter():
     current = st.session_state.get("review_section_choice_m", "All")
     if current not in options:
         current = "All"
+    st.session_state.review_section_choice_m = current
     labels = {"All": "All", "Preflop": "Pre", "Postflop": "Post", "Fish": "Fish"}
     choice = st.radio(
         "Review sections mobile",
@@ -439,9 +413,9 @@ def _section_filter():
         index=options.index(current),
         horizontal=True,
         label_visibility="collapsed",
+        key="review_section_choice_m",
         format_func=lambda x: labels.get(x, x),
     )
-    st.session_state.review_section_choice_m = choice
     return rc.SECTIONS if choice == "All" else [choice]
 
 
@@ -484,29 +458,6 @@ def show():
     <div class="review-kicker-m">Review</div>
     <div class="review-title-m">Today's Review</div>
     """, unsafe_allow_html=True)
-
-    st.markdown('<span id="review-quick-actions-m-marker"></span>', unsafe_allow_html=True)
-    c1, c2, c3 = st.columns(3, gap="small")
-    with c1:
-        st.markdown('<div class="primary-review-btn">', unsafe_allow_html=True)
-        if st.button("Today", use_container_width=True, key="review_train_today_m"):
-            st.session_state.review_period_choice_m = "Today"
-            st.session_state.review_section_choice_m = "All"
-            st.session_state.pop("review_launch_choice", None)
-            st.rerun()
-        st.markdown("</div>", unsafe_allow_html=True)
-    with c2:
-        if st.button("Late", use_container_width=True, key="review_train_late_m"):
-            st.session_state.review_period_choice_m = "Late"
-            st.session_state.review_section_choice_m = "All"
-            st.session_state.pop("review_launch_choice", None)
-            st.rerun()
-    with c3:
-        if st.button("Next 7", use_container_width=True, key="review_train_next_m"):
-            st.session_state.review_period_choice_m = "Next 7 Days"
-            st.session_state.review_section_choice_m = "All"
-            st.session_state.pop("review_launch_choice", None)
-            st.rerun()
 
     _metric_cards(counts, sec_counts)
     _render_launch_choice()
