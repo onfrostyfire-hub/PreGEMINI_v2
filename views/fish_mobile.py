@@ -7,6 +7,7 @@ import textwrap
 from datetime import datetime
 import pandas as pd
 import poker_utils as utils
+from views import review_common as rc
 
 # --- ЖЕЛЕЗНЫЕ ОБЁРТКИ ДЛЯ FISH (Только Google Sheets) ---
 def safe_load_stats():
@@ -448,6 +449,19 @@ def show():
             st.rerun()
 
     pool = sorted([key for key, spot in flat_fish_db.items() if str(spot.get("training", "")).strip()]) if due_mode else sel_spots_keys
+    review_ctx = rc.review_context_for("Fish")
+    if review_ctx:
+        review_pool = [
+            key for key in review_ctx.get("spot_keys", [])
+            if key in flat_fish_db and str(flat_fish_db[key].get("training", "")).strip()
+        ]
+        if review_pool:
+            pool = review_pool
+            due_mode = False
+            st.info(f"Review Mode: {len(pool)} spots")
+            if st.button("Exit Review", key="exit_review_fish_m", use_container_width=True):
+                rc.clear_review_training()
+                st.rerun()
     if not pool:
         st.warning("⚠️ Please select filters.")
         st.stop()
