@@ -358,7 +358,8 @@ def _calendar(spots):
             f'<div class="{cls}"><div class="day-name">{rc.esc(day["label"])}</div>'
             f'<div class="day-count">{day["count"]}</div></div>'
         )
-    section_counts = rc.section_counts(spots)
+    next_week_spots = [s for s in spots if 0 <= int(s.get("days_until", 9999)) <= 7]
+    section_counts = rc.section_counts(next_week_spots)
     rows = []
     for label, value in section_counts.items():
         width = int((value / max(max(section_counts.values()), 1)) * 100)
@@ -450,14 +451,15 @@ def _section_filter(default_sections):
     current = st.session_state.get("review_section_choice_d", "All")
     if current not in options:
         current = "All"
+    st.session_state.review_section_choice_d = current
     choice = st.radio(
         "Review sections",
         options,
         index=options.index(current),
         horizontal=True,
         label_visibility="collapsed",
+        key="review_section_choice_d",
     )
-    st.session_state.review_section_choice_d = choice
     return rc.SECTIONS if choice == "All" else [choice]
 
 
@@ -465,14 +467,15 @@ def _period_filter(default_period):
     current = st.session_state.get("review_period_choice_d", default_period)
     if current not in rc.PERIODS:
         current = default_period
+    st.session_state.review_period_choice_d = current
     period = st.radio(
         "Review period",
         rc.PERIODS,
         index=rc.PERIODS.index(current),
         horizontal=True,
         label_visibility="collapsed",
+        key="review_period_choice_d",
     )
-    st.session_state.review_period_choice_d = period
     return period
 
 
@@ -496,28 +499,6 @@ def show():
       </div>
     </div>
     """, unsafe_allow_html=True)
-
-    a, b, c, d = st.columns([0.18, 0.18, 0.18, 0.46])
-    with a:
-        st.markdown('<div class="primary-review-btn">', unsafe_allow_html=True)
-        if st.button("Today", use_container_width=True, key="review_train_today_d"):
-            st.session_state.review_period_choice_d = "Today"
-            st.session_state.review_section_choice_d = "All"
-            st.session_state.pop("review_launch_choice", None)
-            st.rerun()
-        st.markdown("</div>", unsafe_allow_html=True)
-    with b:
-        if st.button("Late", use_container_width=True, key="review_train_late_d"):
-            st.session_state.review_period_choice_d = "Late"
-            st.session_state.review_section_choice_d = "All"
-            st.session_state.pop("review_launch_choice", None)
-            st.rerun()
-    with c:
-        if st.button("Next 7", use_container_width=True, key="review_train_next_d"):
-            st.session_state.review_period_choice_d = "Next 7 Days"
-            st.session_state.review_section_choice_d = "All"
-            st.session_state.pop("review_launch_choice", None)
-            st.rerun()
 
     _metric_cards(counts, sec_counts)
     _render_launch_choice()
