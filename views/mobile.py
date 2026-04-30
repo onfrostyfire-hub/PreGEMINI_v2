@@ -4,6 +4,35 @@ import time
 from datetime import datetime
 import poker_utils as utils
 
+def get_spot_training_hands(spot_key, mastery_dict):
+    spot_stats = mastery_dict.get(spot_key, {})
+    if not isinstance(spot_stats, dict):
+        return 0
+    try:
+        return max(0, int(spot_stats.get("t", 0) or 0))
+    except (TypeError, ValueError):
+        return 0
+
+def build_spot_training_progress_html(hands_played):
+    hands_val = max(0, int(hands_played))
+    pct = max(0, min(hands_val, 2500)) / 25
+    if hands_val <= 100:
+        gradient = "linear-gradient(90deg, #7d8792 0%, #a9b3bd 100%)"
+    elif hands_val <= 500:
+        gradient = "linear-gradient(90deg, #2fd67b 0%, #17b26a 100%)"
+    elif hands_val <= 1000:
+        gradient = "linear-gradient(90deg, #37c3ff 0%, #2b7fff 100%)"
+    else:
+        gradient = "linear-gradient(90deg, #f07a42 0%, #ffcc4d 100%)"
+    return f"""
+        <div style="margin:-4px 0 10px 28px; padding-right:4px; display:flex; align-items:center; gap:8px;">
+            <div style="flex:1; height:3px; border-radius:999px; background:rgba(255,255,255,0.08); overflow:hidden; box-shadow:inset 0 1px 2px rgba(0,0,0,0.45);">
+                <div style="width:{pct:.1f}%; height:100%; border-radius:999px; background:{gradient}; box-shadow:0 0 10px rgba(255,255,255,0.14);"></div>
+            </div>
+            <div style="min-width:52px; text-align:right; font-size:9px; line-height:1; font-weight:800; color:rgba(180,190,205,0.78); white-space:nowrap;">{hands_val}/2500</div>
+        </div>
+    """
+
 def generate_mobile_theme(bg_rad1, bg_rad2, shadow1, shadow2, shadow3, seat_rad, seat_border, seat_act_border, seat_act_shadow, anim_name, pulse_shadow1, pulse_shadow2, text_color, badge_bg, bar_fill, card_bg, card_border, rng_bg):
     return f"""<style>
     .mobile-game-area {{ 
@@ -253,6 +282,9 @@ def show():
         st.markdown("<hr style='margin: 5px 0;'>", unsafe_allow_html=True)
 
         saved = utils.load_user_settings()
+        filter_mastery = utils.load_user_stats().get("spot_mastery", {})
+        if not isinstance(filter_mastery, dict):
+            filter_mastery = {}
         
         # --- СИНХРОНИЗАЦИЯ ФИЛЬТРОВ ИЗ СТАТИСТИКИ ---
         if "selected_spots" in saved:
@@ -289,6 +321,8 @@ def show():
                     is_checked = (sp_key in saved_spots) if "spots" in saved else True
                     if st.checkbox(sp_name, value=is_checked, key=f"m_chk_{sp_key}"):
                         sel_spots_keys.append(sp_key)
+                    hands_played = get_spot_training_hands(sp_key, filter_mastery)
+                    st.markdown(build_spot_training_progress_html(hands_played), unsafe_allow_html=True)
         
         if st.button("🚀 Apply Settings", use_container_width=True):
             saved["scenarios"] = sel_sc
