@@ -106,7 +106,7 @@ def generate_desktop_theme(bg_rad1, bg_rad2, shadow1, shadow2, shadow3, seat_rad
     .hero-plate-desk .pos-desk {{ color: {seat_act_border} !important; }}
     
     /* ИКОНКА ONENOTE */
-    .info-hook {{ position: absolute; top: 405px; left: 475px; width: 26px; height: 26px; background: rgba(0,0,0,0.6); border: 1.5px solid rgba(255,255,255,0.4); border-radius: 50%; color: #fff; display: flex; justify-content: center; align-items: center; font-weight: bold; font-family: serif; text-decoration: none; transition: 0.2s; z-index: 100; font-size: 14px; text-shadow: none; }}
+    .info-hook {{ position: absolute; top: 454px; left: 498px; width: 24px; height: 24px; background: rgba(0,0,0,0.62); border: 1.5px solid rgba(255,255,255,0.36); border-radius: 50%; color: #fff; display: flex; justify-content: center; align-items: center; font-weight: bold; font-family: serif; text-decoration: none; transition: 0.2s; z-index: 100; font-size: 13px; text-shadow: none; box-shadow: 0 3px 8px rgba(0,0,0,0.55); }}
     .info-hook:hover {{ background: #0dcaf0; color: #000; border-color: #0dcaf0; box-shadow: 0 0 12px #0dcaf0; }}
     </style>"""
 
@@ -268,7 +268,7 @@ def show():
         .suit-blue  { color: #0056b3 !important; }
         .suit-green { color: #198754 !important; }
         
-        .rng-badge-desk { position: absolute !important; top: 50% !important; right: -35px !important; transform: translateY(-50%) !important; width: 30px !important; height: 30px !important; border-radius: 50% !important; font-weight: 900 !important; font-size: 13px !important; display: flex !important; align-items: center !important; justify-content: center !important; box-shadow: 0 4px 8px rgba(0,0,0,0.6) !important; z-index: 40 !important; }
+        .rng-badge-desk { display: none !important; }
         
         /* ── Action Buttons Color Overrides (Desktop) ── */
         .pf-btn-0 button { background: linear-gradient(180deg, #252830 0%, #16181f 100%) !important; box-shadow: 0 5px 0 #0c0d12, 0 8px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08), inset 0 0 0 1px rgba(255,255,255,0.06) !important; }
