@@ -87,6 +87,8 @@ def main():
         }
         @media (max-width: 640px) {
             div[role="radiogroup"][aria-label="Nav"] {
+                display: grid !important;
+                grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
                 width: calc(100vw - 28px) !important;
                 max-width: none !important;
                 gap: 2px !important;
@@ -94,8 +96,17 @@ def main():
                 margin-top: -10px !important;
                 margin-bottom: 2px !important;
             }
-            div[role="radiogroup"][aria-label="Nav"] label { padding: 7px 4px !important; }
-            div[role="radiogroup"][aria-label="Nav"] label p { font-size: 9.8px !important; }
+            div[role="radiogroup"][aria-label="Nav"] label {
+                height: 31px !important;
+                min-height: 31px !important;
+                padding: 0 2px !important;
+            }
+            div[role="radiogroup"][aria-label="Nav"] label p {
+                font-size: 9.2px !important;
+                line-height: 1 !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
         }
         
         div[data-testid="stVerticalBlock"] > div { padding-bottom: 0 !important; margin-bottom: 0 !important; }
