@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import date, datetime, timedelta
+import csv
 import hashlib
 import html
 import os
@@ -15,6 +16,19 @@ import poker_utils as utils
 SECTIONS = ["Preflop", "Postflop", "Fish"]
 PERIODS = ["Today", "Late", "Next 7 Days", "Active Spots"]
 MIN_REVIEW_HANDS = 100
+FISH_HISTORY_COLUMNS = [
+    "Date",
+    "Fish_Type",
+    "Position",
+    "Action_Line",
+    "Texture",
+    "Runout",
+    "Hand",
+    "UserAction",
+    "CorrectAction",
+    "Result",
+    "XP",
+]
 
 
 def esc(value) -> str:
@@ -189,6 +203,92 @@ def _merge_mastery(*stats_objects: dict) -> dict:
     return merged
 
 
+def _date_from_history_value(value: str):
+    text = str(value or "").strip()
+    if not text:
+        return None
+    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d", "%d.%m.%Y %H:%M:%S", "%d.%m.%Y"):
+        try:
+            return datetime.strptime(text[:19] if "%H" in fmt else text[:10], fmt).date()
+        except Exception:
+            pass
+    try:
+        return datetime.fromisoformat(text.replace("Z", "+00:00")).date()
+    except Exception:
+        return None
+
+
+def _result_bit(value) -> str:
+    try:
+        return "1" if int(float(str(value or "0").strip())) == 1 else "0"
+    except Exception:
+        return "0"
+
+
+def _rows_from_values(values, default_headers):
+    if not values:
+        return []
+    first = [str(v).strip() for v in values[0]]
+    if first and first[0] == "Date":
+        headers = first
+        rows = values[1:]
+    else:
+        headers = default_headers
+        rows = values
+    width = len(headers)
+    out = []
+    for row in rows:
+        normalized = list(row) + [""] * max(0, width - len(row))
+        out.append(dict(zip(headers, normalized[:width])))
+    return out
+
+
+def _load_fish_history_rows():
+    rows = []
+    try:
+        sheets = utils.get_worksheets()
+        if "FishHistory" in sheets:
+            rows.extend(_rows_from_values(sheets["FishHistory"].get_all_values(), FISH_HISTORY_COLUMNS))
+    except Exception:
+        pass
+    if rows:
+        return rows
+    if os.path.exists("fish_history.csv"):
+        try:
+            with open("fish_history.csv", "r", encoding="utf-8-sig", newline="") as f:
+                raw = list(csv.reader(f))
+            rows.extend(_rows_from_values(raw, FISH_HISTORY_COLUMNS))
+        except Exception:
+            pass
+    return rows
+
+
+def _fish_key_from_history(row: dict) -> str:
+    fish_type = row.get("Fish_Type", row.get("FishType", row.get("Fish Type", "")))
+    action_line = row.get("Action_Line", row.get("Action Line", ""))
+    return "|".join(
+        str(value or "").strip()
+        for value in (fish_type, row.get("Texture", ""), row.get("Position", ""), action_line, row.get("Runout", ""))
+    )
+
+
+def _mastery_from_fish_history() -> dict:
+    mastery = {}
+    for row in _load_fish_history_rows():
+        key = _fish_key_from_history(row)
+        if key.count("|") != 4 or not key.replace("|", "").strip():
+            continue
+        item = mastery.setdefault(key, {"t": 0, "h": "", "d": ""})
+        item["t"] = int(item.get("t", 0) or 0) + 1
+        item["h"] = str(item.get("h", "") or "") + _result_bit(row.get("Result", "0"))
+        row_date = _date_from_history_value(row.get("Date", ""))
+        if row_date:
+            old_date = parse_date(item.get("d", ""))
+            if not old_date or row_date >= old_date:
+                item["d"] = row_date.strftime("%Y-%m-%d")
+    return mastery
+
+
 def load_section_mastery(section: str) -> dict:
     if section == "Preflop":
         return _merge_mastery(utils.load_user_stats())
@@ -199,7 +299,8 @@ def load_section_mastery(section: str) -> dict:
     if section == "Fish":
         from_file = utils.load_user_stats(is_fish=True)
         from_settings = utils.load_user_settings(is_fish=True).get("stats", {})
-        return _merge_mastery(from_file, from_settings)
+        from_history = {"spot_mastery": _mastery_from_fish_history()}
+        return _merge_mastery(from_file, from_settings, from_history)
     return {}
 
 
