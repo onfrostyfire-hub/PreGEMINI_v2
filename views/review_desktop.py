@@ -500,22 +500,31 @@ def show():
     a, b, c, d = st.columns([0.18, 0.18, 0.18, 0.46])
     with a:
         st.markdown('<div class="primary-review-btn">', unsafe_allow_html=True)
-        if st.button("Train Today", use_container_width=True, key="review_train_today_d"):
-            rc.request_grouped_launch("Today", [s for s in spots if s["bucket"] == "Today"])
+        if st.button("Today", use_container_width=True, key="review_train_today_d"):
+            st.session_state.review_period_choice_d = "Today"
+            st.session_state.review_section_choice_d = "All"
+            st.session_state.pop("review_launch_choice", None)
+            st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
     with b:
-        if st.button("Train Late", use_container_width=True, key="review_train_late_d"):
-            rc.request_grouped_launch("Late", [s for s in spots if s["bucket"] == "Late"])
+        if st.button("Late", use_container_width=True, key="review_train_late_d"):
+            st.session_state.review_period_choice_d = "Late"
+            st.session_state.review_section_choice_d = "All"
+            st.session_state.pop("review_launch_choice", None)
+            st.rerun()
     with c:
-        if st.button("Train Next 7", use_container_width=True, key="review_train_next_d"):
-            rc.request_grouped_launch("Next 7 Days", [s for s in spots if s["bucket"] == "Next 7 Days"])
+        if st.button("Next 7", use_container_width=True, key="review_train_next_d"):
+            st.session_state.review_period_choice_d = "Next 7 Days"
+            st.session_state.review_section_choice_d = "All"
+            st.session_state.pop("review_launch_choice", None)
+            st.rerun()
 
     _metric_cards(counts, sec_counts)
     _render_launch_choice()
 
     f1, f2 = st.columns([0.47, 0.53])
     with f1:
-        st.markdown('<div class="review-filter-label">Queue</div>', unsafe_allow_html=True)
+        st.markdown('<div class="review-filter-label">Show spots</div>', unsafe_allow_html=True)
         period = _period_filter(default_period)
     with f2:
         st.markdown('<div class="review-filter-label">Sections</div>', unsafe_allow_html=True)
@@ -538,9 +547,6 @@ def show():
             st.rerun()
 
     visible_spots = rc.filter_spots(spots, selected_sections, period, search)
-    if not visible_spots and period != "Active Spots":
-        visible_spots = rc.filter_spots(spots, selected_sections, "Active Spots", search)
-        st.caption(f"No exact {period} matches for selected filters, showing Active Spots instead.")
 
     left, right = st.columns([0.32, 0.68], gap="large")
     with left:
