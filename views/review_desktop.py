@@ -153,6 +153,83 @@ def _css():
         gap: 12px;
         margin-bottom: 18px;
     }
+    .review-filter-stack {
+        display: grid;
+        grid-template-columns: minmax(380px, .9fr) minmax(340px, 1.1fr);
+        gap: 16px;
+        align-items: end;
+        margin: 14px 0 18px;
+    }
+    .review-filter-label {
+        color: #9fb0d0;
+        font-size: 11px;
+        font-weight: 950;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        margin: 0 0 8px 2px;
+    }
+    div[role="radiogroup"][aria-label="Review period"],
+    div[role="radiogroup"][aria-label="Review sections"] {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        width: 100% !important;
+        background: #191c23 !important;
+        padding: 4px !important;
+        border-radius: 13px !important;
+        border: 1px solid rgba(255,255,255,0.13) !important;
+        gap: 4px !important;
+        box-shadow: 0 8px 24px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.05) !important;
+    }
+    div[role="radiogroup"][aria-label="Review period"] label,
+    div[role="radiogroup"][aria-label="Review sections"] label {
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+        display: inline-flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 11px 8px !important;
+        margin: 0 !important;
+        border-radius: 9px !important;
+        cursor: pointer !important;
+        border: none !important;
+        background: transparent !important;
+        white-space: nowrap !important;
+    }
+    div[role="radiogroup"][aria-label="Review period"] label > div:first-child,
+    div[role="radiogroup"][aria-label="Review sections"] label > div:first-child {
+        display: none !important;
+    }
+    div[role="radiogroup"][aria-label="Review period"] label p,
+    div[role="radiogroup"][aria-label="Review sections"] label p {
+        margin: 0 !important;
+        color: #a9b5c9 !important;
+        font-size: 12px !important;
+        font-weight: 900 !important;
+        line-height: 1 !important;
+        letter-spacing: 0 !important;
+        text-transform: uppercase !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+    div[role="radiogroup"][aria-label="Review period"] label:has(input:checked),
+    div[role="radiogroup"][aria-label="Review sections"] label:has(input:checked) {
+        background: #ff4b55 !important;
+        box-shadow: 0 8px 18px rgba(255,75,85,.22), inset 0 1px 0 rgba(255,255,255,.16) !important;
+    }
+    div[role="radiogroup"][aria-label="Review period"] label:has(input:checked) p,
+    div[role="radiogroup"][aria-label="Review sections"] label:has(input:checked) p {
+        color: #fff !important;
+    }
+    .queue-card-static {
+        border: 1px solid rgba(255,255,255,.12);
+        background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.02)), #171a21;
+        box-shadow: 0 16px 42px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.05);
+        border-radius: 18px;
+        padding: 22px 22px 8px;
+        margin-bottom: 12px;
+    }
     .queue-item {
         border: 1px solid rgba(255,255,255,.10);
         background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.025));
@@ -368,6 +445,37 @@ def _settings_sidebar():
             st.rerun()
 
 
+def _section_filter(default_sections):
+    options = ["All"] + rc.SECTIONS
+    current = st.session_state.get("review_section_choice_d", "All")
+    if current not in options:
+        current = "All"
+    choice = st.radio(
+        "Review sections",
+        options,
+        index=options.index(current),
+        horizontal=True,
+        label_visibility="collapsed",
+    )
+    st.session_state.review_section_choice_d = choice
+    return rc.SECTIONS if choice == "All" else [choice]
+
+
+def _period_filter(default_period):
+    current = st.session_state.get("review_period_choice_d", default_period)
+    if current not in rc.PERIODS:
+        current = default_period
+    period = st.radio(
+        "Review period",
+        rc.PERIODS,
+        index=rc.PERIODS.index(current),
+        horizontal=True,
+        label_visibility="collapsed",
+    )
+    st.session_state.review_period_choice_d = period
+    return period
+
+
 def show():
     _css()
     _settings_sidebar()
@@ -405,23 +513,40 @@ def show():
     _metric_cards(counts, sec_counts)
     _render_launch_choice()
 
-    st.markdown('<div class="toolbar">', unsafe_allow_html=True)
-    period = st.radio("Queue", rc.PERIODS, index=rc.PERIODS.index(default_period), horizontal=True, label_visibility="collapsed")
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    f1, f2 = st.columns([0.45, 0.55])
+    f1, f2 = st.columns([0.47, 0.53])
     with f1:
-        selected_sections = st.multiselect("Sections", rc.SECTIONS, default=[s for s in rc.SECTIONS if sec_counts.get(s, 0) > 0] or rc.SECTIONS)
+        st.markdown('<div class="review-filter-label">Queue</div>', unsafe_allow_html=True)
+        period = _period_filter(default_period)
     with f2:
-        search = st.text_input("Search spots", placeholder="Board, line, scenario...")
+        st.markdown('<div class="review-filter-label">Sections</div>', unsafe_allow_html=True)
+        selected_sections = _section_filter([s for s in rc.SECTIONS if sec_counts.get(s, 0) > 0] or rc.SECTIONS)
+    search = st.text_input("Search spots", placeholder="Board, line, scenario...")
+
+    with st.expander("Review settings", expanded=False):
+        _, review = rc.load_review_settings()
+        visible_default = [s for s in rc.SECTIONS if s not in set(review.get("hidden_sections", []))]
+        visible = st.multiselect("Visible sections", rc.SECTIONS, default=visible_default, key="review_visible_sections_inline_d")
+        min_hands = st.number_input("Minimum hands per spot", min_value=0, max_value=5000, value=int(review.get("min_hands", rc.MIN_REVIEW_HANDS)), step=25, key="review_min_hands_inline_d")
+        if st.button("Save", key="save_review_inline_d"):
+            review["hidden_sections"] = [s for s in rc.SECTIONS if s not in visible]
+            review["min_hands"] = int(min_hands)
+            rc.save_review_settings(review)
+            st.rerun()
+        hidden_count = len(review.get("hidden_spots", []))
+        if hidden_count and st.button(f"Unhide all spots ({hidden_count})", key="unhide_review_inline_d"):
+            rc.unhide_all_spots()
+            st.rerun()
 
     visible_spots = rc.filter_spots(spots, selected_sections, period, search)
+    if not visible_spots and period != "Active Spots":
+        visible_spots = rc.filter_spots(spots, selected_sections, "Active Spots", search)
+        st.caption(f"No exact {period} matches for selected filters, showing Active Spots instead.")
 
     left, right = st.columns([0.32, 0.68], gap="large")
     with left:
         _calendar(spots)
     with right:
-        st.markdown('<div class="queue-card"><div class="section-title">Smart Priority Queue</div>', unsafe_allow_html=True)
+        st.markdown('<div class="queue-card-static"><div class="section-title">Smart Priority Queue</div></div>', unsafe_allow_html=True)
         selected_items = []
         if not visible_spots:
             st.info("No Review spots match the current filters.")
@@ -436,6 +561,5 @@ def show():
             if st.button(f"Train Selected ({len(selected_items)})", key="train_selected_review_d", use_container_width=True):
                 rc.request_grouped_launch("Selected Review Spots", selected_items)
             st.markdown("</div>", unsafe_allow_html=True)
-        st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown("</div>", unsafe_allow_html=True)
