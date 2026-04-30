@@ -1,6 +1,7 @@
 import streamlit as st
 from views import mobile, desktop, compare, stats_mobile, stats_desktop
 from views import postflop_desktop, postflop_mobile
+from views import review_desktop, review_mobile
 
 # Заглушка, пока ты не вставишь код в новые файлы
 try:
@@ -38,8 +39,8 @@ def main():
             flex-direction: row !important;
             flex-wrap: nowrap !important;
             align-items: center !important;
-            width: min(100%, 640px) !important;
-            max-width: 640px !important;
+            width: min(100%, 720px) !important;
+            max-width: 720px !important;
             background: #1a1c20 !important;
             padding: 4px !important;
             border-radius: 12px !important;
@@ -66,7 +67,7 @@ def main():
         div[role="radiogroup"][aria-label="Nav"] label > div:first-child { display: none !important; }
         div[role="radiogroup"][aria-label="Nav"] label p {
             color: #9aa0aa !important;
-            font-size: 12.5px !important;
+            font-size: 12px !important;
             font-weight: 800 !important;
             line-height: 1 !important;
             margin: 0 !important;
@@ -94,7 +95,7 @@ def main():
                 margin-bottom: 2px !important;
             }
             div[role="radiogroup"][aria-label="Nav"] label { padding: 7px 4px !important; }
-            div[role="radiogroup"][aria-label="Nav"] label p { font-size: 10.8px !important; }
+            div[role="radiogroup"][aria-label="Nav"] label p { font-size: 9.8px !important; }
         }
         
         div[data-testid="stVerticalBlock"] > div { padding-bottom: 0 !important; margin-bottom: 0 !important; }
@@ -105,9 +106,9 @@ def main():
     if "actual_view_type" not in st.session_state:
         st.session_state.actual_view_type = "📱 Mobile" if detect_mobile() else "💻 Desktop"
         
-    nav_options = ["Preflop", "Postflop", "Fish", "Ranges", "Stats"]
+    nav_options = ["Review", "Preflop", "Postflop", "Fish", "Ranges", "Stats"]
     if "actual_app_mode" not in st.session_state or st.session_state.actual_app_mode not in nav_options:
-        st.session_state.actual_app_mode = "Preflop"
+        st.session_state.actual_app_mode = "Review"
 
     st.markdown('<div class="compact-tabs"></div>', unsafe_allow_html=True)
     nav_mode = st.radio(
@@ -121,7 +122,12 @@ def main():
         st.session_state.actual_app_mode = nav_mode
         st.rerun()
 
-    if st.session_state.actual_app_mode == "Ranges":
+    if st.session_state.actual_app_mode == "Review":
+        if st.session_state.actual_view_type == "рџ“± Mobile":
+            review_mobile.show()
+        else:
+            review_desktop.show()
+    elif st.session_state.actual_app_mode == "Ranges":
         compare.show()
     elif st.session_state.actual_app_mode == "Stats":
         if st.session_state.actual_view_type == "📱 Mobile":
