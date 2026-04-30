@@ -6,13 +6,13 @@ from views import review_common as rc
 def _css():
     st.markdown("""
     <style>
-    .block-container { padding-left: 1.1rem !important; padding-right: 1.1rem !important; }
+    .block-container { padding-left: 1rem !important; padding-right: 1rem !important; padding-top: .75rem !important; }
     .review-mobile {
         color: #f7f9ff;
         font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
     .review-kicker-m {
-        margin-top: 20px;
+        margin-top: 14px;
         color: #59f0a6;
         font-size: 11px;
         font-weight: 950;
@@ -20,8 +20,8 @@ def _css():
         text-transform: uppercase;
     }
     .review-title-m {
-        margin: 12px 0 8px;
-        font-size: 42px;
+        margin: 10px 0 8px;
+        font-size: 34px;
         line-height: .98;
         font-weight: 950;
         letter-spacing: 0;
@@ -30,13 +30,13 @@ def _css():
         color: #aab8d8;
         font-size: 14px;
         font-weight: 600;
-        margin-bottom: 18px;
+        margin-bottom: 14px;
     }
     .metric-grid-m {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-        margin: 12px 0 16px;
+        gap: 9px;
+        margin: 10px 0 14px;
     }
     .metric-card-m, .review-panel-m, .queue-item-m {
         border: 1px solid rgba(255,255,255,.12);
@@ -45,8 +45,8 @@ def _css():
         box-shadow: 0 14px 32px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.05);
     }
     .metric-card-m {
-        padding: 16px 14px;
-        min-height: 96px;
+        padding: 14px 13px;
+        min-height: 86px;
     }
     .metric-label-m {
         color: #a8b9da;
@@ -57,7 +57,7 @@ def _css():
     }
     .metric-value-m {
         margin-top: 12px;
-        font-size: 33px;
+        font-size: 30px;
         line-height: 1;
         font-weight: 950;
     }
@@ -69,10 +69,10 @@ def _css():
     }
     .review-panel-m {
         padding: 16px;
-        margin: 12px 0;
+        margin: 10px 0;
     }
     .panel-title-m {
-        font-size: 22px;
+        font-size: 21px;
         font-weight: 950;
         margin-bottom: 12px;
     }
@@ -168,6 +168,77 @@ def _css():
         color: #dce7ff;
         font-size: 13px;
         font-weight: 900;
+    }
+    .review-filter-label-m {
+        color: #9fb0d0;
+        font-size: 10px;
+        font-weight: 950;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        margin: 12px 0 7px 2px;
+    }
+    div[role="radiogroup"][aria-label="Review period mobile"],
+    div[role="radiogroup"][aria-label="Review sections mobile"] {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        width: 100% !important;
+        background: #191c23 !important;
+        padding: 4px !important;
+        border-radius: 13px !important;
+        border: 1px solid rgba(255,255,255,0.13) !important;
+        gap: 3px !important;
+        box-shadow: 0 8px 22px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.05) !important;
+        overflow: hidden !important;
+    }
+    div[role="radiogroup"][aria-label="Review period mobile"] label,
+    div[role="radiogroup"][aria-label="Review sections mobile"] label {
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+        display: inline-flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 10px 3px !important;
+        margin: 0 !important;
+        border-radius: 9px !important;
+        cursor: pointer !important;
+        border: none !important;
+        background: transparent !important;
+        white-space: nowrap !important;
+    }
+    div[role="radiogroup"][aria-label="Review period mobile"] label > div:first-child,
+    div[role="radiogroup"][aria-label="Review sections mobile"] label > div:first-child {
+        display: none !important;
+    }
+    div[role="radiogroup"][aria-label="Review period mobile"] label p,
+    div[role="radiogroup"][aria-label="Review sections mobile"] label p {
+        margin: 0 !important;
+        color: #a9b5c9 !important;
+        font-size: 9.3px !important;
+        font-weight: 900 !important;
+        line-height: 1 !important;
+        letter-spacing: 0 !important;
+        text-transform: uppercase !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+    div[role="radiogroup"][aria-label="Review period mobile"] label:has(input:checked),
+    div[role="radiogroup"][aria-label="Review sections mobile"] label:has(input:checked) {
+        background: #ff4b55 !important;
+        box-shadow: 0 8px 18px rgba(255,75,85,.22), inset 0 1px 0 rgba(255,255,255,.16) !important;
+    }
+    div[role="radiogroup"][aria-label="Review period mobile"] label:has(input:checked) p,
+    div[role="radiogroup"][aria-label="Review sections mobile"] label:has(input:checked) p {
+        color: #fff !important;
+    }
+    .queue-shell-m {
+        border: 1px solid rgba(255,255,255,.12);
+        background: linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.02)), #171a21;
+        border-radius: 16px;
+        padding: 15px 14px 4px;
+        box-shadow: 0 14px 32px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.05);
+        margin-top: 12px;
     }
     .line-track-m {
         height: 7px;
@@ -287,6 +358,37 @@ def _render_launch_choice():
     st.markdown("</div>", unsafe_allow_html=True)
 
 
+def _period_filter(default_period):
+    current = st.session_state.get("review_period_choice_m", default_period)
+    if current not in rc.PERIODS:
+        current = default_period
+    period = st.radio(
+        "Review period mobile",
+        rc.PERIODS,
+        index=rc.PERIODS.index(current),
+        horizontal=True,
+        label_visibility="collapsed",
+    )
+    st.session_state.review_period_choice_m = period
+    return period
+
+
+def _section_filter():
+    options = ["All"] + rc.SECTIONS
+    current = st.session_state.get("review_section_choice_m", "All")
+    if current not in options:
+        current = "All"
+    choice = st.radio(
+        "Review sections mobile",
+        options,
+        index=options.index(current),
+        horizontal=True,
+        label_visibility="collapsed",
+    )
+    st.session_state.review_section_choice_m = choice
+    return rc.SECTIONS if choice == "All" else [choice]
+
+
 def _queue_card(spot):
     progress = min(100, int((spot["total"] / 1000) * 100))
     due_text = "Late " + str(spot["late_days"]) + "d" if spot["late_days"] else ("Today" if spot["days_until"] == 0 else f"In {spot['days_until']}d")
@@ -344,14 +446,18 @@ def show():
 
     _metric_cards(counts, sec_counts)
     _render_launch_choice()
-    _calendar(spots)
-
-    period = st.radio("Queue", rc.PERIODS, index=rc.PERIODS.index(default_period), horizontal=True, label_visibility="collapsed")
-    sections = st.multiselect("Sections", rc.SECTIONS, default=[s for s in rc.SECTIONS if sec_counts.get(s, 0) > 0] or rc.SECTIONS)
+    st.markdown('<div class="review-filter-label-m">Queue</div>', unsafe_allow_html=True)
+    period = _period_filter(default_period)
+    st.markdown('<div class="review-filter-label-m">Sections</div>', unsafe_allow_html=True)
+    sections = _section_filter()
     search = st.text_input("Search spots", placeholder="Board, line, scenario...")
 
     visible_spots = rc.filter_spots(spots, sections, period, search)
-    st.markdown('<div class="review-panel-m"><div class="panel-title-m">Smart Priority Queue</div>', unsafe_allow_html=True)
+    if not visible_spots and period != "Active Spots":
+        visible_spots = rc.filter_spots(spots, sections, "Active Spots", search)
+        st.caption(f"No exact {period} matches, showing Active Spots.")
+
+    st.markdown('<div class="queue-shell-m"><div class="panel-title-m">Smart Priority Queue</div></div>', unsafe_allow_html=True)
     selected_items = []
     if not visible_spots:
         st.info("No Review spots match the current filters.")
@@ -365,4 +471,5 @@ def show():
         if st.button(f"Train Selected ({len(selected_items)})", key="train_selected_review_m", use_container_width=True):
             rc.request_grouped_launch("Selected Review Spots", selected_items)
         st.markdown("</div>", unsafe_allow_html=True)
-    st.markdown("</div></div>", unsafe_allow_html=True)
+    _calendar(spots)
+    st.markdown("</div>", unsafe_allow_html=True)
