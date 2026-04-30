@@ -254,7 +254,7 @@
           "Call"
         ],
         "ranges": {
-          "Call": "3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h, 4s4c, 4s4d, 4s4h, 4c4d, 4c4h, 4d4h, 5s3s, 5h3h, 5d3d, 5s4s, 5h4h, 5d4d, 6s5s, 6h5h, 6d5d, 7s5s, 7h5h, 7d5d, 6s6c, 6s6d, 6s6h, 6c6d, 6c6h, 6d6h",
+          "Call": "3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h, 4s4c, 4s4d, 4s4h, 4c4d, 4c4h, 4d4h, 5s3s, 5d3d, 5s4s, 5d4d, 6s5s, 6d5d, 7s5s, 7d5d, 6s6c, 6s6d, 6s6h, 6c6d, 6c6h, 6d6h",
           "Fold": "AsQc, AsQd, AsQh, AcQs, AcQd, AcQh, AhQs, AhQc, AhQd, AdQs, AdQc, AdQh, As2c, As2h, Ac2s, Ac2h, Ah2s, Ah2c, Ad2s, Ad2c, Ad2h, 4s2s, 4c2c, 4h2h, 3s2s, 3c2c, 3h2h"
         },
         "training": "3s3c, 3s3d, 3s3h, 3c3d, 3c3h, 3d3h, 4s4c, 4s4d, 4s4h, 4c4d, 4c4h, 4d4h, 5s3s, 5h3h, 5d3d, 5s4s, 5h4h, 5d4d, 6s5s, 6h5h, 6d5d, 7s5s, 7h5h, 7d5d, 6s6c, 6s6d, 6s6h, 6c6d, 6c6h, 6d6h, AsQc, AsQd, AsQh, AcQs, AcQd, AcQh, AhQs, AhQc, AhQd, AdQs, AdQc, AdQh, As2c, As2h, Ac2s, Ac2h, Ah2s, Ah2c, Ad2s, Ad2c, Ad2h, 4s2s, 4c2c, 4h2h, 3s2s, 3c2c, 3h2h"
