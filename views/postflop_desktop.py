@@ -6,6 +6,7 @@ import json
 import inspect
 from datetime import datetime
 import poker_utils as utils
+from views import review_common as rc
 
 # --- УМНЫЕ ОБЁРТКИ ДЛЯ НЕЗАВИСИМЫХ СТАТОВ ПОСТФЛОПА ---
 def safe_load_stats():
@@ -329,6 +330,15 @@ def show():
             st.rerun()
 
     pool = sel_spots_keys
+    review_ctx = rc.review_context_for("Postflop")
+    if review_ctx:
+        review_pool = [key for key in review_ctx.get("spot_keys", []) if key in pf_db]
+        if review_pool:
+            pool = review_pool
+            st.sidebar.info(f"Review Mode: {len(pool)} spots")
+            if st.sidebar.button("Exit Review", key="exit_review_postflop_d", use_container_width=True):
+                rc.clear_review_training()
+                st.rerun()
     if not pool:
         st.warning("⚠️ Выбери фильтры в боковом меню.")
         st.stop()
