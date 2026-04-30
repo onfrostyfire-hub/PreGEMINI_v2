@@ -5,6 +5,35 @@ from datetime import datetime
 import poker_utils as utils
 import inspect
 
+def get_spot_training_hands(spot_key, mastery_dict):
+    spot_stats = mastery_dict.get(spot_key, {})
+    if not isinstance(spot_stats, dict):
+        return 0
+    try:
+        return max(0, int(spot_stats.get("t", 0) or 0))
+    except (TypeError, ValueError):
+        return 0
+
+def build_spot_training_progress_html(hands_played):
+    hands_val = max(0, int(hands_played))
+    pct = max(0, min(hands_val, 2500)) / 25
+    if hands_val <= 100:
+        gradient = "linear-gradient(90deg, #7d8792 0%, #a9b3bd 100%)"
+    elif hands_val <= 500:
+        gradient = "linear-gradient(90deg, #2fd67b 0%, #17b26a 100%)"
+    elif hands_val <= 1000:
+        gradient = "linear-gradient(90deg, #37c3ff 0%, #2b7fff 100%)"
+    else:
+        gradient = "linear-gradient(90deg, #f07a42 0%, #ffcc4d 100%)"
+    return f"""
+        <div style="margin:-4px 0 10px 28px; padding-right:4px; display:flex; align-items:center; gap:8px;">
+            <div style="flex:1; height:3px; border-radius:999px; background:rgba(255,255,255,0.08); overflow:hidden; box-shadow:inset 0 1px 2px rgba(0,0,0,0.45);">
+                <div style="width:{pct:.1f}%; height:100%; border-radius:999px; background:{gradient}; box-shadow:0 0 10px rgba(255,255,255,0.14);"></div>
+            </div>
+            <div style="min-width:52px; text-align:right; font-size:9px; line-height:1; font-weight:800; color:rgba(180,190,205,0.78); white-space:nowrap;">{hands_val}/2500</div>
+        </div>
+    """
+
 def generate_desktop_theme(bg_rad1, bg_rad2, shadow1, shadow2, shadow3, seat_rad, seat_border, seat_act_border, seat_act_shadow, anim_name, pulse_shadow1, pulse_shadow2, text_color, badge_bg, bar_fill, card_bg, card_border, rng_bg, hero_panel_bg, hero_panel_border):
     return f"""<style>
     .game-area {{ background: radial-gradient(ellipse 50% 38% at 50% 44%, {bg_rad1} 0%, transparent 68%), radial-gradient(ellipse 90% 80% at 50% 50%, {bg_rad2}) !important; box-shadow: 0 0 0 12px {shadow1}, 0 0 0 20px {shadow2}, 0 0 0 26px {shadow3}, 0 0 50px 8px rgba(0,0,0,0.95), inset 0 2px 20px rgba(255,255,255,0.03) !important; }}
@@ -266,6 +295,9 @@ def show():
             
         st.markdown("---")
         saved = utils.load_user_settings()
+        filter_mastery = utils.load_user_stats().get("spot_mastery", {})
+        if not isinstance(filter_mastery, dict):
+            filter_mastery = {}
         
         saved_sc = [s for s in saved.get("scenarios", []) if s in all_scenarios]
         sel_sc = st.multiselect("Scenario", all_scenarios, default=saved_sc if saved_sc else (all_scenarios[:1] if all_scenarios else []))
@@ -280,6 +312,8 @@ def show():
                     is_checked = (sp_key in saved_spots) if "spots" in saved else True
                     if st.checkbox(sp_name, value=is_checked, key=f"d_chk_{sp_key}"):
                         sel_spots_keys.append(sp_key)
+                    hands_played = get_spot_training_hands(sp_key, filter_mastery)
+                    st.markdown(build_spot_training_progress_html(hands_played), unsafe_allow_html=True)
         
         if st.button("🚀 Apply Settings", use_container_width=True):
             saved["scenarios"] = sel_sc
