@@ -54,6 +54,39 @@ def fish_get_weight(hand, r_str):
         if h == hand: return w
     return 0.0
 
+def get_desktop_progress_gradient(hands_played):
+    if hands_played <= 100:
+        return "linear-gradient(90deg, #7d8792 0%, #a9b3bd 100%)"
+    if hands_played <= 200:
+        return "linear-gradient(90deg, #2fd67b 0%, #17b26a 100%)"
+    if hands_played <= 500:
+        return "linear-gradient(90deg, #37c3ff 0%, #2b7fff 100%)"
+    if hands_played <= 1000:
+        return "linear-gradient(90deg, #f07a42 0%, #ffcc4d 100%)"
+    return "linear-gradient(90deg, #f4c95d 0%, #ff8f3d 100%)"
+
+def get_desktop_spot_hands_played(spot_key, mastery_dict):
+    spot_stats = mastery_dict.get(spot_key, {})
+    if not isinstance(spot_stats, dict):
+        return 0
+    try:
+        return max(0, int(spot_stats.get("t", 0) or 0))
+    except (TypeError, ValueError):
+        return 0
+
+def build_desktop_runout_progress_html(hands_played):
+    hands_val = max(0, int(hands_played))
+    pct = max(0, min(hands_val, 1000)) / 10
+    gradient = get_desktop_progress_gradient(hands_val)
+    return f"""
+        <div style="margin:-5px 0 11px 28px; padding-right:3px; display:flex; align-items:center; gap:8px;">
+            <div style="flex:1; height:3px; border-radius:999px; background:rgba(255,255,255,0.08); overflow:hidden; box-shadow:inset 0 1px 2px rgba(0,0,0,0.45);">
+                <div style="width:{pct:.1f}%; height:100%; border-radius:999px; background:{gradient}; box-shadow:0 0 10px rgba(255,255,255,0.14);"></div>
+            </div>
+            <div style="min-width:48px; text-align:right; font-size:9px; line-height:1; font-weight:800; color:rgba(180,190,205,0.78); white-space:nowrap;">{hands_val}/1000</div>
+        </div>
+    """
+
 def generate_desktop_theme(bg_rad1, bg_rad2, shadow1, shadow2, shadow3, seat_rad, seat_border, seat_act_border, seat_act_shadow, anim_name, pulse_shadow1, pulse_shadow2, text_color, badge_bg, bar_fill, card_bg, card_border, rng_bg):
     return f"""<style>
     .desktop-game-area {{ 
@@ -91,15 +124,15 @@ def show():
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@500;700;900&display=swap');
 
-        .pf-pot-badge-desk { position: absolute; top: 19%; left: 50%; transform: translateX(-50%); z-index: 15; }
-        .pf-street-pot-desk { position: absolute; top: 53.5%; left: 50%; transform: translateX(-50%); z-index: 18; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px; pointer-events: none; }
-        .pf-board-desk { position: absolute; top: 39.5%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
+        .pf-pot-badge-desk { position: absolute; top: 26%; left: 50%; transform: translateX(-50%); z-index: 15; }
+        .pf-street-pot-desk { position: absolute; top: 57.5%; left: 50%; transform: translateX(-50%); z-index: 18; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px; pointer-events: none; }
+        .pf-board-desk { position: absolute; top: 43%; left: 50%; transform: translate(-50%, -50%); z-index: 15; }
         
         .desktop-game-area { 
-            position: relative; width: 100%; max-width: 850px; height: 455px; 
-            margin: 12px auto 90px auto; 
+            position: relative; width: 100%; max-width: 850px; height: 480px; 
+            margin: 12px auto 98px auto; 
             border: 16px solid #1a1c20; 
-            border-radius: 245px; 
+            border-radius: 255px; 
             box-shadow: 0 10px 40px rgba(0,0,0,0.8), inset 0 3px 15px rgba(0,0,0,0.6); 
             transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; 
         }
@@ -195,12 +228,12 @@ def show():
         .street-chip-pot-desk.c4 { top: 2px; left: 8px; background: repeating-conic-gradient(rgba(255,255,255,0.22) 0deg 16deg, transparent 16deg 34deg), radial-gradient(circle at 36% 30%, #f8fafc, #8d99a8 72%); }
         .street-chip-pot-desk.c5 { top: 0; left: 6px; background: repeating-conic-gradient(rgba(255,255,255,0.22) 0deg 16deg, transparent 16deg 34deg), radial-gradient(circle at 36% 30%, #f7c948, #8a5808 72%); }
         .street-pot-txt-desk { background: rgba(8,9,12,0.92); border: 1px solid rgba(255,193,7,0.32); color: #f4d384; border-radius: 9px; padding: 2px 8px; font-size: 11px; font-weight: 800; line-height: 1.25; box-shadow: 0 2px 5px rgba(0,0,0,0.6); white-space: nowrap; }
-        .spot-mastery-felt-desk { position: absolute; top: 64%; left: 50%; transform: translateX(-50%); z-index: 16; min-width: 164px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px 12px 7px; border-radius: 14px; pointer-events: none; background: radial-gradient(circle at 50% 0%, rgba(80,135,92,0.18), rgba(9,18,13,0.62) 62%, rgba(5,8,7,0.74)); border: 1px solid rgba(148,210,162,0.16); box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 10px 24px rgba(0,0,0,0.42); backdrop-filter: blur(5px); }
-        .spot-mastery-pill-desk { display: inline-flex; align-items: center; justify-content: center; gap: 5px; border-radius: 999px; padding: 3px 10px; font-size: 11px; font-weight: 800; letter-spacing: 0.03em; white-space: nowrap; background: rgba(5,8,7,0.72); border: 1px solid rgba(255,255,255,0.14); color: rgba(255,255,255,0.94); text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
+        .spot-mastery-felt-desk { position: absolute; top: 66%; left: 50%; transform: translateX(-50%); z-index: 16; min-width: 150px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 0; border-radius: 0; pointer-events: none; background: transparent; border: 0; box-shadow: none; backdrop-filter: none; text-shadow: 0 1px 5px rgba(0,0,0,0.86); }
+        .spot-mastery-pill-desk { display: inline-flex; align-items: center; justify-content: center; gap: 5px; border-radius: 0; padding: 0; font-size: 11px; font-weight: 800; letter-spacing: 0.03em; white-space: nowrap; background: transparent; border: 0; color: rgba(238,246,240,0.9); text-shadow: 0 1px 5px rgba(0,0,0,0.9); }
         .spot-mastery-meter-desk { width: 92px; height: 3px; border-radius: 999px; overflow: hidden; background: rgba(255,255,255,0.08); box-shadow: inset 0 1px 2px rgba(0,0,0,0.7); }
         .spot-mastery-fill-desk { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #1ac8d9, #58f0b0); box-shadow: 0 0 10px rgba(32,220,190,0.45); }
-        .spot-mastery-remaining-desk { font-size: 10px; font-weight: 700; letter-spacing: 0.02em; line-height: 1; color: rgba(230,238,235,0.76); white-space: nowrap; }
-        .spot-line-felt-desk { position: absolute; top: 79%; left: 50%; transform: translateX(-50%); z-index: 14; width: 78%; text-align: center; pointer-events: none; color: rgba(215,224,218,0.34); font-family: 'Roboto', sans-serif; font-size: 16px; font-weight: 800; letter-spacing: 0.04em; line-height: 1; text-shadow: 0 1px 6px rgba(0,0,0,0.7); white-space: nowrap; }
+        .spot-mastery-remaining-desk { font-size: 10px; font-weight: 700; letter-spacing: 0.02em; line-height: 1; color: rgba(230,238,235,0.66); white-space: nowrap; }
+        .spot-line-felt-desk { position: absolute; top: 20%; left: 50%; transform: translateX(-50%); z-index: 14; width: 78%; text-align: center; pointer-events: none; color: rgba(215,224,218,0.30); font-family: 'Roboto', sans-serif; font-size: 16px; font-weight: 800; letter-spacing: 0.04em; line-height: 1; text-shadow: 0 1px 6px rgba(0,0,0,0.72); white-space: nowrap; }
         .board-container-desk { display: flex; gap: 6px; background: rgba(0,0,0,0.4); padding: 8px 16px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .board-card-desk { width: 50px; height: 72px; background: white; border-radius: 4px; position: relative; color: black; box-shadow: 0 2px 5px rgba(0,0,0,0.6); font-family: Arial, sans-serif !important; }
         .bc-tl-desk { position: absolute; top: 3px; left: 4px; font-weight: 900; font-size: 16px; line-height: 1; }
@@ -273,6 +306,9 @@ def show():
     with st.sidebar:
         st.markdown("### ⚙️ View & Fish Filters")
         saved = utils.load_user_settings(is_fish=True)
+        filter_mastery = saved.get("stats", {}).get("spot_mastery", {})
+        if not isinstance(filter_mastery, dict):
+            filter_mastery = {}
         due_mode = bool(saved.get("fish_due_mode", False))
 
         c_v1, c_v2, c_due = st.columns([0.27, 0.31, 0.42])
@@ -369,6 +405,8 @@ def show():
                 short_lbl = f"{runout_name} ({parts[0]} | {line_lbl})"
                 if st.checkbox(short_lbl, value=is_checked, key=f"fish_chk_d_{full_key}"):
                     sel_spots_keys.append(full_key)
+                hands_played = get_desktop_spot_hands_played(full_key, filter_mastery)
+                st.markdown(build_desktop_runout_progress_html(hands_played), unsafe_allow_html=True)
         
         if st.button("🚀 Apply Filters", use_container_width=True):
             saved["fish_sel_vpips"] = sel_vpips
