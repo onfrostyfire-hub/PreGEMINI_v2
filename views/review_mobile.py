@@ -195,7 +195,8 @@ def _css():
         font-weight: 950;
         letter-spacing: 0;
     }
-    div[data-testid="stHorizontalBlock"] {
+    div.element-container:has(#review-quick-actions-m-marker) + div[data-testid="stHorizontalBlock"],
+    div.element-container:has(#review-quick-actions-m-marker) + div.element-container div[data-testid="stHorizontalBlock"] {
         display: flex !important;
         flex-direction: row !important;
         flex-wrap: nowrap !important;
@@ -203,11 +204,25 @@ def _css():
         align-items: stretch !important;
         width: 100% !important;
     }
-    div[data-testid="stHorizontalBlock"] > div[data-testid="column"],
-    div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {
+    div.element-container:has(#review-quick-actions-m-marker) + div[data-testid="stHorizontalBlock"] > div[data-testid="column"],
+    div.element-container:has(#review-quick-actions-m-marker) + div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"],
+    div.element-container:has(#review-quick-actions-m-marker) + div.element-container div[data-testid="stHorizontalBlock"] > div[data-testid="column"],
+    div.element-container:has(#review-quick-actions-m-marker) + div.element-container div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {
         flex: 1 1 0 !important;
         width: 0 !important;
         min-width: 0 !important;
+    }
+    div.element-container:has(#review-quick-actions-m-marker) + div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] button,
+    div.element-container:has(#review-quick-actions-m-marker) + div.element-container div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] button {
+        min-height: 34px !important;
+        height: 34px !important;
+        padding: 0 6px !important;
+    }
+    div.element-container:has(#review-quick-actions-m-marker) + div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] button p,
+    div.element-container:has(#review-quick-actions-m-marker) + div.element-container div[data-testid="stHorizontalBlock"] div[data-testid="stButton"] button p {
+        font-size: 11px !important;
+        line-height: 1 !important;
+        white-space: nowrap !important;
     }
     div[role="radiogroup"][aria-label="Review period mobile"],
     div[role="radiogroup"][aria-label="Review sections mobile"] {
@@ -470,22 +485,32 @@ def show():
     <div class="review-title-m">Today's Review</div>
     """, unsafe_allow_html=True)
 
+    st.markdown('<span id="review-quick-actions-m-marker"></span>', unsafe_allow_html=True)
     c1, c2, c3 = st.columns(3, gap="small")
     with c1:
         st.markdown('<div class="primary-review-btn">', unsafe_allow_html=True)
         if st.button("Today", use_container_width=True, key="review_train_today_m"):
-            rc.request_grouped_launch("Today", [s for s in spots if s["bucket"] == "Today"])
+            st.session_state.review_period_choice_m = "Today"
+            st.session_state.review_section_choice_m = "All"
+            st.session_state.pop("review_launch_choice", None)
+            st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
     with c2:
         if st.button("Late", use_container_width=True, key="review_train_late_m"):
-            rc.request_grouped_launch("Late", [s for s in spots if s["bucket"] == "Late"])
+            st.session_state.review_period_choice_m = "Late"
+            st.session_state.review_section_choice_m = "All"
+            st.session_state.pop("review_launch_choice", None)
+            st.rerun()
     with c3:
         if st.button("Next 7", use_container_width=True, key="review_train_next_m"):
-            rc.request_grouped_launch("Next 7 Days", [s for s in spots if s["bucket"] == "Next 7 Days"])
+            st.session_state.review_period_choice_m = "Next 7 Days"
+            st.session_state.review_section_choice_m = "All"
+            st.session_state.pop("review_launch_choice", None)
+            st.rerun()
 
     _metric_cards(counts, sec_counts)
     _render_launch_choice()
-    st.markdown('<div class="review-filter-label-m">Repeat list</div>', unsafe_allow_html=True)
+    st.markdown('<div class="review-filter-label-m">Show spots</div>', unsafe_allow_html=True)
     period = _period_filter(default_period)
     st.markdown('<div class="review-filter-label-m">Sections</div>', unsafe_allow_html=True)
     sections = _section_filter()
@@ -493,9 +518,6 @@ def show():
     _settings_panel()
 
     visible_spots = rc.filter_spots(spots, sections, period, search)
-    if not visible_spots and period != "Active Spots":
-        visible_spots = rc.filter_spots(spots, sections, "Active Spots", search)
-        st.caption(f"No exact {period} matches, showing Active Spots.")
 
     _calendar(spots)
 
