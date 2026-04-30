@@ -3,6 +3,7 @@ import random
 import time
 from datetime import datetime
 import poker_utils as utils
+from views import review_common as rc
 
 def get_spot_training_hands(spot_key, mastery_dict):
     spot_stats = mastery_dict.get(spot_key, {})
@@ -333,6 +334,16 @@ def show():
             st.session_state.hand = None; st.rerun()
 
     pool = sel_spots_keys
+    review_ctx = rc.review_context_for("Preflop")
+    if review_ctx:
+        valid_keys = {sp_key for values in scenario_map.values() for _, sp_key in values}
+        review_pool = [key for key in review_ctx.get("spot_keys", []) if key in valid_keys]
+        if review_pool:
+            pool = review_pool
+            st.info(f"Review Mode: {len(pool)} spots")
+            if st.button("Exit Review", key="exit_review_preflop_m", use_container_width=True):
+                rc.clear_review_training()
+                st.rerun()
     if not pool:
         st.warning("⚠️ No spots selected.")
         st.stop()
